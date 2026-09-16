@@ -1,0 +1,64 @@
+﻿@page "/ILORoots"
+
+@using OES.Blazor.Components.Common
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Blazor.Services.Interfaces.ILOSection
+@using OES.Helper
+@using OES.Helper.Dtos
+@using OES.Helper.Dtos.ILO
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("ILORoots")]
+
+<PageTitle>@Resource.IntendedLearningOutcomes</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.Quiz" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.IntendedLearningOutcomes</MudText>
+        </MudStack>
+        <ListItem T="ILODto"
+                  Caption="@Resource.ILO"
+                  CaptionIcon="@Icons.Material.Outlined.Quiz"
+                  @key="iloListKey"
+                  EndpointServerice="BlazILOService.GetAllRoots"
+                  DisplayColumns='[nameof(ILODto.Code), nameof(ILODto.Name)]'
+                  AddNew_URL_OesRolesList="[OesTemplateRoleConstants.IloCreator]"
+                  AddNew_URL="/newILORoot"
+                  FirstSearchParameterLabel="@Resource.Code"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <ButtonChildContent Context="value">
+                @if (value is ILODto ilo)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    EndIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    OnClick='async () => await ViewIloAsync(ilo.Id)' />
+                        </MudTooltip>
+
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    OnClick='async () => await UpdateIloAsync(ilo.Id)' />
+                        </MudTooltip>
+
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    EndIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    OnClick='async () => await DeleteIloAsync(ilo.Id)' />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

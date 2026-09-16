@@ -1,0 +1,19 @@
+﻿@using OES.Blazor.Components.GenericComponents.TreeViewTemplates.GrpcTreeViewTemplate
+
+<MudDialog>
+    <TitleContent>
+        <h4>@Resource.SelectItemBankNodes</h4>
+    </TitleContent>
+    <DialogContent>
+        <GrpcTreeViewTemplate @key="_treeViewKey"
+                              Items="@Items"
+                              SelectedItems="_selectedItemBankNodes"
+                              IsMultipleSelectionTree="true"
+                              EnableCascadingSelection="EnableCascadingSelection"
+                              GetSelectedTreeItems="GetSelectedTreeItems" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Disabled="@(_selectedItemBankNodes == null || _selectedItemBankNodes.Count == 0)" EndIcon="@Icons.Material.Filled.CheckCircle">@Resource.Select</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+    </DialogActions>
+</MudDialog>

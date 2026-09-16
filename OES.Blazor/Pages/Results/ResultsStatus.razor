@@ -1,0 +1,169 @@
+@page "/ResultsStatus"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("ResultsStatus")]
+
+<MudText Typo="Typo.h4" Align="Align.Center" Class="my-5">@Resource.ResultsStatus</MudText>
+
+<MudPaper Class="pa-4 mb-4">
+    <MudStack Spacing="3">
+        <MudDateRangePicker Label="@Resource.Daterange" @bind-DateRange="_dateRange" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ShowDetails">
+            @Resource.ShowDetails
+        </MudButton>
+    </MudStack>
+</MudPaper>
+
+@if (_showTables)
+{
+    <MudPaper Class="pa-4 mb-4">
+        <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pt-3" Color="Color.Primary" SliderColor="Color.Primary" Centered="true">
+            <MudTabPanel Text="@Resource.Paper" Icon="@Icons.Material.Filled.MenuBook">
+                <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-3">@Resource.AllocationStatus</MudText>
+                <MudTable Items="@_examSeriesData" Hover="true" Striped="true" Dense="true" Bordered="true">
+                    <HeaderContent>
+                        <MudTh Class="expand-col"></MudTh>
+                        <MudTh>@Resource.Paper</MudTh>
+                        <MudTh>@Resource.NumberOfVenues</MudTh>
+                        <MudTh>@Resource.Registered</MudTh>
+                        <MudTh>@Resource.Attended</MudTh>
+                        <MudTh>@Resource.Absent</MudTh>
+                        <MudTh>@Resource.TakenSession</MudTh>
+                        @* <MudTh>@Resource.UnfinishedSession</MudTh> *@
+                        <MudTh>@Resource.UnfinishedCasesReview</MudTh>
+                        <MudTh>@Resource.SentToCTR</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd Class="expand-col">
+                            <MudIconButton Size="Size.Small"
+                                           Icon="@(context.ShowDetails ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)"
+                                           OnClick="@(() => context.ShowDetails = !context.ShowDetails)" />
+                        </MudTd>
+                        <MudTd DataLabel="@Resource.Paper"><b>@context.ExamSeries</b></MudTd>
+                        <MudTd DataLabel="@Resource.NumberOfVenues">@context.VenueCodeCount</MudTd>
+                        <MudTd DataLabel="@Resource.Registered">@context.Allocated</MudTd>
+                        <MudTd DataLabel="@Resource.Attended">@context.Attended</MudTd>
+                        <MudTd DataLabel="@Resource.Absent">@context.Absent</MudTd>
+                        <MudTd DataLabel="@Resource.TakenSession">@context.TakenSession</MudTd>
+                        @* <MudTd DataLabel="@Resource.UnfinishedSession">@context.UnfinishedSession</MudTd> *@
+                        <MudTd DataLabel="@Resource.UnfinishedCasesReview">@context.Reviewed</MudTd>
+                        <MudTd DataLabel="@Resource.SentToCTR">
+                            @if (context.SentToCTR)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" />
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                    <ChildRowContent>
+                        @if (context.ShowDetails)
+                        {
+                            @foreach (var child in context.Children)
+                            {
+                                <MudTr Class="child-row">
+                                    <MudTd></MudTd>
+                                    <MudTd Class="child-name">
+                                        <MudIcon Icon="@Icons.Material.Filled.SubdirectoryArrowRight" Size="Size.Small" Class="me-1 child-tree-icon" />
+                                        @child.Name
+                                    </MudTd>
+                                    <MudTd></MudTd>
+                                    <MudTd>@child.Allocated</MudTd>
+                                    <MudTd>@child.Attended</MudTd>
+                                    <MudTd>@child.Absent</MudTd>
+                                    <MudTd>@child.TakenSession</MudTd>
+                                    @* <MudTd>@child.UnfinishedSession</MudTd> *@
+                                    <MudTd>@child.Reviewed</MudTd>
+                                    <MudTd>
+                                        @if (child.SentToCTR)
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                                        }
+                                        else
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+                                        }
+                                    </MudTd>
+                                </MudTr>
+                            }
+                        }
+                    </ChildRowContent>
+                </MudTable>
+            </MudTabPanel>
+            <MudTabPanel Text="@Resource.Venues" Icon="@Icons.Material.Filled.LocationOn">
+                <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-3">@Resource.AllocationStatus</MudText>
+                <MudTable Items="@_venueCodeData" Hover="true" Striped="true" Dense="true" Bordered="true">
+                    <HeaderContent>
+                        <MudTh Class="expand-col"></MudTh>
+                        <MudTh>@Resource.CenterName</MudTh>
+                        <MudTh>@Resource.Registered</MudTh>
+                        <MudTh>@Resource.Attended</MudTh>
+                        <MudTh>@Resource.Absent</MudTh>
+                        <MudTh>@Resource.TakenSession</MudTh>
+                        @* <MudTh>@Resource.UnfinishedSession</MudTh> *@
+                        <MudTh>@Resource.UnfinishedCasesReview</MudTh>
+                        <MudTh>@Resource.SentToCTR</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd Class="expand-col">
+                            <MudIconButton Size="Size.Small"
+                                           Icon="@(context.ShowDetails ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)"
+                                           OnClick="@(() => context.ShowDetails = !context.ShowDetails)" />
+                        </MudTd>
+                        <MudTd DataLabel="@Resource.CenterName"><b>@context.VenueDisplayName</b></MudTd>
+                        <MudTd DataLabel="@Resource.Registered">@context.Allocated</MudTd>
+                        <MudTd DataLabel="@Resource.Attended">@context.Attended</MudTd>
+                        <MudTd DataLabel="@Resource.Absent">@context.Absent</MudTd>
+                        <MudTd DataLabel="@Resource.TakenSession">@context.TakenSession</MudTd>
+                        @* <MudTd DataLabel="@Resource.UnfinishedSession">@context.UnfinishedSession</MudTd> *@
+                        <MudTd DataLabel="@Resource.UnfinishedCasesReview">@context.Reviewed</MudTd>
+                        <MudTd DataLabel="@Resource.SentToCTR">
+                            @if (context.SentToCTR)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" />
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                    <ChildRowContent>
+                        @if (context.ShowDetails)
+                        {
+                            @foreach (var child in context.Children)
+                            {
+                                <MudTr Class="child-row">
+                                    <MudTd></MudTd>
+                                    <MudTd Class="child-name">
+                                        <MudIcon Icon="@Icons.Material.Filled.SubdirectoryArrowRight" Size="Size.Small" Class="me-1 child-tree-icon" />
+                                        @child.Name
+                                    </MudTd>
+                                    <MudTd>@child.Allocated</MudTd>
+                                    <MudTd>@child.Attended</MudTd>
+                                    <MudTd>@child.Absent</MudTd>
+                                    <MudTd>@child.TakenSession</MudTd>
+                                    @* <MudTd>@child.UnfinishedSession</MudTd> *@
+                                    <MudTd>@child.Reviewed</MudTd>
+                                    <MudTd>
+                                        @if (child.SentToCTR)
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                                        }
+                                        else
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+                                        }
+                                    </MudTd>
+                                </MudTr>
+                            }
+                        }
+                    </ChildRowContent>
+                </MudTable>
+            </MudTabPanel>
+        </MudTabs>
+    </MudPaper>
+}

@@ -1,0 +1,204 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Remove="Pages\Authentication\**" />
+    <Compile Remove="Pages\Identity\**" />
+    <Compile Remove="wwwroot\Images\**" />
+    <Compile Remove="wwwroot\js\MathJax v3.2.2\**" />
+    <Content Remove="Pages\Authentication\**" />
+    <Content Remove="Pages\Identity\**" />
+    <Content Remove="wwwroot\Images\**" />
+    <Content Remove="wwwroot\js\MathJax v3.2.2\**" />
+    <EmbeddedResource Remove="Pages\Authentication\**" />
+    <EmbeddedResource Remove="Pages\Identity\**" />
+    <EmbeddedResource Remove="wwwroot\Images\**" />
+    <EmbeddedResource Remove="wwwroot\js\MathJax v3.2.2\**" />
+    <None Remove="Pages\Authentication\**" />
+    <None Remove="Pages\Identity\**" />
+    <None Remove="wwwroot\Images\**" />
+    <None Remove="wwwroot\js\MathJax v3.2.2\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Shared\foebidden.razor" />
+    <Content Remove="wwwroot\js\tree.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared\foebidden.razor" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\tree.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.FluentValidation" Version="2.2.0" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
+    <PackageReference Include="FluentValidation" Version="11.9.2" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.5" />
+    <PackageReference Include="Grpc.Net.Client.Web" Version="2.62.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.49.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.49.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.6" />
+    <PackageReference Include="MudBlazor" Version="6.19.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Syncfusion.Blazor" Version="26.2.5" />
+    <PackageReference Include="Syncfusion.Blazor.Core" Version="26.2.5" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OES.Helper\OES.Helper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Dialogs\" />
+    <Folder Include="Components\Entities\" />
+    <Folder Include="Components\Entities\ItemBank\" />
+    <Folder Include="Components\EntityTable\" />
+    <Folder Include="Components\Localization\" />
+    <Folder Include="Components\Notifications\" />
+    <Folder Include="Components\ThemeManager\" />
+    <Folder Include="Pages\Pages &amp; Roles\" />
+    <Folder Include="Services\Implementation\ILO\" />
+    <Folder Include="Services\Implementation\Snakbar\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\Common\CircleBtnCRUD.razor" />
+    <None Include="Components\Common\ListItem.razor" />
+    <None Include="Components\Common\NormalBtnCRUD.razor" />
+    <None Include="Pages\AppUser\UserEdit.razor" />
+    <None Include="Pages\FoebiddenPage.razor" />
+    <None Include="wwwroot\js\tree.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\.editorconfig" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\.gitignore" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\.jshintrc" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\dist\arabic.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\dist\README.md" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\docker-compose.yml" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\gulpfile.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\LICENSE" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\Makefile" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\README.md" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\src\html.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\src\license.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\src\tex.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\src\z-load-complete.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\testcases\LICENSE" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\testcases\README.md" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\testcases\render-equations.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\testcases\test-extensions\hacks.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\testcases\test-extensions\phys1.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\testcases\test-extensions\phys2.js" />
+    <None Include="wwwroot\MathJax v3.2.2\arabic mathjax\testcases\testcases.yml" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\.github\FUNDING.yml" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\.github\ISSUE_TEMPLATE\bug_report.md" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\.github\ISSUE_TEMPLATE\feature_request.md" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\.gitignore" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\.travis.yml" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\CONTRIBUTING.md" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\a11y\assistive-mml.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\a11y\complexity.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\a11y\explorer.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\a11y\semantic-enrich.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\a11y\sre.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\adaptors\liteDOM.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\core.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\asciimath.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\mml.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\mml\entities.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\mml\extensions\mml3.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex-base.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex-full.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\action.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\all-packages.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\ams.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\amscd.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\autoload.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\bbox.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\boldsymbol.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\braket.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\bussproofs.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\cancel.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\cases.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\centernot.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\color.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\colortbl.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\colorv2.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\configmacros.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\empheq.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\enclose.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\extpfeil.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\gensymb.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\html.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\mathtools.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\mhchem.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\newcommand.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\noerrors.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\noundefined.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\physics.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\require.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\setoptions.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\tagformat.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\textcomp.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\textmacros.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\unicode.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\upgreek.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\input\tex\extensions\verb.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\latest.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\loader.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\mml-chtml.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\mml-svg.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\node-main.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\output\chtml.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\output\chtml\fonts\tex.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\output\svg.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\output\svg\fonts\tex.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\startup.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\tex-chtml-full-speech.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\tex-chtml-full.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\tex-chtml.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\tex-mml-chtml.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\tex-mml-svg.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\tex-svg-full.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\tex-svg.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\ui\lazy.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\ui\menu.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\es5\ui\safe.js" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\LICENSE" />
+    <None Include="wwwroot\MathJax v3.2.2\mathjax-MathJax-600692a\README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\OES.GRPC\Protos\Tree.proto" GrpcServices="Client">
+      <Link>Protos\Tree.proto</Link>
+    </Protobuf>
+	<Protobuf Include="..\OES.GRPC\Protos\GenericTreeProtoBuf.proto" GrpcServices="Client">
+		<Link>Protos\GenericTreeProtoBuf.proto</Link>
+	</Protobuf>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Pages\ItemBank\ItemBankEditDialog.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\foebidden.razor" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,42 @@
+﻿@using OES.Blazor.Pages.Schedule.PaperSettingTemplates
+@using OES.Blazor.Pages.Schedule.PaperSettingTemplates.Common
+@using OES.Helper.Dtos.UserPapersDto
+@using OES.Helper.Dtos.Schedule
+@using OES.Blazor.Services.Interfaces.Paper
+@using MudBlazor
+@using OES.Helper.Dtos.PaperSetting.Responses;
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Filled.ContentCopy" Class="mr-2" Color="Color.Primary" Size="Size.Small" />
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="font-weight-bold">@Resource.SchedulePaperSettingsTemplateDetails</MudText>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudCard Class="mx-auto pa-2 shadow-lg rounded-lg">
+            <MudCardContent>
+                <MudGrid Spacing="2">
+                    <MudPaper Class="pa-2" Style="max-width: 100%; margin: 0 auto;">
+                        <MudExpansionPanels MultiExpansion="true">
+                            <MudExpansionPanel Text="Template Data" Icon="@Icons.Material.Filled.Settings" Expanded="true">
+                                <MudGrid Spacing="1">
+                                    <MudItem xs="12">
+                                        <!-- Template Name Field -->
+                                        <MudTextField Label="Template Name"
+                                                      @bind-Value="@PaperSettingsData.Name"
+                                                      Disabled="@IsReadOnly"
+                                                      Variant="Variant.Outlined"
+                                                      Margin="Margin.Dense"
+                                                      Class="mb-2" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudExpansionPanel>
+                        </MudExpansionPanels>
+                        <PaperSettingComponent AdditionalSetting="true" IsReadOnly="@IsReadOnly" paperSettingTemplate="@PaperSettingsData" paperSetting="@PaperSettingsData.PaperSettingsResponseDto" />
+                    </MudPaper>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+</MudDialog>

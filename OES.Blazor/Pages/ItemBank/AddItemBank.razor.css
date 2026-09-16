@@ -1,0 +1,6 @@
+﻿@media (max-width: 959px) {
+    .responsive-card {
+        width: 100% !important;
+        margin: 5px !important;
+    }
+}

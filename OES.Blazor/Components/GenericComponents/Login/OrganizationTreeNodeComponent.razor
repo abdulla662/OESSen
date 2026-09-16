@@ -1,0 +1,48 @@
+﻿@using OES.Helper.Dtos.User
+@using OES.Helper.ResourceFiles
+
+<div class="org-tree-node" style="padding-left: @(Level * 20)px;">
+    <div class="org-node-row @(IsSelected ? "selected" : "")" @onclick="OnSelect">
+        @if (HasChildren)
+        {
+            <div class="org-node-toggle" @onclick="OnToggle" @onclick:stopPropagation="true">
+                <MudIcon Icon="@(Node.IsExpanded? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)"
+                         Size="Size.Small" />
+            </div>
+        }
+        else
+        {
+            <div class="org-node-toggle-placeholder"></div>
+        }
+
+        <div class="org-node-radio">
+            <MudIcon Icon="@(IsSelected? Icons.Material.Filled.RadioButtonChecked : Icons.Material.Outlined.RadioButtonUnchecked)"
+                     Size="Size.Small"
+                     Class="@(IsSelected ? "radio-checked" : "radio-unchecked")" />
+        </div>
+
+        <div class="org-node-icon level-@Math.Min(Level, 3)">
+            <MudIcon Icon="@LevelIcon" Size="Size.Small" />
+        </div>
+
+        <div class="org-node-content">
+            <span class="org-node-name">@Node.Name</span>
+            @if (IsSelected)
+            {
+                <span class="org-node-selected-badge">@Resource.CurrentlySelected</span>
+            }
+        </div>
+    </div>
+</div>
+
+@if (Node.IsExpanded && HasChildren)
+{
+    foreach (var child in Node.Children)
+    {
+        <OrganizationTreeNodeComponent Node="child"
+                                       Level="Level + 1"
+                                       SelectedId="SelectedId"
+                                       OnSelectOrganization="OnSelectOrganization"
+                                       OnToggleNode="OnToggleNode" />
+    }
+}

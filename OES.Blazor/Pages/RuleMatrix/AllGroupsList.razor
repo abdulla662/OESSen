@@ -1,0 +1,45 @@
+@page "/AllGroupsList"
+@using OES.Helper.Dtos.CreateTemplate
+@using OES.Helper.Enums
+
+<PageTitle>@Resource.Groups</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center my-5">
+    <MudIcon Icon="@Icons.Material.Filled.Groups" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+    <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-0" Color="Color.Primary">
+        @Resource.AllGroups
+    </MudText>
+</div>
+
+<ListItem @key="key"
+          T="CreateTemplateDto"
+          Caption="@Resource.AllGroups"
+          EndpointServerice="@(FetchTemplatesAsync)"
+          DisplayColumns='@DisplayColumns'
+          CRUD_Edit_Btn="true"
+          CRUD_Delete_Btn="true"
+          EditClick_Fun="@(EventCallback.Factory.Create<object>(this, OnEditClickAsync))"
+          DeleteClick_fun="DeleteTemplateAsync"
+          HideCodeSearch="true"
+          FirstSearchParameterLabel="@Resource.Name"
+          SecondSearchParameterLabel="@Resource.Description">
+    <TopChildContent>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="OpenCreateTemplateDialogAsync">
+            <MudIcon Icon="@Icons.Material.Filled.Add" />
+            @Resource.CreateGroup
+        </MudButton>
+    </TopChildContent>
+
+    <ButtonChildContent Context="value">
+        <MudTooltip Text="@Resource.Copy">
+            <MudFab Class=@($"me-2 ms-2 label-{nameof(Resource.Copy)}")
+                    Color="Color.Info"
+                    StartIcon="@Icons.Material.Filled.ContentCopy"
+                    Size="Size.Small"
+                    OnClick="@(() => DuplicateTemplateAsync(((CreateTemplateDto)value).Id))">
+            </MudFab>
+        </MudTooltip>
+    </ButtonChildContent>
+</ListItem>

@@ -1,0 +1,31 @@
+﻿@page "/ForbiddenPage"
+@using OES.Blazor.CustomAuthorizationAttribute
+@attribute [DynamicAuthorizeAttribute("ForbiddenPage")]
+
+<div class="forbidden-page">
+    <MudPaper Class="forbidden-card" Elevation="0">
+
+        <MudIcon Icon="@Icons.Material.Filled.Lock" Class="lock-icon" />
+
+        <MudText Typo="Typo.overline" Class="eyebrow">@Resource.Error</MudText>
+        <MudText Typo="Typo.h5" Class="title-text">@Resource.NoAccessToPage</MudText>
+        <MudText Typo="Typo.body2" Class="subtext">
+            @Resource.AccountNotAuthorized
+        </MudText>
+
+    </MudPaper>
+</div>
+
+<style>
+    .forbidden-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+
+    .forbidden-card { width: 100%; max-width: 420px; padding: 44px 36px 40px; text-align: center; border-radius: 20px; background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default); box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.15); }
+
+    .lock-icon { font-size: 34px; color: var(--mud-palette-primary); margin-bottom: 22px; }
+
+    .eyebrow { color: var(--mud-palette-primary) !important; letter-spacing: 0.1em; font-weight: 600 !important; display: block; margin-bottom: 10px; }
+
+    .title-text { color: var(--mud-palette-text-primary) !important; font-weight: 700 !important; line-height: 1.35; margin-bottom: 14px; }
+
+    .subtext { color: var(--mud-palette-text-secondary) !important; line-height: 1.65; }
+</style>

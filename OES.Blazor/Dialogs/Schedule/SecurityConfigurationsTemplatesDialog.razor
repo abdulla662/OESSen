@@ -1,0 +1,32 @@
+﻿@using OES.Helper.Dtos.ScheduleSecurityConfiguration
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Primary" Class="mt-5">
+            @Resource.ChooseASecurityConfigurationsTemplate
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <ListItem T="SecurityConfigurationTemplateDto"
+                  FilterObject="false"
+                  @key="listChangingKey"
+                  Caption="@Resource.SecurityConfigurationTemplate"
+                  CaptionIcon="@Icons.Material.Filled.Security"
+                  EndpointServerice="BlazSecurityConfigurationService.GetAllSecurityConfigurationsTemplatesAsync"
+                  DisplayColumns='[nameof(SecurityConfigurationTemplateDto.Name)]'
+                  SearchPanelVisible="false"
+                  Hide_DescriptionSearch="true"
+                  CRUD_Delete_Btn="true"
+                  DeleteClick_fun="DeleteSecurityConfigurationTemplateAsync">
+            <ButtonChildContent Context="value">
+                <MudTooltip Text="@Resource.SelectTemplate">
+                    <MudFab Color="Color.Primary"
+                            EndIcon="@Icons.Material.Filled.SelectAll"
+                            Size="Size.Small"
+                            Class=@($"label-{nameof(Resource.SelectTemplate)}")
+                            OnClick='() => GetSecurityConfigById(((SecurityConfigurationTemplateDto)value).Id)' />
+                </MudTooltip>
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+</MudDialog>

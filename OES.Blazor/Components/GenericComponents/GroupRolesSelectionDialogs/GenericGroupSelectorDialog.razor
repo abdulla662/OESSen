@@ -1,0 +1,102 @@
+﻿@typeparam TEntity
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Groups" Color="Color.Primary" Size="Size.Large" />
+            <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.GroupManagement</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="4" Class="pa-2">
+            <!-- Selected Items Section -->
+            <MudPaper Elevation="0" Class="pa-4 rounded-lg bg-grey">
+                <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Primary" Size="Size.Small" />
+                        <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="fw-600">
+                            @Resource.selectedItems
+                        </MudText>
+                        @if (_selectedItems?.Any() == true)
+                        {
+                            <MudChip T="string" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled">
+                                @_selectedItems.Count
+                            </MudChip>
+                        }
+                    </MudStack>
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               StartIcon="@Icons.Material.Filled.Checklist"
+                               OnClick="OpenGenericDialog">
+                        @Resource.SelectItems
+                    </MudButton>
+                </MudStack>
+
+                <MudDivider Class="mb-3" />
+
+                @if (_selectedItems?.Any() == true)
+                {
+                    <MudStack Row Wrap="Wrap.Wrap" Spacing="1">
+                        @foreach (var item in _selectedItems)
+                        {
+                            <MudChip T="string"
+                                     Color="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Size="Size.Medium"
+                                     OnClose="@(() => RemoveItem(item))">
+                                @GetItemName(item)
+                            </MudChip>
+                        }
+                    </MudStack>
+                }
+                else
+                {
+                    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="py-4">
+                        <MudIcon Icon="@Icons.Material.Outlined.Inbox" Color="Color.Default" Size="Size.Large" Class="opacity-half" />
+                        <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center">
+                            @Resource.NoItemsSelected
+                        </MudText>
+                    </MudStack>
+                }
+            </MudPaper>
+
+            <!-- Add New Group Section -->
+            @if (!IsOpenedFromAI)
+            {
+                <MudPaper Elevation="0" Class="pa-4 rounded-lg" Style="border: 2px dashed var(--mud-palette-primary);">
+                    <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.GroupAdd" Color="Color.Primary" />
+                            <MudText Typo="Typo.body1" Color="Color.Primary" Class="fw-500">
+                                @Resource.CreateNewGroup
+                            </MudText>
+                        </MudStack>
+                        <MudButton Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        StartIcon="@Icons.Material.Filled.Add"
+                        OnClick="OpenCreateTemplateDialog">
+                            @Resource.AddGroup
+                        </MudButton>
+                    </MudStack>
+                </MudPaper>                    
+            }
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   OnClick="@(() => MudDialog.Close(DialogResult.Ok(_selectedItems)))">
+            @Resource.Save
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Secondary"
+                   StartIcon="@Icons.Material.Filled.Close"
+                   OnClick="@(() => MudDialog.Cancel())">
+            @Resource.Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

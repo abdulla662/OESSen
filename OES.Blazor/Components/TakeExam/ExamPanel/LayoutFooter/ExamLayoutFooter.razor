@@ -1,0 +1,10 @@
+@using SharedHelper.General;
+
+<div class="exam-preview-footer-container">
+    <MudSpacer />
+    <MudPaper Class="@CssClasses" Elevation="0" Square="true">
+        <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="text-center">
+            &copy; @DateTimeHelper.Now.Year @Resource.ExaminationSystem | @Resource.AllRightsReserved
+        </MudText>
+    </MudPaper>
+</div>

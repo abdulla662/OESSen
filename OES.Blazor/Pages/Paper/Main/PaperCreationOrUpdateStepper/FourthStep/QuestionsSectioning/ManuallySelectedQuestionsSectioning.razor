@@ -1,0 +1,487 @@
+﻿@using OES.Helper.Dtos.Paper.Responses
+@using OES.Helper.Dtos.Form
+@using OES.Helper.Enums
+@using OES.Helper.General
+@using MudBlazor;
+
+<style>
+    audio, img, video { max-width: 110px !important; max-height: 100px !important; }
+    figure audio { max-height: 40px !important }
+</style>
+
+<MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" ContentAlignment="HorizontalAlignment.Start" Class="mb-4">
+    <strong>@Resource.ActionRequired </strong> @Resource.EnsureSectionAndQuestionsDistributed
+</MudAlert>
+
+<MudPaper Elevation="2" Class="pa-4 mb-4">
+    <MudStack AlignItems="AlignItems.Center" Spacing="3">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" />
+            <MudText Typo="Typo.h6" Class="font-weight-medium" Color="Color.Primary">
+                @Resource.FormsMetaData
+            </MudText>
+        </MudStack>
+
+        <!-- Form Metadata -->
+        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="2" Class="w-100">
+            <MudStack Row Spacing="4" AlignItems="AlignItems.Center">
+                <MudSelect T="FormMetadataDto"
+                           Value="SelectedFormMetadata"
+                           Label=" "
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           ToStringFunc="@(formMetadata => formMetadata.Name)"
+                           AdornmentIcon="@Icons.Material.Filled.Description"
+                           AnchorOrigin="Origin.BottomCenter"
+                           ValueChanged="MaintainCurrentFormMetadataState"
+                           Disabled="@IsCurrentFormsModeSingleManualForm"
+                           Adornment="Adornment.Start">
+                    @foreach (var formMetadata in _formsMetadata)
+                    {
+                        <MudSelectItem T="FormMetadataDto" Value="@formMetadata" />
+                    }
+                </MudSelect>
+            </MudStack>
+
+            <MudTextField ShrinkLabel @bind-Value="_formName" Immediate Label="@Resource.FormName" Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+            <MudTextField ShrinkLabel @bind-Value="_formCode" Immediate Label="@Resource.FormCode" Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+            <MudTextField ShrinkLabel @bind-Value="_formDescribtion" Immediate Label="@Resource.FormDescription" Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+            <MudTooltip Text="@Resource.SaveFormMetadata">
+                <MudFab Label="@Resource.SaveFormMetadata"
+                        Size="Size.Medium"
+                        StartIcon="@Icons.Material.Filled.SaveAs"
+                        Color="Color.Success"
+                        Class="fab-no-wrap"
+                        OnClick="@OnFormMetadataSavedOnTheFly" />
+            </MudTooltip>
+        </MudStack>
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" />
+            <MudText Typo="Typo.h6" Class="font-weight-medium" Color="Color.Primary">
+                @Resource.QuestionsDistribution
+            </MudText>
+        </MudStack>
+
+        <!-- Distribution Mode Toggle -->
+        <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large">
+            <!-- Drag & Drop Mode -->
+            <MudButton Variant="@(_distributionMode == FormDistributionMode.DragDrop ? Variant.Filled : Variant.Outlined)"
+                       Color="@(_distributionMode == FormDistributionMode.DragDrop ? Color.Primary : Color.Default)"
+                       OnClick="@(() => _distributionMode = FormDistributionMode.DragDrop)"
+                       Class="pa-3"
+                       Style="min-height: 100px; min-width: 140px;">
+                <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@Icons.Material.Filled.DragIndicator" Size="Size.Large" />
+                    <MudText Typo="Typo.body2" Class="font-weight-medium">@Resource.DragAndDrop</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Inherit" Class="text-center" Style="font-size: 0.7rem;">
+                        @Resource.ClassicInterface
+                    </MudText>
+                </MudStack>
+            </MudButton>
+
+            <!-- Multi-Select Mode -->
+            <MudButton Variant="@(_distributionMode == FormDistributionMode.Selection ? Variant.Filled : Variant.Outlined)"
+                       Color="@(_distributionMode == FormDistributionMode.Selection ? Color.Primary : Color.Default)"
+                       OnClick="@(() => _distributionMode = FormDistributionMode.Selection)"
+                       Class="pa-3"
+                       Style="min-height: 100px; min-width: 140px;">
+                <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@Icons.Material.Filled.Checklist" Size="Size.Large" />
+                    <MudText Typo="Typo.body2" Class="font-weight-medium">@Resource.MultiSelect</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Inherit" Class="text-center" Style="font-size: 0.7rem;">
+                        @Resource.BulkOperations
+                    </MudText>
+                </MudStack>
+            </MudButton>
+        </MudButtonGroup>
+
+        <!-- Mode Description -->
+        @if (_distributionMode == FormDistributionMode.DragDrop)
+        {
+            <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true" Icon="@Icons.Material.Filled.Info" Class="ma-0">
+                @Resource.DragQuestionsToSections
+            </MudAlert>
+        }
+        else if (_distributionMode == FormDistributionMode.Selection)
+        {
+            <MudAlert Severity="Severity.Success" Variant="Variant.Text" Dense="true" Icon="@Icons.Material.Filled.CheckCircle" Class="ma-0">
+                @Resource.BulkAssignQuestions
+            </MudAlert>
+        }
+    </MudStack>
+</MudPaper>
+
+<!-- Bulk Actions Toolbar - Only show when questions are selected -->
+@if (_selectedQuestionIdsToBeMovedToSection.Any() && SelectedFormMetadata is not null && _formSections.ContainsKey(SelectedFormMetadata.Name))
+{
+    <MudPaper Elevation="2" Class="bulk-actions-toolbar pa-3 mb-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudText Typo="Typo.subtitle2">
+                @_selectedQuestionIdsToBeMovedToSection.Count @Resource.SelectedQuestions
+            </MudText>
+            <MudStack Row="true" Spacing="2">
+                <MudSelect T="string"
+                           @bind-Value="_bulkTargetSectionIdentifier"
+                           Placeholder="@Resource.ChooseSection"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var newSection in _formSections[SelectedFormMetadata.Name].Where(s => s.SectioningIdentifier != MiscConstants.ManualQuestionsSelectionPool))
+                    {
+                        <MudSelectItem Value="@(newSection.SectioningIdentifier)">@newSection.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           EndIcon="@Icons.Material.Filled.MoveDown"
+                           OnClick="BulkAssignToSection"
+                           Disabled="@string.IsNullOrWhiteSpace(_bulkTargetSectionIdentifier)">
+                    @Resource.AssignSelected
+                </MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           EndIcon="@Icons.Material.Filled.Cancel"
+                           OnClick="ClearSelection">
+                    @Resource.ClearSelection
+                </MudButton>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+}
+
+@if (SelectedFormMetadata is not null)
+{
+    <MudText Class="mt-4">
+        @Resource.YouHaveSelected:
+        <MudChip T="string" Color="Color.Primary">@SelectedFormMetadata.Name</MudChip>
+    </MudText>
+}
+
+<MudDropContainer @ref="_dropContainer"
+                  @key="_dropContainerChangingKey"
+                  T="ManuallySelectedQuestionsResponseDto"
+                  Items="@ManualPaperBoundQuestions"
+                  ItemsSelector="@((item, column) => item.SectioningIdentifier == column)"
+                  ItemDropped="OnQuestionUpdated"
+                  Class="d-flex flex-wrap gap-4">
+    <ChildContent>
+        <div class="d-flex flex-wrap gap-4">
+            @if (SelectedFormMetadata is not null && _formSections.ContainsKey(SelectedFormMetadata.Name))
+            {
+                @foreach (var item in _formSections[SelectedFormMetadata.Name].OrderBy(s => s.OrderId))
+                {
+                    var isStaticSection = item.SectioningIdentifier == MiscConstants.ManualQuestionsSelectionPool;
+
+                    var questionCount = _sectionQuestionCount.GetValueOrDefault(item.SectioningIdentifier);
+
+                    <MudPaper Elevation="3"
+                              Width="500px"
+                              MinHeight="500px"
+                              MaxHeight="700px"
+                              Class="@(isStaticSection ? "static-section-container" : "section-container")">
+
+                        <div class="pa-2 section-header">
+                            @if (item.IsRenaming)
+                            {
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="w-100">
+                                    <MudTextField @bind-Value="item.NewName"
+                                                  Immediate="true"
+                                                  Variant="Variant.Outlined"
+                                                  Margin="Margin.Dense"
+                                                  OnKeyDown="@(e => HandleEnterKeyUponSectionRenaming(e, item))"
+                                                  AutoFocus="true"
+                                                  Class="flex-grow-1 mr-2"
+                                                  Style="margin-bottom: 0 !important;" />
+                                    <MudButtonGroup Variant="Variant.Filled" Size="Size.Small" Style="flex-shrink: 0;">
+                                        <MudButton Color="Color.Primary" EndIcon="@Icons.Material.Filled.CheckCircle" OnClick="(() => SaveSectionNewName(item))">@Resource.Save</MudButton>
+                                        <MudButton Color="Color.Secondary" EndIcon="@Icons.Material.Filled.Cancel" OnClick="(() => CancelSectionRenaming(item))">@Resource.Cancel</MudButton>
+                                    </MudButtonGroup>
+                                </MudStack>
+                            }
+                            else
+                            {
+                                <MudStack Row="true" Class="w-100 align-center justify-space-between">
+                                    <MudStack Row="false" AlignItems="AlignItems.Start" Spacing="1">
+                                        <MudText Typo="Typo.subtitle1" Class="font-weight-bold">
+                                            @(isStaticSection? Resource.ItemBanksPool: item.Name)
+                                        </MudText>
+                                        <MudText Typo="Typo.caption" Class="section-summary">
+                                            @questionCount @Resource.Question@(questionCount == 1 ? "" : Resource.s)
+                                            @if (isStaticSection && _selectedQuestionIdsToBeMovedToSection.Any())
+                                            {
+                                                <text> • @_selectedQuestionIdsToBeMovedToSection.Count @Resource.Selected</text>
+                                            }
+                                        </MudText>
+                                    </MudStack>
+
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Style="flex-shrink: 0;">
+                                        @if (isStaticSection)
+                                        {
+                                            <!-- Select All/None toggle for pool -->
+                                            @if (_distributionMode == FormDistributionMode.Selection)
+                                            {
+                                                var poolQuestions = AvailableQuestionsInPool;
+                                                var allPoolSelected = poolQuestions.All(q => _selectedQuestionIdsToBeMovedToSection.Contains(q.Id));
+
+                                                <MudButton Size="Size.Small"
+                                                           Variant="Variant.Text"
+                                                           Color="Color.Primary"
+                                                           OnClick="@(() => ToggleSelectAllInPool(poolQuestions, allPoolSelected))">
+                                                    @(allPoolSelected? Resource.DeselectAll: Resource.SelectAll)
+                                                </MudButton>
+                                            }
+                                            <MudTooltip Text="@Resource.TransferAllToFirstSection">
+                                                <MudFab Label="@Resource.TransferAll"
+                                                        Size="Size.Small"
+                                                        EndIcon="@Icons.Material.Filled.DoubleArrow"
+                                                        Color="Color.Secondary"
+                                                        Disabled="@(_formSections.ContainsKey(SelectedFormMetadata.Name) && (AvailableQuestionsInPool.Count == 0 || _formSections[SelectedFormMetadata.Name].Count(s => s.SectioningIdentifier != MiscConstants.ManualQuestionsSelectionPool) > 1))"
+                                                        OnClick="@TransferAllQuestionsToFirstSection" />
+                                            </MudTooltip>
+                                        }
+
+                                        @if (!isStaticSection)
+                                        {
+                                            <!-- Quick actions for sections -->
+                                            @if (_distributionMode == FormDistributionMode.Selection && _selectedQuestionIdsToBeMovedToSection.Any())
+                                            {
+                                                <MudButton Size="Size.Small"
+                                                           Variant="Variant.Filled"
+                                                           Color="Color.Primary"
+                                                           EndIcon="@Icons.Material.Filled.CheckCircle"
+                                                           OnClick="@(() => AssignSelectedQuestionsToSection(item.SectioningIdentifier))">
+                                                    @Resource.AddSelected
+                                                </MudButton>
+                                            }
+                                            <MudMenu Icon="@Icons.Material.Rounded.MoreHoriz"
+                                                     AnchorOrigin="Origin.BottomRight"
+                                                     TransformOrigin="Origin.TopRight">
+                                                <MudMenuItem OnClick="(() => StartSectionRenaming(item))">
+                                                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                        <MudIcon Icon="@Icons.Material.Rounded.Edit" Class="mr-2" />
+                                                        @Resource.Rename
+                                                    </MudStack>
+                                                </MudMenuItem>
+                                                <MudMenuItem OnClick="(async () => await DeleteSection(item))">
+                                                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                        <MudIcon Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="mr-2" />
+                                                        @Resource.Delete
+                                                    </MudStack>
+                                                </MudMenuItem>
+                                                <MudMenuItem OnClick="(() => OpenSectionPropertiesDialogAsync(item))">
+                                                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Settings" Class="mr-2" />
+                                                        @Resource.Properties
+                                                    </MudStack>
+                                                </MudMenuItem>
+                                                <MudMenuItem OnClick="(() => OpenSectionTemplateDialogAsync(item))">
+                                                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                                                        @Resource.InstructionsTemplate
+                                                    </MudStack>
+                                                </MudMenuItem>
+                                                @if (questionCount > 0)
+                                                {
+                                                    <MudMenuItem OnClick="@(() => ReturnAllQuestionsFromSectionToPool(item.SectioningIdentifier))">
+                                                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                            <MudIcon Icon="@Icons.Material.Filled.KeyboardReturn" Class="mr-2" />
+                                                            @Resource.ReturnAllToPool
+                                                        </MudStack>
+                                                    </MudMenuItem>
+                                                }
+                                            </MudMenu>
+                                        }
+                                    </MudStack>
+                                </MudStack>
+                            }
+                        </div>
+
+                        @if (isStaticSection)
+                        {
+                            <div class="px-4 pt-4">
+                                <MudTextField @bind-Value="_manualQuestionsSearchQuery"
+                                              Placeholder="@Resource.SearchByQuestionBody"
+                                              Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.Search"
+                                              IconSize="Size.Small"
+                                              Variant="Variant.Outlined"
+                                              Margin="Margin.Dense"
+                                              Clearable="true"
+                                              Immediate="true"
+                                              Class="mb-3" />
+                            </div>
+                            <div class="px-4 pb-4 flex-grow-1 overflow-auto d-flex flex-column">
+                                <MudExpansionPanels MultiExpansion="true" Elevation="2" Class="manual-questions-expansion-container">
+                                    @foreach (var itemBankName in GetFilteredItemBanksByQuestionBody())
+                                    {
+                                        var itemBankCount = GetFilteredQuestionsForItemBank(itemBankName).Count();
+
+                                        <MudExpansionPanel Class="manual-questions-expansion-panel" Expanded="@_expandedItemBankNames.Contains(itemBankName)" ExpandedChanged="@((bool expanded) => { if (expanded) _expandedItemBankNames.Add(itemBankName); else _expandedItemBankNames.Remove(itemBankName); })">
+                                            <TitleContent>
+                                                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="w-100">
+                                                    <MudText>@itemBankName (@itemBankCount @Resource.Question@(itemBankCount == 1 ? "" : Resource.s))</MudText>
+                                                    @if (_distributionMode == FormDistributionMode.Selection)
+                                                    {
+                                                        var itemBankQuestions = GetFilteredQuestionsForItemBank(itemBankName).ToList();
+                                                        var allBankSelected = itemBankQuestions.Any() && itemBankQuestions.All(q => _selectedQuestionIdsToBeMovedToSection.Contains(q.Id));
+
+                                                        <MudButton Size="Size.Small"
+                                                                   Variant="Variant.Text"
+                                                                   Color="Color.Primary"
+                                                                   @onclick="() => ToggleSelectAllInItemBank(itemBankQuestions, allBankSelected)">
+                                                            @(allBankSelected? Resource.DeselectAll: Resource.SelectAll)
+                                                        </MudButton>
+                                                    }
+                                                </MudStack>
+                                            </TitleContent>
+                                            <ChildContent>
+                                                <MudDropZone T="ManuallySelectedQuestionsResponseDto"
+                                                             Identifier="@item.SectioningIdentifier"
+                                                             ItemsSelector="@(q => q.SectioningIdentifier == item.SectioningIdentifier && q.ItemBankName == itemBankName && QuestionMatchesSearch(q))"
+                                                             Class="drop-zone static-drop-zone" />
+                                            </ChildContent>
+                                        </MudExpansionPanel>
+                                    }
+                                </MudExpansionPanels>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="px-4 pt-4">
+                                <MudTextField Value="@(_sectionSearchQueries.GetValueOrDefault(item.SectioningIdentifier, string.Empty))"
+                                              ValueChanged="@((string v) => _sectionSearchQueries[item.SectioningIdentifier] = v ?? string.Empty)"
+                                              Placeholder="@Resource.Search"
+                                              Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.Search"
+                                              IconSize="Size.Small"
+                                              Variant="Variant.Outlined"
+                                              Margin="Margin.Dense"
+                                              Clearable="true"
+                                              Immediate="true"
+                                              Class="mb-3" />
+                            </div>
+                            <div class="px-4 pb-4 flex-grow-1 overflow-auto d-flex flex-column">
+                                <MudDropZone T="ManuallySelectedQuestionsResponseDto"
+                                             Identifier="@item.SectioningIdentifier"
+                                             AllowReorder="true"
+                                             ItemsSelector="@(q => FilterSectionQuestions(q, item.SectioningIdentifier))"
+                                             Class="drop-zone section-drop-zone flex-grow-1" />
+                            </div>
+                        }
+                    </MudPaper>
+                }
+            }
+
+            <MudPaper Elevation="0" Width="300px" Class="d-flex align-center justify-center pa-4">
+                @if (_addSectionFormOpened)
+                {
+                    <EditForm Model="@_newSectionModel" OnValidSubmit="OnValidSectionSubmit" Class="w-100">
+                        <DataAnnotationsValidator />
+                        <MudStack>
+                            <MudTextField @bind-Value="_newSectionModel.Name"
+                                          For="@(() => _newSectionModel.Name)"
+                                          HelperTextOnFocus="true"
+                                          HelperText=@Resource.NewSectionName
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense" />
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       EndIcon="@Icons.Material.Filled.CheckCircle">
+                                @Resource.Add
+                            </MudButton>
+                            <MudButton ButtonType="ButtonType.Reset"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Secondary"
+                                       EndIcon="@Icons.Material.Filled.Cancel"
+                                       OnClick="CloseAddNewSectionForm">
+                                @Resource.Cancel
+                            </MudButton>
+                        </MudStack>
+                    </EditForm>
+                }
+                else
+                {
+                    <MudButton OnClick="OpenAddNewSectionForm"
+                               Variant="Variant.Outlined"
+                               EndIcon="@Icons.Material.Filled.CheckCircle"
+                               Color="Color.Primary"
+                               FullWidth="true"
+                               Class="py-2">
+                        @Resource.AddNewSection
+                    </MudButton>
+                }
+            </MudPaper>
+        </div>
+    </ChildContent>
+
+    <ItemRenderer>
+        <MudPaper Elevation="3" Class="question-card pa-3 rounded-lg my-2 d-flex align-center">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Wrap="Wrap.NoWrap" Spacing="3" Class="w-100">
+                <!-- Selection checkbox - only show in selection mode -->
+                @if (_distributionMode == FormDistributionMode.Selection && context.SectioningIdentifier == MiscConstants.ManualQuestionsSelectionPool)
+                {
+                    <MudCheckBox T="bool"
+                                 Value="@GetQuestionSelectionState(context.Id)"
+                                 ValueChanged="@((bool isChecked) => ToggleQuestionSelection(context.Id, isChecked))"
+                                 Color="Color.Primary"
+                                 Size="Size.Small"
+                                 Class="selection-checkbox" />
+                }
+
+                <MudIcon Icon="@Icons.Material.Filled.Quiz" />
+
+                <div class="flex-grow-1 question-body-context" style="overflow: hidden;">
+                    <MudText Typo="Typo.body2" Class="@($"question-text {(_expandedQuestionIds.Contains(context.Id) ? "expanded" : "collapsed")}")">
+                        @((MarkupString)context.Body)
+                    </MudText>
+                    @if (!string.IsNullOrWhiteSpace(context.Body) && HtmlTagsCleaner.Clean(context.Body).Length > MiscConstants.QuestionBodyExpandingThreshold)
+                    {
+                        <span class="read-more-btn"
+                              @onclick="() => ToggleQuestionBodyExpand(context.Id)"
+                              @onclick:stopPropagation="true"
+                              @onmousedown:stopPropagation="true"
+                              @onpointerdown:stopPropagation="true">
+                            @(_expandedQuestionIds.Contains(context.Id) ? Resource.ReadLess : Resource.ReadMore)
+                        </span>
+                    }
+                </div>
+
+                <MudStack Row="false"
+                          AlignItems="AlignItems.End"
+                          Justify="Justify.Center"
+                          Spacing="1"
+                          Style="min-width: 120px; max-width: 180px; flex-shrink: 0;">
+
+                    @if (context.SectioningIdentifier != MiscConstants.ManualQuestionsSelectionPool)
+                    {
+                        <MudTooltip Text="@Resource.ReturnBackToPool">
+                            <MudFab Size="Size.Small"
+                                    EndIcon="@Icons.Material.Filled.KeyboardReturn"
+                                    Color="Color.Primary"
+                                    OnClick="@(() => ReturnSectionedQuestionBackToPool(context))" />
+                        </MudTooltip>
+                    }
+
+                    <MudChip T="string"
+                             Color="Color.Primary"
+                             Size="Size.Small"
+                             Text="@context.Code"
+                             Label="true" 
+                             data-no-convert />
+
+                    <MudChip T="string"
+                             Color="Color.Secondary"
+                             Size="Size.Small"
+                             Text="@context.ItemBankName"
+                             Label="true"
+                             Style="height: auto; white-space: normal; word-break: break-word; text-align: center; max-width: 100%;" />
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    </ItemRenderer>
+</MudDropContainer>

@@ -1,0 +1,27 @@
+﻿@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.FourthStep.BlockDistribution
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.FourthStep.QuestionsSectioning
+@using OES.Helper.Enums
+@using SharedHelper.Enums
+
+@if (PaperMetadataResultedParamsDto.SelectedPaperType == PaperType.Standard)
+{
+    @if (PaperMetadataResultedParamsDto.SelectedQuestionSelectionType == QuestionSelectionType.Manual)
+    {
+        <ManuallySelectedQuestionsSectioning @ref="ManuallySelectedQuestionsSectioningComponentRef" PaperMetadataResultedParamsDto=@PaperMetadataResultedParamsDto />
+    }
+    else if (PaperMetadataResultedParamsDto.SelectedQuestionSelectionType == QuestionSelectionType.Auto)
+    {
+        <AutoSelectedQuestionsSectioning @ref="AutoSelectedQuestionsSectioningComponentRef" PaperMetadataResultedParamsDto=@PaperMetadataResultedParamsDto />
+    }
+}
+else if (PaperMetadataResultedParamsDto.SelectedPaperType == PaperType.Adaptive)
+{
+    if (PaperMetadataResultedParamsDto.AdaptiveSubtype == AdaptivePaperSubtype.MST)
+    {
+        <MSTBlockDistributionDropZone @ref="MSTBlocksDistributionDropZoneComponentRef" PaperMetadataResultedParamsDto="@PaperMetadataResultedParamsDto" />
+    }
+    else if (PaperMetadataResultedParamsDto.AdaptiveSubtype == AdaptivePaperSubtype.STEP)
+    {
+        <STEPBlockDistributionDropZone @ref="STEPBlocksDistributionDropZoneComponentRef" PaperMetadataResultedParamsDto="@PaperMetadataResultedParamsDto" />
+    }
+}

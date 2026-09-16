@@ -1,0 +1,69 @@
+
+<div class="d-flex justify-content-center">
+    <MudFab Label="@Resource.ShowVersions"
+            EndIcon="@Icons.Material.Filled.History"
+            Size="Size.Medium"
+            Color="Color.Secondary"
+            Class="m-5"
+            OnClick="ToggleVersions" />
+</div>
+
+@if (_showVersions)
+{
+    @if (_isLoading)
+    {
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }
+    else if (_versions.Count == 0)
+    {
+        <div class="d-flex justify-content-center">
+            <MudAlert Severity="Severity.Info">
+                @Resource.NoVersionsFound
+            </MudAlert>
+        </div>
+    }
+    else
+    {
+        <MudPaper Class="pa-3 mt-2" Elevation="1">
+            <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                <MudIcon Icon="@Icons.Material.Filled.History" Size="Size.Small" Class="mr-1" />
+                @Resource.QuestionVersions
+            </MudText>
+
+            @foreach (var group in _versions.GroupBy(v => new { v.VersionNumber, v.LanguageName }))
+            {
+                <MudExpansionPanels Class="mb-2">
+                    <MudExpansionPanel>
+                        <TitleContent>
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudChip T="string" Color="Color.Primary" Size="Size.Small">
+                                    V@(group.Key.VersionNumber)
+                                </MudChip>
+                                <MudText Typo="Typo.body2">
+                                    <strong>@group.Key.LanguageName</strong>
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                    — @group.First().CreationDate.ToShortDateString()
+                                </MudText>
+                            </MudStack>
+                        </TitleContent>
+                        <ChildContent>
+                            @foreach (var version in group)
+                            {
+                                <QuestionVersionEntry Version="version" IsSub="false" />
+
+                                @if (version.SegmentQuestionPropertiesVersionDto != null && version.SubQuestions?.Count > 0)
+                                {
+                                    @foreach (var (subVersion, idx) in version.SubQuestions.OrderBy(s => s.SegmentQuestionPropertiesVersionDto?.OrderNumber ?? 0).Select((s, i) => (s, i + 1)))
+                                    {
+                                        <QuestionVersionEntry Version="subVersion" IsSub="true" />
+                                    }
+                                }
+                            }
+                        </ChildContent>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+            }
+        </MudPaper>
+    }
+}

@@ -1,0 +1,98 @@
+﻿@page "/CreateOrUpdatePaper"
+
+@attribute [DynamicAuthorizeAttribute("PaperStepper")]
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.FifthStep
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.FirstStep
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.FourthStep
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.SecondStep
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.SixthStep
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.ThirdStep
+@using OES.Helper.Enums
+
+<PageTitle>@(_stepperCurrentOperationalMode == StepperOperationalMode.InsertionMode ? Resource.Create : Resource.Update) @Resource.Paper</PageTitle>
+
+<MudItem Class="mx-auto mt-5 shadow-lg p-4 w-80 justify-content-center">
+    <MudBreakpointProvider OnBreakpointChanged="OnBreakpointChanged" />
+    <MudStepperExtended @ref="_stepper"
+                        Class="stepper-header"
+                        ContentStyle="min-height: 240px"
+                        PreventStepChangeAsync="CheckChangeAsync"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Loading="@_loading"
+                        Linear=@_linear
+                        LocalizedStrings="GetLocalizedStrings()"
+                        @bind-ShowPreviousButton="_showPreviousButton"
+                        @bind-ShowNextButton="_showNextButton"
+                        HeaderTextView="@_view">
+        <ChildContent>
+
+            @*Step-One Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Start" Title="@Resource.PaperMetadata" Order="0">
+                <ChildContent>
+                    <PaperMetadata @ref="PaperMetadataFirstStepComponent" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Two Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.SelectAll" Title="@Resource.ItemBanksBlocksSelection" Order="1">
+                <ChildContent>
+                    <ItemBanksOrBlocksSelectionContainer @ref="ItemBanksOrBlocksSelectionSecondStepComponent"
+                                                         @key="_secondStepChangingKey"
+                                                         PaperMetadataResultedParamsDto="PaperMetadataResultedParamsDto" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Three Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Language" Title="@Resource.QuestionsSelection" Order="2">
+                <ChildContent>
+                    <QuestionsSelectionContainer @ref="QuestionsSelectionContainerThirdStepComponent"
+                                                 @key="_thirdStepChangingKey"
+                                                 PaperMetadataResultedParamsDto="PaperMetadataResultedParamsDto" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Four Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Apps" Title="@Resource.QuestionsBlocksSectioning" Order="3">
+                <ChildContent>
+                    <QuestionsOrBlocksSectioningContainer @ref="QuestionsOrBlocksSectioningFourthStepComponent"
+                                                          @key="_fourthStepChangingKey"
+                                                          PaperMetadataResultedParamsDto="PaperMetadataResultedParamsDto" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Five Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Spellcheck" Title="@Resource.MarkingScheme" Order="4">
+                <ChildContent>
+                    <MarkingScheme @ref="MarkingSchemeFifthStepComponent"
+                                   @key="_fifthStepChangingKey"
+                                   PaperMetadataResultedParamsDto="PaperMetadataResultedParamsDto" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Six Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Summarize" Title="@Resource.PaperSummary" Order="5">
+                <ChildContent>
+                    <PaperSummary @key="_sixthStepChangingKey"
+                                  PaperMetadataResultedParamsDto="PaperMetadataResultedParamsDto" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @if (_addResultStep)
+            {
+                <MudStepExtended Icon="@Icons.Material.Filled.Alarm" Title="@Resource.ResultStep" IsResultStep="true" Order="6">
+                    <ChildContent>
+                        <div class="d-flex flex-column align-center justify-center">
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Style="font-size: 8rem;" Color="Color.Success" />
+                            <MudText Class="my-5">@Resource.YourPaperHasBeen @(_stepperCurrentOperationalMode == StepperOperationalMode.InsertionMode ? Resource.Created : Resource.Updated) @Resource.Successfully</MudText>
+                            <MudButton Href="/UserPapers" Color="Color.Primary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.ArrowBack">@Resource.BackToPapersList</MudButton>
+                        </div>
+                    </ChildContent>
+                </MudStepExtended>
+            }
+
+        </ChildContent>
+    </MudStepperExtended>
+</MudItem>

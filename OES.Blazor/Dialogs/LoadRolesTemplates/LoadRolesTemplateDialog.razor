@@ -1,0 +1,37 @@
+﻿@using OES.Helper.Dtos.CreateTemplate
+@using OES.Helper.ResourceFiles
+@using MudBlazor
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5"
+                 Color="Color.Primary"
+                 Class="mt-5">
+            @Resource.AvailableTemplates
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <ListItem T="CreateTemplateDto"
+                  @key="ListRefreshKey"
+                  FilterObject="false"
+                  Caption="@Resource.AvailableTemplates"
+                  EndpointServerice="@(pagination => TemplateService.GetAllRolesAndTemplate(pagination, true, ResourceType))"
+                  DisplayColumns='[nameof(CreateTemplateDto.Name)]'
+                  SearchPanelVisible="false"
+                  Hide_DescriptionSearch="true"
+                  CRUD_Delete_Btn="true"
+                  DeleteClick_fun="DeleteTemplateAsync">
+
+            <ButtonChildContent Context="value">
+                <MudTooltip Text="@Resource.SelectTemplate">
+                    <MudFab Class="me-2 ms-2"
+                            Color="Color.Secondary"
+                            StartIcon="@Icons.Material.Filled.SelectAll"
+                            Size="Size.Small"
+                            OnClick='() => SelectTemplate((CreateTemplateDto)value)' />
+                </MudTooltip>
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+</MudDialog>

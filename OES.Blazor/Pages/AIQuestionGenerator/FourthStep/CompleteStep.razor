@@ -1,0 +1,24 @@
+@using OES.Helper.ResourceFiles
+
+<MudPaper Elevation="0" Class="pa-8 d-flex flex-column align-center justify-center" Style="min-height: 350px;">
+    <MudPaper Elevation="0"
+              Class="pa-5 rounded-circle d-flex align-center justify-center mb-4"
+              Style="background: linear-gradient(135deg, var(--mud-palette-success-lighten) 0%, var(--mud-palette-success) 100%); width: 120px; height: 120px;">
+        <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                 Style="font-size: 70px; color: white;" />
+    </MudPaper>
+
+    <MudText Typo="Typo.h4" Class="mt-2 mb-2" Color="Color.Success" Style="font-weight: 600;">
+        @Resource.QuestionsAddedSuccessfully
+    </MudText>
+
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               Size="Size.Large"
+               StartIcon="@Icons.Material.Filled.ListAlt"
+               Href="/Questions"
+               Class="mt-6"
+               Style="border-radius: 8px; min-width: 200px;">
+        @Resource.GoToQuestions
+    </MudButton>
+</MudPaper>

@@ -1,0 +1,17 @@
+.q3-table[b-77qq4rcguh] {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width:800px) {
+    .q3-table .mud-table-root table[b-77qq4rcguh] {
+        min-width: 700px;
+    }
+
+    .q3-table td[data-label="Body"][b-77qq4rcguh] {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

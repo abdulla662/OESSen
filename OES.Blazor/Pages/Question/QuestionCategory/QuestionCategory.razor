@@ -1,0 +1,61 @@
+﻿@page "/QuestionCategory"
+
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Blazor.Dialogs.Question.QuestionCategory
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("QuestionCategory")]
+
+<PageTitle>@Resource.QuestionCategory</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.Category" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.QuestionCategory</MudText>
+        </MudStack>
+
+        <ListItem T="QuestionCategoryDto"
+                  Caption="@Resource.QuestionCategory"
+                  CaptionIcon="@Icons.Material.Rounded.Category"
+                  @key="KeyCategory"
+                  EndpointServerice="BlazQuestionCategoryService.GetAllCategories"
+                  DisplayColumns='["Name"]'
+                  AddNew_URL="/AddCategory"
+                  AddNew_URL_OesRolesList="[OesTemplateRoleConstants.QuestionCategoryCreator]"
+                  HideCodeSearch="true"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <ButtonChildContent Context="value">
+                @if (value is QuestionCategoryDto category)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    OnClick="() => ViewCategoryDetailsAsync(category.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    OnClick="() => NavigateToEditAsync(category.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    StartIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    OnClick="() => DeleteCategoryAsync(category.Id)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

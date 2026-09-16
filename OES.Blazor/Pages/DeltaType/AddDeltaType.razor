@@ -1,0 +1,41 @@
+﻿@page "/AddDeltaType"
+
+@attribute [DynamicAuthorizeAttribute("AddDeltaType")]
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+<PageTitle>@Resource.CreateDeltaType</PageTitle>
+
+<EditForm Model="@model">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-80 p-4 shadow-lg justify-content-center">
+        <MudCardContent>
+            <div class="d-flex justify-content-center align-items-center mb-6">
+                <MudIcon Icon="@Icons.Material.Filled.TableView" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h5" Style="line-height: 1;">
+                    @Resource.CreateDeltaType
+                </MudText>
+            </div>
+
+            <div class="form-group">
+                <MudTextField Label="@Resource.Name"
+                              Required="true"
+                              Immediate="true"
+                              @bind-Value="model.Name"
+                              For="@(() => model.Name)"
+                              Class="mb-3"
+                              Variant="Variant.Outlined" />
+            </div>
+
+            <MudCardActions Class="justify-content-center w-100">
+                <GeneralLoadingButton Disabled="@(string.IsNullOrWhiteSpace(model.Name))"
+                                      Class="w-100 m-3"
+                                      OnClick="OnValidSubmitAsync"
+                                      ButtonText="@Resource.Save"
+                                      Type="ButtonType.Submit"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle" />
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="w-100 m-3" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+            </MudCardActions>
+        </MudCardContent>
+    </MudCard>
+</EditForm>

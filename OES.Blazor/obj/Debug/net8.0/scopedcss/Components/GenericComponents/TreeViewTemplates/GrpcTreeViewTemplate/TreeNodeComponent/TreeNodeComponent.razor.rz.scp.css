@@ -1,0 +1,89 @@
+.tree-node[b-6r7yagxq86] {
+    cursor: pointer;
+    margin: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-left: 1px solid var(--mud-palette-secondary);
+    position: relative; /* Ensure positioning context for relative children */
+    padding: 0.5rem;
+    border: 1px solid var(--mud-palette-divider);
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    background-color: var(--mud-palette-surface);
+    color: var(--mud-palette-info);
+}
+
+    .tree-node .body-container[b-6r7yagxq86] {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .tree-node .justify-self-start[b-6r7yagxq86] {
+        justify-self: start;
+    }
+
+    .tree-node .justify-self-end[b-6r7yagxq86] {
+        justify-self: end;
+    }
+
+    .tree-node:hover[b-6r7yagxq86] {
+        background-color: var(--mud-palette-tertiary);
+        color: var(--mud-palette-primary-text);
+    }
+
+.gear-icon[b-6r7yagxq86] {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin-right: 0;
+    color: var(--mud-palette-primary-text);
+}
+
+    .gear-icon.expanded[b-6r7yagxq86] {
+        margin-right: 5px;
+        color: var(--mud-palette-primary-text); /* Highlight when expanded */
+    }
+
+    .gear-icon.rotate[b-6r7yagxq86] {
+        transition: transform 0.3s ease;
+    }
+
+    .gear-icon.expanded.rotate[b-6r7yagxq86] {
+        transform: rotate(90deg);
+    }
+
+.menu-container[b-6r7yagxq86] {
+    display: flex;
+    align-items: center;
+    position: relative;
+    right: 5px;
+    top: 50%;
+    gap: 0.5rem;
+}
+
+.menu[b-6r7yagxq86] {
+    display: none;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+    .menu.show[b-6r7yagxq86] {
+        display: inline-flex;
+        opacity: 1;
+    }
+
+    .menu .mud-icon-button[b-6r7yagxq86] {
+        transition: transform 0.2s;
+        color: var(--mud-palette-primary-text);
+    }
+
+.expanded[b-6r7yagxq86] {
+    color: var(--mud-palette-info);
+}
+
+.collapsed[b-6r7yagxq86] {
+    color: var(--mud-palette-info);
+}

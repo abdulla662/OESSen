@@ -1,0 +1,13 @@
+﻿@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.SecondStep.BlocksSelection
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.SecondStep.ItemBanksSelection
+@using OES.Helper.Enums
+@using SharedHelper.Enums
+
+@if(PaperMetadataResultedParamsDto.SelectedPaperType == PaperType.Standard)
+{
+    <ItemBanksList @ref="ItemBanksSelectionComponentRef" PaperMetadataResultedParamsDto="PaperMetadataResultedParamsDto" />
+}
+else if (PaperMetadataResultedParamsDto.SelectedPaperType == PaperType.Adaptive)
+{
+    <BlocksSelection @ref="BlocksSelectionComponentRef" PaperMetadataResultedParamsDto="PaperMetadataResultedParamsDto" />
+}

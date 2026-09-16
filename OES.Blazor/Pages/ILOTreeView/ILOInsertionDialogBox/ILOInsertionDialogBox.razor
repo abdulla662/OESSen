@@ -1,0 +1,64 @@
+@using Microsoft.AspNetCore.Authorization
+@using OES.Helper.General
+
+<MudDialog Class="justify-content-center shadow-lg">
+    <TitleContent>
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <MudText Typo="Typo.h6"
+                     Class="w-100"
+                     Align="@(RightToLeft ? Align.Right : Align.Left)">
+                @Resource.AddNewILO
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.GroupAdd"
+                           Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           Size="Size.Medium"
+                           OnClick="OpenGroupDialog" />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField T="string"
+                      Label="@Resource.Name"
+                      @bind-Value="ILOInsertionDialogParams.Name"
+                      AutoFocus="true"
+                      Clearable="true"
+                      Variant="Variant.Outlined"
+                      Class="mt-4"
+                      Immediate="true" />
+
+        <MudTextField T="string"
+                      Label="@Resource.Code"
+                      Value="@ILOInsertionDialogParams.Code"
+                      ValueChanged="@((string val) => ILOInsertionDialogParams.Code = ListHelpers.SanitizeCode(val))"
+                      AutoFocus="true"
+                      Clearable="true"
+                      Variant="Variant.Outlined"
+                      Class="mt-4"
+                      Immediate="true" />
+
+        <MudTextField T="string"
+                      Label="@Resource.Description"
+                      @bind-Value="ILOInsertionDialogParams.Description"
+                      AutoFocus="true"
+                      Clearable="true"
+                      Variant="Variant.Outlined"
+                      Class="mt-4"
+                      Immediate="true" />
+
+        <MudSwitch Label="@Resource.Active"
+                   @bind-Value="ILOInsertionDialogParams.IsActive"
+                   Class="mt-4"
+                   Color="Color.Inherit" />
+    </DialogContent>
+    <DialogActions>
+        <div class="d-flex justify-content-center align-content-center gap-2 w-100 p-3">
+            <MudButton OnClick="Cancel" Variant="Variant.Filled" Color="Color.Secondary" Class="flex-fill">@Resource.Cancel</MudButton>
+            <GeneralLoadingButton Disabled="IsSubmitButtonDisabled"
+                                  Class="flex-fill"
+                                  OnClick="Submit"
+                                  ButtonText="@Resource.Add"
+                                  EndIcon="@Icons.Material.Filled.CheckCircle"
+                                  Type="ButtonType.Submit" />
+        </div>
+    </DialogActions>
+</MudDialog>

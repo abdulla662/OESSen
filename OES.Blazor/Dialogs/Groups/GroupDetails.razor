@@ -1,0 +1,74 @@
+﻿
+<MudDialog Class="pa-5" dir="@(RightToLeft ? "rtl" : "ltr")">
+    <TitleContent>
+        <div class="d-flex align-center justify-center mt-5">
+            <div class="d-flex align-center justify-center align-self-center pa-3 w-75"
+                 style="border-radius: 8px;"
+                 dir="@(RightToLeft ? "rtl" : "ltr")">
+                <MudIcon Icon="@Icons.Material.Outlined.Groups"
+                         Class="me-2"
+                         Color="Color.Primary"
+                         Size="Size.Large"
+                         Style="vertical-align: middle;" />
+                <MudText Typo="Typo.h4"
+                         Color="Color.Primary"
+                         Class="font-weight-bold"
+                         Style="line-height: 1;">
+                    @Resource.GroupDetails
+                </MudText>
+            </div>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Spacing="4" Class="animate__animated animate__fadeIn py-3">
+            <MudItem xs="12">
+                <MudPaper Class="pa-4" Elevation="2">
+                    <MudText Typo="Typo.subtitle1"
+                             Color="Color.Primary"
+                             Class="mb-3 font-weight-bold">
+                        <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                        @Resource.BasicInformation
+                    </MudText>
+                    <MudGrid Spacing="3">
+                        <MudItem xs="12">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Secondary" />
+                                <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                    <strong>@Resource.Name:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @Model.Name
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Secondary" />
+                                <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                    <strong>@Resource.Description:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @Model.Description
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudStack Row AlignItems="AlignItems.Start" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Badge" Color="Color.Secondary" />
+                                <div>
+                                    <MudText Color="Color.Primary" Typo="Typo.subtitle2" Class="mb-2">
+                                        <strong>@Resource.Roles:</strong>
+                                    </MudText>
+                                    @foreach (var role in Model.RoleDtos)
+                                    {
+                                        <MudChip T="string" Color="Color.Secondary">@role.Name</MudChip>
+                                    }
+                                </div>
+                            </MudStack>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+</MudDialog>

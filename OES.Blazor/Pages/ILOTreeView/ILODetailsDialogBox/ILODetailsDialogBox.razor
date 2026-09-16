@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using OES.Helper.Dtos.OESUserGroups
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex justify-content-center align-items-center mb-3 mt-4">
+            <MudIcon Icon="@Icons.Material.Outlined.Quiz" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">
+                @Resource.ILODetails
+            </MudText>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudItem xs="12" Class="mb-4">
+            <MudField Label="@Resource.Name" Variant="Variant.Outlined">@ILODetailsObject.Text</MudField>
+        </MudItem>
+
+        <MudItem xs="12" Class="mb-4">
+            <MudField Label="@Resource.Code" Variant="Variant.Outlined">@ILODetailsObject.Code</MudField>
+        </MudItem>
+
+        <MudItem xs="12" Class="mb-4">
+            <MudField Label="@Resource.Description" Variant="Variant.Outlined">@ILODetailsObject.Description</MudField>
+        </MudItem>
+
+        <MudItem>
+            <MudList T="GetOESGroupDto" ReadOnly>
+                <MudListItem>
+                    <MudItem class="d-flex align-center gap-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Groups" />
+                        <MudText Typo="Typo.subtitle2" Class="mud-secondary-text">
+                            @Resource.Groups
+                        </MudText>
+                    </MudItem>
+                </MudListItem>
+                @{
+                    var intersectedGroups = GetCurrentItemBankNodeGroups();
+
+                    if (intersectedGroups.Any())
+                    {
+                        @foreach (var group in intersectedGroups)
+                        {
+                            <MudChip T="string" Text="@group.Name" />
+                        }
+                    }
+                    else
+                    {
+                        <MudListItem Text='@Resource.NoGroupsAssignedForThisNode' />
+                    }
+                }
+            </MudList>
+        </MudItem>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close" Variant="Variant.Filled" Color="Color.Secondary" Class="flex-fill" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

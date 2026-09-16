@@ -1,0 +1,54 @@
+﻿@page "/QualityCheckCommittees"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.Components.Common;
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper
+@using OES.Helper.Dtos.QualityCheckCommittee;
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("QualityCheckCommittees")]
+
+<PageTitle>@Resource.QuestionsQualityCheckCommittees</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-6">
+            <MudIcon Icon="@Icons.Material.Rounded.Checklist" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Align="Align.Center" Class="my-5">@Resource.QuestionsQualityCheckCommittees</MudText>
+        </MudStack>
+
+        <ListItem T="QualityCheckCommitteeDto"
+                  EndpointServerice="BlazQualityCheckCommitteeService.GetAllCommitteesPaginatedAsync"
+                  Caption="@Resource.QuestionsQualityCheckCommittee"
+                  ListTitle="@Resource.QuestionsQualityCheckCommittees"
+                  DisplayColumns='[nameof(QualityCheckCommitteeDto.Name)]'
+                  AddNew_URL="/AddQualityCheckCommittee"
+                  AddNew_URL_OesRolesList="[OesTemplateRoleConstants.QualityCheckCommitteeCreator]"
+                  HideCodeSearch="true"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <ButtonChildContent Context="value">
+                @if (value is QualityCheckCommitteeDto committee)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    OnClick="() => ViewCommittee(committee.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    OnClick="() => NavigateToEditAsync(committee.Id)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

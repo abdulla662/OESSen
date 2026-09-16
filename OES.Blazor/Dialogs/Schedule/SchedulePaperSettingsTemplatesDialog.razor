@@ -1,0 +1,32 @@
+﻿@using OES.Helper.Dtos.PaperSetting.Responses
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Primary" Class="mt-5">
+            @Resource.ChoosePaperSettingsTemplate
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <ListItem T="PaperSettingsTemplatePaginated"
+                  @key="listChangingKey"
+                  FilterObject="false"
+                  Caption="@Resource.PaperSettingsTemplates"
+                  CaptionIcon="@Icons.Material.Filled.Article"
+                  EndpointServerice="BlazPaperSettingsService.GetAllPaperSettingsTemplatesPaginatedAsync"
+                  DisplayColumns='[nameof(PaperSettingsTemplatePaginated.Name)]'
+                  SearchPanelVisible="false"
+                  Hide_DescriptionSearch="true"
+                  CRUD_Delete_Btn="true"
+                  DeleteClick_fun="DeletePaperSettingsTemplateAsync">
+            <ButtonChildContent Context="selectedTemplate">
+                <MudTooltip Text="@Resource.SelectTemplate">
+                    <MudFab Color="Color.Primary"
+                            EndIcon="@Icons.Material.Filled.SelectAll"
+                            Size="Size.Small"
+                            Class=@($"label-{nameof(Resource.SelectTemplate)}")
+                            OnClick="() => GetSelectedPaperSettingsTemplate(((PaperSettingsTemplatePaginated)selectedTemplate))" />
+                </MudTooltip>
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+</MudDialog>

@@ -1,0 +1,63 @@
+@using OES.Helper.Dtos.CBTSyncSetting.Responses
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center">
+            <MudAvatar Color="Color.Primary" Size="Size.Medium" Class="mr-3">
+                <MudIcon Icon="@Icons.Material.Filled.Sync" />
+            </MudAvatar>
+            <MudText Typo="Typo.h6">@Resource.AutoSyncConfiguration</MudText>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        @if (_cbtSyncSetting == null)
+        {
+            <div class="d-flex justify-center align-center" style="padding: 40px 0;">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            </div>
+        }
+        else
+        {
+            <MudDivider Class="mb-4" />
+
+            <MudGrid Spacing="3" Class="mb-4">
+                <MudItem xs="12" sm="6">
+                    <MudCard Elevation="1" Class="pa-4" Style="min-height: 120px;">
+                        <MudStack Class="d-flex flex-column align-center justify-center" Style="height: 100%;">
+                            <MudAvatar Color="Color.Primary" Size="Size.Medium" Class="mb-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Schedule" />
+                            </MudAvatar>
+                            <MudText Typo="Typo.caption" Color="Color.Secondary" Align="Align.Center">@Resource.SyncScheduleTime</MudText>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">
+                                @FormatTimeToAmPm(_cbtSyncSetting.CBTSyncScheduleTime)
+                            </MudText>
+                        </MudStack>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudCard Elevation="1" Class="pa-4" Style="min-height: 120px;">
+                        <MudStack Class="d-flex flex-column align-center justify-center" Style="height: 100%;">
+                            <MudAvatar Color="@(_cbtSyncSetting.CBTAutoSyncEnabled? Color.Success: Color.Error)"
+                                       Size="Size.Medium"
+                                       Class="mb-2">
+                                <MudIcon Icon="@(_cbtSyncSetting.CBTAutoSyncEnabled? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)" />
+                            </MudAvatar>
+                            <MudText Typo="Typo.caption" Color="Color.Secondary" Align="Align.Center">@Resource.EnableAutoSync</MudText>
+                            <MudText Typo="Typo.h5" Color="@(_cbtSyncSetting.CBTAutoSyncEnabled? Color.Success: Color.Error)" Align="Align.Center">
+                                @(_cbtSyncSetting.CBTAutoSyncEnabled? Resource.Enabled: Resource.Disabled)
+                            </MudText>
+                        </MudStack>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Default" OnClick="Close"
+                   EndIcon="@Icons.Material.Filled.Cancel" Class="px-6">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,64 @@
+﻿@using OES.Helper.Dtos.OrganizationStructure.Responses
+
+<MudDialog>
+    <DialogContent>
+        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="10" Wrap="Wrap.NoWrap" Class="w-100">
+            @if (isLoading)
+            {
+                <MudProgressCircular Indeterminate="true" Size="Size.Large" />
+                <MudText Align="Align.Center" Typo="Typo.h6">@Resource.Loading</MudText>
+            }
+            else if (LookupItemsDtos.Count == 0)
+            {
+                <MudText Align="Align.Center" Typo="Typo.h5">@Resource.NoChildLookupItemsFound</MudText>
+            }
+            else
+            {
+                <MudTable Items="@LookupItemsDtos"
+                          Dense="true"
+                          Hover="true"
+                          Bordered="true"
+                          Style="border-radius: 10px;"
+                          Striped="true"
+                          Elevation="5"
+                          Class="w-100"
+                          Filter="new Func<GetOrganizationNodeLookupItemForViewResponseDto, bool>(FilterFuncWrapper)">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">@Resource.NodeLookupItems</MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchFieldString"
+                                      Placeholder="@Resource.Search"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium"
+                                      Class="mt-0"
+                                      Variant="Variant.Text" />
+                    </ToolBarContent>
+                    <ColGroup>
+                        <col />
+                        <col style="width: 400px;" />
+                    </ColGroup>
+                    <HeaderContent>
+                        <MudTh Style="text-align: center">@Resource.TreeNodeName</MudTh>
+                        <MudTh Style="text-align: center">@Resource.LookupItemName</MudTh>
+                    </HeaderContent>
+                    <RowTemplate Context="lookupItem">
+                        <MudTd DataLabel="@Resource.TreeNodeName" Style="text-align: center">@lookupItem.OrganizationStructureNodeName</MudTd>
+                        <MudTd DataLabel="@Resource.LookupItemName" Style="text-align: center">@lookupItem.LookupItemName</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="[5, 10, 20, 50, 100]" RowsPerPageString="@Resource.RowsPerPage" />
+                    </PagerContent>
+                </MudTable>
+            }
+
+            <MudButton Color="Color.Secondary"
+                       Variant="Variant.Filled"
+                       OnClick="Close"
+                       FullWidth
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Close
+            </MudButton>
+        </MudStack>
+    </DialogContent>
+</MudDialog>

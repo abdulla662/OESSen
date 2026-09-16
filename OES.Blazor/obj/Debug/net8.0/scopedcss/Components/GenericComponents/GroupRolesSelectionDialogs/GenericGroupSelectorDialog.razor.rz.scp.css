@@ -1,0 +1,19 @@
+[b-fvc43yvp1z] .bg-grey {
+    background-color: var(--mud-palette-background-grey);
+}
+
+[b-fvc43yvp1z] .fw-600 {
+    font-weight: 600;
+}
+
+[b-fvc43yvp1z] .fw-500 {
+    font-weight: 500;
+}
+
+[b-fvc43yvp1z] .opacity-half {
+    opacity: 0.5;
+}
+
+[b-fvc43yvp1z] .border-dashed-primary {
+    border: 2px dashed var(--mud-palette-primary);
+}

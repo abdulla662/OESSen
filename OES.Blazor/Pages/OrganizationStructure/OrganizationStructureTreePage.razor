@@ -1,0 +1,24 @@
+﻿@* @page "/OrganizationStructure" *@
+
+@using OES.Blazor.Components.GenericComponents.TreeViewTemplates.GrpcTreeViewTemplate
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("OrganizationStructure")]
+
+<PageTitle>@Resource.OrganizationStructureMatrix</PageTitle>
+
+@if (IsComponentInitialized)
+{
+    <GrpcTreeViewTemplate Items="Items"
+                          Label="@Resource.OrganizationStructureMatrix"
+                          LabelClass="mb-3 mt-2 fs-4 text-center"
+                          IsHierarchicalTree="true"
+                          DetailsButtonShown="false"
+                          InsertTreeItemInDb="InsertItemInDbAsync"
+                          UpdateTreeItemInDb="UpdateItemInDbAsync"
+                          RemoveTreeItemFromDb="RemoveItemFromDbAsync">
+        <NodeCustomButton Context="context">
+            <MudIconButton Icon="@Icons.Material.Filled.PlaylistAdd" Color="Color.Primary" OnClick="@(() => AddOrUpdateNodeLookupItemsAsync(context))" />
+        </NodeCustomButton>
+    </GrpcTreeViewTemplate>
+}

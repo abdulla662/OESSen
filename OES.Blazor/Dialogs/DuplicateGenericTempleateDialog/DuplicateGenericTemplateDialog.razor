@@ -1,0 +1,34 @@
+﻿@using MudBlazor
+@using OES.Helper.ResourceFiles
+
+<MudDialog TitleClass="fw-bold" Gutters="true" Style="border:2px solid #001a66">
+    <TitleContent>
+        <MudText Typo="Typo.h5">@DialogTitle</MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudText Typo="Typo.body1" Class="mb-3">@DialogMessage</MudText>
+
+        <MudTextField @bind-Value="InputValue"
+                      Placeholder="@PlaceholderText"
+                      Variant="Variant.Outlined"
+                      FullWidth="true"
+                      Immediate="true"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Edit"
+                      Class="mb-2" />
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="Cancel">
+            @Resource.Cancel
+        </MudButton>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Disabled="@string.IsNullOrWhiteSpace(InputValue)"
+                   OnClick="SubmitAsync">
+            @ConfirmButtonText
+        </MudButton>
+    </DialogActions>
+</MudDialog>

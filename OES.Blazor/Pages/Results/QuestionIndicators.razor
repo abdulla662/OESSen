@@ -1,0 +1,101 @@
+﻿@page "/QuestionIndicators"
+
+@attribute [DynamicAuthorizeAttribute("QuestionIndicators")]
+
+@using MudBlazor
+@using OES.Blazor.Components.Common
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper
+@using OES.Helper.Dtos.Question.QuestionIndicators
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+<MudText Typo="Typo.h5" Align="Align.Center" Class="my-6" Style="font-weight:700;">
+    @Resource.QuestionIndicators
+</MudText>
+<MudPaper Elevation="2" Class="pa-8 mb-6" Style="border-radius:16px; min-height:120px;">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="6" Justify="Justify.SpaceBetween" Class="flex-wrap">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.overline" Style="color:#888; font-weight:600; letter-spacing:1px;">
+                @Resource.Rate
+            </MudText>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                <MudNumericField T="int"
+                                 @bind-Value="PercentageValue"
+                                 Variant="Variant.Outlined"
+                                 Margin="Margin.Dense"
+                                 Min="0"
+                                 Max="100"
+                                 Step="1"
+                                 HideSpinButtons="true"
+                                 Style="max-width:100px;"
+                                 Immediate="true" />
+                <MudText Typo="Typo.h6" Style="color:#aaa; font-weight:500;">%</MudText>
+            </MudStack>
+        </MudStack>
+
+        <MudDivider Vertical="true" FlexItem="true" Style="height:48px; align-self:center;" />
+        <MudStack Spacing="1" Style="flex:1; min-width:260px;">
+            <MudText Typo="Typo.overline" Style="color:#888; font-weight:600; letter-spacing:1px;">
+                @Resource.Daterange
+            </MudText>
+            <MudDateRangePicker @bind-DateRange="_dateRange"
+                                Variant="Variant.Outlined"
+                                Margin="Margin.Dense" />
+        </MudStack>
+
+        <MudDivider Vertical="true" FlexItem="true" Style="height:48px; align-self:center;" />
+
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.overline" Style="color:#888; font-weight:600; letter-spacing:1px;">
+                @Resource.RateType
+            </MudText>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudRadioGroup T="IndicatorType" @bind-Value="Type" Row="true">
+                    <MudRadio Value="IndicatorType.Correction" Color="Color.Primary">
+                        @IndicatorType.Correction.ToLocalizedString()
+                    </MudRadio>
+                    <MudRadio Value="IndicatorType.Failure" Color="Color.Error">
+                        @IndicatorType.Failure.ToLocalizedString()
+                    </MudRadio>
+                </MudRadioGroup>
+            </MudStack>
+        </MudStack>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="OnSearchClick"
+                   Size="Size.Large"
+                   StartIcon="@Icons.Material.Filled.FilterAlt"
+                   Style="border-radius:30px; font-weight:600; white-space:nowrap; align-self:flex-end;"
+                   Disabled="@_isFiltering">
+            @if (_isFiltering)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="me-2" />
+            }
+            @Resource.ApplyFilter
+        </MudButton>
+
+    </MudStack>
+</MudPaper>
+
+<MudButton StartIcon="@Icons.Material.Filled.Download"
+           OnClick="DownloadExcelAsync"
+           Variant="Variant.Filled"
+           Color="Color.Primary"
+           Class="m-3 border-1 fw-600">
+    @Resource.Download
+</MudButton>
+
+<ListItem @ref="_listItemRef"
+          T="QuestionAnalyticsIndicatorDto"
+          Caption="@Resource.QuestionIndicators"
+          CaptionIcon="@Icons.Material.Filled.Analytics"
+          DisplayColumns="@([ nameof(QuestionAnalyticsIndicatorDto.QuestionCode),
+                              nameof(QuestionAnalyticsIndicatorDto.TotalAnswered),
+                              nameof(QuestionAnalyticsIndicatorDto.WrongCount),
+                              nameof(QuestionAnalyticsIndicatorDto.CorrectCount),
+                              nameof(QuestionAnalyticsIndicatorDto.PercentageDisplay) ])"
+          EndpointServerice="GetIndicatorDataAsync"
+          SearchPanelVisible="false"
+          FilterObject="@GetFilterDto()"
+          TableHeight="300px" />

@@ -1,0 +1,651 @@
+@using System.Threading
+@using OES.Helper.Enums
+@using SharedHelper.Common
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.Template.Response
+@using OES.Helper.Dtos.Questionlanguage
+@using OES.Helper.Dtos.DifficultyProfile
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.Dtos.Subject
+@using OES.Helper.Dtos.TransitionProfile
+@using OES.Helper.Dtos.Paper.TransitionDtos.Request
+@using OES.Helper;
+@using SharedHelper.Enums;
+@using OES.Helper.General
+
+<MudGrid>
+    <MudItem xs="12" md="12" Class="pa-8">
+        <MudItem xs="12" md="12">
+            <div class="d-flex justify-content-between align-items-center">
+                <GeneralLoadingButton StartIcon="@Icons.Material.Filled.Article"
+                                      Class="mr-5"
+                                      OnClick="ShowTemplateAsync"
+                                      ButtonColor="Color.Surface"
+                                      ButtonText="@Resource.PaperTemplates"
+                                      Disabled="@(_thisComponentCurrentOperationalMode == StepperOperationalMode.UpdateMode || IsCurrentFormsModeSingleForm)"
+                                      Type="ButtonType.Button" />
+                <MudIconButton Icon="@Icons.Material.Filled.GroupAdd"
+                               Variant="@Variant.Filled"
+                               Color="@Color.Primary"
+                               Size="@Size.Large"
+                               Class=@($"label-{nameof(Resource.ManageGroups)}")
+                               OnClick="OpenGroupDialog" />
+            </div>
+        </MudItem>
+
+        <MudItem xs="12" Class="mt-6">
+            <MudDivider />
+        </MudItem>
+
+        <EditForm OnSubmit="OnFirstStepPaperMetadataSubmitAsync" Model="@_currentPaperMetadataDto">
+            <DataAnnotationsValidator />
+
+            <MudGrid Spacing="2" Class="px-7">
+                <MudItem xs="12" sm="6">
+                    <MudTextField Value="_name"
+                                  Label="@Resource.Name"
+                                  T="string"
+                                  ValueChanged="OnPaperNameChanged"
+                                  Variant="Variant.Outlined"
+                                  Immediate
+                                  Required
+                                  Clearable
+                                  HelperTextOnFocus="true"
+                                  HelperText="@Resource.EnterTheFullNameOfThePaper"
+                                  Disabled="@IsCurrentFormsModeSingleForm"
+                                  Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_name))"
+                                  ErrorText=@Resource.NameIsRequired />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField Value="@_code"
+                                  ValueChanged="@((string val) => _code = ListHelpers.SanitizeCode(val))"
+                                  Label="@Resource.Code"
+                                  Variant="Variant.Outlined"
+                                  Immediate
+                                  Required
+                                  Clearable
+                                  HelperTextOnFocus="true"
+                                  HelperText="@Resource.EnterAUniqueCodeForThePaper"
+                                  Disabled="@IsCurrentFormsModeSingleForm"
+                                  Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_code))"
+                                  ErrorText=@Resource.CodeIsRequired />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_description"
+                                  Label="@Resource.Description"
+                                  Variant="Variant.Outlined"
+                                  Lines="3"
+                                  Immediate
+                                  Required
+                                  Clearable
+                                  HelperTextOnFocus="true"
+                                  HelperText="@Resource.ProvideABriefDescriptionOfThePaper"
+                                  Disabled="@IsCurrentFormsModeSingleForm"
+                                  Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_description))"
+                                  ErrorText=@Resource.DescriptionIsRequired />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_abbreviation"
+                                  Label="@Resource.Abbreviation"
+                                  Variant="Variant.Outlined"
+                                  Immediate
+                                  Required
+                                  Clearable
+                                  HelperTextOnFocus="true"
+                                  HelperText="@Resource.ShortFormOfThePaperName"
+                                  Disabled="@IsCurrentFormsModeSingleForm"
+                                  Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_abbreviation))"
+                                  ErrorText=@Resource.AbbreviationIsRequired />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="SubjectDto"
+                               MultiSelection
+                               Label="@Resource.Subject"
+                               SelectedValues="_selectedSubjects"
+                               Variant="Variant.Outlined"
+                               SelectedValuesChanged="OnSubjectsChanged"
+                               ToStringFunc="@(s => s.Name)"
+                               HelperTextOnFocus="true"
+                               HelperText="@Resource.SelectTheSubjects"
+                               Immediate
+                               Disabled="@(_criticalFieldsDisabled || IsCurrentFormsModeSingleForm)"
+                               Required
+                               Clearable
+                               Error="@(_isSubmitButtonHit && (_selectedSubjects == null || _selectedSubjects.Count == 0))"
+                               ErrorText="@Resource.SubjectRequired"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var subject in Subjects)
+                        {
+                            <MudSelectItem Value="@subject">@subject.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="PaperType"
+                               Label="@Resource.Papertype"
+                               Value="_selectedType"
+                               ValueChanged="OnTypeChangedAsync"
+                               Variant="Variant.Outlined"
+                               Immediate
+                               Required
+                               Disabled="@(_criticalFieldsDisabled || IsCurrentFormsModeSingleForm)"
+                               HelperTextOnFocus="true"
+                               HelperText="@Resource.SelectExaminationPaperType"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (PaperType type in Enum.GetValues(typeof(PaperType)))
+                        {
+                            <MudSelectItem Value="@type">@type.ToLocalizedString()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                @if (_isAdaptive)
+                {
+                    <MudItem xs="12" sm="6">
+                        <MudSelect T="AdaptivePaperSubtype"
+                                   Label="@Resource.SubType"
+                                   Value="_selectedAdaptiveSubtype"
+                                   ValueChanged="OnAdaptiveSubtypeChanged"
+                                   Variant="Variant.Outlined"
+                                   Immediate
+                                   Required
+                                   Disabled="@(_criticalFieldsDisabled || IsCurrentFormsModeSingleForm)"
+                                   HelperTextOnFocus="true"
+                                   HelperText="@Resource.SelectExaminationPaperType"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem Value="AdaptivePaperSubtype.MST">@AdaptivePaperSubtype.MST.ToLocalizedString()</MudSelectItem>
+                            <MudSelectItem Value="AdaptivePaperSubtype.STEP">@AdaptivePaperSubtype.STEP.ToLocalizedString()</MudSelectItem>
+                            @* <MudSelectItem Value="AdaptivePaperSubtype.STEPPLUS">@AdaptivePaperSubtype.STEPPLUS.ToLocalizedString()</MudSelectItem> *@
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudSelect T="TransitionProfileDto"
+                                   Label="@Resource.TransitionProfile"
+                                   Value="_selectedTransitionProfile"
+                                   ValueChanged="OnTransitionProfileChanged"
+                                   ToStringFunc="@(tp => tp.Name)"
+                                   Variant="Variant.Outlined"
+                                   Immediate
+                                   Required
+                                   Clearable
+                                   HelperTextOnFocus="true"
+                                   HelperText="@Resource.SelectTheTransitionProfile"
+                                   Error="@TransitionProfileLevelsErrorExists"
+                                   ErrorText="@TransitionProfileLevelsErrorMessage"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   Disabled="@(_criticalFieldsDisabled)">
+                            @foreach (var profile in transitionProfileDtos)
+                            {
+                                <MudSelectItem Value="@profile">@profile.Name.ToString()</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                }
+
+                @if (_isPaperStandard)
+                {
+                    <MudItem xs="12" sm="6">
+                        <MudSelect T="QuestionSelectionType"
+                                   Label="@Resource.QuestionsSelection"
+                                   Value="_selectedQuestionSelection"
+                                   ValueChanged="OnQuestionSelectionChanged"
+                                   Variant="Variant.Outlined"
+                                   Immediate
+                                   Required
+                                   HelperTextOnFocus="true"
+                                   Disabled="@(_criticalFieldsDisabled || IsCurrentFormsModeSingleForm)"
+                                   HelperText="@Resource.ChooseHowQuestionsWillBeSelected"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (QuestionSelectionType selection in Enum.GetValues(typeof(QuestionSelectionType)))
+                            {
+                                <MudSelectItem Value="@selection">@selection.ToLocalizedString()</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                }
+
+                <MudItem xs="12">
+                    <MudSelect T="QuestionContentType"
+                               Label="@Resource.QuestionsContentType"
+                               @bind-Value="_selectedQuestionsContentType"
+                               Variant="Variant.Outlined"
+                               Immediate
+                               Required
+                               Clearable
+                               Disabled="@(_criticalFieldsDisabled || IsCurrentFormsModeSingleForm)"
+                               HelperTextOnFocus="true"
+                               HelperText="@Resource.ChooseThePapersQuestionsContentType"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var contentType in Enum.GetValues<QuestionContentType>())
+                        {
+                            <MudSelectItem Value="@contentType">@contentType.ToLocalizedString()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+
+            <MudDivider Class="my-6" />
+
+            <MudText Typo="Typo.h6" Color="Color.Surface" Class="mb-3 ps-3">@Resource.ExaminationParameters</MudText>
+
+            <MudGrid Spacing="2" Class="px-7">
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="_duration"
+                                  Label="@Resource.DurationMinutes"
+                                  Variant="Variant.Outlined"
+                                  Immediate
+                                  Required
+                                  Clearable
+                                  HelperTextOnFocus="true"
+                                  HelperText="@Resource.EnterTheTimeAllowedForTheExam"
+                                  Disabled="@IsCurrentFormsModeSingleForm"
+                                  Error="@(_isSubmitButtonHit && _duration <= 0)"
+                                  ErrorText="@Resource.DurationMustBeGreaterThanZero" />
+                </MudItem>
+
+                <MudItem xs="12" sm="4">
+                    <MudNumericField @bind-Value="_questionsCount"
+                                     Label="@Resource.QuestionsCount"
+                                     Variant="Variant.Outlined"
+                                     Immediate
+                                     Clearable
+                                     Disabled="@(_usesExcelQuestionsImport || IsCurrentFormsModeSingleForm || _thisComponentCurrentOperationalMode == StepperOperationalMode.UpdateMode)"
+                                     HelperTextOnFocus="true"
+                                     HelperText="@Resource.EnterTheNumberOfPaperQuestions"
+                                     Error="@(_isSubmitButtonHit && _questionsCount <= 0)"
+                                     ErrorText=@Resource.QuestionsCountMustBeGreaterThanZero />
+                </MudItem>
+
+                @if (_isPaperStandard)
+                {
+                    <MudItem xs="12" sm="4">
+                        <MudTextField @bind-Value="_totalMarks"
+                                      Label="@Resource.TotalMarks"
+                                      Variant="Variant.Outlined"
+                                      Immediate
+                                      Required
+                                      Clearable
+                                      HelperTextOnFocus="true"
+                                      HelperText="@Resource.EnterTheMarksForThePaper"
+                                      Disabled="@IsCurrentFormsModeSingleForm"
+                                      Error="@(_isSubmitButtonHit && _totalMarks <= 0)"
+                                      ErrorText="@Resource.TotalMarksMustBeGreaterThanZero" />
+                    </MudItem>
+
+                    @* <MudItem xs="12">
+                        <MudNumericField @bind-Value="_outputFormsCount"
+                                         Label="@Resource.OutputFormsCount"
+                                         Variant="Variant.Outlined"
+                                         Immediate
+                                         Clearable
+                                         Disabled
+                                         HelperTextOnFocus="true"
+                                         HelperText="@Resource.NumberOfGeneratedExamForms"
+                                         Error="@(_isSubmitButtonHit && _isPaperStandard && _outputFormsCount <= 0)"
+                                         ErrorText="@Resource.OutputFormsCountMustBeGreaterThanZero" />
+                    </MudItem> *@
+
+                    @* @if (_selectedQuestionSelection == QuestionSelectionType.Auto)
+                    {
+                        <MudItem xs="12">
+                            <MudSelect T="QuestionDistributionTypeInForm"
+                                       Label=@Resource.QuestionDistributionTypeInForm
+                                       @bind-Value="_selectedQuestionDistributionTypeInForm"
+                                       Variant="Variant.Outlined"
+                                       Immediate
+                                       Required
+                                       Clearable
+                                       Disabled="@(_criticalFieldsDisabled || IsCurrentFormsModeSingleForm)"
+                                       HelperTextOnFocus="true"
+                                       HelperText=@Resource.Selectthetypeofquestiondistributioninform
+                                       AnchorOrigin="Origin.BottomCenter">
+                                @foreach (QuestionDistributionTypeInForm type in Enum.GetValues(typeof(QuestionDistributionTypeInForm)))
+                                {
+                                    <MudSelectItem Value="@type">@type.ToLocalizedString()</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    } *@
+                }
+
+                @if (_isAdaptive)
+                {
+                    @if (_adaptiveCategories.Count == 0)
+                    {
+                        <MudItem xs="12">
+                            <MudAlert Severity="Severity.Warning" Class="mt-4">
+                                @Resource.NoAdaptiveCategories
+                            </MudAlert>
+                        </MudItem>
+                    }
+                    else
+                    {
+                        <!-- Adaptive Configuration Card -->
+                        <MudItem xs="12">
+                            <MudCard Elevation="2" Class="mt-4">
+
+                                <MudCardHeader>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6">@Resource.AdaptiveConfiguration</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+
+                                <MudCardContent>
+
+                                    <MudGrid Spacing="3">
+                                        <!-- Stages Count -->
+                                        <MudItem xs="12" sm="@(IsAdaptiveStep ? 4 : 6)">
+                                            <MudNumericField T="int"
+                                                             Value="_stagesCount"
+                                                             ValueChanged="OnStagesCountChanged"
+                                                             Label="@Resource.StagesCount"
+                                                             Variant="Variant.Outlined"
+                                                             Min="1"
+                                                             Max="@StagesCountMax"
+                                                             Immediate="true"
+                                                             Disabled="@(_criticalFieldsDisabled || _isStepPlus)"
+                                                             HelperText="@Resource.NumberOfAdaptiveStages" />
+                                        </MudItem>
+
+                                        <!-- IS-STEP-PLUS TOGGLE -->
+                                        @* @if (IsAdaptiveStep)
+                                        {
+                                            <MudItem xs="12" sm="2" Class="d-flex align-center">
+                                                <MudSwitch T="bool"
+                                                           Value="_isStepPlus"
+                                                           ValueChanged="OnIsStepPlusChanged"
+                                                           Color="Color.Primary"
+                                                           Label="@Resource.IsStepPlus"
+                                                           Disabled="@(_criticalFieldsDisabled || _thisComponentCurrentOperationalMode == StepperOperationalMode.UpdateMode)" />
+                                            </MudItem>
+                                        } *@
+
+                                        <!-- DPath Calculation Mode Selection -->
+                                        <MudItem xs="12" sm="6">
+                                            <MudSelect T="DPathCalculationMode"
+                                                       Label="@Resource.DPathCalculationMode"
+                                                       @bind-Value="_selectedDPathCalculationMode"
+                                                       Variant="Variant.Outlined"
+                                                       Immediate
+                                                       Disabled="@_criticalFieldsDisabled"
+                                                       HelperTextOnFocus="true"
+                                                       HelperText="@Resource.SelectDPathCalculationMethod"
+                                                       AnchorOrigin="Origin.BottomCenter">
+                                                <MudSelectItem Value="DPathCalculationMode.FullyAutomatic">@Resource.Automatic</MudSelectItem>
+                                                <MudSelectItem Value="DPathCalculationMode.ManualFinalScore">@Resource.ManualFinalScore</MudSelectItem>
+                                                @if (IsAdaptiveMST)
+                                                {
+                                                    <MudSelectItem Value="DPathCalculationMode.FullyManual">@Resource.FullyManual</MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                        </MudItem>
+
+                                        <!-- Fully Manual: Dynamic Stage Paths -->
+                                        @if (_selectedDPathCalculationMode == DPathCalculationMode.FullyManual && _adaptiveMSTCategoryPathValues.Count > 0)
+                                        {
+                                            <MudItem xs="12">
+                                                <MudDivider Class="my-4" />
+                                                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-4">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Timeline" Class="mr-2" />
+                                                    @Resource.StagePathsConfiguration
+                                                </MudText>
+                                                <MudGrid Spacing="2">
+                                                    @foreach (var category in _adaptiveCategories)
+                                                    {
+                                                        if (_adaptiveMSTCategoryPathValues.ContainsKey(category.Id))
+                                                        {
+                                                            <MudItem xs="12" Class="mt-3">
+                                                                <MudText Typo="Typo.body1" Class="font-weight-bold" Color="Color.Secondary">
+                                                                    @category.Name
+                                                                </MudText>
+                                                                <MudDivider Class="my-2" />
+                                                            </MudItem>
+
+                                                            @for (int i = 0; i < _stagesCount; i++)
+                                                            {
+                                                                var stageIndex = i;
+                                                                var catId = category.Id;
+                                                                var label = Resource.SPath + $" {stageIndex + 1} " + Resource.DPath;
+
+                                                                <MudItem xs="12" sm="6" md="4">
+                                                                    <MudNumericField @bind-Value="_adaptiveMSTCategoryPathValues[catId][stageIndex]"
+                                                                                     Label="@label"
+                                                                                     Variant="Variant.Outlined"
+                                                                                     T="decimal"
+                                                                                     Step="0.1m"
+                                                                                     Min="0.1m"
+                                                                                     Immediate="true"
+                                                                                     Error="@(_isSubmitButtonHit && _adaptiveMSTCategoryPathValues[catId][stageIndex] <= 0)"
+                                                                                     ErrorText="@Resource.ValueMustBeGreaterThanZero" />
+                                                                </MudItem>
+                                                            }
+                                                        }
+                                                    }
+                                                </MudGrid>
+                                            </MudItem>
+                                        }
+
+                                        <!-- Manual Final Score: Fixed DPath per Category -->
+                                        @if (_selectedDPathCalculationMode == DPathCalculationMode.ManualFinalScore && _categoryFixedDPaths.Count > 0)
+                                        {
+                                            <MudItem xs="12">
+                                                <MudDivider Class="my-4" />
+                                                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-4">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Architecture" Class="mr-2" />
+                                                    @Resource.FinalDPathPerCategory
+                                                </MudText>
+
+                                                <MudGrid Spacing="2">
+                                                    @foreach (var category in _adaptiveCategories)
+                                                    {
+                                                        if (_categoryFixedDPaths.ContainsKey(category.Id))
+                                                        {
+                                                            <MudItem xs="12" sm="6">
+                                                                <MudNumericField @bind-Value="_categoryFixedDPaths[category.Id]"
+                                                                                 Label="@($"{category.Name} {Resource.FinalDPath}")"
+                                                                                 Variant="Variant.Outlined"
+                                                                                 T="decimal"
+                                                                                 Step="0.01m"
+                                                                                 Min="0.01m"
+                                                                                 Immediate="true"
+                                                                                 Error="@(_isSubmitButtonHit && _categoryFixedDPaths[category.Id] <= 0)"
+                                                                                 ErrorText="@Resource.ValueMustBeGreaterThanZero" />
+                                                            </MudItem>
+                                                        }
+                                                    }
+                                                </MudGrid>
+                                            </MudItem>
+                                        }
+
+                                        <!-- Adaptive Categories Order -->
+                                        @if (IsAdaptiveMST)
+                                        {
+                                            <MudItem xs="12">
+                                                <MudPaper Class="pa-4 mt-2" Elevation="0">
+                                                    <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-4">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Reorder" Class="mr-2" />
+                                                        @Resource.CategoryOrder
+                                                    </MudText>
+
+                                                    <MudList T="QuestionCategoryDto" Dense="true">
+                                                        @{
+                                                            int index = 0;
+
+                                                            foreach (var category in _adaptiveMSTOrderedCategories)
+                                                            {
+                                                                var currentIndex = index;
+                                                                var catName = category.Name;
+                                                                var isFirst = currentIndex == 0;
+                                                                var isLast = currentIndex == _adaptiveMSTOrderedCategories.Count - 1;
+
+                                                                <MudListItem>
+                                                                    <div class="d-flex justify-space-between align-center">
+                                                                        <MudText><b>@(currentIndex + 1).</b> @catName</MudText>
+                                                                        <div>
+                                                                            <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward"
+                                                                                           Size="Size.Small"
+                                                                                           Disabled="@isFirst"
+                                                                                           OnClick="@(() => MoveCategory(currentIndex, -1))"
+                                                                                           Color="Color.Primary" />
+                                                                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward"
+                                                                                           Size="Size.Small"
+                                                                                           Disabled="@isLast"
+                                                                                           OnClick="@(() => MoveCategory(currentIndex, 1))"
+                                                                                           Color="Color.Primary" />
+                                                                        </div>
+                                                                    </div>
+                                                                </MudListItem>
+                                                                <MudDivider />
+                                                                index++;
+                                                            }
+                                                        }
+                                                    </MudList>
+                                                </MudPaper>
+                                            </MudItem>
+                                        }
+                                    </MudGrid>
+
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    }
+                }
+
+                <MudItem xs="12" Class="mt-6">
+                    <MudDivider />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="LanguageDto"
+                               Label="@Resource.Language"
+                               @bind-Value="_selectedLanguage"
+                               Variant="Variant.Outlined"
+                               Immediate
+                               Required
+                               Clearable
+                               Disabled="@(_criticalFieldsDisabled || (IsCurrentFormsModeSingleForm && !IsCurrentFormsModeExcelSheetSingleManualForm))"
+                               HelperTextOnFocus="true"
+                               HelperText="@Resource.SelectTheLanguageForThePaper"
+                               Error="@(_isSubmitButtonHit && (_selectedLanguage == null || _selectedLanguage.Id == 0))"
+                               ErrorText=@Resource.Languageisrequired
+                               ToStringFunc="@(l => l.Name)"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var language in Languages)
+                        {
+                            <MudSelectItem Disabled="@(_usesExcelQuestionsImport && !_availableLanguagesIdsToChooseFromWhenExcelImport.Contains(language.Id))" Value="@language">@language.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                @if (_isPaperStandard)
+                {
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="ProfileDto"
+                                   Label="@Resource.DifficultyProfile"
+                                   @bind-Value="_selectedProfile"
+                                   Variant="Variant.Outlined"
+                                   Immediate
+                                   Required
+                                   Clearable
+                                   Disabled="@(_criticalFieldsDisabled || IsCurrentFormsModeSingleForm || _usesExcelQuestionsImport)"
+                                   HelperTextOnFocus="true"
+                                   HelperText="@Resource.SelectTheDifficultyProfileForThisPaper"
+                                   Error="@(_isSubmitButtonHit && (_selectedProfile == null || _selectedProfile.Id == 0))"
+                                   ErrorText=@Resource.DifficultyProfileIsRequired
+                                   ToStringFunc="@(p => p.Name)"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var profile in Profiles)
+                            {
+                                <MudSelectItem Value="@profile">@profile.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudDivider Class="my-6" />
+
+                    <MudItem xs="12" Class="mb-4">
+                        <MudCard Elevation="2" Class="pa-4">
+                            <MudCardContent Class="d-flex align-center justify-space-between pa-0">
+                                <div class="d-flex flex-column">
+                                    <MudText Typo="Typo.subtitle1" Class="font-weight-medium mb-1" Color="Color.Dark">
+                                        @Resource.AllowInstantResultProcessing
+                                    </MudText>
+                                    <MudText Typo="Typo.body2" Class="text-muted">
+                                        @Resource.EnableImmediateResultsProcessing
+                                    </MudText>
+                                </div>
+                                <div class="ml-4">
+                                    <MudSwitch @bind-Value="_allowInstantResult"
+                                               Color="Color.Primary"
+                                               Disabled=@(_criticalFieldsDisabled || _isAdaptiveWithInstant || IsCurrentFormsModeSingleForm || (_usesExcelQuestionsImport && _uploadedQuestions != null))
+                                               Size="Size.Medium"
+                                               ThumbIcon="@(_allowInstantResult? Icons.Material.Filled.Check : null)"
+                                               Class="ma-0" />
+                                </div>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                }
+
+                @if (!_isAdaptive && _selectedQuestionSelection == QuestionSelectionType.Manual && ((_thisComponentCurrentOperationalMode == StepperOperationalMode.InsertionMode && !IsCurrentFormsModeSingleForm) || IsCurrentFormsModeExcelSheetSingleManualForm))
+                {
+                    <MudItem xs="12" Class="mb-4">
+                        <MudCard Elevation="2" Class="pa-4 mb-3">
+                            <MudCardContent Class="d-flex align-center justify-space-between pa-0">
+                                <div class="d-flex flex-column">
+                                    <MudText Typo="Typo.subtitle1" Class="font-weight-medium mb-1" Color="Color.Dark">
+                                        @Resource.UploadQuestionsDirectly
+                                    </MudText>
+                                    <MudText Typo="Typo.body2" Class="text-muted">
+                                        @Resource.Enableuploadingexcelsheetcontainingquestioncodes
+                                    </MudText>
+                                </div>
+                                <div class="ml-4">
+                                    <MudSwitch @bind-Value="_usesExcelQuestionsImport"
+                                               Color="Color.Primary"
+                                               Disabled="@(_criticalFieldsDisabled || IsCurrentFormsModeExcelSheetSingleManualForm)"
+                                               Size="Size.Medium"
+                                               Class="ma-0" />
+                                </div>
+                            </MudCardContent>
+                        </MudCard>
+
+                        @if (_usesExcelQuestionsImport)
+                        {
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Medium"
+                                       Class="mb-4"
+                                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                                       OnClick="OpenImportQuestionsWithTheirItembanksDialog">
+                                @Resource.ImportQuestions
+                            </MudButton>
+                        }
+
+                        @if (_usesExcelQuestionsImport && _uploadedQuestions != null)
+                        {
+                            <MudAlert Severity="Severity.Success" ContentAlignment="HorizontalAlignment.Start">@Resource.Fileuploaded</MudAlert>
+                        }
+                    </MudItem>
+                }
+
+                <MudItem xs="12">
+                    <GeneralLoadingButton Disabled="_criticalFieldsDisabled || IsCurrentFormsModeSingleForm"
+                                          Class="flex-fill"
+                                          OnClick="OpenTemplateNameDialog"
+                                          EndIcon="@Icons.Material.Filled.CheckCircle"
+                                          ButtonColor="Color.Secondary"
+                                          ButtonText="@Resource.SaveAsTemplate"
+                                          Type="ButtonType.Submit" />
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudItem>
+</MudGrid>

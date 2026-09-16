@@ -1,0 +1,53 @@
+﻿
+@using OES.Helper.Dtos.DeltaType
+@using OES.Helper.ResourceFiles
+@using System.Globalization
+
+<MudDialog Class="pa-5">
+    <TitleContent>
+        <div class="d-flex align-center justify-center mt-5">
+            <div class="d-flex align-center justify-center align-self-center pa-3 w-75"
+                 style="border-radius: 8px;" dir="@(RightToLeft ? "rtl" : "ltr")">
+                <MudIcon Icon="@Icons.Material.Filled.TableView" Class="me-2" Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="font-weight-bold">@Resource.DeltaTypeDetails</MudText>
+            </div>
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        @if (Model != null)
+        {
+            <MudGrid Spacing="4" Class="animate__animated animate__fadeIn py-3">
+                <MudItem xs="12">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                            <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                            @Resource.BasicInformation
+                        </MudText>
+                        <MudGrid Spacing="3">
+                            <MudItem xs="12">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Secondary" />
+                                    <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                        <strong>@Resource.Name:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">@Model.NameDisplay</MudText>
+                                </MudStack>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        }
+        else
+        {
+            <MudText Color="Color.Error" Typo="Typo.body1">No data available</MudText>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Close" StartIcon="@Icons.Material.Filled.Close">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

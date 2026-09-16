@@ -1,0 +1,57 @@
+﻿@using OES.Blazor.InternalHelperTypes.General
+@using OES.Helper.Enums;
+@using SharedHelper.Enums
+
+@if (!string.IsNullOrWhiteSpace(Url))
+{
+    @if (_attachmentType == AttachmentType.Loading)
+    {
+        <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+    }
+    else if (_attachmentType == AttachmentType.Image)
+    {
+        <MudImage Src="@Url"
+                  Alt="@Resource.Attachment"
+                  Style="@ImageStyle"
+                  Class="@Class"
+                  UserAttributes="@(new Dictionary<string, object> { { "loading", "lazy" }, { "decoding", "async" } })" />
+    }
+    else if (_attachmentType == AttachmentType.Video)
+    {
+        <div style="direction: @DirectionHelper.GetDirection(); display: block; width: 100%;">
+            <video controls preload="metadata" style="@VideoStyle" class="@Class">
+                <source src="@Url" type="@_contentType" />
+                @FallbackContent
+            </video>
+        </div>
+    }
+    else if (_attachmentType == AttachmentType.Audio)
+    {
+        <div style="direction: @DirectionHelper.GetDirection(); display: block; width: 100%;">
+            <audio controls preload="metadata" style="@AudioStyle" class="@Class">
+                <source src="@Url" type="@_contentType" />
+                @FallbackContent
+            </audio>
+        </div>
+    }
+    else if (_attachmentType == AttachmentType.Error)
+    {
+        @if (ErrorContent != null)
+        {
+            @ErrorContent
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Warning" Dense="true">
+                @Resource.FailedToLoadAttachment
+            </MudAlert>
+        }
+    }
+    else
+    {
+        <MudLink Href="@Url" Target="_blank">
+            <MudIcon Icon="@Icons.Material.Filled.AttachFile" Size="Size.Small" />
+            @(DownloadLabel ?? Resource.DownloadAttachment)
+        </MudLink>
+    }
+}

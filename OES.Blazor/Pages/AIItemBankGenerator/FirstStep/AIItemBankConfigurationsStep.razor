@@ -1,0 +1,149 @@
+@using MudBlazor
+@using OES.Helper
+@using OES.Helper.Dtos.Questionlanguage
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+<MudGrid Spacing="3">
+    <MudItem xs="12">
+        <div class="d-flex justify-content-between align-items-center">
+            <GeneralLoadingButton EndIcon="@Icons.Material.Filled.Article"
+                                  OnClick="ShowTemplateAsync"
+                                  ButtonColor="Color.Surface"
+                                  ButtonText="@Resource.ItemBankTemplate"
+                                  Type="ButtonType.Button" />
+        </div>
+    </MudItem>
+
+    @*Language Selection*@
+    <MudItem xs="12" sm="6">
+        <MudAutocomplete T="LanguageDto"
+                         Label="@Resource.Language"
+                         @bind-Value="_selectedLanguage"
+                         Variant="Variant.Outlined"
+                         ShowProgressIndicator="true"
+                         SearchFunc="SearchLanguageAsync"
+                         ToStringFunc="@(l => l?.Name ?? string.Empty)"
+                         Clearable="true"
+                         Error="@(_isSubmitButtonHit && (_selectedLanguage == null || _selectedLanguage.Id == 0))"
+                         ErrorText="@_requiredErrorText"
+                         Required
+                         Disabled="IsConfigurationLocked" />
+    </MudItem>
+
+    @* Item Bank Levels Creation Strategy *@
+    <MudItem xs="12" sm="6">
+        <MudSelect T="ItemBankLevelsCreation"
+                   Label="@Resource.ItemBankLevelsCreation"
+                   Value="_selectedLevelsCreation"
+                   ValueChanged="OnLevelsCreationChanged"
+                   Variant="Variant.Outlined"
+                   Disabled="IsConfigurationLocked"
+                   AnchorOrigin="Origin.BottomCenter"
+                   ErrorText="@_requiredErrorText">
+            <MudSelectItem Value="ItemBankLevelsCreation.UseExisting">@Resource.UseExistingLevels</MudSelectItem>
+            <MudSelectItem Value="ItemBankLevelsCreation.CreateNew">@Resource.CreateNewLevels</MudSelectItem>
+            <MudSelectItem Value="ItemBankLevelsCreation.Mix">@Resource.MixLevels</MudSelectItem>
+        </MudSelect>
+    </MudItem>
+
+    @* Max Level Depth *@
+    <MudItem xs="12" sm="6">
+        <MudNumericField T="int?"
+                         Label="@Resource.MaxLevelsCount"
+                         @bind-Value="_maxLevelsCount"
+                         Variant="Variant.Outlined"
+                         Min="1"
+                         Max="50"
+                         Disabled="IsConfigurationLocked"
+                         Adornment="Adornment.Start"
+                         AdornmentIcon="@Icons.Material.Filled.AccountTree"
+                         HelperText=@($"{Resource.AllowedRange}: 50")
+                         HelperTextOnFocus="false" />
+    </MudItem>
+
+    @* Max Children Per Node *@
+    <MudItem xs="12" sm="6">
+        <MudNumericField T="int?"
+                         Label="@Resource.MaxChilderenPerNode"
+                         @bind-Value="_maxChildrenPerNode"
+                         Variant="Variant.Outlined"
+                         Min="1"
+                         Max="50"
+                         Disabled="IsConfigurationLocked"
+                         Adornment="Adornment.Start"
+                         AdornmentIcon="@Icons.Material.Filled.AccountTree"
+                         HelperText=@($"{Resource.AllowedRange}: 50")
+                         HelperTextOnFocus="false" />
+    </MudItem>
+
+    @* Existing Item Bank Levels Preview (If UseExisting or Mix) *@
+    @if (_selectedLevelsCreation != ItemBankLevelsCreation.CreateNew && _existingLevels.Count > 0)
+    {
+        <MudItem xs="12">
+            <MudPaper Class="pa-3" Elevation="0" Outlined="true">
+                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-2 d-block">
+                    @Resource.AvailableLevels:
+                </MudText>
+                <div class="d-flex flex-wrap gap-1">
+                    @foreach (var level in _existingLevels)
+                    {
+                        <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Info">
+                            @level.Name
+                        </MudChip>
+                    }
+                </div>
+            </MudPaper>
+        </MudItem>
+    }
+
+    @* File Upload Section *@
+    <MudItem xs="12">
+        <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+            <MudText Typo="Typo.subtitle1" Class="mb-2">@Resource.UploadFile</MudText>
+
+            <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-3 d-block">
+                @Resource.SupportedFileExtensions: @AllowedExtensionsString
+            </MudText>
+
+            <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadFiles" Accept="@AllowedExtensionsString">
+                <ActivatorContent>
+                    <MudButton Disabled="IsConfigurationLocked" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">
+                        @Resource.UploadFile
+                    </MudButton>
+                </ActivatorContent>
+            </MudFileUpload>
+
+            @if (_file is not null)
+            {
+                var fileName = _file.Name;
+                var fileSize = FormatFileSize(_file.Size);
+                <MudChip T="string"
+                         Disabled="IsConfigurationLocked"
+                         Color="Color.Success"
+                         Icon="@Icons.Material.Filled.AttachFile"
+                         Class="mt-3"
+                         Size="Size.Medium"
+                         OnClose="ClearFile">
+                    @fileName (@fileSize)
+                </MudChip>
+            }
+
+            @if (_isSubmitButtonHit && _file is null)
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-3" Dense="true">
+                    @Resource.FileRequired
+                </MudAlert>
+            }
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12">
+        <GeneralLoadingButton Class="flex-fill"
+                              OnClick="OpenTemplateNameDialog"
+                              EndIcon="@Icons.Material.Filled.CheckCircle"
+                              ButtonColor="Color.Secondary"
+                              ButtonText="@Resource.SaveAsTemplate"
+                              Type="ButtonType.Submit" />
+    </MudItem>
+</MudGrid>

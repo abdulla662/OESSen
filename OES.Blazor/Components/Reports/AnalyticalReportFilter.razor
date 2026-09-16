@@ -1,0 +1,134 @@
+@using OES.Helper.Dtos.Reports.Analytical
+
+<div class="ar-filter-panel ar-no-print">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="4">
+            <MudSelect T="ScheduleLookupDto"
+                       Label="@Resource.RptFilterExamSchedule"
+                       MultiSelection="true"
+                       SelectAll="true"
+                       SelectAllText="@Resource.RptFilterSelectAll"
+                       SelectedValues="_selectedSchedules"
+                       SelectedValuesChanged="OnSchedulesChangedAsync"
+                       Variant="Variant.Outlined"
+                       ToStringFunc="@(s => s == null ? string.Empty : s.Name)"
+                       Dense="true">
+                @foreach (var s in _schedules)
+                {
+                    <MudSelectItem Value="@s">@s.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+
+        @if (ShowVenue)
+        {
+            <MudItem xs="12" md="3">
+                <MudSelect T="VenueLookupDto"
+                           Label="@Resource.RptFilterVenue"
+                           MultiSelection="true"
+                           SelectAll="true"
+                           SelectAllText="@Resource.RptFilterSelectAll"
+                           SelectedValues="_selectedVenues"
+                           SelectedValuesChanged="OnVenuesChangedAsync"
+                           Variant="Variant.Outlined"
+                           ToStringFunc="@(v => v == null ? string.Empty : v.Name)"
+                           Disabled="@(!_selectedSchedules.Any())"
+                           Dense="true">
+                    @foreach (var v in _venues)
+                    {
+                        <MudSelectItem Value="@v">@v.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        }
+
+        @if (ShowPaper)
+        {
+            <MudItem xs="12" md="3">
+                <MudSelect T="PaperCodeLookupDto"
+                           Label="@Resource.RptFilterPaper"
+                           MultiSelection="true"
+                           SelectAll="true"
+                           SelectAllText="@Resource.RptFilterSelectAll"
+                           SelectedValues="_selectedPapers"
+                           SelectedValuesChanged="OnPapersChangedAsync"
+                           Variant="Variant.Outlined"
+                           ToStringFunc="@(p => p == null ? string.Empty : p.Name)"
+                           Disabled="@(!_selectedSchedules.Any())"
+                           Dense="true">
+                    @foreach (var p in _papers)
+                    {
+                        <MudSelectItem Value="@p">@p.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        }
+
+        @if (ShowForm)
+        {
+            <MudItem xs="12" md="3">
+                <MudSelect T="PaperFormLookupDto"
+                           Label="@Resource.RptFilterForm"
+                           MultiSelection="true"
+                           SelectAll="true"
+                           SelectAllText="@Resource.RptFilterSelectAll"
+                           SelectedValues="_selectedForms"
+                           SelectedValuesChanged="OnFormsChangedAsync"
+                           Variant="Variant.Outlined"
+                           ToStringFunc="@(f => f == null ? string.Empty : f.Name)"
+                           Disabled="@(!_selectedSchedules.Any() || !_selectedPapers.Any())"
+                           Dense="true">
+                    @foreach (var f in _forms)
+                    {
+                        <MudSelectItem Value="@f">@f.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        }
+
+        @if (ShowItemBank)
+        {
+            <MudItem xs="12" md="4">
+                <MudSelect T="ItemBankLookupDto"
+                           Label="@Resource.RptFilterItemBank"
+                           Value="_selectedItemBank"
+                           ValueChanged="OnItemBankChangedAsync"
+                           Variant="Variant.Outlined"
+                           ToStringFunc="@(b => b == null ? string.Empty : b.Name)"
+                           Clearable="true"
+                           Dense="true">
+                    @foreach (var b in _itemBanks)
+                    {
+                        <MudSelectItem Value="@b">@b.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        }
+
+        @if (ShowDateRange)
+        {
+            <MudItem xs="12" md="4">
+                <MudDateRangePicker Label="@Resource.Daterange"
+                                    DateRange="_dateRange"
+                                    DateRangeChanged="OnDateRangeChangedAsync"
+                                    Variant="Variant.Outlined"
+                                    Clearable="true"
+                                    Editable="true"
+                                    Dense="true" />
+            </MudItem>
+        }
+
+        @if (OnGenerateClicked.HasDelegate)
+        {
+            <MudItem xs="12" md="2" Class="d-flex align-end">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Disabled="@(!CanGenerate)"
+                           OnClick="@(() => OnGenerateClicked.InvokeAsync())"
+                           FullWidth="true">
+                    @Resource.RptGenerateReport
+                </MudButton>
+            </MudItem>
+        }
+    </MudGrid>
+</div>

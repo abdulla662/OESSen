@@ -1,0 +1,276 @@
+﻿@using OES.Helper.General
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="text-primary font-weight-bold">
+            <MudIcon Icon="@(IsUpdateMode? Icons.Material.Outlined.Edit : Icons.Material.Outlined.VerticalDistribute)" Class="mr-2" />
+            @(IsUpdateMode? Resource.UpdateDistribution: Resource.DistributeQuestions) - @SelectedItem?.QuestionTypeName (@SelectedItem?.CurrentQuestionsCount @Resource.Available)
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTabs Class="ma-5" Elevation="4" Rounded="true" ApplyEffectsToContainer="true" Color="Color.Primary" TabPanelClass="p-2" ActiveTabClass="border-solid border-2 mud-border-white">
+            <MudTabPanel Text="@Resource.AutoDistribution" Icon="@Icons.Material.Outlined.AutoAwesome">
+                <MudPaper Class="pa-4" Elevation="3">
+                    <div class="d-flex flex-row justify-content-between align-center mb-4">
+                        <MudText Typo="Typo.subtitle2">
+                            @Resource.Choosehowmanyquestionsforeachdifficultylevel
+                        </MudText>
+                        <MudChip T="long" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+                            @_totalSelected / @_totalAvailable @Resource.selected
+                        </MudChip>
+                    </div>
+                    <MudDivider Class="mb-4" />
+
+                    <MudGrid Spacing="2">
+                        @foreach (var difficulty in DifficultyCounts.Keys.ToList())
+                        {
+                            var rows = _subQuestionRows.TryGetValue(difficulty, out var r) ? r : null;
+                            var draftAvail = GetDraftAvailable(difficulty);
+                            var hasDraftSubQ = _draftSubQCount.TryGetValue(difficulty, out var draftSq) && draftSq is > 0;
+                            var passageCount = DifficultyCounts.TryGetValue(difficulty, out var dc) ? (dc ?? 0) : 0;
+                            var rowSum = rows?.Sum(x => x.Count ?? 0) ?? 0;
+                            var sumOk = rowSum == passageCount && passageCount > 0;
+
+                            <MudItem xs="12">
+                                <MudCard Class="mb-3" Style="@($"border-left: 4px solid {GetDifficultyColor(difficulty)};")">
+                                    <MudCardContent>
+                                        <div class="d-flex align-center">
+                                            <MudIcon Icon="@GetDifficultyIcon(difficulty)"
+                                                     Class="mr-2"
+                                                     Style="@($"color: {GetDifficultyColor(difficulty)};")" />
+                                            <MudText Typo="Typo.subtitle1" Class="font-weight-bold"
+                                                     Style="@($"color: {GetDifficultyColor(difficulty)};")">
+                                                @difficulty
+                                            </MudText>
+                                            <MudSpacer />
+                                            <MudText Typo="Typo.caption">@Resource.Available: @MaxDifficultyCounts[difficulty]</MudText>
+                                        </div>
+                                        <MudTextField @bind-Value="DifficultyCounts[difficulty]"
+                                                      Label="@Resource.QuestionsCount"
+                                                      Variant="Variant.Outlined"
+                                                      TextChanged="UpdateTotalSelected"
+                                                      Class="mt-2 w-50"
+                                                      InputType="InputType.Number"
+                                                      Immediate="true"
+                                                      Style="font-size: 15px;" />
+                                        @if (IsComprehension && rows != null)
+                                        {
+                                            <MudDivider Class="my-3" />
+
+                                            <MudText Typo="Typo.caption"
+                                                     Class="mb-2 font-weight-bold d-block"
+                                                     Style="color: var(--mud-palette-text-secondary); letter-spacing: .05em;">
+                                                @Resource.SubQuestionsBreakdown
+                                            </MudText>
+
+                                            <div class="d-flex align-center gap-3 flex-wrap mb-1">
+
+                                                <MudTextField Value="@(_draftPassageCount.TryGetValue(difficulty, out var dp) ? (dp ?? 0).ToString() : "0")"
+                                                              ValueChanged="@((string v) => OnDraftPassageCountChanged(difficulty, v))"
+                                                              Label="@Resource.GroupedQuestions"
+                                                              Variant="Variant.Outlined"
+                                                              InputType="InputType.Number"
+                                                              Margin="Margin.Dense"
+                                                              Immediate="true"
+                                                              Style="min-width: 180px; width: 100%; max-width: 220px;"
+                                                              Disabled="@(!HasQuestionCount(difficulty))" />
+
+                                                <MudTextField Value="@(_draftSubQCount.TryGetValue(difficulty, out var ds) ? (ds ?? 0).ToString() : "0")"
+                                                              ValueChanged="@((string v) => OnDraftSubQuestionChanged(difficulty, v))"
+                                                              Label="@Resource.SubQuestionsPerPassage"
+                                                              Variant="Variant.Outlined"
+                                                              InputType="InputType.Number"
+                                                              Margin="Margin.Dense"
+                                                              Immediate="true"
+                                                              Style="min-width: 180px; width: 100%; max-width: 220px;"
+                                                              Disabled="@(!HasQuestionCount(difficulty))" />
+
+                                                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                                                               Color="Color.Primary"
+                                                               Variant="Variant.Filled"
+                                                               Size="Size.Medium"
+                                                               Title="@Resource.Add"
+                                                               OnClick="@(() => AddSubQuestionRow(difficulty))" />
+                                            </div>
+
+                                            @if (hasDraftSubQ)
+                                            {
+                                                @if (draftAvail == 0)
+                                                {
+                                                    <MudText Typo="Typo.caption"
+                                                             Class="d-block mb-2"
+                                                             Style="color: var(--mud-palette-error);">
+                                                        @Resource.NoPassagesAvailable
+                                                    </MudText>
+                                                }
+                                                else
+                                                {
+                                                    <MudText Typo="Typo.caption"
+                                                             Class="d-block mb-2"
+                                                             Style="color: var(--mud-palette-success);">
+                                                        @Resource.Available: @draftAvail
+                                                    </MudText>
+                                                }
+                                            }
+
+                                            @if (rows.Any())
+                                            {
+                                                <div class="d-flex flex-wrap gap-2 mt-1 mb-1">
+                                                    @foreach (var row in rows.ToList())
+                                                    {
+                                                        <MudChip T="string"
+                                                                 Color="Color.Primary"
+                                                                 Variant="Variant.Filled"
+                                                                 Size="Size.Small"
+                                                                 OnClose="@(() => RemoveSubQuestionRow(difficulty, row))"
+                                                                 Style="font-size: 13px; font-weight: 500;">
+                                                            @row.Count, @row.SubQuestionsCount
+                                                        </MudChip>
+                                                    }
+                                                </div>
+
+                                                @if (passageCount > 0)
+                                                {
+                                                    <MudText Typo="Typo.caption" Class="d-block mt-1">
+                                                        @Resource.Total: @rowSum / @passageCount
+                                                        @if (sumOk)
+                                                        {
+                                                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                                                                     Size="Size.Small"
+                                                                     Style="color: var(--mud-palette-success); vertical-align: middle; margin-left: 4px;" />
+                                                        }
+                                                    </MudText>
+                                                }
+                                            }
+                                        }
+                                    </MudCardContent>
+                                </MudCard>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudPaper>
+            </MudTabPanel>
+            @if (MixedSelectedQuestions?.TotalManualQuestions != null && MixedSelectedQuestions.TotalManualQuestions.Any())
+            {
+                <MudTabPanel Text="@Resource.ManualDistribution" Icon="@Icons.Material.Outlined.Handyman">
+                    <MudPaper Class="pa-4" Elevation="3">
+                        <div class="d-flex flex-row justify-content-between align-center mb-4">
+                            <MudText Typo="Typo.subtitle2">
+                                @Resource.Selectspecificquestionsmanually
+                            </MudText>
+                            <MudChip T="long" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+                                @MixedSelectedQuestions.TotalManualQuestions.Count(q => q.IsSelected) /
+                                @MixedSelectedQuestions.TotalManualQuestions.Count @Resource.selected
+                            </MudChip>
+                        </div>
+                        <MudDivider Class="mb-4" />
+                        @foreach (var group in MixedSelectedQuestions.TotalManualQuestions.GroupBy(q => q.DifficultyLevelName))
+                        {
+                            var selectedCount = group.Count(q => q.IsSelected);
+                            var totalCount = group.Count();
+
+                            <MudCard Class="mb-4" Style="@($"border-left: 4px solid {GetDifficultyColor(group.Key)};")">
+                                <MudCardContent>
+                                    <div class="d-flex align-center mb-2">
+                                        <MudIcon Icon="@GetDifficultyIcon(group.Key)"
+                                                 Class="mr-2"
+                                                 Style="@($"color: {GetDifficultyColor(group.Key)};")" />
+                                        <MudText Typo="Typo.subtitle1" Class="font-weight-bold"
+                                                 Style="@($"color: {GetDifficultyColor(group.Key)};")">
+                                            @group.Key
+                                        </MudText>
+                                        <MudSpacer />
+                                        <MudChip T="long" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small">
+                                            @selectedCount / @totalCount @Resource.selected
+                                        </MudChip>
+                                    </div>
+
+                                    <div style="max-height: 300px; overflow-y: scroll;">
+                                        <MudList T="bool" Class="pa-0" Dense="true">
+                                            @foreach (var question in group)
+                                            {
+                                                <MudCard Class="mb-2 shadow-sm hover:shadow-md transition-all rounded-lg">
+                                                    <MudCardContent Class="p-2">
+                                                        <MudListItem Class="disable-ripple" Style="background: transparent !important;">
+                                                            <div class="d-flex flex-row align-center" style="width: 100%;">
+                                                                <MudCheckBox T="bool"
+                                                                             Value="question.IsSelected"
+                                                                             ValueChanged="@((bool value) => OnQuestionSelectionChanged(question, value))"
+                                                                             Dense="true"
+                                                                             Class="mr-2 my-0" />
+                                                                <MudText Class="font-weight-bold"
+                                                                         Typo="Typo.body2"
+                                                                         Style="min-width: 100px;">
+                                                                    @question.Code
+                                                                </MudText>
+                                                                @if (IsComprehension)
+                                                                {
+                                                                    <MudChip T="int"
+                                                                             Color="Color.Info"
+                                                                             Variant="Variant.Outlined"
+                                                                             Size="Size.Small"
+                                                                             Class="ml-2"
+                                                                             Style="font-size: 11px;">
+                                                                        @question.SubQuestionsCount @Resource.SubQuestion
+                                                                    </MudChip>
+                                                                }
+                                                                <div class="flex-grow-1 question-body-context" style="overflow: hidden;">
+                                                                    <MudText Typo="Typo.body2" Class="@($"question-text {(_expandedQuestionIds.Contains(question.Id) ? "expanded" : "collapsed")}")">
+                                                                        @((MarkupString)CleanHtmlLineBreaks(question.Body ?? string.Empty))
+                                                                    </MudText>
+                                                                    @if (!string.IsNullOrWhiteSpace(question.Body) && HtmlTagsCleaner.Clean(question.Body).Length > MiscConstants.QuestionBodyExpandingThreshold)
+                                                                    {
+                                                                        <span class="read-more-btn"
+                                                                              @onclick="() => ToggleQuestionBodyExpand(question.Id)"
+                                                                              @onclick:stopPropagation="true"
+                                                                              @onmousedown:stopPropagation="true"
+                                                                              @onpointerdown:stopPropagation="true">
+                                                                            @(_expandedQuestionIds.Contains(question.Id) ? Resource.ReadLess : Resource.ReadMore)
+                                                                        </span>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </MudListItem>
+                                                    </MudCardContent>
+                                                </MudCard>
+                                            }
+                                        </MudList>
+                                    </div>
+                                </MudCardContent>
+                            </MudCard>
+                        }
+                    </MudPaper>
+                </MudTabPanel>
+            }
+        </MudTabs>
+
+        @if (_hasError)
+        {
+            <MudAlert Severity="Severity.Error" Class="mt-4" ContentAlignment="HorizontalAlignment.Start">@_errorMessage</MudAlert>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudStack Row="true"
+                  Spacing="4"
+                  Class="w-50 d-flex justify-content-center mt-2"
+                  Justify="Justify.Center"
+                  AlignItems="AlignItems.Center">
+            <MudButton Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       Size="Size.Small"
+                       Class="flex-grow-1 p-2 rounded-pill"
+                       OnClick="SaveDistribution"
+                       EndIcon="@Icons.Material.Filled.CheckCircle">
+                @(IsUpdateMode? Resource.Update: Resource.Select)
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       Size="Size.Small"
+                       Class="flex-grow-1 p-2 rounded-pill"
+                       OnClick="CancelDistribution"
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Cancel
+            </MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

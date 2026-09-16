@@ -1,0 +1,351 @@
+@page "/EditBlock"
+
+@using OES.Blazor.Services.Interfaces.Question
+@using OES.Helper.Dtos.Block.Responses
+@using OES.Helper.Dtos.DifficultyLevel
+@using OES.Helper.Dtos.DeltaType
+@using OES.Helper.Dtos.DifficultyProfile
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.Dtos.Questionlanguage
+@using OES.Helper.Dtos.QyestionType
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Enums
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("EditBlock")]
+
+<PageTitle>@Resource.EditBlock</PageTitle>
+
+<EditForm Model="@Model" OnSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+
+    <MudCard Class="mx-auto mt-5 w-100 shadow-lg p-4">
+        @if (!_isLoading)
+        {
+            <MudCardContent>
+                <div class="text-center">
+                    <MudSkeleton Width="50%" Height="60px" Class="mx-auto mb-4" />
+                </div>
+
+                <MudPaper Elevation="0" Class="p-4 mb-3 mt-3 border rounded">
+                    <MudSkeleton Width="30%" Height="30px" Class="mb-4" />
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <MudSkeleton Height="56px" Class="mb-3" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <MudSkeleton Height="56px" Class="mb-3" />
+                        </div>
+                        <div class="col-12">
+                            <MudSkeleton Height="100px" Class="mb-3" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <MudSkeleton Height="56px" Class="mb-3" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <MudSkeleton Height="56px" Class="mb-3" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <MudSkeleton Height="56px" Class="mb-3" />
+                        </div>
+                    </div>
+                </MudPaper>
+            </MudCardContent>
+        }
+        else
+        {
+            <MudCardContent>
+
+                <!-- Title -->
+                <div class="text-center d-flex w-80 justify-content-center align-items-center">
+                    <MudIcon Icon="@Icons.Material.Filled.BorderAll" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+                    <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">@Resource.EditBlock</MudText>
+                </div>
+
+                <MudPaper Elevation="0" Class="p-4 mb-3 mt-3 border rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <MudText Typo="Typo.h6">
+                            @Resource.BlockInformation
+                        </MudText>
+
+                        <MudIconButton Icon="@Icons.Material.Filled.GroupAdd"
+                                       Variant="@Variant.Filled"
+                                       Color="@Color.Primary"
+                                       Size="@Size.Medium"
+                                       Class=@($"label-{nameof(Resource.ManageGroups)}")
+                                       OnClick="OpenGroupDialog" />
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <MudTextField Label="@Resource.Name"
+                                          Variant="Variant.Outlined"
+                                          Immediate
+                                          Required
+                                          Clearable
+                                          Class="mb-3 w-100"
+                                          T="string"
+                                          Value="Model.Name"
+                                          ValueChanged="OnBlockNameChanged"
+                                          RequiredError="@Resource.NameIsRequired" />
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <MudTextField Label="@Resource.Code"
+                                          Variant="Variant.Outlined"
+                                          Immediate
+                                          Required
+                                          Clearable
+                                          Value="@Model.Code"
+                                          ValueChanged="@((string val) => Model.Code = ListHelpers.SanitizeCode(val))"
+                                          Class="mb-3 w-100"
+                                          RequiredError="@Resource.CodeIsRequired" />
+                        </div>
+
+                        <div class="col-12">
+                            <MudTextField Label="@Resource.Description"
+                                          Variant="Variant.Outlined"
+                                          Lines="3"
+                                          Immediate
+                                          @bind-Value="Model.Description"
+                                          For="@(() => Model.Description)"
+                                          Class="mb-3 w-100" />
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <MudSelect T="QuestionCategoryDto"
+                                   Label="@Resource.SelectCategory"
+                                   Disabled="true"
+                                   Value="_selectedBlockType"
+                                   ValueChanged="OnBlockTypeChanged"
+                                   Variant="Variant.Outlined"
+                                   Class="mb-3 w-100"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var type in _blockTypes ?? [])
+                            {
+                                <MudSelectItem Value="@type">@type.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </div>
+
+                    <MudDivider />
+
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <MudSelect T="GetDeltaTypeDto"
+                                       Label="@Resource.SelectDeltaType"
+                                       Disabled="true"
+                                       Variant="Variant.Outlined"
+                                       Value="_selectedDeltaTypeInput"
+                                       ValueChanged="OnDeltaTypeChanged"
+                                       Class="mb-3 w-100"
+                                       AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var type in _deltaTypes ?? [])
+                                {
+                                    <MudSelectItem Value="@type">@type.Name</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <MudSelect T="ProfileDto"
+                                       Label="@Resource.SelectDifficultyProfile"
+                                       Clearable="true"
+                                       Disabled="true"
+                                       @bind-Value="_selectedDifficultyProfileInput"
+                                       Variant="Variant.Outlined"
+                                       Class="mb-3 w-100"
+                                       AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var profile in _difficultyProfiles ?? [])
+                                {
+                                    <MudSelectItem Value="@profile">@profile.Name</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <MudSelect T="DifficultyLevelDto"
+                                       Label="@Resource.SelectDiffcultyLevel"
+                                       Clearable="true"
+                                       Disabled="true"
+                                       @bind-Value="_selectedDifficultyLevelInput"
+                                       Variant="Variant.Outlined"
+                                       Class="mb-3 w-100"
+                                       AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var difficultyLevel in _difficultyLevels ?? [])
+                                {
+                                    <MudSelectItem Value="@difficultyLevel">@difficultyLevel.Name</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <MudSelect T="LanguageDto"
+                                       Label="@Resource.Language"
+                                       Clearable="true"
+                                       Disabled="true"
+                                       @bind-Value="_selectedLanguage"
+                                       Variant="Variant.Outlined"
+                                       Class="mb-3 w-100"
+                                       AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var lang in _languages ?? [])
+                                {
+                                    <MudSelectItem Value="@lang">@lang.Name</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+
+                        <div class="col-12 mt-2 mb-3">
+                            <MudSwitch T="bool"
+                                       Value="ConsiderDifficultyLevel"
+                                       Label="@Resource.ConsiderDifficultyLevel"
+                                       Color="Color.Primary"
+                                       Disabled="true" />
+                            <MudText Typo="Typo.caption" Class="text-muted d-block mt-1" Style="color: var(--mud-palette-text-secondary);">
+                                @Resource.ConsiderDifficultyLevelTooltip
+                            </MudText>
+                            @if (!ConsiderDifficultyLevel)
+                            {
+                                <MudAlert Severity="Severity.Warning" ContentAlignment="HorizontalAlignment.Start" Class="w-100 mt-2">
+                                    @Resource.ConsiderDifficultyLevelWarning
+                                </MudAlert>
+                            }
+                        </div>
+                    </div>
+                </MudPaper>
+
+                <!-- Filter Section -->
+                <MudPaper Class="mt-4" Style="display: flex; flex-direction: column; border-radius: 8px;" Elevation="1">
+                    <MudExpansionPanels Class="mb-2">
+                        <MudExpansionPanel Text="@Resource.FilterOptions"
+                                           Icon="@Icons.Material.Filled.FilterList">
+                            <div class="row">
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <MudSelect T="RootItemBankDto"
+                                               Label="@Resource.SelectItemBank"
+                                               Clearable="true"
+                                               @bind-Value="SelectedItemBank"
+                                               Variant="Variant.Outlined"
+                                               Class="mb-3 w-100"
+                                               AnchorOrigin="Origin.BottomCenter">
+                                        @foreach (var itembank in _itemBanks ?? [])
+                                        {
+                                            <MudSelectItem Value="@itembank">@itembank.Name</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <MudSelect T="QuestionTypeDto"
+                                               Label="@Resource.SelectType"
+                                               @bind-Value="SelectedQuestionType"
+                                               Variant="Variant.Outlined"
+                                               Class="mb-3 w-100"
+                                               AnchorOrigin="Origin.BottomCenter">
+                                        @foreach (var type in _questionTypes ?? [])
+                                        {
+                                            <MudSelectItem Value="@type">@type.Name</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </div>
+
+                            </div>
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
+
+                    <!-- Questions List Section with Scroll -->
+                    <div style="flex: 1; overflow-y: auto; min-height: 250px; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 10px;">
+                        <ListItem @key="_questionsListChangingKey"
+                                  T=ApprovedQuestionsPaginationDto
+                                  Caption="@Resource.Questions"
+                                  CaptionIcon="@Icons.Material.Outlined.ListAlt"
+                                  EndpointServerice="BlazQuestionService.GetAllApprovedQuestionsForBlocksAsync"
+                                  DisplayColumns='["Code", "Type", "Body", "ItemBank", "Language", "Subject", "Category", "DifficultyProfile", "DifficultyLevel"]'
+                                  SearchPanelVisible="false"
+                                  Hide_DescriptionSearch="true"
+                                  FilterObject="_questionFilterPaginationModel">
+                            <ButtonChildContent Context="currentQuestion">
+                                <MudTooltip Text="@Resource.SelectQuestion">
+                                    <MudFab Disabled="@(_selectedQuestions.Select(x => x.Id).Contains(((ApprovedQuestionsPaginationDto)currentQuestion).Id))"
+                                            Class=@($"me-2 ms-2 label-{nameof(Resource.SelectQuestion)}")
+                                            Color="Color.Success"
+                                            EndIcon="@(_selectedQuestions.Select(x => x.Id).Contains(((ApprovedQuestionsPaginationDto)currentQuestion).Id) ? Icons.Material.Filled.Check : Icons.Material.Filled.Add)"
+                                            Size="Size.Small"
+                                            OnClick="@(() => SelectedQuestionChanged(currentQuestion))" />
+                                </MudTooltip>
+                            </ButtonChildContent>
+                        </ListItem>
+                    </div>
+
+                    <!-- Selected Questions Table -->
+                    <MudPaper Class="mt-5 pa-4" Elevation="3">
+                        <MudText Typo="Typo.h6" Class="mb-4">@Resource.SelectedQuestions (@_selectedQuestions.Count)</MudText>
+                        @if (_selectedQuestions.Any())
+                        {
+                            <div style="max-height: 200px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 4px;">
+                                <MudTable Items="@_selectedQuestions" Elevation="2" Hover="true" Striped="true" Bordered="true" Dense="true" Breakpoint="Breakpoint.Sm">
+                                    <HeaderContent>
+                                        <MudTh>@Resource.Code</MudTh>
+                                        <MudTh>@Resource.Type</MudTh>
+                                        <MudTh>@Resource.ItemBank</MudTh>
+                                        <MudTh>@Resource.Subject</MudTh>
+                                        <MudTh>@Resource.Actions</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate Context="question">
+                                        <MudTd DataLabel="@Resource.Code">@question.Code</MudTd>
+                                        <MudTd DataLabel="@Resource.Type">@question.Type</MudTd>
+                                        <MudTd DataLabel="@Resource.ItemBank">@question.ItemBank</MudTd>
+                                        <MudTd DataLabel="@Resource.Subject">@question.Subject</MudTd>
+                                        <MudTd>
+                                            <MudTooltip Text="@Resource.ReturnToQuestionsPool">
+                                                <MudIconButton Icon="@Icons.Material.Filled.Undo"
+                                                               Color="Color.Primary"
+                                                               Size="Size.Medium"
+                                                               Class=@($"label-{nameof(Resource.ReturnToQuestionsPool)}")
+                                                               OnClick="@(() => RemoveQuestion(question))" />
+                                            </MudTooltip>
+                                        </MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+                            </div>
+                        }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Info" Class="my-2">@Resource.Noquestionsselected</MudAlert>
+                        }
+                    </MudPaper>
+
+                </MudPaper>
+
+            </MudCardContent>
+
+            <MudCardActions Class="justify-content-center mt-2">
+                <MudStack Row="true"
+                          Spacing="4"
+                          Class="w-50"
+                          Justify="Justify.Center"
+                          AlignItems="AlignItems.Center">
+                    <GeneralLoadingButton ButtonText="@Resource.Update"
+                                          Size="Size.Small"
+                                          Class="flex-grow-1 p-2 rounded-pill"
+                                          EndIcon="@Icons.Material.Filled.CheckCircle"
+                                          Type="ButtonType.Submit"
+                                          Disabled="IsSubmitButtonDisabled" />
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Secondary"
+                               Size="Size.Small"
+                               Class="flex-grow-1 p-2 rounded-pill"
+                               OnClick="NavigateBack"
+                               StartIcon="@Icons.Material.Filled.Cancel">
+                        @Resource.Cancel
+                    </MudButton>
+                </MudStack>
+            </MudCardActions>
+        }
+    </MudCard>
+</EditForm>

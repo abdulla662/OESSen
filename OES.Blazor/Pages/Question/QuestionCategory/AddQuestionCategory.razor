@@ -1,0 +1,116 @@
+﻿@page "/AddCategory"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using System.Globalization
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("AddQuestionCategory")]
+
+<PageTitle>@Resource.CreateQuestionCategory</PageTitle>
+
+<EditForm Model="@model">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-80 p-4 shadow-lg">
+        <MudCardContent>
+            <div class="d-flex justify-content-center align-items-center mb-6">
+                <MudIcon Icon="@Icons.Material.Rounded.Category" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h4" Style="line-height: 1;">
+                    @Resource.CreateQuestionCategory
+                </MudText>
+            </div>
+
+            <div class="form-group">
+                <MudTextField Label="@Resource.Name"
+                              Required="true"
+                              Immediate="true"
+                              @bind-Value="model.Name"
+                              For="@(() => model.Name)"
+                              Class="mb-3"
+                              Variant="Variant.Outlined" />
+            </div>
+
+            <MudExpansionPanels Elevation="0" Class="mb-3 border rounded">
+                <MudExpansionPanel Text="@Resource.AdaptiveSettingsOptional">
+                    <MudGrid>
+
+                        <MudItem xs="12" sm="4">
+                            <MudNumericField T="decimal?"
+                                             @bind-Value="model.StandardDeviation"
+                                             Label="@Resource.StandardDeviation"
+                                             Variant="Variant.Outlined"
+                                             Min="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Step="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Culture="@(CultureInfo.InvariantCulture)" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="4">
+                            <MudNumericField T="decimal?"
+                                             @bind-Value="model.StandardError1"
+                                             Label="@Resource.StandardError1"
+                                             Variant="Variant.Outlined"
+                                             Min="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Step="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Culture="@(CultureInfo.InvariantCulture)" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="4">
+                            <MudNumericField T="decimal?"
+                                             @bind-Value="model.StandardError2"
+                                             Label="@Resource.StandardError2"
+                                             Variant="Variant.Outlined"
+                                             Min="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Step="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Culture="@(CultureInfo.InvariantCulture)" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudNumericField T="decimal?"
+                                             @bind-Value="model.BaseValue1"
+                                             Label="@Resource.BaseValue1"
+                                             Variant="Variant.Outlined"
+                                             Min="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Step="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Culture="@(CultureInfo.InvariantCulture)" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudNumericField T="decimal?"
+                                             @bind-Value="model.BaseValue2"
+                                             Label="@Resource.BaseValue2"
+                                             Variant="Variant.Outlined"
+                                             Min="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Step="@MiscConstants.MinAdaptiveDecimalValue"
+                                             Culture="@(CultureInfo.InvariantCulture)" />
+                        </MudItem>
+
+                    </MudGrid>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </MudCardContent>
+
+        <MudCardActions Class="justify-content-center mt-2">
+            <MudStack Row="true"
+                      Spacing="4"
+                      Class="w-50"
+                      Justify="Justify.Center"
+                      AlignItems="AlignItems.Center">
+                <GeneralLoadingButton ButtonText="@Resource.Save"
+                                      Size="Size.Small"
+                                      Class="flex-grow-1 p-2 rounded-pill"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit"
+                                      OnClick="OnValidSubmitAsync"
+                                      Disabled="@(string.IsNullOrWhiteSpace(model.Name))" />
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           OnClick="Cancel"
+                           EndIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudCardActions>
+    </MudCard>
+</EditForm>

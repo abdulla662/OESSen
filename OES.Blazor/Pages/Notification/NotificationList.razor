@@ -1,0 +1,18 @@
+﻿@page "/NotificationList"
+
+@using OES.Helper.Dtos.NotificationDto
+
+<PageTitle>@Resource.NotificationsList</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-4">
+    <MudIcon Icon="@Icons.Material.Filled.Notifications" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+    <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">@Resource.NotificationsList</MudText>
+</div>
+
+<ListItem T="CustomNotificationDto"
+          Caption="@Resource.NotificationsList"
+          CaptionIcon="@Icons.Material.Filled.Notifications"
+          EndpointServerice="GetAllNotificationPaginated"
+          DisplayColumns='[nameof(CustomNotificationDto.Message)]'
+          CRUD_View_Btn="true"
+          ViewClick_fun="@OpenNotificationDialog" />

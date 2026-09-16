@@ -1,0 +1,35 @@
+﻿@using OES.Helper.Dtos.Schedule.Responses
+@using OES.Helper.Enums
+
+<ListItem T="SchedulePaperPaginationDto"
+          Caption="@Resource.SchedulePapers"
+          CaptionIcon="@Icons.Material.Filled.Schedule"
+          @key="_schedulePapersListKey"
+          DisplayColumns='[nameof(SchedulePaperPaginationDto.PaperName),
+                           nameof(SchedulePaperPaginationDto.PaperCode),
+                           nameof(SchedulePaperPaginationDto.StartDate),
+                           nameof(SchedulePaperPaginationDto.StartTime),
+                           nameof(SchedulePaperPaginationDto.EndDate),
+                           nameof(SchedulePaperPaginationDto.EndTime),
+                           nameof(SchedulePaperPaginationDto.PaperSettingsConfiguredDescription),
+                           nameof(SchedulePaperPaginationDto.CandidatesCount)]'
+          NoConvertColumns='[nameof(SchedulePaperPaginationDto.PaperCode)]'
+          EndpointServerice="GetAllSchedulePapersAsync"
+          SearchPanelVisible="true"
+          Hide_DescriptionSearch="true"
+          CRUD_Delete_Btn="true"
+          CRUD_Edit_Btn="true"
+          Create_Btn="true"
+          CreateClick_fun="AddSchedulePaperAsync"
+          EditClick_fun="UpdateSchedulePaperAsync"
+          DeleteClick_fun="DeleteSchedulePaperAsync">
+    <ButtonChildContent Context="schedulePapersContext">
+        <MudTooltip Text="@Resource.Configurations">
+            <MudFab Class=@($"fab-xsmall label-{nameof(Resource.Configurations)}")
+                    Color="Color.Secondary"
+                    EndIcon="@Icons.Material.Filled.SettingsApplications"
+                    Size="Size.Small"
+                    OnClick="() => ConfigureSchedulePaperSettingsAsync((SchedulePaperPaginationDto)schedulePapersContext)" />
+        </MudTooltip>
+    </ButtonChildContent>
+</ListItem>

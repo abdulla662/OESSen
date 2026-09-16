@@ -1,0 +1,68 @@
+﻿
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Tune" Class="mr-2" /> @Resource.SectionProperties
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <EditForm Model="@Section">
+            <MudStack Spacing="2">
+                <MudSelect T="int"
+                           @bind-Value="Section.OrderId"
+                           Variant="Variant.Outlined"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Label="@Resource.SectionOrder">
+                    @foreach (var orderNumber in AvailableOrderNumbers)
+                    {
+                        <MudSelectItem Value="@orderNumber">@orderNumber</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudCheckBox T="bool" Value="Section.IsRestrictedTime" ValueChanged=@OnIsRestrictedInTimeChanged Label="@Resource.EnableRestrictedTime" />
+
+                <MudItem Class="d-flex gap-4 align-center">
+                    <MudNumericField @bind-Value="SectionTimeInMinutes"
+                                     Disabled=@(!Section.IsRestrictedTime)
+                                     Variant="Variant.Outlined"
+                                     Immediate
+                                     Min="0"
+                                     Label="@Resource.Minutes" />
+                    <MudNumericField @bind-Value="SectionTimeInSeconds"
+                                     Disabled=@(!Section.IsRestrictedTime)
+                                     Variant="Variant.Outlined"
+                                     Immediate
+                                     Min="0"
+                                     Max="59"
+                                     Label="@Resource.Seconds" />
+                </MudItem>
+
+                <MudCheckBox T="bool" @bind-Value="Section.IsRandom" Label="@Resource.Randomize" />
+            </MudStack>
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudStack Row="true"
+                  Spacing="4"
+                  Class="w-50 d-flex justify-content-center mt-2"
+                  Justify="Justify.Center"
+                  AlignItems="AlignItems.Center">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Small"
+                       Class="flex-grow-1 p-2 rounded-pill"
+                       OnClick="Save"
+                       EndIcon="@Icons.Material.Filled.CheckCircle">
+                @Resource.Save
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       Size="Size.Small"
+                       Class="flex-grow-1 p-2 rounded-pill"
+                       OnClick="Cancel"
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Cancel
+            </MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

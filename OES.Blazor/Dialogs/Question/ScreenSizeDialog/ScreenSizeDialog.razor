@@ -1,0 +1,18 @@
+﻿
+<MudDialog>
+    <TitleContent>@Resource.SelectScreenSize</TitleContent>
+
+    <DialogContent>
+        <MudRadioGroup @bind-Value="SelectedScreenSize">
+            @foreach (var pair in ScreenSizes)
+            {
+                <MudRadio Value="@pair.Value">@pair.Key</MudRadio>
+            }
+        </MudRadioGroup>
+    </DialogContent>
+
+     <DialogActions>
+        <MudButton OnClick="@Confirm" Color="Color.Primary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Preview">@Resource.View</MudButton>
+        <MudButton OnClick="@Cancel" Color="Color.Secondary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+     </DialogActions>
+</MudDialog>

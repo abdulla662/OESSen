@@ -1,0 +1,11 @@
+﻿@using Blazored.SessionStorage
+@inject ISessionStorageService SessionStorageService
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await SessionStorageService.RemoveItemAsync("token");
+        NavigationManager.NavigateTo("/login", replace: true);
+    }
+}

@@ -1,0 +1,65 @@
+﻿@typeparam T
+
+<MudStack Row Spacing="2" Justify="Justify.Center" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Style="flex-wrap: nowrap">
+    @if (ButtonChildContent is not null)
+    {
+        @ButtonChildContent(Item)
+    }
+
+    @if (CRUD_Add_Btn == true)
+    {
+        <MudTooltip Text="@Resource.Add">
+            <MudFab Color="Color.Success"
+                    EndIcon="@Icons.Material.Filled.Add"
+                    Size="Size.Small"
+                    Class=@($"fab-xsmall label-{nameof(Resource.Add)}")
+                    OnClick='() => PerformAddBtnClick(this.ObjectId)' />
+        </MudTooltip>
+    }
+
+    @if (CRUD_Info_Btn == true)
+    {
+        <MudTooltip Text="@Resource.Info">
+            <MudFab Color="Color.Primary"
+                    EndIcon="@Icons.Material.Filled.Info"
+                    Size="Size.Small"
+                    Class=@($"fab-xsmall label-{nameof(Resource.Info)}")
+                    OnClick='() => PerformInfoBtnClick(this.ObjectId)' />
+        </MudTooltip>
+    }
+
+    @if (CRUD_View_Btn == true)
+    {
+        <MudTooltip Text="@Resource.View">
+            <MudFab Color="Color.Primary"
+                    EndIcon="@Icons.Material.Filled.ViewList"
+                    Size="Size.Small"
+                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                    OnClick='() => PerformViewBtnClick(this.ObjectId)' />
+        </MudTooltip>
+    }
+
+    @if (CRUD_Edit_Btn)
+    {
+        <MudTooltip Text="@Resource.Edit">
+            <MudFab Color="Color.Secondary"
+                    Disabled="@CRUD_Edit_Disabled"
+                    EndIcon="@Icons.Material.Filled.Edit"
+                    Size="Size.Small"
+                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                    OnClick='() => PerformEditBtnClick(this.ObjectId)' />
+        </MudTooltip>
+    }
+
+    @if (CRUD_Delete_Btn)
+    {
+        <MudTooltip Text="@Resource.Delete">
+            <MudFab Color="Color.Error"
+                    Disabled="@CRUD_Delete_Disabled"
+                    EndIcon="@Icons.Material.Filled.Delete"
+                    Size="Size.Small"
+                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                    OnClick='() => PerformDeleteBtnClick(this.ObjectId)' />
+        </MudTooltip>
+    }
+</MudStack>

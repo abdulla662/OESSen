@@ -1,0 +1,21 @@
+.header-container {
+    display: flex;
+    align-items: center;
+}
+
+.setting-card {
+    min-height: 160px;
+    padding: 20px;
+}
+
+.setting-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}

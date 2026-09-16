@@ -1,0 +1,54 @@
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-items-start justify-content-between w-100">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <MudIcon Icon="@Icons.Material.Filled.NotificationsActive" Color="Color.Primary" Size="Size.Small" />
+                    <span class="fw-bold fs-6">@Resource.NotificationDetails</span>
+                </div>
+                <div class="text-muted ms-4" style="font-size:11px;">
+                    @(NotificationItem?.CreationDate.ToString("MMM dd, yyyy • HH:mm") ?? DateTime.Now.ToString("MMM dd, yyyy • HH:mm"))
+                </div>
+            </div>
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                           Size="Size.Small"
+                           OnClick="Close"
+                           Class="ms-1" />
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        @if (_loading)
+        {
+            <div class="d-flex flex-column align-items-center justify-content-center py-5">
+                <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Medium" />
+                <span class="text-muted mt-3 small">@Resource.Loading</span>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-3 pb-2">
+
+                <div class="d-flex align-items-center gap-3 p-3 rounded-3 border border-1">
+                    <div class="bg-primary bg-opacity-10 rounded-3 p-2 d-flex align-items-center justify-content-center" style="width:46px; height:46px; flex-shrink:0;">
+                        <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Primary" />
+                    </div>
+                    <div>
+                        <div class="fw-semibold">@NotificationItem?.Notification?.Subject</div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <hr class="flex-grow-1 my-0 opacity-25" />
+                    <MudIcon Icon="@Icons.Material.Filled.Message" Size="Size.Small" Class="text-muted opacity-50" />
+                    <hr class="flex-grow-1 my-0 opacity-25" />
+                </div>
+
+                <div class="p-3 rounded-3 border border-primary border-opacity-25 bg-primary bg-opacity-10">
+                    <p class="mb-0 lh-lg">@NotificationItem?.Notification?.Message</p>
+                </div>
+
+            </div>
+        }
+    </DialogContent>
+</MudDialog>

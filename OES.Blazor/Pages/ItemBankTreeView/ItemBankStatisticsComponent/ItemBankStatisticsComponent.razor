@@ -1,0 +1,68 @@
+﻿<MudPaper Elevation="0" Class="pa-4 border rounded-3 p-4">
+
+    <!-- Header -->
+    <div class="d-flex align-items-center gap-2 mb-4">
+        <MudIcon Icon="@Icons.Material.Outlined.BarChart" Color="Color.Primary" Size="Size.Small" />
+        <MudText Typo="Typo.overline" Color="Color.Secondary" Class="fw-semibold">
+            @Resource.ItemBankStatistics
+        </MudText>
+    </div>
+
+    <!-- Total Questions -->
+    <div class="d-flex align-items-center justify-content-between rounded-3 p-3 mb-4 border border-primary bg-primary bg-opacity-10">
+        <div class="d-flex align-items-center gap-2">
+            <MudIcon Icon="@Icons.Material.Filled.QuestionMark" Color="Color.Primary" />
+            <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="fw-semibold">
+                @Resource.TotalQuestionsPerCurrentNode
+            </MudText>
+        </div>
+        <MudChip T="string" Color="Color.Primary" Size="Size.Medium" Class="fw-bold">
+            @_itemBankStatisticsDto.QuestionsCount
+        </MudChip>
+    </div>
+
+    <!-- Question Types -->
+    <div class="mb-4">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <MudIcon Icon="@Icons.Material.Filled.AutoAwesomeMotion" Color="Color.Secondary" Size="Size.Small" />
+            <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="fw-semibold text-uppercase small">
+                @Resource.ExistedTypes
+            </MudText>
+        </div>
+        <div class="d-flex flex-wrap gap-2 ps-1">
+            @foreach (var item in _itemBankStatisticsDto.ItemBankStatisticsType)
+            {
+                <div class="d-flex align-items-center gap-2 px-3 py-1 border rounded-pill">
+                    <MudText Typo="Typo.body2" Class="fw-medium bg-transparent" Color="Color.Primary">@item.QuestionType</MudText>
+                    <MudChip T="string" Color="Color.Warning" Size="Size.Small" Class="fw-semibold">
+                        @item.QuestionCount
+                    </MudChip>
+                </div>
+            }
+        </div>
+    </div>
+
+    <MudDivider Class="my-3" />
+
+    <!-- Difficulty Levels -->
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <MudIcon Icon="@Icons.Material.Filled.Speed" Color="Color.Secondary" Size="Size.Small" />
+            <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="fw-semibold text-uppercase small">
+                @Resource.ExistedDifficultyLevels
+            </MudText>
+        </div>
+        <div class="d-flex flex-wrap gap-2 ps-1">
+            @foreach (var level in _itemBankStatisticsDto.ItemBankStatisticsDifficultyLevel)
+            {
+                <div class="d-flex align-items-center gap-2 px-3 py-1 border rounded-pill">
+                    <MudText Typo="Typo.body2" Class="fw-medium bg-transparent" Color="Color.Primary">@level.QuestionDifficultyLevel</MudText>
+                    <MudChip T="string" Color="Color.Warning" Size="Size.Small" Class="fw-semibold">
+                        @level.QuestionCount
+                    </MudChip>
+                </div>
+            }
+        </div>
+    </div>
+
+</MudPaper>

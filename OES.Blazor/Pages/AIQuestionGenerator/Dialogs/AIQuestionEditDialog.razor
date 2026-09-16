@@ -1,0 +1,52 @@
+@using OES.Blazor.Pages.Question.QuestionTypes
+@using OES.Helper.Dtos.AIQuestionGenerator.Response
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center justify-space-between w-100">
+
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+            <MudText Typo="Typo.h6" Color="Color.Warning">@Resource.Edit</MudText>
+
+            <MudIconButton Icon="@Icons.Material.Filled.GroupAdd"
+                           Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           Size="Size.Medium"
+                           OnClick="OpenGroupDialog" />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        @if (Question != null && _questionDetailsModel != null)
+        {
+            <MudPaper Class="pa-4" Elevation="0">
+                @if (QuestionTypeName == nameof(QuestionType.Essay))
+                {
+                    <EssayQuestionComponent Model="_questionDetailsModel"
+                                            FormHandler="OnFormSubmittedAsync"
+                                            DialogCancellationCallback="Cancel"
+                                            IsReplaceMode="true"
+                                            CameFromAIQuestionsGenerator="_cameFromAIQuestionsGenerator" />
+                }
+                else if (QuestionTypeName == nameof(QuestionType.TrueAndFalse))
+                {
+                    <TrueOrFalseComponent Model="_questionDetailsModel"
+                                          FormHandler="OnFormSubmittedAsync"
+                                          DialogCancellationCallback="Cancel"
+                                          IsReplaceMode="true"
+                                          CameFromAIQuestionsGenerator="_cameFromAIQuestionsGenerator" />
+                }
+                else if (QuestionTypeName == nameof(QuestionType.MCQ))
+                {
+                    <MCQQuestionComponent Model="_questionDetailsModel"
+                                          FormHandler="OnFormSubmittedAsync"
+                                          DialogCancellationCallback="Cancel"
+                                          IsReplaceMode="true"
+                                          CameFromAIQuestionsGenerator="_cameFromAIQuestionsGenerator" />
+                }
+            </MudPaper>
+        }
+    </DialogContent>
+</MudDialog>

@@ -1,0 +1,133 @@
+﻿@using MudBlazor
+@using OES.Helper.ResourceFiles
+@using System.Globalization
+
+<MudDialog Class="pa-5">
+    <TitleContent>
+        <div class="d-flex align-center justify-center mt-5">
+            <div class="d-flex align-center justify-center align-self-center pa-3 w-75"
+                 style="border-radius: 8px;" dir="@(RightToLeft ? "rtl" : "ltr")">
+                <MudIcon Icon="@Icons.Material.Filled.Category" Class="me-2" Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="font-weight-bold">@Resource.CategoryDetails</MudText>
+            </div>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        @if (Model != null)
+        {
+            <MudGrid Spacing="4" Class="animate__animated animate__fadeIn py-3">
+                <MudItem xs="12">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                            <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                            @Resource.GeneralInformation
+                        </MudText>
+                        <MudGrid Spacing="3">
+                            <MudItem xs="12">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Label" Color="Color.Secondary" />
+                                    <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                        <strong>@Resource.Name:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">@Model.Name</MudText>
+                                </MudStack>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Category" Color="Color.Secondary" />
+                                    <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                        <strong>@Resource.Type:</strong>
+                                    </MudText>
+                                    @if (Model.StandardDeviation.HasValue)
+                                    {
+                                        <MudChip T="string" Color="Color.Success" Size="Size.Small" Class="ml-2">
+                                            @Resource.Adaptive
+                                        </MudChip>
+                                    }
+                                    else
+                                    {
+                                        <MudChip T="string" Color="Color.Default" Size="Size.Small" Class="ml-2">
+                                            @Resource.StandardOrStep
+                                        </MudChip>
+                                    }
+                                </MudStack>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+                @if (Model.StandardDeviation.HasValue)
+                {
+                    <MudItem xs="12">
+                        <MudPaper Class="pa-4" Elevation="2">
+                            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                                <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Filled.Tune" Class="mr-2" />
+                                @Resource.AdaptiveSettingsOptional
+                            </MudText>
+                            <MudGrid Spacing="3">
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                        <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Color="Color.Secondary" />
+                                        <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                            <strong>@Resource.StandardDeviation:</strong>
+                                        </MudText>
+                                        <MudText Class="ml-2">@FormatDecimal(Model.StandardDeviation)</MudText>
+                                    </MudStack>
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                        <MudIcon Icon="@Icons.Material.Filled.DataUsage" Color="Color.Secondary" />
+                                        <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                            <strong>@Resource.StandardError1:</strong>
+                                        </MudText>
+                                        <MudText Class="ml-2">@FormatDecimal(Model.StandardError1)</MudText>
+                                    </MudStack>
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                        <MudIcon Icon="@Icons.Material.Filled.DataUsage" Color="Color.Secondary" />
+                                        <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                            <strong>@Resource.StandardError2:</strong>
+                                        </MudText>
+                                        <MudText Class="ml-2">@FormatDecimal(Model.StandardError2)</MudText>
+                                    </MudStack>
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                        <MudIcon Icon="@Icons.Material.Filled.Functions" Color="Color.Secondary" />
+                                        <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                            <strong>@Resource.BaseValue1:</strong>
+                                        </MudText>
+                                        <MudText Class="ml-2">@FormatDecimal(Model.BaseValue1)</MudText>
+                                    </MudStack>
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                        <MudIcon Icon="@Icons.Material.Filled.Functions" Color="Color.Secondary" />
+                                        <MudText Color="Color.Primary" Typo="Typo.subtitle2">
+                                            <strong>@Resource.BaseValue2:</strong>
+                                        </MudText>
+                                        <MudText Class="ml-2">@FormatDecimal(Model.BaseValue2)</MudText>
+                                    </MudStack>
+                                </MudItem>
+                            </MudGrid>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+        else
+        {
+            <MudText Color="Color.Error" Typo="Typo.body1">No data available</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Close" StartIcon="@Icons.Material.Filled.Close">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

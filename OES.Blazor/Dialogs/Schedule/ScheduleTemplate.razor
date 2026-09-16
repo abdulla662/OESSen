@@ -1,0 +1,32 @@
+﻿@using OES.Helper.Dtos.Schedule.Requestes
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex justify-space-between align-center w-100">
+            <MudText Typo="Typo.h5" Color="Color.Primary">
+                @Resource.ScheduleTemplate
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="Close" />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <ListItem T="ScheduleTemplateDto"
+                  @key="listChangingKey"
+                  EndpointServerice="BlazScheduleService.GetAllScheduleTemplates"
+                  DisplayColumns="[nameof(ScheduleTemplateDto.Name)]"
+                  SearchPanelVisible="false"
+                  Hide_DescriptionSearch="true"
+                  CRUD_Delete_Btn="true"
+                  DeleteClick_fun="DeleteScheduleMetadataTemplateAsync">
+            <ButtonChildContent Context="value">
+                <MudTooltip Text="@Resource.SelectTemplate">
+                    <MudFab Color="Color.Primary"
+                            Class=@($"label-{nameof(Resource.SelectTemplate)}")
+                            EndIcon="@Icons.Material.Filled.SelectAll"
+                            Size="Size.Small"
+                            OnClick="() => GetScheduleById(((ScheduleTemplateDto)value).Id)" />
+                </MudTooltip>
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+</MudDialog>

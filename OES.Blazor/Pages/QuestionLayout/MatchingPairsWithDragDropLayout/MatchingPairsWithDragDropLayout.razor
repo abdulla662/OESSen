@@ -1,0 +1,95 @@
+@using OES.Blazor.Components.Common
+
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="@($"{ScreenSizeClass} py-6")" style="direction: rtl;" data-no-convert>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Body))
+    {
+        <MudPaper Elevation="0" Class="mb-8 px-4 sun-editor-editable">
+            <MudText Typo="Typo.body1" Style="font-size: 1.1rem; color: #2D3748;">
+                @(new MarkupString(Model.Body))
+            </MudText>
+        </MudPaper>
+    }
+
+    <div class="matching-dd-header-row">
+        <MudPaper Elevation="0" Class="pa-3 rounded-xl flex-1 text-center"
+                  Style="max-width:420px; background-color:#F8FAFC; border:0.5px solid #CBD5E1;">
+            <MudText Typo="Typo.subtitle1" Class="fw-bold">@Resource.RightColumnQuestion</MudText>
+        </MudPaper>
+        <div class="matching-dd-arrow" style="pointer-events:none; opacity:0;"></div>
+        <MudPaper Elevation="0" Class="pa-3 rounded-xl flex-1 text-center"
+                  Style="max-width:420px; background-color:#F1F5F9; border:0.5px solid #CBD5E1;">
+            <MudText Typo="Typo.subtitle1" Class="fw-bold">@Resource.LeftColumnAnswer</MudText>
+        </MudPaper>
+    </div>
+
+    <MudStack Spacing="3">
+        @for (int i = 0; i < Math.Max(QuestionItems.Count, AnswerItems.Count); i++)
+        {
+            var q = i < QuestionItems.Count ? QuestionItems[i] : null;
+            var ans = i < AnswerItems.Count ? AnswerItems[i] : null;
+
+            <div class="matching-dd-row">
+
+                <div class="matching-dd-col">
+                    @if (q != null)
+                    {
+                        <MudPaper Elevation="1" Class="pa-3 rounded-lg matching-dd-card">
+                            <div class="matching-dd-q-card">
+                                <div class="matching-dd-content"
+                                     style="font-size:14px; word-break:break-word; overflow-wrap:anywhere;">
+                                    @(new MarkupString(q.Body))
+                                </div>
+                                <div class="matching-dd-dropzone">
+                                    @if (ShowCorrectAnswer && _answersByQuestionId.TryGetValue(q.Id, out var correctAnswers))
+                                    {
+                                        <MudStack Spacing="1" Style="width:100%;">
+                                            @foreach (var ca in correctAnswers)
+                                            {
+                                                <MudPaper Elevation="0" Class="pa-1 rounded"
+                                                          Style="border:1.5px solid #48BB78; background-color:#F0FFF4; word-break:break-word;">
+                                                    <MudText Typo="Typo.caption"
+                                                             Style="color:#276749; font-weight:600; font-size:0.75rem; display:block; text-align:center;">
+                                                        @(new MarkupString(ca.Body))
+                                                    </MudText>
+                                                </MudPaper>
+                                            }
+                                        </MudStack>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.caption"
+                                                 Style="color:#A0AEC0; font-weight:500;">
+                                            @Resource.DropHere
+                                        </MudText>
+                                    }
+                                </div>
+                            </div>
+                        </MudPaper>
+                    }
+                </div>
+
+                <div class="matching-dd-arrow">
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowForward"
+                             Size="Size.Medium" Class="mud-text-disabled" />
+                </div>
+
+                <div class="matching-dd-col">
+                    @if (ans != null)
+                    {
+                        <MudPaper Elevation="1"
+                                  Class="pa-3 rounded-lg matching-dd-answer-card d-flex align-center justify-center h-100 matching-dd-card"
+                                  Style="box-sizing:border-box;">
+                            <div class="matching-dd-content text-center"
+                                 style="font-size:14px; word-break:break-word; overflow-wrap:anywhere; width:100%;">
+                                @(new MarkupString(ans.Body))
+                            </div>
+                        </MudPaper>
+                    }
+                </div>
+
+            </div>
+        }
+    </MudStack>
+
+</MudContainer>

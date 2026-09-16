@@ -1,0 +1,239 @@
+﻿@using OES.Blazor.Models.RuleMatrix
+
+@if (_isLoading)
+{
+    <MudStack AlignItems="AlignItems.Center" Class="pa-8">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-2">@Resource.Loading</MudText>
+    </MudStack>
+}
+else if (ResourceService.IsTreeResource(ResourceType))
+{
+    <MudStack Spacing="2">
+
+        <MudStack Row
+                  AlignItems="AlignItems.Center"
+                  Spacing="2"
+                  Class="px-4">
+            <MudTextField Value="@_search"
+                          ValueChanged="@((string v) => OnTreeSearchChanged(v))"
+                          Placeholder="@Resource.Search"
+                          Variant="Variant.Outlined"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Immediate="true"
+                          DebounceInterval="800"
+                          Class="flex-grow-1" />
+            <MudTooltip Text="@Resource.SelectAll">
+                <MudIconButton Icon="@Icons.Material.Filled.DoneAll"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               OnClick="SelectAllTree" />
+            </MudTooltip>
+            <MudTooltip Text="@Resource.ClearAll">
+                <MudIconButton Icon="@Icons.Material.Filled.ClearAll"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="ClearAllTree" />
+            </MudTooltip>
+        </MudStack>
+
+        <MudText Typo="Typo.caption"
+                 Color="Color.Secondary"
+                 Class="pl-4">
+            @string.Format(Resource.ItemsSelected, _selectedSet.Count)
+        </MudText>
+
+        @* TODO: Try to use the ListItem instead (by Abd-Allah) *@
+        <MudTable @ref="_treeTable"
+                  T="ResourceInstanceItem"
+                  ServerData="TreeServerReload"
+                  Dense="true"
+                  Hover="true"
+                  Striped="true"
+                  Breakpoint="Breakpoint.None">
+
+            <HeaderContent>
+                <MudTh></MudTh>
+                <MudTh>@Resource.Name</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd Style="width:40px; padding-left:16px;">
+                    <MudCheckBox T="bool"
+                                 Value="context.IsSelected"
+                                 ValueChanged="@(_ => ToggleTreeItem(context))"
+                                 Color="Color.Primary"
+                                 Size="Size.Small" />
+                </MudTd>
+
+                <MudTd>
+                    <MudStack Row
+                              AlignItems="AlignItems.Center"
+                              Spacing="0"
+                              Style="@($"padding-left:{context.Depth * 20}px")">
+
+                        @if (context.IsLoadingChildren)
+                        {
+                            <MudProgressCircular Size="Size.Small"
+                                                 Indeterminate="true"
+                                                 Color="Color.Primary"
+                                                 Class="mr-1" />
+                        }
+                        else if (!context.IsLeaf)
+                        {
+                            <MudIconButton Icon="@(context.IsExpanded? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ChevronRight)"
+                                           Size="Size.Small"
+                                           OnClick="@(() => ToggleExpand(context))" />
+                        }
+                        else
+                        {
+                            <span style="width:28px;display:inline-block;"></span>
+                        }
+
+                        <MudIcon Icon="@(context.IsLeaf? Icons.Material.Filled.Article : context.IsExpanded? Icons.Material.Filled.FolderOpen : Icons.Material.Filled.Folder)"
+                                 Size="Size.Small"
+                                 Color="@(context.IsSelected ? Color.Primary : Color.Default)"
+                                 Class="mr-1" />
+
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2"
+                                     Class="@(context.IsSelected ? "fw-bold" : "")">
+                                @context.Name
+                            </MudText>
+
+                            @if (!string.IsNullOrWhiteSpace(context.SubLabel))
+                            {
+                                <MudText Typo="Typo.caption"
+                                         Color="Color.Secondary">
+                                    @context.SubLabel
+                                </MudText>
+                            }
+                        </MudStack>
+
+                    </MudStack>
+                </MudTd>
+
+                <MudTd></MudTd>
+            </RowTemplate>
+
+            <NoRecordsContent>
+                <MudText Typo="Typo.body2"
+                         Color="Color.Secondary"
+                         Class="pa-4 text-center">
+                    @Resource.NoResultFound
+                </MudText>
+            </NoRecordsContent>
+
+            <LoadingContent>
+                <MudText Typo="Typo.body2"
+                         Color="Color.Secondary"
+                         Class="pa-4">
+                    @Resource.Loading
+                </MudText>
+            </LoadingContent>
+
+            <PagerContent>
+                <MudTablePager PageSizeOptions="[10, 20, 50]" />
+            </PagerContent>
+
+        </MudTable>
+
+    </MudStack>
+}
+else
+{
+    <MudStack Spacing="2">
+
+        <MudStack Row
+                  AlignItems="AlignItems.Center"
+                  Spacing="2"
+                  Class="px-4">
+            <MudTextField Value="@_search"
+                          ValueChanged="@((string v) => OnSearchChanged(v))"
+                          Placeholder="@Resource.Search"
+                          Variant="Variant.Outlined"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Immediate="true"
+                          DebounceInterval="800"
+                          Class="flex-grow-1" />
+            <MudTooltip Text="@Resource.SelectAll">
+                <MudIconButton Icon="@Icons.Material.Filled.DoneAll"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               OnClick="SelectAllOnPage" />
+            </MudTooltip>
+            <MudTooltip Text="@Resource.ClearAll">
+                <MudIconButton Icon="@Icons.Material.Filled.ClearAll"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="ClearAllOnPage" />
+            </MudTooltip>
+        </MudStack>
+
+        <MudText Typo="Typo.caption"
+                 Color="Color.Secondary"
+                 Class="pl-4">
+            @string.Format(Resource.ItemsSelected, _selectedSet.Count)
+        </MudText>
+
+        @* TODO: Use ListItem instead of the following code (by Abd-Allah) *@
+        <MudTable @ref="_table"
+                  T="ResourceInstanceItem"
+                  ServerData="ServerReload"
+                  Dense="true"
+                  Hover="true"
+                  Striped="true"
+                  Breakpoint="Breakpoint.None">
+
+            <HeaderContent>
+                <MudTh></MudTh>
+                <MudTh>@Resource.Name</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd Style="width:40px">
+                    <MudCheckBox T="bool"
+                                 Value="context.IsSelected"
+                                 ValueChanged="@(_ => ToggleItem(context))"
+                                 Color="Color.Primary"
+                                 Size="Size.Small" />
+                </MudTd>
+
+                <MudTd>
+                    @context.Name
+                </MudTd>
+
+                <MudTd>
+                    <MudText Typo="Typo.caption"
+                             Color="Color.Secondary">
+                        @context.SubLabel
+                    </MudText>
+                </MudTd>
+            </RowTemplate>
+
+            <NoRecordsContent>
+                <MudText Typo="Typo.body2"
+                         Color="Color.Secondary"
+                         Class="pa-4 text-center">
+                    @Resource.NoResultFound
+                </MudText>
+            </NoRecordsContent>
+
+            <LoadingContent>
+                <MudText Typo="Typo.body2"
+                         Color="Color.Secondary"
+                         Class="pa-4">
+                    @Resource.Loading
+                </MudText>
+            </LoadingContent>
+
+            <PagerContent>
+                <MudTablePager PageSizeOptions="[10, 20, 50]" />
+            </PagerContent>
+
+        </MudTable>
+
+    </MudStack>
+}

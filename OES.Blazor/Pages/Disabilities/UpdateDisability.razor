@@ -1,0 +1,44 @@
+﻿@page "/UpdateDisability"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("UpdateDisability")]
+
+<PageTitle>@Resource.UpdateDisability</PageTitle>
+
+<EditForm Model="@Model">
+    <MudCard Class="mx-auto mt-5 w-50 p-4 shadow-lg">
+        <MudCardContent>
+            <DataAnnotationsValidator />
+            <div class="d-flex flex-column justify-content-center align-content-center gap-2">
+                <div class="d-flex justify-content-center align-items-center">
+                    <MudIcon Icon="@Icons.Material.Outlined.Groups" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+                    <MudText Color="Color.Primary" Typo="Typo.h5" Style="line-height: 1;">@Resource.UpdateDisability </MudText>
+                </div>
+
+                <MudTextField @bind-Value="Model.Name"
+                              For="@(() => Model.Name)"
+                              Label="@Resource.Name"
+                              Variant="Variant.Outlined" />
+
+                <MudTextField @bind-Value="Model.Description"
+                              Label="@Resource.Description"
+                              Variant="Variant.Outlined" />
+
+                <MudNumericField @bind-Value="Model.ExtraTimePercentage"
+                                 Label="@Resource.ExtraTimePercentage"
+                                 Variant="Variant.Outlined"
+                                 Max="100"
+                                 Min="0" />
+            </div>
+        </MudCardContent>
+        <MudCardActions Class="justify-content-center mt-3">
+            <GeneralLoadingButton Class="w-100 m-3"
+                                  OnClick="OnValidSubmitAsync"
+                                  ButtonText="@Resource.Update"
+                                  Type="ButtonType.Submit"
+                                  StartIcon="@Icons.Material.Filled.Save" />
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="w-100" OnClick="Cancel" StartIcon="@Icons.Material.Filled.Close">@Resource.Cancel</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>

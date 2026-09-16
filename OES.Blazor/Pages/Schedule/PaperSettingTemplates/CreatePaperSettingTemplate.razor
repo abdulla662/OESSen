@@ -1,0 +1,57 @@
+﻿@page "/CreatePaperSettingsTemplate"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Pages.Schedule.PaperSettingTemplates.Common
+
+@attribute [DynamicAuthorizeAttribute(nameof(CreatePaperSettingTemplate))]
+
+<PageTitle>@Resource.AddPaperSettingsTemplate</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 rounded-lg shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <div class="d-flex justify-content-center align-items-center mb-6">
+            <MudIcon Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+            <MudText Color="Color.Primary" Typo="Typo.h4" Style="line-height: 1;">@Resource.AddPaperSettingsTemplate</MudText>
+        </div>
+        <MudExpansionPanels MultiExpansion="true">
+            <MudExpansionPanel Text="@Resource.TemplateData" Icon="@Icons.Material.Filled.ArrowDropDown" Expanded="true">
+                <MudGrid Spacing="2">
+                    <MudItem xs="12" sm="12">
+                        <!-- Template Name Field -->
+                        <MudTextField Label="@Resource.EnterTemplateName"
+                                      @bind-value="@PaperSettingsData.Name"
+                                      Disabled="@IsReadOnly"
+                                      Variant="Variant.Outlined"
+                                      Class="mb-3" />
+                    </MudItem>
+                </MudGrid>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+        <PaperSettingComponent IsReadOnly="@IsReadOnly" EditTemplate=true @ref="paperSettingTemplate" PaperSettingTemplate="PaperSettingsData" />
+    </MudCardContent>
+    <!-- Action Buttons -->
+    <MudCardActions Class="justify-content-center mt-2">
+        <MudStack Row="true"
+                  Spacing="4"
+                  Class="w-50"
+                  Justify="Justify.Center"
+                  AlignItems="AlignItems.Center">
+            <GeneralLoadingButton ButtonText="@Resource.Save"
+                                  Size="Size.Small"
+                                  Class="flex-grow-1 p-2 rounded-pill"
+                                  EndIcon="@Icons.Material.Filled.CheckCircle"
+                                  Type="ButtonType.Submit"
+                                  OnClick="paperSettingTemplate.SaveOrEditTemplateAsync"
+                                  Disabled="@(IsSaveTemplateDisabled)" />
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       Size="Size.Small"
+                       Class="flex-grow-1 p-2 rounded-pill"
+                       OnClick="paperSettingTemplate.Cancel"
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Cancel
+            </MudButton>
+        </MudStack>
+    </MudCardActions>
+</MudCard>

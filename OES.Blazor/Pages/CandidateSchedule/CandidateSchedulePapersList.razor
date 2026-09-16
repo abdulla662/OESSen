@@ -1,0 +1,97 @@
+﻿@page "/CandidateSchedulePapersList"
+
+@attribute [DynamicAuthorizeAttribute("CandidateSchedulePapersList")]
+
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.Dtos.Schedule.Responses
+
+<PageTitle>@Resource.ScheduledPapersList</PageTitle>
+
+<MudOverlay Visible="_isLoadingCandidatesCount"
+            DarkBackground="true"
+            ZIndex="9999"
+            Class="align-items-center justify-content-center">
+    <MudPaper Elevation="8" Class="pa-8 rounded-xl loader-card">
+        <MudStack AlignItems="AlignItems.Center"
+                  Spacing="4">
+            <MudIcon Icon="@Icons.Material.Filled.CloudSync"
+                     Color="Color.Primary"
+                     Size="Size.Large"
+                     Class="rotating-icon" />
+            <MudProgressLinear Color="Color.Primary"
+                               Indeterminate="true"
+                               Rounded="true"
+                               Size="Size.Medium"
+                               Style="width: 200px;"
+                               Class="my-2" />
+            <MudText Typo="Typo.h6"
+                     Color="Color.Dark"
+                     Align="Align.Center"
+                     Style="font-weight: 600;">
+                @Resource.Loading
+            </MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center">
+                @Resource.PleaseWaitWhileProcessingCandidates ...
+            </MudText>
+        </MudStack>
+    </MudPaper>
+</MudOverlay>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <div class="d-flex justify-content-center align-items-center mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.ListAlt" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+            <MudText Typo="Typo.h5" Color="Color.Primary" Style="line-height: 1;">@Resource.ScheduledPapersList</MudText>
+        </div>
+
+        <ListItem T="SchedulePaperPaginationDto"
+                  @key=_schedulePapersListKey
+                  Caption="@Resource.ScheduledPapers"
+                  CaptionIcon="@Icons.Material.Rounded.ListAlt"
+                  DisplayColumns='[ nameof(SchedulePaperPaginationDto.PaperName),
+                                    nameof(SchedulePaperPaginationDto.PaperCode),
+                                    nameof(SchedulePaperPaginationDto.StartDate),
+                                    nameof(SchedulePaperPaginationDto.StartTime),
+                                    nameof(SchedulePaperPaginationDto.EndDate),
+                                    nameof(SchedulePaperPaginationDto.EndTime),
+                                    nameof(SchedulePaperPaginationDto.CandidatesCount) ]'
+                  EndpointServerice="GetAllSchedulePapersAsync"
+                  SearchPanelVisible="true">
+            <ButtonChildContent Context="value">
+                @if (value is SchedulePaperPaginationDto schedulePaper)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.ViewDistribution">
+                            <MudFab Color="Color.Info"
+                                    EndIcon="@Icons.Material.Filled.Groups"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.ViewDistribution)}")
+                                    OnClick="() => OpenDistributionDialogAsync(schedulePaper)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.AssignCandidateToVenues">
+                            <MudFab Color="Color.Primary"
+                                    EndIcon="@Icons.Material.Filled.DomainAdd"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.AssignCandidateToVenues)}")
+                                    OnClick="() => OpenDumpImportDialogAsync(schedulePaper)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.AssignCandidateToSpecificVenue">
+                            <MudFab Color="Color.Primary"
+                                    EndIcon="@Icons.Material.Filled.RoomPreferences"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.AssignCandidateToSpecificVenue)}")
+                                    OnClick="() => OpenUploadDialogAsync(schedulePaper)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Reverse">
+                            <MudFab Color="Color.Error"
+                                    EndIcon="@Icons.Material.Filled.RestorePage"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Reverse)}")
+                                    OnClick="() => OpenCandidateBatchImportHistoryDialogAsync(schedulePaper)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

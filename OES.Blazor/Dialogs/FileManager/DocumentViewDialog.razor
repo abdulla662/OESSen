@@ -1,0 +1,21 @@
+﻿@using OES.Blazor.Components.GenericComponents.Loader
+<MudDialog>
+    <TitleContent>
+        @Resource.FilePreview
+    </TitleContent>
+    <DialogContent>
+        <div class="media-container">
+            @if (string.IsNullOrWhiteSpace(_mediaTag))
+            {
+                <GenericLoader LoaderText="@Resource.Loading" />
+            }
+            else
+            {
+                @(new MarkupString(_mediaTag))
+            }
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CloseDialog" Color="Color.Secondary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

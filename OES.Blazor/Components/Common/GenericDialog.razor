@@ -1,0 +1,72 @@
+﻿<MudDialog TitleClass="fw-bold font-weight-bold" Gutters="true" Style="border:2px solid #001a66">
+    <TitleContent >
+        <MudText Typo="Typo.h5">
+            @Title
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <div class="overflow-hidden">
+            @((MarkupString)Content)
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" EndIcon="@SubmitButtonStartIcon" Color="@SubmitButtonColor" OnClick="Submit">@SubmitText</MudButton>
+        @if (ShowAdditionalButton)
+        {
+            <MudButton Variant="Variant.Filled" EndIcon="@AdditionalButtonStartIcon" Color="@AdditionalButtonColor" OnClick="AdditionalButtonClick">@AdditionalButtonText</MudButton>
+        }
+        <MudButton OnClick="Cancel" Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@CancelButtonStartIcon">@CancelText</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string Content { get; set; }
+
+    [Parameter]
+    public string CancelText { get; set; }
+
+    [Parameter]
+    public string CancelButtonStartIcon { get; set; } = Icons.Material.Filled.Cancel;
+
+    [Parameter]
+    public string SubmitButtonStartIcon { get; set; } = string.Empty;
+
+    [Parameter]
+    public Color SubmitButtonColor { get; set; } = Color.Primary;
+
+    [Parameter]
+    public string SubmitText { get; set; }
+
+    [Parameter]
+    public string AdditionalButtonStartIcon { get; set; } = string.Empty;
+
+    [Parameter]
+    public string AdditionalButtonText { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool ShowAdditionalButton { get; set; } = false;
+
+    [Parameter]
+    public Color AdditionalButtonColor { get; set; } = Color.Primary;
+
+    [Parameter]
+    public EventCallback AdditionalButtonCallBack { get; set; }
+
+
+    private void AdditionalButtonClick()
+    {
+        MudDialog.Close(DialogResult.Ok(false));
+        AdditionalButtonCallBack.InvokeAsync();
+    }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+}

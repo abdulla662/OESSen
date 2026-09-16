@@ -1,0 +1,33 @@
+﻿@using OES.Helper.Dtos.Paper.Requests
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex justify-space-between align-center w-100">
+            <MudText Typo="Typo.h5" Color="Color.Primary">
+                @Resource.PaperMetadataTemplates
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="Close" />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <ListItem T="PaperMetadataTemplateDto"
+                  @key="listChangingKey"
+                  FilterObject="false"
+                  EndpointServerice="BlazPaperService.GetPaperPaperMetadataTemplatesAsync"
+                  DisplayColumns='[nameof(PaperMetadataTemplateDto.Name)]'
+                  SearchPanelVisible="false"
+                  Hide_DescriptionSearch="true"
+                  CRUD_Delete_Btn="true"
+                  DeleteClick_fun="DeletePaperMetadataTemplateAsync">
+            <ButtonChildContent Context="value">
+                <MudTooltip Text="@Resource.SelectTemplate">
+                    <MudFab Color="Color.Primary"
+                            EndIcon="@Icons.Material.Filled.SelectAll"
+                            Class=@($"label-{nameof(Resource.SelectTemplate)}")
+                            Size="Size.Small"
+                            OnClick='() => GetPaperMetadataById(((PaperMetadataTemplateDto)value).Id)' />
+                </MudTooltip>
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+</MudDialog>

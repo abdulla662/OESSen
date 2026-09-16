@@ -1,0 +1,27 @@
+﻿ @* @page "/OrganizationStructureList"  *@
+
+ @using OES.Helper.Dtos.OrganizationStructure.Responses; 
+ @using OES.Blazor.CustomAuthorizationAttribute 
+ 
+ @attribute [DynamicAuthorizeAttribute("OrganizationStructureList")]
+
+<PageTitle>@Resource.OrganizationStructures</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-4">
+    <MudIcon Icon="@Icons.Material.Filled.AccountTree" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+    <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">@Resource.OrganizationStructures</MudText>
+</div> 
+
+ <ListItem @key="listItemReloadingKey"
+           T="GetAllOrganizationResponseDto"
+           Caption="@Resource.OrganizationStructures"
+           CaptionIcon="@Icons.Material.Filled.AccountTree"
+           EndpointServerice="BlazOrganizationStructureService.GetAllOrganizationStructureAsync"
+           DisplayColumns='["Name", "Description"]' 
+           CRUD_View_Btn="true" 
+           CRUD_Edit_Btn="true" 
+           CRUD_Delete_Btn="true" 
+           View_URL="/OrganizationStructure"
+           AddNew_URL="/AddOrUpdateOrganizationStructureRoot"
+           Edit_URL="/AddOrUpdateOrganizationStructureRoot"
+           DeleteClick_fun="DeleteOrganizationStructureRootAsync" />

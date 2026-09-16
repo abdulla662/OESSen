@@ -1,0 +1,45 @@
+﻿
+<div class="@(ScreenSizeClass)" data-no-convert dir="@GetDirection()">
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false">
+        <MudGrid Spacing="0" Class="@($"sun-editor-editable question-watermark-transparent p-0 {GetQuestionBodyClass()}")">
+            <MudItem xs="12" class="px-0" data-no-convert>
+                <MudText Typo="Typo.inherit" Align="Align.Start" data-no-convert>@(new MarkupString(Model.Body))</MudText>
+            </MudItem>
+            @if (Model?.HasAttachment ?? false)
+            {
+                <MediaAttachment Url="@(Model.AttachmentFileUrl)" />
+            }
+            @* @if (!string.IsNullOrWhiteSpace(Model.Instructions))
+            {
+                <MudAlert Severity="Severity.Info" Elevation="0" Dense Class="mt-4">
+                    <MudText>@(new MarkupString(Model.Instructions))</MudText>
+                </MudAlert>
+            } *@
+            <MudItem xs="12">
+                <MudRadioGroup T="string"
+                               Value="@(ShowCorrectAnswer ? CorrectAnswerText : "")"
+                               ReadOnly
+                               Class="d-flex justify-content-start">
+
+                    <MudGrid Spacing="0" Class="flex-grow-1">
+                        <MudItem xs="12" Class="p-1">
+                            <MudRadio T="string" Value="@trueText" Color="Color.Primary" Size="Size.Small" Class="ms-2">
+                                <MudText Typo="Typo.subtitle1" Align="Align.Start" Class="ms-2">
+                                    @Resource.True
+                                </MudText>
+                            </MudRadio>
+                        </MudItem>
+
+                        <MudItem xs="12" Class="p-1">
+                            <MudRadio T="string" Value="@falseText" Color="Color.Secondary" Size="Size.Small" Class="ms-2">
+                                <MudText Typo="Typo.subtitle1" Align="Align.Start" Class="ms-2">
+                                    @Resource.False
+                                </MudText>
+                            </MudRadio>
+                        </MudItem>
+                    </MudGrid>
+                </MudRadioGroup>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</div>

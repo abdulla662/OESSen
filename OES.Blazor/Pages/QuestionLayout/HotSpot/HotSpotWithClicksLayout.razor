@@ -1,0 +1,27 @@
+<div class="@(ScreenSizeClass) d-flex justify-center" data-no-convert>
+    <MudPaper Elevation="4" Class="pa-6 rounded-xl" Style="max-width: 900px; width: 100%;">
+
+        @if (!string.IsNullOrEmpty(CleanBody))
+        {
+            <div class="question-text mb-6">
+                @((MarkupString)CleanBody)
+            </div>
+        }
+
+        @if (_hotSpotData != null && !string.IsNullOrEmpty(_hotSpotData.ImageUrl))
+        {
+            <div class="d-flex flex-column align-start" style="width: 100%;">
+                <canvas id="@_canvasId"
+                        @ref="_canvasRef"
+                        style="border: 1px solid #e0e0e0;
+                               width: 100%;
+                               max-width: 800px;
+                               height: auto;
+                               border-radius: 8px;
+                               display: block;">
+                </canvas>
+            </div>
+        }
+
+    </MudPaper>
+</div>

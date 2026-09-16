@@ -1,0 +1,428 @@
+﻿@using OES.Helper.Dtos.EquationTemplate
+@using OES.Helper.Enums
+@using SharedHelper.Enums
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Color="Color.Primary">
+            <MudIcon Icon="@Icons.Material.Filled.ViewTimeline" Class="mr-1" Size="Size.Small" />
+            @Resource.EquationTemplateDetails
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (_isLoading)
+        {
+            <div class="d-flex justify-center align-center pa-3">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
+            </div>
+        }
+        else if (Model != null)
+        {
+            <MudGrid Spacing="2">
+                <MudItem xs="12">
+                    <MudPaper Elevation="0" Class="pa-3 border rounded">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2">@Resource.BasicInformation</MudText>
+                        <div class="row">
+                            <div class="col-12 col-md-6 mb-2 d-flex align-items-center">
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">@Resource.TemplateName:</MudText>
+                                <MudText Typo="Typo.body2" Class="ml-2"><strong>@Model.Name</strong></MudText>
+                            </div>
+                            <div class="col-12 col-md-6 mb-2 d-flex align-items-center">
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">@Resource.Paper:</MudText>
+                                <MudText Typo="Typo.body2" Class="ml-2"><strong>@Model.PaperName</strong></MudText>
+                            </div>
+                            <div class="col-12 col-md-6 mb-2 d-flex align-items-center">
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">@Resource.Form:</MudText>
+                                <MudText Typo="Typo.body2" Class="ml-2"><strong>@Model.FormName</strong></MudText>
+                            </div>
+                            @if(Model.PaperType == PaperType.Standard)
+                            {
+                                <div class="col-12 col-md-6 mb-2 d-flex align-items-center">
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary">@Resource.TotalEquation:</MudText>
+                                    <MudText Typo="Typo.body2" Class="ml-2"><strong>@Model.TotalEquation</strong></MudText>
+                                </div>
+                            }
+                        </div>
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudPaper Elevation="0" Class="pa-3 border rounded">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2">@Resource.Equations</MudText>
+                        @if (Model.Equations.Any())
+                        {
+                            <MudTable Items="Model.Equations" Hover="true" Dense="true" Elevation="0" Style="font-size: 0.875rem;">
+                                <HeaderContent>
+                                    <MudTh Style="padding: 8px;">@Resource.CategoryName</MudTh>
+                                    <MudTh Style="padding: 8px;">@Resource.Equation</MudTh>
+                                </HeaderContent>
+                                <RowTemplate Context="equation">
+                                    <MudTd DataLabel="@Resource.CategoryName" Style="padding: 8px;">
+                                        <MudText Typo="Typo.body2"><strong>@equation.Name</strong></MudText>
+                                    </MudTd>
+                                    <MudTd DataLabel="Equation" Style="padding: 8px;">
+                                        <MudText Typo="Typo.body2" Class="equation-code-box">
+                                            @equation.DisplayEquation
+                                        </MudText>
+                                    </MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Info" Dense="true">@Resource.NoEquationsFound</MudAlert>
+                        }
+                    </MudPaper>
+                </MudItem>
+
+                <!-- Candidate Results Section with Collapse -->
+                <MudItem xs="12">
+                    <MudPaper Elevation="0" Class="pa-3 border rounded">
+                        <div class="d-flex justify-space-between align-center mb-2">
+                            <MudText Typo="Typo.subtitle1" Color="Color.Primary">
+                                <MudIcon Icon="@Icons.Material.Filled.Analytics" Class="mr-1" Size="Size.Small" />
+                                @Resource.CandidateResults
+                            </MudText>
+                            <div>
+                                <MudButton OnClick="ToggleResults"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Success"
+                                           StartIcon="@(_showResults ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                           Size="Size.Small">
+                                    @(_showResults? @Resource.Hide: @Resource.View)
+                                </MudButton>
+                                @* <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           Size="Size.Small"
+                                           OnClick="ExportCandidatesAsync"
+                                           Disabled="@(_isExporting || Model == null)"
+                                           StartIcon="@Icons.Material.Filled.FileDownload">
+                                    @if (_isExporting)
+                                    {
+                                        <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" Color="Color.Surface" />
+                                        <span>@Resource.Exporting</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@Resource.ExportCandidates</span>
+                                    }
+                                </MudButton> *@
+                            </div>
+                        </div>
+
+                        <MudCollapse Expanded="@_showResults">
+                            @if (_loadingResults)
+                            {
+                                <div class="d-flex justify-center align-center pa-3">
+                                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
+                                    <MudText Typo="Typo.body2" Class="ml-2">@Resource.Loading</MudText>
+                                </div>
+                            }
+                            else if (Results != null && Results.Any())
+                            {
+                                <MudPaper Elevation="0" Class="pa-2 mt-2 results-bg-grey">
+                                    <!-- Summary -->
+                                    <div class="row mb-2">
+                                        <div class="col-12 col-md-4 mb-1">
+                                            <MudChip T="string" Icon="@Icons.Material.Filled.People" Color="Color.Info" Size="Size.Small" Style="font-size: 0.75rem;">
+                                                @Resource.CandidatesCount: @Results.Select(r => r.CandidateID).Distinct().Count()
+                                            </MudChip>
+                                        </div>
+                                        <div class="col-12 col-md-4 mb-1">
+                                            <MudChip T="string" Icon="@Icons.Material.Filled.Quiz" Color="Color.Secondary" Size="Size.Small" Style="font-size: 0.75rem;">
+                                                @Resource.Questions: @Results.Count
+                                            </MudChip>
+                                        </div>
+                                        <div class="col-12 col-md-4 mb-1">
+                                            <MudChip T="string" Icon="@Icons.Material.Filled.Description" Color="Color.Default" Size="Size.Small" Style="font-size: 0.75rem;">
+                                                @Resource.Form: @Results.FirstOrDefault()?.PaperFormName
+                                            </MudChip>
+                                        </div>
+                                    </div>
+
+                                    <!-- Final Score Display -->
+                                    @if (FullResults != null)
+                                    {
+                                        <MudPaper Elevation="2" Class="pa-3 mb-3"
+                                                  Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+
+                                            <div class="d-flex justify-space-between align-center">
+                                                <div>
+                                                    <MudText Typo="Typo.h6" Class="mb-1">
+                                                        <MudIcon Icon="@Icons.Material.Filled.EmojiEvents" Size="Size.Medium" Class="mr-1" />
+                                                        @Resource.FinalScore
+                                                    </MudText>
+
+                                                    <MudText Typo="Typo.caption" Class="mb-1"
+                                                             Style="opacity: 0.9; font-size: 0.75rem;">
+                                                        <b>@Resource.Equation:</b>
+                                                        <span style="font-family: monospace;">@TemplateEquation</span>
+                                                    </MudText>
+
+                                                    <MudText Typo="Typo.caption"
+                                                             Style="opacity: 0.85; font-size: 0.75rem; font-family: monospace; color: #d1fffc;">
+                                                        <b>@Resource.Processed:</b>
+                                                        @ProcessedTemplateEquation
+                                                    </MudText>
+                                                </div>
+
+                                                <div class="text-right">
+                                                    <MudText Typo="Typo.h3" Style="font-weight: bold;">
+                                                        @FinalScore.ToString("F2")
+                                                    </MudText>
+                                                </div>
+                                            </div>
+                                        </MudPaper>
+
+                                        <!-- Category Calculations -->
+                                        @if (CategoryCalculations != null && CategoryCalculations.Any())
+                                        {
+                                            <MudPaper Elevation="1" Class="pa-3 mb-3 results-bg-surface">
+                                                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Category" Class="mr-1" Size="Size.Small" />
+                                                    @Resource.CategoryCalculations
+                                                </MudText>
+
+                                                <div class="row">
+                                                    @foreach (var category in CategoryCalculations)
+                                                    {
+                                                        <div class="col-12 col-md-6 col-lg-4 mb-2">
+                                                            <MudCard Elevation="0" Style="border: 1px solid var(--mud-palette-divider);">
+                                                                <MudCardContent Style="padding: 12px;">
+                                                                    <div class="d-flex justify-space-between align-center mb-1">
+                                                                        <MudText Typo="Typo.body2" Style="font-weight: bold; color: #1976d2;">
+                                                                            @category.Key
+                                                                        </MudText>
+                                                                        <MudChip T="string" Size="Size.Small" Color="Color.Info" Icon="@Icons.Material.Filled.Calculate" Style="font-size: 0.7rem;">
+                                                                            @Resource.Total: @category.Value.CalculatedValue.ToString("0.##")
+                                                                        </MudChip>
+                                                                    </div>
+
+                                                                    <MudDivider Class="my-1" />
+
+                                                                    <MudText Typo="Typo.caption" Class="mb-1" Style="color: var(--mud-palette-text-secondary);">
+                                                                        <strong>@Resource.Equation:</strong>
+                                                                    </MudText>
+                                                                    <MudText Typo="Typo.caption" Class="equation-code-box-small">
+                                                                        @category.Value.OriginalEquation
+                                                                    </MudText>
+
+                                                                    <div class="d-flex justify-space-between mt-2">
+                                                                        <MudChip T="string" Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Material.Filled.Quiz" Style="font-size: 0.7rem;">
+                                                                            @category.Value.QuestionCount Q
+                                                                        </MudChip>
+                                                                    </div>
+                                                                </MudCardContent>
+                                                            </MudCard>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </MudPaper>
+                                        }
+                                    }
+
+                                    <MudDivider Class="my-3" />
+
+                                    <!-- NEW: ItemBank Metrics Section (ABOVE Detailed Results) -->
+                                    <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.Calculate" Class="mr-1" Size="Size.Small" />
+                                        @Resource.ItemBankMetrics
+                                    </MudText>
+
+                                    @if (CandidateItemBankMetrics != null && CandidateItemBankMetrics.Any())
+                                    {
+                                        @foreach (var candidateMetrics in CandidateItemBankMetrics.OrderBy(c => c.Key))
+                                        {
+                                            var candidate = candidateMetrics.Value.FirstOrDefault();
+
+                                            if (candidate != null)
+                                            {
+                                                <MudPaper Elevation="2" Class="pa-3 mb-3" Style="border-left: 4px solid var(--mud-palette-primary);">
+                                                    <!-- Candidate Header -->
+                                                    <div class="d-flex justify-space-between align-center mb-2">
+                                                        <MudText Typo="Typo.subtitle2" Style="color: #1976d2; font-weight: bold;">
+                                                            <MudIcon Icon="@(candidate.Gender? Icons.Material.Filled.Person2 : Icons.Material.Filled.Person)"
+                                                                     Color="@(candidate.Gender ? Color.Error : Color.Default)"
+                                                                     Size="Size.Small"
+                                                                     Class="mr-1"
+                                                                     Style="@(candidate.Gender ? "color: #e91e63 !important;" : "")" />
+                                                            @candidate.FirstName
+                                                        </MudText>
+                                                        <MudChip T="string" Size="Size.Small" Color="Color.Info" Style="font-size: 0.7rem;">
+                                                            @Resource.Code: @candidate.CandidateCode
+                                                        </MudChip>
+                                                    </div>
+
+                                                    <!-- ItemBank Metrics Table -->
+                                                    <MudTable Items="candidateMetrics.Value"
+                                                              Hover="true"
+                                                              Dense="true"
+                                                              Elevation="0"
+                                                              Class="metrics-table">
+                                                        <HeaderContent>
+                                                            <MudTh Style="padding: 10px;" Class="th-bg-info">
+                                                                <MudText Typo="Typo.body2" Style="font-weight: bold;">@Resource.ItemBank</MudText>
+                                                            </MudTh>
+                                                            <MudTh Style="padding: 10px; text-align: center;" Class="th-bg-success">
+                                                                <MudText Typo="Typo.body2" Style="font-weight: bold;">NC</MudText>
+                                                                <MudText Typo="Typo.caption" Style="font-size: 0.7rem; color: var(--mud-palette-text-secondary);">(@Resource.NoCorrectAnswer)</MudText>
+                                                            </MudTh>
+                                                            <MudTh Style="padding: 10px; text-align: center;" Class="th-bg-warning">
+                                                                <MudText Typo="Typo.body2" Style="font-weight: bold;">ND</MudText>
+                                                                <MudText Typo="Typo.caption" Style="font-size: 0.7rem; color: var(--mud-palette-text-secondary);">(@Resource.NoDeltaForCA)</MudText>
+                                                            </MudTh>
+                                                            <MudTh Style="padding: 10px; text-align: center;" Class="th-bg-warning">
+                                                                <MudText Typo="Typo.body2" Style="font-weight: bold;">NT</MudText>
+                                                                <MudText Typo="Typo.caption" Style="font-size: 0.7rem; color: var(--mud-palette-text-secondary);">(@Resource.NoDeltaForAll)</MudText>
+                                                            </MudTh>
+                                                            <MudTh Style="padding: 10px; text-align: center;" Class="th-bg-grey">
+                                                                <MudText Typo="Typo.body2" Style="font-weight: bold;">@Resource.Questions</MudText>
+                                                                <MudText Typo="Typo.caption" Style="font-size: 0.7rem; color: var(--mud-palette-text-secondary);">(@Resource.Total)</MudText>
+                                                            </MudTh>
+                                                        </HeaderContent>
+                                                        <RowTemplate Context="metric">
+                                                            <MudTd DataLabel="@Resource.ItemBank" Style="padding: 10px;">
+                                                                <div class="d-flex align-center">
+                                                                    <MudIcon Icon="@Icons.Material.Filled.Storage" Size="Size.Small" Color="Color.Secondary" Class="mr-2" />
+                                                                    <MudText Typo="Typo.body2" Style="font-weight: 500;">@metric.ItemBankName</MudText>
+                                                                </div>
+                                                            </MudTd>
+                                                            <MudTd DataLabel="NC" Style="padding: 10px; text-align: center;" Class="td-bg-success-light">
+                                                                <MudChip T="string" Size="Size.Medium" Color="Color.Success" Style="font-size: 0.9rem; font-weight: bold; min-width: 60px;">
+                                                                    @metric.NC
+                                                                </MudChip>
+                                                            </MudTd>
+                                                            <MudTd DataLabel="ND" Style="padding: 10px; text-align: center;" Class="td-bg-warning-light">
+                                                                <MudChip T="string" Size="Size.Medium" Color="Color.Warning" Style="font-size: 0.9rem; font-weight: bold; min-width: 60px;">
+                                                                    @metric.ND.ToString("F2")
+                                                                </MudChip>
+                                                            </MudTd>
+                                                            <MudTd DataLabel="ND" Style="padding: 10px; text-align: center;" Class="td-bg-warning-light">
+                                                                <MudChip T="string" Size="Size.Medium" Color="Color.Warning" Style="font-size: 0.9rem; font-weight: bold; min-width: 60px;">
+                                                                    @metric.NT.ToString("F2")
+                                                                </MudChip>
+                                                            </MudTd>
+                                                            <MudTd DataLabel="@Resource.TotalQuestions" Style="padding: 10px; text-align: center;">
+                                                                <MudChip T="string" Size="Size.Small" Color="Color.Default" Icon="@Icons.Material.Filled.Quiz" Style="font-size: 0.75rem;">
+                                                                    @metric.QC
+                                                                </MudChip>
+                                                            </MudTd>
+                                                        </RowTemplate>
+                                                    </MudTable>
+                                                </MudPaper>
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <MudAlert Severity="Severity.Info" Icon="@Icons.Material.Filled.Info" Dense="true" Class="mb-3">
+                                            <MudText Typo="Typo.body2">@Resource.NoItemBankMetricsCalculatedYet</MudText>
+                                        </MudAlert>
+                                    }
+
+                                    <MudDivider Class="my-3" />
+
+                                    <!-- Detailed Results Table (Collapsible) -->
+                                    <div class="d-flex justify-space-between align-center mb-2">
+                                        <MudText Typo="Typo.subtitle1" Color="Color.Primary">
+                                            <MudIcon Icon="@Icons.Material.Filled.TableChart" Class="mr-1" Size="Size.Small" />
+                                            @Resource.DetailedResultsQuestionLevel
+                                        </MudText>
+                                        <MudButton OnClick="ToggleDetailedResults"
+                                                   Variant="Variant.Text"
+                                                   Color="Color.Primary"
+                                                   StartIcon="@(_showDetailedResults ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                                   Size="Size.Small">
+                                            @(_showDetailedResults? @Resource.HideDetails: @Resource.ShowDetails)
+                                        </MudButton>
+                                    </div>
+
+                                    <MudCollapse Expanded="@_showDetailedResults">
+                                        <MudTable Items="Results"
+                                                  Hover="true"
+                                                  Dense="true"
+                                                  Elevation="0"
+                                                  Striped="true"
+                                                  GroupBy="@GroupDefinition"
+                                                  GroupHeaderStyle="background-color: #e3f2fd; font-weight: bold;"
+                                                  Style="font-size: 0.8rem;">
+                                            <HeaderContent>
+                                                <MudTh Style="padding: 6px;">@Resource.QuestionId</MudTh>
+                                                <MudTh Style="padding: 6px;">@Resource.ItemBank</MudTh>
+                                                <MudTh Style="padding: 6px;">@Resource.Category</MudTh>
+                                                <MudTh Style="padding: 6px;">@Resource.Answer</MudTh>
+                                                <MudTh Style="padding: 6px;">@Resource.KeyAnswer</MudTh>
+                                                <MudTh Style="padding: 6px;">@Resource.IsCorrectAnswer</MudTh>
+                                                <MudTh Style="padding: 6px;">@Resource.Delta</MudTh>
+                                            </HeaderContent>
+                                            <GroupHeaderTemplate>
+                                                <MudTh colspan="9" Style="padding: 6px;" Class="th-bg-info">
+                                                    <MudText Typo="Typo.body2">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1" />
+                                                        <strong>@Resource.Candidate:</strong> @context.Key
+                                                    </MudText>
+                                                </MudTh>
+                                            </GroupHeaderTemplate>
+                                            <RowTemplate Context="result">
+                                                <MudTd DataLabel="@Resource.QuestionId" Style="padding: 6px;">
+                                                    <MudChip T="string" Size="Size.Small" Color="Color.Info" Style="font-size: 0.7rem;">Q-@result.QuestionId</MudChip>
+                                                </MudTd>
+                                                <MudTd DataLabel="@Resource.ItemBank" Style="padding: 6px;">
+                                                    @if (!string.IsNullOrEmpty(result.ItemBankName))
+                                                    {
+                                                        <MudChip T="string" Size="Size.Small" Color="Color.Secondary" Style="font-size: 0.7rem;">@result.ItemBankName</MudChip>
+                                                    }
+                                                    else
+                                                    {
+                                                        <MudChip T="string" Size="Size.Small" Color="Color.Default" Style="font-size: 0.7rem;">N/A</MudChip>
+                                                    }
+                                                </MudTd>
+                                                <MudTd DataLabel="@Resource.Category" Style="padding: 6px;">
+                                                    <MudChip T="string" Size="Size.Small" Color="Color.Secondary" Style="font-size: 0.7rem;">@result.EquationCategoryName</MudChip>
+                                                </MudTd>
+                                                <MudTd DataLabel="@Resource.Answer" Style="padding: 6px;">
+                                                    <MudChip T="string" Size="Size.Small" Color="Color.Secondary" Style="font-size: 0.7rem;">@result.Response</MudChip>
+                                                </MudTd>
+                                                <MudTd DataLabel="@Resource.KeyAnswer" Style="padding: 6px;">
+                                                    <MudChip T="string" Size="Size.Small" Color="Color.Success" Style="font-size: 0.7rem;">@result.KeyAnswer</MudChip>
+                                                </MudTd>
+                                                <MudTd DataLabel="@Resource.CorrectAnswer" Style="padding: 6px;">
+                                                    <MudChip T="string" Size="Size.Small" Style="font-size: 0.7rem;">@(result.CorrectAnswer == 1 ? "✔️" : "❌")</MudChip>
+                                                </MudTd>
+                                                <MudTd DataLabel="@Resource.Delta" Style="padding: 6px;">
+                                                    <MudChip T="string" Size="Size.Small" Color="Color.Warning" Style="font-size: 0.7rem;">@result.FinalDeltaValue</MudChip>
+                                                </MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </MudCollapse>
+                                </MudPaper>
+                            }
+                            else if (_showResults && !_loadingResults)
+                            {
+                                <MudAlert Severity="Severity.Info"
+                                          Icon="@Icons.Material.Filled.Info"
+                                          Class="mt-2"
+                                          ContentAlignment="HorizontalAlignment.Start"
+                                          Dense="true">
+                                    <MudText Typo="Typo.body2" Class="mb-1">
+                                        <strong>@Resource.NoResultsAvailable</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.caption">
+                                        @Resource.ThisEquationTemplateHasNotBeenUsedYet
+                                    </MudText>
+                                </MudAlert>
+                            }
+                        </MudCollapse>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Error" Dense="true">@Resource.FailedToLoadEquationTemplate</MudAlert>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

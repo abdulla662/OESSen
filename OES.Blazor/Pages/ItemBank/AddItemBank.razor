@@ -1,0 +1,113 @@
+@page "/AddItemBank"
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.ItemBankLevel
+@using OES.Helper.Dtos.OESUserGroups
+@using OES.Helper.Enums
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("AddItemBank")]
+
+<PageTitle>@Resource.AddNewItemBank</PageTitle>
+
+<EditForm Model="@Model">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+        <MudCardContent>
+            <div class="form-group d-flex align-items-center w-100 mt-3 mb-4 position-relative">
+                <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mx-auto">
+                    <MudIcon Icon="@Icons.Material.Outlined.AccountBalance" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+                    <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.AddNewItemBank</MudText>
+                </MudStack>
+
+                <MudIconButton Icon="@Icons.Material.Filled.GroupAdd"
+                               Variant="@Variant.Filled"
+                               Color="@Color.Primary"
+                               Size="@Size.Large"
+                               Class=@($"label-{nameof(Resource.ManageGroups)}")
+                               OnClick="OpenGroupDialog" />
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <MudTextField Label="@Resource.Name"
+                              Variant="Variant.Outlined"
+                              Immediate
+                              Clearable
+                              T="string"
+                              ValueChanged="OnItemBankNameChanged" />
+            </div>
+
+            <div class="form-group d-flex justify-content-center">
+                <MudTextField Label="@Resource.Code"
+                              Variant="Variant.Outlined"
+                              Immediate
+                              Clearable
+                              Value="@Model.Code"
+                              ValueChanged="@((string val) => Model.Code = ListHelpers.SanitizeCode(val))" />
+            </div>
+
+            <div class="form-group d-flex justify-content-center">
+                <MudTextField Label="@Resource.Description" Class="mt-3" Variant="Variant.Outlined" Immediate @bind-Value="Model.Description" For="@(() => Model.Description)" />
+            </div>
+
+            @* NOTE: Hours field is disabled for now *@
+            @* <div class="form-group d-flex justify-content-center">
+                <MudTextField Label="@Resource.Hours" Class="mt-3" @bind-Value="Model.Hours" Immediate For="@(() => Model.Hours)" Variant="Variant.Outlined" />
+            </div> *@
+
+            <MudRadioGroup T="ItemBankLevelInsertionWay" Value="ItemBankLevelInsertionWay" Class="mt-3 mb-1" ValueChanged="OnItemBankLevelInsertionWayChanged">
+                <MudRadio T="ItemBankLevelInsertionWay" Value="@(ItemBankLevelInsertionWay.Selected)" Color="Color.Secondary" Dense="true">@Resource.SelectExistingLevel</MudRadio>
+                <MudRadio T="ItemBankLevelInsertionWay" Value="@(ItemBankLevelInsertionWay.Written)" Color="Color.Primary" Dense="true">@Resource.WriteNewLevel</MudRadio>
+            </MudRadioGroup>
+
+            <div class="form-group d-flex justify-content-center">
+                @if (ItemBankLevelInsertionWay == ItemBankLevelInsertionWay.Written)
+                {
+                    <MudTextField Label="@Resource.Level"
+                                  Class="mt-4"
+                                  Variant="Variant.Outlined"
+                                  Required
+                                  Immediate
+                                  For="@(() => Model.LevelName)"
+                                  @bind-Value="Model.LevelName" />
+                }
+                else if (ItemBankLevelInsertionWay == ItemBankLevelInsertionWay.Selected)
+                {
+                    <MudAutocomplete T="ItemLevelsDto"
+                                     Label="@Resource.Level"
+                                     SearchFunc="SearchItemsLevelAsync"
+                                     ValueChanged="GetSelectedLevel"
+                                     Immediate
+                                     Variant="Variant.Outlined"
+                                     ToStringFunc="x => x?.Name"
+                                     Class="mt-4"
+                                     ShowProgressIndicator="true"
+                                     Clearable="true"
+                                     Required="true"
+                                     RequiredError="@Resource.LevelIsRequiredHere"
+                                     MaxItems="null">
+                        <NoItemsTemplate>
+                            <MudText Typo="Typo.body2" Class="pa-4 text-center">
+                                @Resource.NoLevelsAvailable
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
+                }
+            </div>
+
+            <div class="form-group d-flex justify-content-center gap-4 mt-3">
+                <MudSwitch For="@(() => Model.IsActive)" @bind-Value="Model.IsActive" Label="@Resource.Active" Color="Color.Primary" />
+                <MudSwitch @bind-Value="Model.Unscored" Label="@Resource.Unscored" Color="Color.Warning" />
+            </div>
+
+        </MudCardContent>
+        <MudCardActions Class="d-flex justify-content-center align-content-center gap-2">
+            <GeneralLoadingButton Disabled="IsSubmitButtonDisabled"
+                                  Class="flex-fill"
+                                  OnClick="OnValidSubmit"
+                                  ButtonText="@Resource.Add"
+                                  EndIcon="@Icons.Material.Filled.CheckCircle"
+                                  Type="ButtonType.Submit" />
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" @onclick="NavigateBack" Class="flex-fill" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>

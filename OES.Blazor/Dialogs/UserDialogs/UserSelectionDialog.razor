@@ -1,0 +1,14 @@
+@using OES.Blazor.Dialogs.Common
+@using OES.Helper.Dtos.User
+@using OES.Helper.ResourceFiles
+
+<GenericSelectionDialog TItem="BlazUserDTO"
+                        TResult="BlazUserDTO"
+                        HeaderIcon="@Icons.Material.Filled.People"
+                        HeaderTitle="@Resource.SelectUsers"
+                        DisplayColumns='@(new[] { nameof(BlazUserDTO.Name) })'
+                        HideDescriptionSearch="true"
+                        InitialSelectedItems="@InitialSelectedUsers"
+                        EndpointService="@GetUsersForSelectionAsync"
+                        GetItemDisplayName="@(user => user.Name)"
+                        ConvertToResult="@ConvertUsersToResult" />

@@ -1,0 +1,40 @@
+﻿
+<MudDialog dir="@(RightToLeft ? "rtl" : "ltr")">
+    <DialogContent>
+        <MudCard Class="w-100 p-4">
+            <MudCardContent>
+                <div class="d-flex justify-content-center">
+                    <MudPaper Class="my-title pa-4 mb-4" Elevation="1">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <MudIcon Icon="@Icons.Material.Filled.DirectionsTransit" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+                            <MudText Color="Color.Primary" Typo="Typo.h5" Align="Align.Center" Style="line-height: 1;">
+                                @Resource.ProfileDetails
+                            </MudText>
+                        </div>
+                    </MudPaper>
+                </div>
+                @if (Model != null)
+                {
+                    <div class="row mt-3">
+                        <div class="col-sm-3">
+                            <MudText Color="Color.Primary" Class="mb-0">📌 @Resource.Name</MudText>
+                        </div>
+                        <MudText Class="col-sm-9">@Model.Name</MudText>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-3">
+                            <MudText Color="Color.Primary" Class="mb-0">📝 @Resource.Description</MudText>
+                        </div>
+                        <MudText Class="col-sm-9">@Model.Description</MudText>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex justify-content-center py-5">
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    </div>
+                }
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+</MudDialog>

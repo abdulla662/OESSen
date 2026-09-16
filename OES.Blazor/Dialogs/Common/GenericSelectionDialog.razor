@@ -1,0 +1,74 @@
+@using OES.Blazor.Components.Common
+@using OES.Helper.General
+@using OES.Helper.ResourceFiles
+
+@typeparam TItem
+@typeparam TResult
+
+<MudDialog ContentStyle="overflow-y:auto;">
+    <DialogContent>
+        <div class="selection-dialog">
+            <div class="dialog-header">
+                <div class="dialog-header-content">
+                    <MudIcon Icon="@HeaderIcon" Size="Size.Large" Class="dialog-header-icon" />
+                    <MudText Typo="Typo.h5" Class="dialog-header-title">
+                        @HeaderTitle
+                    </MudText>
+                </div>
+            </div>
+
+            <div class="dialog-search-wrapper">
+                <ListItem T="TItem"
+                          @key="listChangingKey"
+                          EndpointServerice="EndpointService"
+                          DisplayColumns="DisplayColumns"
+                          SearchPanelVisible="true"
+                          Hide_DescriptionSearch="@HideDescriptionSearch"
+                          HideSearchInBody="true"
+                          HideDateRangeFilter="true"
+                          HideOrderByFilter="true"
+                          MultiSelection="true"
+                          TableHeight="@null"
+                          SelectedItems="SelectedItems"
+                          SelectedItemsChanged="OnSelectedItemsChanged"
+                          LockedItems="@(new HashSet<TItem>(LockedItems))"
+                          LockedItemIcon="@LockedItemIcon">
+                </ListItem>
+            </div>
+
+            @if (IsSingleSelection && SelectedItems.Any())
+            {
+                <div class="single-selection-indicator">
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                    <MudText Typo="Typo.body2" Class="fw-600">
+                        @Resource.Selected:
+                    </MudText>
+                    <MudChip T="string"
+                             Color="Color.Primary"
+                             Variant="Variant.Filled"
+                             Size="Size.Small"
+                             Icon="@Icons.Material.Filled.Person">
+                        @GetItemDisplayName(SelectedItems.First())
+                    </MudChip>
+                </div>
+            }
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="ConfirmSelection"
+                   StartIcon="@Icons.Material.Filled.Check"
+                   Class="confirm-button"
+                   Disabled="@(SelectedItems == null || !SelectedItems.Any())">
+            @Resource.Confirm
+        </MudButton>
+        <MudButton Variant="Variant.Outlined"
+                   OnClick="Cancel"
+                   StartIcon="@Icons.Material.Filled.Close"
+                   Class="cancel-button">
+            @Resource.Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,42 @@
+﻿@page "/PaperSettingTemplateView"
+
+@attribute [DynamicAuthorizeAttribute("PaperSettingTemplateView")]
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Pages.Schedule.PaperSettingTemplates.Common
+
+<MudCard Class="mx-auto mt-2 p-4 shadow-lg rounded-lg">
+    <div class="d-flex align-center justify-center mt-5">
+        <div class="d-flex align-center justify-center align-self-center pa-3 w-75" style="border-radius: 8px;">
+            <MudIcon Icon="@Icons.Material.Filled.Settings" Class="mr-2" Color="Color.Primary" Size="Size.Large" />
+            <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold">@Resource.SchedulePaperSettingsTemplateDetails</MudText>
+        </div>
+    </div>
+
+    <MudCardContent>
+        @if (_isLoading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+        }
+        else if (_paperSettingsResponseDto == null)
+        {
+            <MudPaper Class="pa-8 text-center" Elevation="1">
+                <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Large" Color="Color.Info" Class="mb-3" />
+                <MudText Typo="Typo.h6" Color="Color.Secondary">@Resource.PaperSettingsNotFound</MudText>
+            </MudPaper>
+        }
+        else
+        {
+            <MudGrid>
+                <MudPaper Class="pa-4" Style="max-width: 1200px; margin: 0 auto;">
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudExpansionPanel Text=@Resource.SchedulePaperSettingsTemplateDetails Icon="@Icons.Material.Filled.Description" Expanded="true"></MudExpansionPanel>
+                    </MudExpansionPanels>
+                    <PaperSettingComponent AdditionalSetting="true"
+                                           IsReadOnly="true"
+                                           paperSetting="@_paperSettingsResponseDto" />
+                </MudPaper>
+            </MudGrid>
+        }
+    </MudCardContent>
+</MudCard>

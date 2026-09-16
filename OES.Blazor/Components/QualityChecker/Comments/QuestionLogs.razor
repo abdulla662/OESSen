@@ -1,0 +1,21 @@
+﻿@using OES.Blazor.Services.Interfaces.QComment
+@using OES.Helper.Dtos.QcComments
+@using OES.Helper.General
+@inject IBlazQCommentService _blazQCommentService
+
+<div class="d-flex justify-content-center">
+    <MudFab Label="@Resource.ShowLogsHistory" EndIcon="@Icons.Material.Filled.Inventory2" Size="Size.Medium" Color="Color.Primary" Class="m-5" OnClick="ShowLogs" />
+</div>
+
+@if (_ShowLogs)
+{
+    <ListItem T="QcCommentDto"
+              Caption="@Resource.QuestionLogs"
+              CaptionIcon="@Icons.Material.Filled.Comment"
+              EndpointServerice="GetAllQuestionLogsAsync"
+              DisplayColumns='[nameof(QcCommentDto.Comment), nameof(QcCommentDto.QCGivenStatusDisplay), nameof(QcCommentDto.QCAuthor), nameof(QcCommentDto.CreationDate)]'
+              Hide_DescriptionSearch="true"
+              SearchPanelVisible = "false"
+              CRUD_View_Btn="false"
+              CRUD_Edit_Btn="false" />
+}

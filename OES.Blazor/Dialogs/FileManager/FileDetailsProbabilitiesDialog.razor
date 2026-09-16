@@ -1,0 +1,41 @@
+﻿<MudDialog>
+    <TitleContent>
+        @Resource.FileDetailsProbabilities
+    </TitleContent>
+    <DialogContent>
+
+        <MudText Typo="Typo.h6">
+            <strong class="mud-primary-text font-weight-bold">@Resource.UploadFile:</strong> @FileProbabilities.UploadedFileName
+        </MudText>
+
+        <MudList T="object">
+            @foreach (var file in FileProbabilities.FileNameAndProbabilities)
+            {
+                <MudListItem T="object">
+                    <MudText Typo="Typo.body1">
+                        <strong class="mud-primary-text font-weight-bold">@Resource.FileName:</strong> @file.FileName
+                    </MudText>
+                    <MudText Typo="Typo.body1">
+                        <strong class="mud-primary-text font-weight-bold">
+                            <MudTooltip Text=@Resource.ProbabilityiscalculatedbasedonAuthorDateCreatedDateModifiedFileNameFileTypeandSize>
+                                @Resource.Probability: 
+                            </MudTooltip>
+                        </strong> @($"{file.Probability} %")
+                    </MudText>
+                    <MudText Typo="Typo.body1">
+                        <strong class="mud-primary-text font-weight-bold">
+                            <MudTooltip Text="@Resource.UploadedDateTooltip">
+                                @Resource.UploadedDate:
+                            </MudTooltip>
+                        </strong> @($"{file.CreationDate}")
+                    </MudText>
+                </MudListItem>
+            }
+        </MudList>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="ProceedDialog" Color="Color.Primary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.ArrowForward">@Resource.Proceed</MudButton>
+        <MudButton OnClick="CloseDialog" Color="Color.Secondary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

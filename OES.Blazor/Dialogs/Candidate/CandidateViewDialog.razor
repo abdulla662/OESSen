@@ -1,0 +1,216 @@
+﻿@using OES.Helper.Dtos.Candidate.Requests
+
+<MudDialog Class="pa-5">
+    <TitleContent>
+        <div class="d-flex align-center justify-center mt-5">
+            <div class="d-flex align-center justify-center align-self-center pa-3 w-75" style="border-radius: 8px;">
+                <MudIcon Icon="@Icons.Material.Filled.AccountBox" Class="mr-2" Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold">@Resource.CandidateDetails @Candidate.Name</MudText>
+            </div>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Spacing="4" Class="animate__animated animate__fadeIn py-3">
+            <MudItem xs="12">
+                <MudPaper Class="pa-4" Elevation="2">
+                    <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                        <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                        @Resource.BasicInformation
+                    </MudText>
+                    <MudGrid Spacing="3">
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.Name:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @Candidate.Name
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Numbers" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.Code:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @Candidate.CandidateCode
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.UserName:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @Candidate.UserName
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.Email:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @Candidate.Email
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.PhoneIphone" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.Mobile:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @Candidate.Mobile
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.ContactEmergency" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.NationalNumber:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @Candidate.NationalId
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                <MudIcon Icon="@Icons.Material.Filled.School" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.Qualification:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">@Candidate.Qualification</MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Today" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.DateOfBirth:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">@Candidate.DateOfBirth?.ToString("dd/MM/yyyy")</MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                <MudIcon Icon="@(Candidate.Gender == 0 ? Icons.Material.Filled.Male : Icons.Material.Filled.Female)" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.Gender:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @(Candidate.Gender == 0 ? Resource.Male : Resource.Female)
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                <MudIcon Icon="@Icons.Material.Filled.Domain" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.RegistrationCenterCode:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">
+                                    @Candidate.RegistrationCenterCode
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                <MudIcon Icon="@Icons.Material.Filled.PushPin" Color="Color.Primary" />
+                                <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                    <strong>@Resource.Address:</strong>
+                                </MudText>
+                                <MudText Class="ml-2">@Candidate.Address</MudText>
+                            </MudStack>
+                        </MudItem>
+                        <!-- Identification Details Section -->
+                        <MudItem xs="12">
+                            <MudPaper Class="pa-4" Elevation="2">
+                                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                                    <MudIcon Icon="@Icons.Material.Filled.Assignment" Class="mr-2" />
+                                    @Resource.IdentificationDetails
+                                </MudText>
+
+                                <MudGrid Spacing="4">
+                                    <MudItem xs="12" sm="6">
+                                        <MudCard Class="photo-card animate__animated animate__zoomIn" Style="border-radius: 8px; overflow: hidden;">
+                                            <MudCardHeader>
+                                                <MudText Typo="Typo.body1" Class="font-weight-bold">
+                                                    <MudIcon Icon="@Icons.Material.Filled.PhotoCamera" Color="Color.Primary" Class="mr-2" />
+                                                    @Resource.CandidatePhoto
+                                                </MudText>
+                                            </MudCardHeader>
+                                            <MudCardContent Class="d-flex justify-center align-center" Style="height: 200px;">
+                                                @if (!string.IsNullOrWhiteSpace(Candidate.PhotoURL))
+                                                {
+                                                    <MudImage Src="@Candidate.PhotoURL" Alt="Candidate Photo"
+                                                              Height="180" Width="180" Class="rounded-lg elevation-3" ObjectFit="ObjectFit.Cover">
+                                                        <MudText Typo="Typo.body2" Color="Color.Error">@Resource.FailedToLoad</MudText>
+                                                    </MudImage>
+                                                }
+                                                else
+                                                {
+                                                    <MudPaper Class="d-flex flex-column align-center justify-center pa-4" Height="180px" Width="180px" Elevation="3">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Photo" Size="Size.Large" Color="Color.Warning" />
+                                                        <MudText Typo="Typo.caption" Color="Color.Warning" Class="mt-2">@Resource.NoPhotoAvailable</MudText>
+                                                    </MudPaper>
+                                                }
+                                            </MudCardContent>
+                                            @if (!string.IsNullOrWhiteSpace(Candidate.PhotoURL))
+                                            {
+                                                <MudCardActions>
+                                                    <MudButton Href="@Candidate.PhotoURL" Color="Color.Primary" Variant="Variant.Text" EndIcon="@Icons.Material.Filled.Download">@Resource.DownloadPhoto</MudButton>
+                                                </MudCardActions>
+                                            }
+                                        </MudCard>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="6">
+                                        <MudCard Class="photo-card animate__animated animate__zoomIn" Style="border-radius: 8px; overflow: hidden;">
+                                            <MudCardHeader>
+                                                <MudText Typo="Typo.body1" Class="font-weight-bold">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Draw" Color="Color.Primary" Class="mr-2" />
+                                                    @Resource.CandidateSignature
+                                                </MudText>
+                                            </MudCardHeader>
+                                            <MudCardContent Class="d-flex justify-center align-center" Style="height: 200px;">
+                                                @if (!string.IsNullOrWhiteSpace(Candidate.SignatureURL))
+                                                {
+                                                    <MudImage Src="@Candidate.SignatureURL" Alt="Candidate Signature" Height="180" Width="180" Class="rounded-lg elevation-3" ObjectFit="ObjectFit.Contain">
+                                                        <MudText Typo="Typo.body2" Color="Color.Error">@Resource.FailedToLoad</MudText>
+                                                    </MudImage>
+                                                }
+                                                else
+                                                {
+                                                    <MudPaper Class="d-flex flex-column align-center justify-center pa-4" Height="180px" Width="180px" Elevation="3">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Gesture" Size="Size.Large" Color="Color.Warning" />
+                                                        <MudText Typo="Typo.caption" Color="Color.Warning" Class="mt-2">@Resource.NoSignatureAvailable</MudText>
+                                                    </MudPaper>
+                                                }
+                                            </MudCardContent>
+                                            @if (!string.IsNullOrWhiteSpace(Candidate.SignatureURL))
+                                            {
+                                                <MudCardActions>
+                                                    <MudButton Href="@Candidate.SignatureURL" Color="Color.Primary" Variant="Variant.Text" EndIcon="@Icons.Material.Filled.Download">@Resource.DownloadSignature</MudButton>
+                                                </MudCardActions>
+                                            }
+                                        </MudCard>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudPaper>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+</MudDialog>

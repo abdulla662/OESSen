@@ -1,0 +1,145 @@
+﻿@page "/Schedules"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.Dtos.Schedule.Responses
+@using OES.Helper.Enums
+@using OES.Helper.General
+@using OES.Helper.Dtos.Schedule.Requestes
+@using OES.Helper
+
+@attribute [DynamicAuthorizeAttribute(nameof(ScheduleList))]
+
+<PageTitle>@Resource.Schedules</PageTitle>
+
+@if (SyncDashboardState.IsGlobalSyncActive && SyncDashboardState.LockedOrganizationId == GlobalUserContext.CurrentOrganizationId)
+{
+    <MudAlert Severity="Severity.Warning"
+              Variant="Variant.Filled"
+              Class="mb-3 d-flex align-center"
+              ContentAlignment="HorizontalAlignment.Start">
+        <MudIcon Icon="@Icons.Material.Filled.LockClock" Class="mr-2" />
+        <strong>@Resource.CurrentSyncProgress</strong>
+        @Resource.TillFinish (@Resource.AutoUnlocks @timeRemaining)
+    </MudAlert>
+}
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.ListAlt" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary">@Resource.Schedules</MudText>
+        </MudStack>
+        <ListItem @key="scheduleKey"
+                  T="ScheduleMetadataPaginationDto"
+                  Caption="@Resource.Schedule"
+                  CaptionIcon="@Icons.Material.Rounded.ListAlt"
+                  EndpointServerice="BlazScheduleService.GetAllSchedulesAsync"
+                  DisplayColumns='[nameof(ScheduleMetadataPaginationDto.Code), nameof(ScheduleMetadataPaginationDto.Name), nameof(ScheduleMetadataPaginationDto.StartDate), nameof(ScheduleMetadataPaginationDto.StartTime), nameof(ScheduleMetadataPaginationDto.EndDate), nameof(ScheduleMetadataPaginationDto.EndTime), nameof(ScheduleMetadataPaginationDto.ScheduleLocationDisplay), nameof(ScheduleMetadataPaginationDto.SyncStatusDisplay), nameof(ScheduleMetadataPaginationDto.PublishingStatusDisplay)]'
+                  NoConvertColumns='[nameof(ScheduleMetadataPaginationDto.Code)]'
+                  AddNew_URL="/CreateOrUpdateSchedule"
+                  AddNew_URL_OesRolesList="[OesTemplateRoleConstants.ScheduleCreator]"
+                  FilterObject="ScheduleFilterPaginationModel"
+                  FirstSearchParameterLabel="@Resource.Code"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <TopChildContent>
+                <MudCard Class="mb-3">
+                    <MudCardContent>
+                        <MudGrid Justify="Justify.Center">
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudAutocomplete T="string"
+                                                 Label="@Resource.SelectLocation"
+                                                 Clearable="true"
+                                                 ResetValueOnEmptyText="true"
+                                                 @bind-Value="SelectedLocation"
+                                                 Variant="Variant.Outlined"
+                                                 AnchorOrigin="Origin.BottomCenter"
+                                                 SearchFunc="SearchLocations"
+                                                 ToStringFunc="@(x => x?.ToLocalizedString<ScheduleLocation>())" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudAutocomplete T="string"
+                                                 Label="@Resource.SelectStatus"
+                                                 Clearable="true"
+                                                 ResetValueOnEmptyText="true"
+                                                 @bind-Value="SelectedStatus"
+                                                 Variant="Variant.Outlined"
+                                                 AnchorOrigin="Origin.BottomCenter"
+                                                 SearchFunc="SearchStatuses"
+                                                 ToStringFunc="@(x => x?.ToLocalizedString<PublishingStatus>())" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudAutocomplete T="string"
+                                                 Label="@Resource.SelectSyncStatus"
+                                                 Clearable="true"
+                                                 ResetValueOnEmptyText="true"
+                                                 @bind-Value="SelectedSyncStatus"
+                                                 Variant="Variant.Outlined"
+                                                 AnchorOrigin="Origin.BottomCenter"
+                                                 SearchFunc="SearchSyncStatuses"
+                                                 ToStringFunc="@(x => x?.ToLocalizedString<SyncingStatus>())" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="3" Class="d-flex align-center justify-center">
+                                <MudButton OnClick="ResetFilters"
+                                           Color="Color.Primary"
+                                           Variant="Variant.Outlined"
+                                           EndIcon="@Icons.Material.Filled.Clear">
+                                    @Resource.ResetFilters
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </TopChildContent>
+            <ButtonChildContent Context="value">
+                @if (value is ScheduleMetadataPaginationDto schedule)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    OnClick='async () => await ViewScheduleAsync(schedule.Id)' />
+                        </MudTooltip>
+
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    OnClick='() => NavigateToEditAsync(schedule.Id)' />
+                        </MudTooltip>
+
+                        @* <MudTooltip Text="@Resource.Copy">
+                            <MudFab Color="Color.Default"
+                                    StartIcon="@Icons.Material.Filled.ContentCopy"
+                                    Size="Size.Small"
+                                    class="fab-xsmall"
+                                    OnClick='async () => await OpenCopyScheduleDeeplyDialogAsync(schedule)' />
+                        </MudTooltip> *@
+
+                        <MudTooltip Text="@Resource.SyncResync">
+                            <MudFab Color="Color.Info"
+                                    EndIcon="@Icons.Material.Filled.CloudSync"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.SyncResync)}")
+                                    OnClick='async () => await SyncSchedule(schedule)'
+                                    Disabled='@(schedule.PublishingStatus != PublishingStatus.Published ||
+                                                         syncingScheduleId == schedule.Id ||
+                                                         (SyncDashboardState.IsGlobalSyncActive && SyncDashboardState.LockedOrganizationId == GlobalUserContext.CurrentOrganizationId))' />
+                        </MudTooltip>
+
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    StartIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    OnClick='async () => await DeleteScheduleAsync(schedule.Id)' />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

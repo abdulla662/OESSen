@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option csharp_namespace = "OES.Api.Protos";
+
+import "google/protobuf/timestamp.proto";
+
+message UserProfileRequest {
+  string organizationSignature = 1;
+  string moduleId = 2;
+  string organizationId = 3;
+}
+
+message UserProfileList {
+  string id = 1;
+
+  string username = 2;
+
+  string emailAddress = 3;
+
+  string creationUser = 4;
+
+  string modificationUser = 5;
+
+  google.protobuf.Timestamp creationDate = 6;
+
+  google.protobuf.Timestamp modificationDate = 7;
+
+  bool isDeleted = 8;
+
+  google.protobuf.Timestamp deletedDate = 9;
+
+  bool isActive = 10;
+
+  string organizationSignature = 11;
+
+  string ModuleUserID = 12;
+
+  int64 organizationId = 13;
+
+  int32 gender = 14;
+}
+
+message UserProfileResponse {
+  repeated UserProfileList profiles = 1;
+}

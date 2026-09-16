@@ -1,0 +1,131 @@
+﻿@page "/BlocksList"
+
+@attribute [DynamicAuthorizeAttribute("BlocksPaginatedList")]
+
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.Block.Responses
+@using OES.Helper.Dtos.DifficultyLevel
+@using OES.Helper.Dtos.DifficultyProfile
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.General
+
+<PageTitle>@Resource.AdaptiveExamBlocks</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.BorderAll" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.AdaptiveExamBlocks</MudText>
+        </MudStack>
+
+        <ListItem @key="listItemReloadingKey"
+                  T="GetBlockResponseDto"
+                  EndpointServerice="GetBlocksPaginatedAsync"
+                  DisplayColumns='[ nameof(GetBlockResponseDto.Code),
+                                    nameof(GetBlockResponseDto.Name),
+                                    nameof(GetBlockResponseDto.QuestionsCount),
+                                    nameof(GetBlockResponseDto.BlockTypeName),
+                                    nameof(GetBlockResponseDto.DifficultyLevelName) ]'
+                  Caption="@Resource.Block"
+                  CaptionIcon="@Icons.Material.Filled.BorderAll"
+                  ListTitle=@Resource.BlocksList
+                  FilterObject="_blockFilterPaginationModel"
+                  AddNew_URL_OesRolesList="[OesTemplateRoleConstants.BlockCreator]"
+                  AddNew_URL="CreateNewBlock"
+                  FirstSearchParameterLabel="@Resource.Code"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <TopChildContent>
+                <MudCard Class="mb-3">
+                    <MudCardContent>
+                        <MudGrid Justify="Justify.Center">
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudSelect T="ProfileDto"
+                                           Label="@Resource.SelectDifficultyProfile"
+                                           Clearable="true"
+                                           @bind-Value="SelectedDifficultyProfileInput"
+                                           Variant="Variant.Outlined"
+                                           Class="mb-3 w-100"
+                                           AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var profile in _difficultyProfiles ?? [])
+                                    {
+                                        <MudSelectItem Value="@profile">@profile.Name</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudSelect T="DifficultyLevelDto"
+                                           Label=@Resource.DifficultyLevel
+                                           Clearable="true"
+                                           @bind-Value="SelectedDifficultyLevel"
+                                           Variant="Variant.Outlined"
+                                           AnchorOrigin="Origin.BottomCenter"
+                                           Disabled="disabled">
+                                    @if (DifficultyLevels != null && DifficultyLevels.Any())
+                                    {
+                                        @foreach (var dl in DifficultyLevels)
+                                        {
+                                            <MudSelectItem Value="@dl">@dl.Name</MudSelectItem>
+                                        }
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudSelect T="QuestionCategoryDto"
+                                           Label=@Resource.BlockType
+                                           @bind-Value="SelectedBlockType"
+                                           Clearable="true"
+                                           Variant="Variant.Outlined"
+                                           AnchorOrigin="Origin.BottomCenter">
+                                    @if (_blockTypes != null && _blockTypes.Any())
+                                    {
+                                        @foreach (var type in _blockTypes)
+                                        {
+                                            <MudSelectItem Value="@type">@type.Name</MudSelectItem>
+                                        }
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <!-- Reset Button -->
+                            <MudItem xs="12" sm="6" md="3" Class="d-flex align-center justify-center">
+                                <MudButton OnClick="ResetFilters" Color="Color.Primary" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Clear">
+                                    @Resource.ResetFilters
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </TopChildContent>
+            <ButtonChildContent Context="context">
+                @if (context is GetBlockResponseDto block)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    OnClick="() => ViewBlockAsync(block.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    Disabled="@(block.InUse)"
+                                    OnClick="() => EditBlockAsync(block.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    StartIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    Disabled="@(block.InUse)"
+                                    OnClick="() => DeleteBlockAsync(block.Id)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

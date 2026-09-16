@@ -1,0 +1,240 @@
+@using OES.Blazor.Pages.Question.QuestionTypes
+@using OES.Blazor.Pages.Question.QuestionTypes.ComprehensionComponents
+@using OES.Helper
+@using OES.Helper.Dtos.QyestionType
+@using OES.Helper.Enums
+@using OES.Helper.General
+
+
+<MudDialog TitleClass="fw-bold font-weight-bold" Class="dialog-border">
+    <DialogContent>
+        <div style="overflow-y: auto; overflow-x: hidden;">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudStack Spacing="1" Class="mb-2">
+                        <MudText Typo="Typo.h6" Class="editor-label-text fw-bold">@Resource.Settings</MudText>
+                    </MudStack>
+                    <MudStack Row="true" Spacing="4" Wrap="Wrap.Wrap" AlignItems="AlignItems.Start" Class="question-settings-card-parent pa-4">
+                        <!-- Select Type -->
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.h6" Class="question-settings-label mb-0 fw-bold">
+                                @Resource.SelectType:
+                            </MudText>
+                            <MudAutocomplete T="QuestionTypeDto"
+                                             Variant="Variant.Outlined"
+                                             Class="rounded-setting-field"
+                                             ShowProgressIndicator="true"
+                                             SearchFunc="SearchQuestionTypeAsync"
+                                             Value="SelectedQuestionType"
+                                             ValueChanged="OnQuestionTypeChange"
+                                             ToStringFunc="@(item => item?.Name.ToLocalizedString<QuestionType>())"
+                                             Clearable="true"
+                                             Error="_questionTypeErrorShown"
+                                             ErrorText="@Resource.ThisFieldIsRequired"
+                                             Required
+                                             AdornmentColor="Color.Primary"
+                                             Margin="Margin.Dense"
+                                             Disabled="@(SubQuestionMetadataRetrievalDto.QuestionTypeId > 0 || _currentOperationalMode == UPDATE_MODE)" />
+                        </MudStack>
+
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+                                @Resource.Code:
+                            </MudText>
+                            <MudTextField Value="@ReceivedComprehensionSubQuestionDto.SubQuestionMetadataDto.Code"
+                                          ValueChanged="@((string val) => ReceivedComprehensionSubQuestionDto.SubQuestionMetadataDto.Code = ListHelpers.SanitizeCode(val))"
+                                          Variant="Variant.Outlined"
+                                          Class="rounded-setting-field question-setting-input"
+                                          Immediate="true"
+                                          Margin="Margin.Dense"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@Icons.Material.Filled.Code"
+                                          AdornmentColor="Color.Primary" />
+                        </MudStack>
+
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+                                @Resource.DeltaValue:
+                            </MudText>
+                            <MudNumericField T="decimal"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="ReceivedComprehensionSubQuestionDto.SubQuestionMetadataDto.Delta"
+                                             For="() => ReceivedComprehensionSubQuestionDto.SubQuestionMetadataDto.Delta"
+                                             Immediate
+                                             Margin="Margin.Dense"
+                                             Class="rounded-setting-field question-setting-input"
+                                             Adornment="Adornment.End"
+                                             AdornmentIcon="@Icons.Material.Filled.ChangeHistory"
+                                             AdornmentColor="Color.Primary"
+                                             Format="G29"
+                                             HideSpinButtons="true" />
+                        </MudStack>
+
+                        @if (SelectedQuestionType?.Id > 0)
+                        {
+                            <!-- Select Language -->
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.h6" Class="question-settings-label mb-0 fw-bold">
+                                    @Resource.SelectLanguage
+                                </MudText>
+                                <MudSelect @bind-Value="SelectedLanguage"
+                                           Immediate
+                                           Dense="true"
+                                           Class="rounded-setting-field language-selector"
+                                           Variant="Variant.Outlined"
+                                           Margin="Margin.Dense"
+                                           ToStringFunc="@(l => l?.Name)"
+                                           Error="@(_isSubmitButtonHit && SelectedLanguage.Id == 0)"
+                                           ErrorText="@_requiredErrorText"
+                                           Required
+                                           AdornmentIcon="@Icons.Material.Filled.Language"
+                                           AdornmentColor="Color.Primary"
+                                           AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var language in LanguagesList)
+                                    {
+                                        <MudSelectItem Value="language" />
+                                    }
+                                </MudSelect>
+                            </MudStack>
+                        }
+
+                        @if (SelectedQuestionType?.Name == nameof(QuestionType.Essay) || (SelectedQuestionType?.Name == nameof(QuestionType.FileUploadResponse) && SubQuestionMetadataRetrievalDto.FileUploadSettings.ShowAnswerTextArea))
+                        {
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+                                    @Resource.MaximumNumberOfWords:
+                                </MudText>
+                                <MudNumericField T="long?"
+                                                 Variant="Variant.Outlined"
+                                                 @bind-Value="ReceivedComprehensionSubQuestionDto.SubQuestionDetailsDto.MaxWords"
+                                                 Min="1"
+                                                 Immediate="true"
+                                                 Margin="Margin.Dense"
+                                                 Class="rounded-setting-field question-setting-input"
+                                                 Adornment="Adornment.End"
+                                                 AdornmentIcon="@Icons.Material.Filled.TextFields"
+                                                 AdornmentColor="Color.Primary"
+                                                 HideSpinButtons="true" />
+                            </MudStack>
+                        }
+
+                        @if (SelectedQuestionType?.Name == nameof(QuestionType.SegmentWithAudioAnswer) || SelectedQuestionType?.Name == nameof(QuestionType.SegmentWithVideoAnswer))
+                        {
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+                                    @Resource.MaxRecordingTime:
+                                </MudText>
+                                <MudNumericField @bind-Value="ReceivedComprehensionSubQuestionDto.SubQuestionDetailsDto.MaxRecordingTimeInSeconds"
+                                                 Variant="Variant.Outlined"
+                                                 Margin="Margin.Dense"
+                                                 Class="rounded-setting-field question-setting-input"
+                                                 Min="1"
+                                                 Step="1"
+                                                 T="int"
+                                                 HideSpinButtons="true"
+                                                 Adornment="Adornment.End"
+                                                 AdornmentIcon="@Icons.Material.Filled.Timer"
+                                                 AdornmentColor="Color.Primary" />
+                            </MudStack>
+                        }
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+
+            @if (SelectedQuestionType?.Id == (long)QuestionType.FileUploadResponse)
+            {
+                <MudItem xs="12" Class="mt-2">
+                    <div class="question-settings-card">
+                        <div class="w-100">
+                            <MudText Typo="Typo.h6" Class="question-settings-label mb-3">
+                                @Resource.FileUploadSettings
+                            </MudText>
+
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudNumericField T="int"
+                                                     HideSpinButtons="true"
+                                                     @bind-Value="SubQuestionMetadataRetrievalDto.FileUploadSettings.UploadedFilesCount"
+                                                     Label="@Resource.UploadedFilesCount"
+                                                     Variant="Variant.Outlined"
+                                                     Min="1"
+                                                     Max="5" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudNumericField T="int"
+                                                     HideSpinButtons="true"
+                                                     @bind-Value="SubQuestionMetadataRetrievalDto.FileUploadSettings.SingleFileMaxSizeInMB"
+                                                     Label="@Resource.SingleFileMaxSize"
+                                                     Variant="Variant.Outlined"
+                                                     Min="1"
+                                                     Max="50" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudSelect T="FileUploadExtension"
+                                               SelectAll="true"
+                                               MultiSelection="true"
+                                               ShrinkLabel
+                                               Variant="Variant.Outlined"
+                                               Label="@Resource.SupportedFileExtensions"
+                                               Placeholder="@Resource.Selectextensions"
+                                               SelectedValues="_selectedExtensionsEnum"
+                                               SelectedValuesChanged="OnSelectedExtensionsEnumChanged">
+                                        @foreach (var extName in _availableExtensionsEnum)
+                                        {
+                                            <MudSelectItem T="FileUploadExtension" Value="extName">@extName.ToString()</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudCheckBox T="bool"
+                                                 @bind-Value="SubQuestionMetadataRetrievalDto.FileUploadSettings.ShowAnswerTextArea"
+                                                 Label="@Resource.ShowAnswerTextArea" />
+                                </MudItem>
+                            </MudGrid>
+                        </div>
+                    </div>
+                </MudItem>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(SelectedQuestionType.Name))
+            {
+                @switch (SelectedQuestionType.Name)
+                {
+                    case nameof(QuestionType.Essay):
+                        <ComprehensionEssayQuestion ParentMetadataId="ParentMetadataId" Model="ReceivedComprehensionSubQuestionDto" FormHandler="@HandleSubQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="@IsReplaceMode" />
+                        break;
+                    case nameof(QuestionType.FileUploadResponse):
+                        <ComprehensionFileUploadResponseQuestion ParentMetadataId="ParentMetadataId" Model="ReceivedComprehensionSubQuestionDto" FormHandler="@HandleSubQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" />
+                        break;
+                    case nameof(QuestionType.SegmentWithAudioAnswer):
+                        <ComprehensionSegmentWithAudioAnswerQuestions ParentMetadataId="ParentMetadataId" Model="ReceivedComprehensionSubQuestionDto" FormHandler="@HandleSubQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" />
+                        break;
+                    case nameof(QuestionType.SegmentWithVideoAnswer):
+                        <ComprehensionSegmentWithVideoAnswerQuestions ParentMetadataId="ParentMetadataId" Model="ReceivedComprehensionSubQuestionDto" FormHandler="@HandleSubQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" />
+                        break;
+                    case nameof(QuestionType.FillInTheBlank):
+                        <ComprehensionFillInTheBlankQuestions ParentMetadataId="ParentMetadataId" Model="ReceivedComprehensionSubQuestionDto" FormHandler="@HandleSubQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" />
+                        break;
+                    case nameof(QuestionType.MCQ):
+                        <ComprehensionMCQQuestion ParentMetadataId="ParentMetadataId" Model="ReceivedComprehensionSubQuestionDto" FormHandler="@HandleSubQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="@IsReplaceMode" />
+                        break;
+                    case nameof(QuestionType.MultipleCorrectAnswers):
+                        <ComprehensionMultipleCorrectAnswersQuestion ParentMetadataId="ParentMetadataId" Model="ReceivedComprehensionSubQuestionDto" FormHandler="@HandleSubQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="@IsReplaceMode" />
+                        break;
+                    case nameof(QuestionType.Ordering):
+                        <ComprehensionOrderingQuestion ParentMetadataId="ParentMetadataId" Model="ReceivedComprehensionSubQuestionDto" FormHandler="@HandleSubQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" />
+                        break;
+                    case nameof(QuestionType.TrueAndFalse):
+                        <ComprehensionTrueOrFalseQuestion ParentMetadataId="ParentMetadataId" Model="ReceivedComprehensionSubQuestionDto" FormHandler="@HandleSubQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="@IsReplaceMode" />
+                        break;
+                    default:
+                        <div>@Resource.UnknownQuestionType!</div>
+                        break;
+                }
+            }
+        </div>
+    </DialogContent>
+</MudDialog>

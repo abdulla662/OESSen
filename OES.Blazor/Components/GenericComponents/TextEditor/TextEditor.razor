@@ -1,0 +1,124 @@
+@using OES.Blazor.Components.Common.FileManagerComponent
+
+<style>
+    .sun-editor-editable audio, .sun-editor-editable img, .sun-editor-editable video {
+        max-width: 100% !important;
+        max-height: 100% !important;
+    }
+
+    .sun-editor-editable figure {
+        max-width: 100% !important;
+        max-height: 100% !important;
+    }
+
+    .readonly-editor {
+        pointer-events: none;
+        opacity: 0.8;
+        filter: grayscale(0.5);
+    }
+</style>
+
+<div class="text-editor-container">
+    <!-- Label Row -->
+    @if (TextEditorParams != null && !string.IsNullOrWhiteSpace(TextEditorParams.Label))
+    {
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="text-editor-label-row mb-2">
+            <MudText Typo="Typo.h6" Class="editor-label-text fw-bold">
+                @TextEditorParams.Label
+                @if (TextEditorParams.RequiredAsteriskShown)
+                {
+                    <span class="text-danger ms-1">*</span>
+                }
+            </MudText>
+
+            @if (ActionContent != null)
+            {
+                <MudStack Row="true" Spacing="2">
+                    @ActionContent
+                </MudStack>
+            }
+        </MudStack>
+    }
+
+    <div class="text-editor-box @(TextEditorParams.IsReadOnly ? "readonly-editor" : "")">
+        <!-- Editor Content -->
+        <div class="pa-2 @(TextEditorParams.ErrorShown ? "border border-danger" : "")">
+            <textarea id="@($"editor-{TextEditorParams.ComponentGuid}")" class="w-100"></textarea>
+        </div>
+        @if (Footer != null)
+        {
+            <div class="pa-2 border-top">
+                @Footer
+            </div>
+        }
+    </div>
+</div>
+
+@if (TextEditorParams.ErrorShown)
+{
+    <div class="d-flex mud-input-helper-text mud-input-error mt-1 px-4">
+        <div class="me-auto">@TextEditorParams.ErrorText</div>
+    </div>
+}
+
+<!-- Math - Chem Panel Modal -->
+<div class="modal fade"
+     id="@($"math-chem-panel-modal-{TextEditorParams.ComponentGuid}")"
+     tabindex="-1"
+     aria-labelledby="mathChemPanel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content math-panel-bg">
+            <div class="modal-header flex-row-reverse" dir="rtl">
+                <h1 class="modal-title fs-5">@Resource.EquationsPanel</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column justify-content-center align-content-center gap-3 p-2">
+                    <math-field id="@($"math-chem-field-{TextEditorParams.ComponentGuid}")" class="math-chem-fields w-100" dir="ltr"></math-field>
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <span class="fs-5 align-self-center text-nowrap">@Resource.DisplayIn &nbsp;</span>
+                        <select id="@($"language-selector-{TextEditorParams.ComponentGuid}")" class="form-select flex-fill">
+                            <option value="en">@Resource.English</option>
+                            <option value="ar">@Resource.Arabic</option>
+                        </select>
+                    </div>
+                    <div id="rendering-area-container" data-no-convert>
+                        <div id="@($"rendering-area-{TextEditorParams.ComponentGuid}")" class="rendering-areas"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center align-content-center gap-2">
+                <MudButton ButtonType="ButtonType.Button"
+                           Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           data-bs-dismiss="modal"
+                           Class="flex-fill">
+                    @Resource.Cancel
+                </MudButton>
+                <MudButton ButtonType="ButtonType.Button"
+                           id="@($"equation-insertion-button-{TextEditorParams.ComponentGuid}")"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           data-bs-dismiss="modal"
+                           Class="flex-fill">
+                    @Resource.Insert
+                </MudButton>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- File Manager Modal -->
+<div class="modal fade" id="@($"file-manager-modal-{TextEditorParams.ComponentGuid}")" tabindex="-1" aria-labelledby="fileManager">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content file-manager-bg">
+            <div class="modal-header">
+                <button type="button" data-bs-dismiss="modal" aria-label="Close">✖</button>
+            </div>
+            <div class="modal-body">
+                <FileManagerComponent Elevation="0" FileSelectionEnabled ReceiveSelectedFile="@(file => ReceiveSelectedFileAsync(file))" />
+            </div>
+        </div>
+    </div>
+</div>

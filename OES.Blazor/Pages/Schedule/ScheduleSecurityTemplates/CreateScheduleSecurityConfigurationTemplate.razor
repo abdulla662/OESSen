@@ -1,0 +1,210 @@
+﻿@page "/CreateScheduleSecurityConfigurationTemplate"
+
+@using OES.Blazor.Components.GenericComponents.Loader
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Enums
+
+@attribute [DynamicAuthorizeAttribute(nameof(CreateScheduleSecurityConfigurationTemplate))]
+
+<PageTitle>@Resource.AddSecurityConfigurationsTemplate</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 rounded-lg shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <EditForm Model="@Model" OnValidSubmit="OnSubmitAsync">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <!-- Header -->
+                <MudItem xs="12" Class="d-flex justify-center mb-4">
+                    <MudText Color="Color.Primary" Typo="Typo.h4" Class="font-weight-bold">
+                        <MudIcon Icon="@Icons.Material.Filled.SystemSecurityUpdateGood" Class="mr-2" />
+                        @Resource.AddSecurityConfigurationsTemplate
+                    </MudText>
+                </MudItem>
+
+                <MudItem xs="12" md="12" Class="d-flex justify-center">
+                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Model.Name" For="() => Model.Name" Label="@Resource.TemplateName" />
+                </MudItem>
+
+                <!-- Main Configuration Card -->
+                <MudItem xs="12">
+                    <MudCard Elevation="2" Class="rounded-lg" Style="border-left: 4px solid var(--mud-palette-primary);">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.ExamSecuritySettings</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid Spacing="3">
+                                <!-- Monitoring & Security Section -->
+                                <MudItem xs="12">
+                                    <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-3">
+                                        <MudIcon Icon="@Icons.Material.Filled.Visibility" Class="mr-2" />
+                                        @Resource.MonitoringAndSecurity
+                                    </MudText>
+                                    <MudGrid Spacing="2">
+                                        @* <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.SecuredBrowser"
+                                                       @bind-Value="Model.SecuredBrowser" />
+                                        </MudItem> *@
+
+                                        @* <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.EnableLogging"
+                                                       @bind-Value="Model.EnableLog" />
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.DisplayLog"
+                                                       @bind-Value="Model.DisplayLog" />
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.ScreenShots"
+                                                       @bind-Value="Model.ScreenShots" />
+                                        </MudItem> *@
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.CameraShots"
+                                                       @bind-Value="Model.CamShot" />
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.CandidateCameraShots"
+                                                       @bind-Value="Model.CandidateCameraAndCameraShots" />
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.SupervisorCameraShots"
+                                                       @bind-Value="Model.SuperVisorAndCandidateCameraShot" />
+                                        </MudItem>
+
+                                        @* <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.CombinedCameraShot"
+                                                       @bind-Value="Model.SuperVisorAndCandidateCombinedCameraShot" />
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.ScreenshotonFocusOut"
+                                                       @bind-Value="Model.FocusOutWindowsMinimizedScreenShot" />
+                                        </MudItem> *@
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label=@Resource.EnableViolationsDetector
+                                                       @bind-Value="Model.FocusOutWindowsMinimizedCameraShot" />
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="6">
+                                            <MudNumericField @bind-Value="@Model.EvidenceDurationPerSeconds"
+                                                             Label="@Resource.EvidenceDurationseconds"
+                                                             Variant="Variant.Outlined"
+                                                             Min="0"
+                                                             For="@(() => Model.EvidenceDurationPerSeconds)"
+                                                             Class="mb-3" />
+                                        </MudItem>
+
+                                        @* <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.ShotsonSubmitSkip"
+                                                       @bind-Value="Model.ScreenShotsOnSubmitOrSkip" />
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.WarnWhenNoFaceDetected"
+                                                       @bind-Value="Model.SystemWarningWhenNoFace" />
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.AudioRecording"
+                                                       @bind-Value="Model.AudioRecording" />
+                                        </MudItem>
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.EnableProctoring"
+                                                       @bind-Value="Model.Proctoring" />
+                                        </MudItem> *@
+
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary"
+                                                       Label="@Resource.ProctoringWarnings"
+                                                       @bind-Value="Model.ProctoringWarning" />
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem>
+
+                                @* <MudDivider Class="my-4" /> *@
+
+                                <!-- Browser & Access Control -->
+                                <MudItem xs="12">
+                                    @* <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-3">
+                                        <MudIcon Icon="@Icons.Material.Filled.Lock" Class="mr-2" />
+                                        @Resource.AccessControl
+                                    </MudText> *@
+                                    <MudGrid Spacing="2">
+                                        @* <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary" Label="@Resource.RequireIDCardforcandidate" @bind-Value="Model.IsCandidateIdCardRequired" />
+                                        </MudItem>
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary" Label="@Resource.PasswordtoCloseApp" @bind-Value="Model.CloseApplicationPasswordRequired" />
+                                        </MudItem>
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary" Label="@Resource.RestrictAccess" @bind-Value="Model.RestrictAccessRequire" />
+                                        </MudItem>
+                                        <MudItem xs="12" md="6">
+                                            <MudSwitch Color="Color.Primary" Label="@Resource.OnlineExamMode" @bind-Value="Model.IsOnLineExam" />
+                                        </MudItem>
+                                        <MudItem xs="12">
+                                            <MudSelect T="string"
+                                                       Label="@Resource.SupportedBrowserVersion"
+                                                       @bind-Value="@Model.SupportedVersionForSecuredBrowser"
+                                                       For="() => Model.SupportedVersionForSecuredBrowser"
+                                                       Variant="Variant.Outlined"
+                                                       Required
+                                                       Clearable>
+                                                @foreach (var version in Enum.GetNames<SupportedBrowserVersion>())
+                                                {
+                                                    <MudSelectItem Value="@version">@version</MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                        </MudItem> *@
+                                        <MudItem xs="12" sm="12" Class="d-flex justify-center gap-4 pa-4">
+                                            <GeneralLoadingButton Class="flex-fill mud-elevation-4"
+                                                                  ButtonColor="Color.Primary"
+                                                                  ButtonText="@Resource.Save"
+                                                                  EndIcon="@Icons.Material.Filled.CheckCircle"
+                                                                  Type="ButtonType.Submit"
+                                                                  Variant="Variant.Filled"
+                                                                  Size="Size.Large" />
+                                            <MudButton ButtonType="ButtonType.Button"
+                                                       Variant="Variant.Filled"
+                                                       Color="Color.Secondary"
+                                                       Class="flex-fill"
+                                                       Size="Size.Large"
+                                                       OnClick="Cancel"
+                                                       EndIcon="@Icons.Material.Filled.Cancel">
+                                                @Resource.Cancel
+                                            </MudButton>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudCardContent>
+</MudCard>

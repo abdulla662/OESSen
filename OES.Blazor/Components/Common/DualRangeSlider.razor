@@ -1,0 +1,56 @@
+﻿@typeparam T where T : struct, System.Numerics.INumber<T>
+
+<MudStack Spacing="2" Class="pa-4">
+    @if (ShowPerSliderValues)
+    {
+        <MudText Typo="Typo.body1"><b>@Resource.From :</b> @FormatValue(_minValue)</MudText>
+    }
+
+    <MudSlider T="T"
+               @bind-Value="MinValueInternal"
+               Min="Min" Max="Max" Step="Step"
+               Immediate="true" ValueLabel="true"
+               Color="Color.Info" Class="mb-4" />
+
+    @if (ShowPerSliderValues)
+    {
+        <MudText Typo="Typo.body1"><b>@Resource.To :</b> @FormatValue(_maxValue)</MudText>
+    }
+
+    <MudSlider T="T"
+               @bind-Value="MaxValueInternal"
+               Min="Min" Max="Max" Step="Step"
+               Immediate="true" ValueLabel="true"
+               Color="Color.Primary" Class="mb-4" />
+
+    @if (ShowBand)
+    {
+        <div class="drs-outer mb-2" style="--track-h:@($"{TrackHeightPx}px")">
+            <div class="drs-band" style="@BandVars"></div>
+        </div>
+    }
+
+    @if (ShowRangeSummary)
+    {
+        <MudText Align="Align.Center">@Resource.DeltaRange : @FormatValue(_minValue) – @FormatValue(_maxValue)</MudText>
+    }
+</MudStack>
+
+<style>
+    .drs-outer {
+        position: relative;
+        block-size: var(--track-h, 12px);
+        background: var(--mud-palette-lines-default);
+        border-radius: calc(var(--track-h, 12px) / 2);
+    }
+
+    .drs-band {
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: var(--start, 0%);
+        inline-size: var(--size, 0%);
+        background: var(--mud-palette-primary);
+        border-radius: inherit;
+        transition: inline-size .12s, inset-inline-start .12s;
+    }
+</style>

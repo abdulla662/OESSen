@@ -1,0 +1,86 @@
+﻿@page "/calculator"
+
+<MudPaper Class="pa-4 calculator-container" Elevation="3">
+    <!-- Display -->
+    <MudPaper Outlined="true" Class="pa-2 mb-4 calculator-display">
+        <MudText Color="Color.Dark" Typo="Typo.h4" Class="display-value">12345</MudText>
+        <MudText Typo="Typo.body1" Color="Color.Inherit" Class="display-expression">12 + 345</MudText>
+    </MudPaper>
+
+    <!-- Static Button -->
+    <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Class="mb-2 d-flex justify-center">
+        @Resource.ScientificCalculator
+    </MudButton>
+
+    <!-- Scientific Buttons (shown statically) -->
+    <MudGrid Spacing="1">
+        <!-- Scientific Row -->
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">x<sup>y</sup></MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">10<sup>x</sup></MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">1/x</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">e<sup>x</sup></MudButton></MudItem>
+
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">sin<sup>-1</sup></MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">cos<sup>-1</sup></MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">tan<sup>-1</sup></MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">e</MudButton></MudItem>
+
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">√</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">x<sup>2</sup></MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">log</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">π</MudButton></MudItem>
+
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">sin</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">cos</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">tan</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Dark" FullWidth="true">n!</MudButton></MudItem>
+
+        <!-- Normal Calculator Buttons -->
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Error" FullWidth="true">C</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Warning" FullWidth="true">⌫</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">%</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">÷</MudButton></MudItem>
+
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">7</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">8</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">9</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">×</MudButton></MudItem>
+
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">4</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">5</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">6</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">-</MudButton></MudItem>
+
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">1</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">2</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">3</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">+</MudButton></MudItem>
+
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">+/-</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">0</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true">.</MudButton></MudItem>
+        <MudItem xs="3"><MudButton Variant="Variant.Filled" Color="Color.Success" FullWidth="true">=</MudButton></MudItem>
+    </MudGrid>
+</MudPaper>
+
+<style>
+    .calculator-container {
+        max-width: 420px;
+        margin: auto;
+    }
+
+    .calculator-display {
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        text-align: right;
+    }
+
+    .display-value {
+        font-weight: bold;
+    }
+
+    .display-expression {
+        opacity: 0.7;
+        font-size: 0.9rem;
+    }
+</style>

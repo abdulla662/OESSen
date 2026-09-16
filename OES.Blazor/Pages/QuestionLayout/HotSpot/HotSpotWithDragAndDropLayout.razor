@@ -1,0 +1,50 @@
+﻿@using OES.Helper.Dtos.HotSpotDtos
+@using OES.Helper.General
+
+<div class="@(ScreenSizeClass) d-flex justify-center" data-no-convert>
+    <MudPaper Elevation="4" Class="pa-6 rounded-xl" Style="max-width: 900px; width: 100%;">
+
+        @if (!string.IsNullOrEmpty(CleanBody))
+        {
+            <div class="question-text mb-6">
+                @((MarkupString)CleanBody)
+            </div>
+        }
+
+        @if (QuestionData != null)
+        {
+            <MudDropContainer T="DraggableItemInternal"
+                              Items="DraggableItems"
+                              ItemsSelector="@((item, zone) => item.CurrentZoneId.ToString() == zone || (zone == HotSpotBodyParsingConstants.DropzonePool && item.CurrentZoneId == null))"
+                              ItemDropped="ItemUpdated"
+                              ItemDisabled="@(item => true)"
+                              Style="width:100%;"
+                              Class="d-flex flex-column align-start">
+                <ChildContent>
+                    <div class="hotspot-image-wrapper mb-8" style="@GetWrapperStyle()">
+                        @foreach (var zone in HotSpotZones)
+                        {
+                            <div style="@GetZoneWrapperStyle(zone)">
+                                <MudDropZone T="DraggableItemInternal"
+                                             Identifier="@zone.Id.ToString()"
+                                             Class="d-flex align-center justify-center w-100 h-100"
+                                             Style="border:2px dashed #2196F3; background-color: rgba(33,150,243,0.15); box-sizing:border-box;" />
+                            </div>
+                        }
+                    </div>
+
+                    <MudText Typo="Typo.h6" Class="mb-3 font-weight-bold">@Resource.AvailableElementsToDrag</MudText>
+                    <MudDropZone T="DraggableItemInternal"
+                                 Identifier="@HotSpotBodyParsingConstants.DropzonePool"
+                                 Class="d-flex flex-wrap justify-start gap-2 w-100 pa-4 rounded-lg"
+                                 Style="background-color: var(--mud-palette-background-grey); min-height: 80px; border: 2px dashed #ccc;" />
+                </ChildContent>
+                <ItemRenderer Context="context">
+                    <MudPaper Class="pa-2 mud-theme-primary cursor-grab rounded-lg" Elevation="2" Style="min-width:70px; text-align:center;">
+                        <MudText Typo="Typo.body2">@context.Label</MudText>
+                    </MudPaper>
+                </ItemRenderer>
+            </MudDropContainer>
+        }
+    </MudPaper>
+</div>

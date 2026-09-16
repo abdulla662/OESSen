@@ -1,0 +1,64 @@
+﻿@page "/AddDisability"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("AddDisability")]
+
+<PageTitle>@Resource.AddDisability</PageTitle>
+
+<EditForm Model="@Model">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-75 p-4 shadow-lg">
+        <MudCardContent>
+            <div class="d-flex justify-content-center align-items-center">
+                <MudIcon Icon="@Icons.Material.Rounded.DriveFileRenameOutline" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h5" Style="line-height: 1;">
+                    @Resource.AddDisability
+                </MudText>
+            </div>
+
+            <div class="form-group">
+                <MudTextField Label="@Resource.Name"
+                              Required="true"
+                              Immediate="true"
+                              @bind-Value="Model.Name"
+                              For="@(() => Model.Name)"
+                              Class="mb-3"
+                              Variant="Variant.Outlined" />
+            </div>
+
+            <div class="form-group">
+                <MudTextField Label="@Resource.Description"
+                              Required="true"
+                              Immediate="true"
+                              @bind-Value="Model.Description"
+                              For="@(() => Model.Description)"
+                              Class="mb-3"
+                              Variant="Variant.Outlined" />
+            </div>
+
+            <div class="form-group">
+                <MudNumericField Label="@Resource.ExtraTimePercentage"
+                                 Required="true"
+                                 Immediate="true"
+                                 @bind-Value="Model.ExtraTimePercentage"
+                                 For="@(() => Model.ExtraTimePercentage)"
+                                 Class="mb-3"
+                                 Variant="Variant.Outlined"
+                                 Max="100"
+                                 Min="0" />
+            </div>
+
+            <MudCardActions Class="justify-content-center w-100">
+                <GeneralLoadingButton Disabled="@(IsSubmitButtonDisabled)"
+                                      Class="w-100 m-3"
+                                      OnClick="OnValidSubmitAsync"
+                                      ButtonText="@Resource.Save"
+                                      StartIcon="@Icons.Material.Filled.Save"
+                                      Type="ButtonType.Submit" />
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="w-100 m-3" OnClick="Cancel" StartIcon="@Icons.Material.Filled.Close">@Resource.Cancel</MudButton>
+            </MudCardActions>
+        </MudCardContent>
+    </MudCard>
+</EditForm>

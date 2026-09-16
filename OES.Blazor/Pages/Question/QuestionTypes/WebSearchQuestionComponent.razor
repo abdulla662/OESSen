@@ -1,0 +1,285 @@
+@using OES.Blazor.Components.GenericComponents.TextEditor
+
+<EditForm OnSubmit="OnSubmitAsync" Model="@Model">
+    <DataAnnotationsValidator />
+    <MudGrid Spacing="1">
+        <MudItem xs="12">
+            <MudStack Spacing="1" Class="mb-2">
+                <MudText Typo="Typo.h6" Class="editor-label-text fw-bold">
+                    @Resource.Settings
+                </MudText>
+            </MudStack>
+            <MudPaper Elevation="0" Outlined="true" Class="pa-4 rounded-lg question-settings-card-parent">
+                <MudStack Row="true" Spacing="6" AlignItems="AlignItems.Start" Justify="Justify.FlexStart" Wrap="Wrap.Wrap">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+                            @Resource.SelectLanguage
+                        </MudText>
+                        <MudSelect @bind-Value="SelectedLanguage"
+                                   Immediate
+                                   Dense="true"
+                                   Class="rounded-setting-field language-selector"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   ToStringFunc="@(l => l?.Name)"
+                                   Error="@(_isSubmitButtonHit && SelectedLanguage.Id == 0)"
+                                   ErrorText="@_requiredErrorText"
+                                   Required
+                                   AdornmentIcon="@Icons.Material.Filled.Language"
+                                   AdornmentColor="Color.Primary"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var language in LanguagesList)
+                            {
+                                <MudSelectItem Value="language" />
+                            }
+                        </MudSelect>
+                    </MudStack>
+
+                    <MudStack Spacing="0">
+                        <NumberLanguageSelector @bind-Value="Model.UseArabicNumbers" />
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="BodyEditorParams"
+                        @ref="@BodyEditorParams.TextEditor">
+                <ActionContent>
+                    @if (IsReplaceMode && !string.IsNullOrEmpty(Model.AttachmentFileName))
+                    {
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="RemoveBodyMedia">@Resource.RemoveMedia</MudButton>
+                    }
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="InstructionsEditorParams"
+                        @ref="@InstructionsEditorParams.TextEditor">
+                <ActionContent>
+                    <MudStack Row="true" Spacing="2">
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.CheckCircle"
+                                              OnClick="async e => await SaveInstructionAsTemplate()"
+                                              ButtonColor="Color.Secondary"
+                                              ButtonText="@Resource.SaveAsTemplateInstructions"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.Article"
+                                              OnClick="async e => await LoadInstructionTemplate()"
+                                              ButtonColor="Color.Surface"
+                                              ButtonText="@Resource.LoadTemplates"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+                    </MudStack>
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudStack Spacing="1" Class="mb-4">
+                <MudText Typo="Typo.h6" Class="fw-bold">
+                    @Resource.AcceptedSearchKeywords
+                </MudText>
+
+                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                    @Resource.AcceptedSearchKeywordsDescription
+                </MudText>
+
+                <MudStack Row="true" Spacing="0" AlignItems="AlignItems.Center"
+                          Wrap="Wrap.Wrap" Class="chip-input-container mt-2 pa-1 border-solid border-1 rounded-lg">
+                    @foreach (var keyword in _webSearchProperties.Keywords)
+                    {
+                        <MudChip T="string" Color="Color.Primary" Size="Size.Small"
+                                 OnClose="@(() => RemoveKeyword(keyword))" Class="mr-1 mb-1">
+                            @keyword
+                        </MudChip>
+                    }
+                    <input class="chip-text-input search-input-keywords"
+                           placeholder="@Resource.AddKeywordPlaceholder"
+                           @bind="_newKeyword"
+                           @bind:event="oninput"
+                           @onkeydown="@(e => OnKeywordKeyDown(e))"
+                           @onblur="OnKeywordBlur" />
+                </MudStack>
+
+                @if (_isSubmitButtonHit && !_webSearchProperties.Keywords.Any())
+                {
+                    <MudText Typo="Typo.caption" Color="Color.Error" Class="mt-1">
+                        @Resource.AtLeastOneKeywordRequired
+                    </MudText>
+                }
+            </MudStack>
+
+            <MudDivider Class="my-6" />
+
+            <MudStack Spacing="1" Class="mb-4">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.h6" Class="fw-bold">
+                            @Resource.SearchResults
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            @Resource.SearchResultsDescription
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+
+                <MudStack Spacing="3" Class="mt-4">
+                    @foreach (var result in _webSearchProperties.Results)
+                    {
+                        <MudPaper Class="@($"pa-4 {(result.IsCorrect ? "correct-result-search" : "distractor-result-search")}")" Elevation="1">
+                            <MudStack Spacing="3">
+                                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                    <MudChip T="string"
+                                             Color="@(result.IsCorrect ? Color.Success : Color.Default)"
+                                             Size="Size.Small"
+                                             Variant="Variant.Filled">
+                                        @(result.IsCorrect? Resource.Correct: Resource.Distractor)
+                                    </MudChip>
+
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Size="Size.Small"
+                                                   Color="Color.Error"
+                                                   Class=@($"label-{nameof(RemoveResult)}")
+                                                   OnClick="@(() => RemoveResult(result))" />
+                                </MudStack>
+
+                                <MudGrid Spacing="2">
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="result.Title"
+                                                      Label="@Resource.Title"
+                                                      Variant="Variant.Outlined"
+                                                      Margin="Margin.Dense"
+                                                      Required="true"
+                                                      Immediate="true" />
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="result.Url"
+                                                      Label="@Resource.Url"
+                                                      Variant="Variant.Outlined"
+                                                      Margin="Margin.Dense"
+                                                      Required="true"
+                                                      Immediate="true" />
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudTextField @bind-Value="result.Description"
+                                                      Label="@Resource.Description"
+                                                      Variant="Variant.Outlined"
+                                                      Margin="Margin.Dense"
+                                                      Lines="2" />
+                                    </MudItem>
+                                </MudGrid>
+
+                                <MudSwitch @bind-Value="result.IsCorrect"
+                                           Color="Color.Success"
+                                           Label="@Resource.MarkAsCorrectResultDescription" />
+                            </MudStack>
+                        </MudPaper>
+                    }
+                </MudStack>
+
+                <MudStack Row="true" Justify="Justify.FlexEnd" Class="mt-2">
+                    @if (!_addingResult)
+                    {
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   OnClick="@(() => { _addingResult = true; _newResult = new(); })">
+                            @Resource.AddResult
+                        </MudButton>
+                    }
+                </MudStack>
+
+                @if (_addingResult)
+                {
+                    <EditForm Model="@_newResult" OnValidSubmit="ConfirmAddResult" Context="newResultContext">
+                        <DataAnnotationsValidator />
+                        <MudPaper Class="pa-4 mt-4 adding-result-section" Elevation="2">
+                            <MudText Typo="Typo.subtitle2" Class="fw-bold mb-3">
+                                @Resource.NewResult
+                            </MudText>
+
+                            <MudStack Spacing="3">
+                                <MudGrid Spacing="2">
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="_newResult.Title"
+                                                      Label="@Resource.Title"
+                                                      Variant="Variant.Outlined"
+                                                      Margin="Margin.Dense"
+                                                      Required="true"
+                                                      For="@(() => _newResult.Title)"
+                                                      Immediate="true" />
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="_newResult.Url"
+                                                      Label="@Resource.Url"
+                                                      Variant="Variant.Outlined"
+                                                      Margin="Margin.Dense"
+                                                      Required="true"
+                                                      For="@(() => _newResult.Url)"
+                                                      Immediate="true" />
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudTextField @bind-Value="_newResult.Description"
+                                                      Label="@Resource.Description"
+                                                      Variant="Variant.Outlined"
+                                                      Margin="Margin.Dense"
+                                                      Lines="2" />
+                                    </MudItem>
+                                </MudGrid>
+
+                                <MudSwitch @bind-Value="_newResult.IsCorrect"
+                                           Color="Color.Success"
+                                           Label="@Resource.MarkAsCorrectResult" />
+
+                                <MudStack Row="true" Spacing="2" Justify="Justify.FlexEnd" Class="mt-2">
+                                    <MudButton Variant="Variant.Outlined"
+                                               OnClick="@(() => _addingResult = false)">
+                                        @Resource.Cancel
+                                    </MudButton>
+
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               ButtonType="ButtonType.Submit"
+                                               Disabled="!CanAddResult">
+                                        @Resource.AddResult
+                                    </MudButton>
+                                </MudStack>
+                            </MudStack>
+                        </MudPaper>
+                    </EditForm>
+                }
+            </MudStack>
+        </MudItem>
+
+        @if (_isSubmitButtonHit && !_webSearchProperties.Results.Any(r => r.IsCorrect))
+        {
+            <MudText Typo="Typo.caption" Color="Color.Error" Class="mt-1">
+                @Resource.AtLeastOneResultRequired
+            </MudText>
+        }
+
+        <MudItem xs="12" Class="d-flex justify-content-center mt-2">
+            <MudStack Row="true" Spacing="4" Class="w-50">
+                <GeneralLoadingButton Class="flex-grow-1 p-2 rounded-pill"
+                                      Size="Size.Small"
+                                      ButtonText="@Resource.Save"
+                                      IsLoading="@_processing"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit" />
+
+                <MudButton Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           Color="Color.Secondary"
+                           OnClick="CancelDialogAsync"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</EditForm>

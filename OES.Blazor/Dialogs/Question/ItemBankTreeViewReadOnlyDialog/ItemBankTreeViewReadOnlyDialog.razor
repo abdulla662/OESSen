@@ -1,0 +1,29 @@
+@using OES.Blazor.Components.GenericComponents.TreeViewTemplates.GrpcTreeViewTemplate
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center justify-start">
+            <MudIcon Icon="@Icons.Material.Filled.AccountTree" Class="mr-2" Color="Color.Primary" Size="Size.Small" />
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="font-weight-bold">@Resource.ItemBank</MudText>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        @if (IsInitialized)
+        {
+            <GrpcTreeViewTemplate @key="_treeViewKey"
+                                  Items="@Items"
+                                  SelectedItemId="SelectedItemBankNodeId"
+                                  IsSingleSelectionTree="true"
+                                  IsReadOnlyTree="true"
+                                  TreeCrudButtonsRolesPlaceholders="TreeCrudButtonsRolesPlaceholders"
+                                  GetSelectedTreeItem="_ => { }" />
+        }
+        else
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Close" EndIcon="@Icons.Material.Filled.Close">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

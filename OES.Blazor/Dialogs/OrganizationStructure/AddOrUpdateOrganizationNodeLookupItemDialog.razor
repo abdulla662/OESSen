@@ -1,0 +1,103 @@
+﻿@using OES.Helper.Dtos.OrganizationStructure.Responses
+
+<EditForm Model="@Model">
+    <MudDialog>
+        <TitleContent>
+            <MudText Align="Align.Center" Typo="Typo.h5">
+                @(string.IsNullOrWhiteSpace(TargetOrganizationNodeName) ? Resource.ManageLookupItems : string.Format(Resource.Manage, TargetOrganizationNodeName))
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="10" Wrap="Wrap.NoWrap" Class="w-100">
+                <DataAnnotationsValidator />
+                <MudPaper Class="border-dashed border-2 mud-border-primary pa-4 text-center" Elevation="0" Width="100%">
+                    <MudText Align="Align.Center" Typo="Typo.h5">
+                        @(string.IsNullOrWhiteSpace(TargetOrganizationNodeName) ? Resource.AddOrUpdateLookupItems : string.Format(Resource.AddOrUpdateWithName, TargetOrganizationNodeName))
+                    </MudText>
+
+                    <MudTextField @bind-Value="Model.Name"
+                                  Label="@Resource.NewItemName"
+                                  Variant="Variant.Outlined"
+                                  HelperTextOnFocus="true"
+                                  HelperText="@Resource.EnterLookupItemName"
+                                  For="@(() => Model.Name)"
+                                  FullWidth
+                                  Required="true"
+                                  @ref="firstInputRef" />
+                    @if (!IsParentOfThisNodeRepresentsTheTreeRootNode && !IsTargetOrganizationNodeLeaf)
+                    {
+                        <MudSelect @bind-Value="Model.ParentLookupItemId"
+                                   T="long?"
+                                   Variant="Variant.Outlined"
+                                   Label="@(string.IsNullOrWhiteSpace(TargetOrganizationNodeParentName) ? Resource.ParentLookupItems : TargetOrganizationNodeParentName)"
+                                   HelperText="@Resource.SelectOneLookup"
+                                   HelperTextOnFocus="true"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   FullWidth
+                                   Class="text-start"
+                                   Clearable="true">
+                            @foreach (var lookupItem in ParentOrganizationNodeLookupItemsDtos)
+                            {
+                                <MudSelectItem T="long?" Value="@lookupItem.Id">@lookupItem.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
+
+                    <MudFab Class="mt-4" ButtonType="ButtonType.Button" OnClick="SubmitAsync" Color="Color.Surface" Label=@(IsUpdateMode ? @Resource.UpdateItem : @Resource.AddItem) EndIcon="@Icons.Material.Filled.CheckCircle" />
+                </MudPaper>
+                <MudText Align="Align.Center" Typo="Typo.h5">
+                    @(string.IsNullOrWhiteSpace(TargetOrganizationNodeName) ? Resource.LookupItemsGrid : string.Format(Resource.LookupItemsGridWithName, TargetOrganizationNodeName))
+                </MudText>
+                <MudTable Items="@ChildOrganizationNodeLookupItemsDtos"
+                          Dense="true"
+                          Hover="true"
+                          Bordered="true"
+                          Style="border-radius: 10px;"
+                          Striped="true"
+                          Elevation="5"
+                          Class="w-100"
+                          Filter="new Func<GetOrganizationNodeLookupItemResponseDto, bool>(FilterFuncWrapper)">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">
+                            @(string.IsNullOrWhiteSpace(TargetOrganizationNodeName) ? Resource.LookupItems : TargetOrganizationNodeName)
+                        </MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchFieldString" Placeholder="@Resource.Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Variant="Variant.Text" />
+                    </ToolBarContent>
+                    <ColGroup>
+                        <col />
+                        <col style="width: 400px;" />
+                    </ColGroup>
+                    <HeaderContent>
+                        <MudTh Style="text-align: center">
+                            @(string.IsNullOrWhiteSpace(TargetOrganizationNodeParentName) ? Resource.ParentLookupItem : TargetOrganizationNodeParentName)
+                        </MudTh>
+                        <MudTh Style="text-align: center">
+                            @(string.IsNullOrWhiteSpace(TargetOrganizationNodeName) ? Resource.ChildLookupItem : TargetOrganizationNodeName)
+                        </MudTh>
+                        <MudTh Style="text-align: center">@Resource.Actions</MudTh>
+                    </HeaderContent>
+                    <RowTemplate Context="lookupItem">
+                        <MudTd DataLabel="@Resource.ParentLookupItem" Style="text-align: center">@(ParentOrganizationNodeLookupItemsDtos?.Find(x => x.Id == lookupItem.ParentLookupItemId)?.Name ?? Resource.NotAvailable)</MudTd>
+                        <MudTd DataLabel="@Resource.ItemName" Style="text-align: center">@lookupItem.Name</MudTd>
+                        <MudTd DataLabel="@Resource.Actions" Style="text-align: center">
+                            <MudTooltip Text="@Resource.UpdateItem">
+                                <MudFab Color="Color.Primary" OnClick="() => PrepareFormForLookupItemUpdateAsync(lookupItem)" EndIcon="@Icons.Material.Filled.Edit" Class="me-2" />
+                            </MudTooltip>
+                            <MudTooltip Text="@Resource.DeleteItem">
+                                <MudFab Color="Color.Primary" OnClick="() => DeleteNodeLookupItemAsync(lookupItem)" EndIcon="@Icons.Material.Filled.Delete" Class="me-2" />
+                            </MudTooltip>
+                            <MudTooltip Text="@Resource.ViewChildLookupItems">
+                                <MudFab Color="Color.Primary" OnClick="() => ViewLookupItemChildsAsync(lookupItem)" EndIcon="@Icons.Material.Filled.RemoveRedEye" />
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="[ 5, 10, 20, 50, 100 ]" RowsPerPageString="@Resource.RowsPerPage"/>
+                    </PagerContent>
+                </MudTable>
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Close" FullWidth EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+            </MudStack>
+        </DialogContent>
+    </MudDialog>
+</EditForm>

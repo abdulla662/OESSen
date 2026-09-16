@@ -1,0 +1,21 @@
+.header-container[b-t4ol3p601h] {
+    display: flex;
+    align-items: center;
+}
+
+.setting-card[b-t4ol3p601h] {
+    min-height: 160px;
+    padding: 20px;
+}
+
+.setting-card-header[b-t4ol3p601h] {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.action-buttons[b-t4ol3p601h] {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}

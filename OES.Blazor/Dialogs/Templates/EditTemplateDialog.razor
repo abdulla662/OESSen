@@ -1,0 +1,138 @@
+﻿@using OES.Blazor.Components.Common.FileManagerComponent
+@using OES.Blazor.Components.GenericComponents.TextEditor
+@using OES.Blazor.Pages.Paper.Template
+@using OES.Helper.Dtos.Folder.Response
+@using MudBlazor
+@using OES.Helper.Dtos.Template.Request
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center justify-center mt-5">
+            <div class="d-flex align-center justify-center align-self-center pa-3 w-75"
+                 style="border-radius: 8px;"
+                 dir="@(RightToLeft ? "rtl" : "ltr")">
+                <MudIcon Icon="@Icons.Material.Outlined.CopyAll"
+                         Class="me-2"
+                         Color="Color.Primary"
+                         Size="Size.Large"
+                         Style="vertical-align: middle;" />
+                <MudText Typo="Typo.h4"
+                         Color="Color.Primary"
+                         Class="font-weight-bold"
+                         Style="line-height: 1;">
+                    @Resource.EditTemplate
+                </MudText>
+            </div>
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        <MudGrid Spacing="3">
+            <MudItem xs="12" sm="6">
+                <MudPaper Class="p-3 shadow-sm d-flex align-items-center rounded">
+                    <MudIcon Icon="@Icons.Material.Filled.DriveFileRenameOutline" Color="Color.Primary" Class="mr-2" />
+                    <MudTextField Label="@Resource.TemplateName"
+                                  Variant="Variant.Outlined"
+                                  Required
+                                  RequiredError="@Resource.Required"
+                                  @bind-Value="template.Name" />
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudPaper Class="p-3 shadow-sm d-flex align-items-center rounded">
+                    <MudIcon Icon="@Icons.Material.Filled.ContentPasteSearch" Color="Color.Primary" Class="mr-2" />
+                    <MudAutocomplete T="TemplateTypeDto"
+                                     Style="cursor: pointer;"
+                                     Label="@Resource.SelectTemplateType"
+                                     Variant="Variant.Outlined"
+                                     Dense="true"
+                                     Value="@_selectedTemplateType"
+                                     ShowProgressIndicator="true"
+                                     SearchFunc="SearchTemplateTypeAsync"
+                                     ValueChanged="HandleTemplateTypeChange"
+                                     ToStringFunc="@(item => item?.Name)"
+                                     Clearable="true"
+                                     Required />
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudPaper Class="p-3 shadow-sm rounded">
+                    <div class="d-flex align-items-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Draw" Color="Color.Primary" Class="mr-2" />
+                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">@Resource.Content</MudText>
+                    </div>
+                    <div class="editor-container">
+                        <TextEditor TextEditorParams="BodyEditorParams" @ref="BodyEditorParams.TextEditor" @key="_templateContent" />
+                    </div>
+
+                    @if (_showContentError)
+                    {
+                        <MudText Typo="Typo.caption" Color="Color.Error" Class="ml-4 mt-1">
+                            @Resource.Required
+                        </MudText>
+                    }
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="mt-4 mb-4" />
+
+        <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.TemplateAttributes</MudText>
+
+        @if (_isLoadingAttributes)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+        }
+        else if (_templateAttributes?.Attributes != null && _templateAttributes.Attributes.Any())
+        {
+            <MudGrid Spacing="3">
+                @foreach (var tempAttribute in _templateAttributes.Attributes)
+                {
+                    <MudItem>
+                        <MudButton OnClick="() => InsertAttribute(tempAttribute)"
+                                   ButtonType="ButtonType.Button"
+                                   Variant="Variant.Text"
+                                   Class="d-flex align-items-center">
+                            <MudPaper Class="p-3">
+                                <MudIcon Icon="@Icons.Material.Filled.Label" Color="Color.Primary" Class="mr-2" />
+                                @tempAttribute
+                            </MudPaper>
+                        </MudButton>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+        else if (_selectedTemplateType != null)
+        {
+            <MudAlert Severity="Severity.Warning" Class="mt-3">
+                @Resource.Noattributesfoundfortheselectedtemplatetype
+            </MudAlert>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudStack Row="true" Class="d-flex justify-content-center mt-2 w-100">
+            <MudButton ButtonType="ButtonType.Button"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Small"
+                       Class="flex-grow-1 p-2 rounded-pill"
+                       OnClick="Save"
+                       EndIcon="@Icons.Material.Filled.CheckCircle">
+                @Resource.Save
+            </MudButton>
+
+            <MudButton ButtonType="ButtonType.Button"
+                       Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       Size="Size.Small"
+                       Class="flex-grow-1 p-2 rounded-pill"
+                       OnClick="Close"
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Cancel
+            </MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

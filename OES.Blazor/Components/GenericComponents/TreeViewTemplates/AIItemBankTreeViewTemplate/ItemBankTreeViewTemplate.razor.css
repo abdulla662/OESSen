@@ -1,0 +1,5 @@
+﻿.ExpandCollapseStyling {
+    text-decoration: underline;
+    font-weight: bold;
+    color: var(--mud-palette-info);
+}

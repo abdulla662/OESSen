@@ -1,0 +1,98 @@
+﻿@using OES.Helper
+@using OES.Helper.Dtos.QuestionLayout
+@using OES.Helper.Dtos.Questionlanguage
+@using OES.Helper.Enums
+
+<MudPaper Class="pa-6 rounded-xl mud-elevation-2 border-none" Outlined>
+    @* Language Selection Header *@
+    <MudStack Spacing="1" Class="mt-2">
+        <MudText Typo="Typo.h6"
+                 Class="question-settings-label mb-0">
+            @Resource.SelectLanguage
+        </MudText>
+
+        <MudStack Spacing="1" Class="language-selector">
+            <MudAutocomplete T="LanguageDto"
+                             @bind-Value="SelectedLanguage"
+                             Variant="Variant.Outlined"
+                             Margin="Margin.Dense"
+                             Clearable="true"
+                             ShowProgressIndicator="true"
+                             SearchFunc="SearchLanguages"
+                             ToStringFunc="@(x => x?.Name)"
+                             ErrorText="@_requiredErrorText"
+                             Dense="true"
+                             Required="true"
+                             Placeholder=" "
+                             Adornment="Adornment.End"
+                             AdornmentIcon="@Icons.Material.Filled.Language"
+                             AdornmentColor="Color.Info"
+                             Class="rounded-setting-field" />
+        </MudStack>
+    </MudStack>
+
+    <MudDivider Class="my-8" />
+
+    @* Select Layout Section *@
+    <MudStack AlignItems="AlignItems.Center" Class="mb-8">
+        <MudText Typo="Typo.h5" Class="mud-text-primary font-weight-bold">@Resource.SelectLayout</MudText>
+        <MudText Typo="Typo.body2" Class="mud-text-secondary">@Resource.QuestionLayoutSelectionSubtitle</MudText>
+    </MudStack>
+
+    <MudRadioGroup T="LayoutDto" Value="SelectedLayout" Class="w-100" Disabled="SelectedLanguage == null || SelectedLanguage.Id == 0">
+        <MudGrid Spacing="4" Justify="Justify.Center">
+            @foreach (var opt in FilteredQuestionOptions)
+            {
+                var isSelected = SelectedLayout?.Id == opt.Id;
+                var orientation = GetLayoutOrientation(opt.Name);
+                <MudItem xs="12" sm="6" md="3" Class="px-2">
+                    <MudPaper Outlined
+                              @onclick="@(() => OnLayoutChangeAsync(opt))"
+                              Class="@($"cursor-pointer transition-all layout-card {(isSelected ? "mud-border-primary mud-bg-primary-lighten-5 mud-elevation-4 layout-card-selected" : "border-transparent mud-elevation-1")}")">
+
+                        <div class="layout-radio-container">
+                            <MudRadio Value="@opt" Color="Color.Primary" Dense />
+                        </div>
+
+                        <MudStack Spacing="2">
+                            @* Illustration Container *@
+                            <MudPaper Elevation="0" Class="p-3 rounded-xl d-flex align-center justify-center illustration-container">
+                                <LayoutIllustration Orientation="orientation" />
+                            </MudPaper>
+
+                            <MudStack Spacing="1" AlignItems="AlignItems.Center" Class="mb-2">
+                                <MudText Typo="Typo.body2" Class="font-weight-bold mud-text-primary">
+                                    @(opt.Name.ToLocalizedString<LayoutOrientation>())
+                                </MudText>
+                                <MudText Typo="Typo.body2" Class="mud-text-secondary" Align="Align.Center">
+                                    @opt.Description
+                                </MudText>
+                            </MudStack>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudRadioGroup>
+
+    <MudStack Row Justify="Justify.Center" Spacing="4" Class="mt-10">
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Surface"
+                   StartIcon="@Icons.Material.Filled.Visibility"
+                   OnClick="@OpenScreenSizeDialogAsync"
+                   Disabled="SelectedLayout == null || SelectedLayout.Id == 0 || SelectedLanguage == null || SelectedLanguage.Id == 0"
+                   Class="rounded-pill text-transform-none font-weight-bold px-8 py-3 mud-elevation-4"
+                   IconColor="Color.Primary">
+            @Resource.ViewSelectedLayout
+        </MudButton>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Surface"
+                   StartIcon="@Icons.Material.Filled.List"
+                   OnClick="LoadQuestionInMiddlePanelAsync"
+                   Class="rounded-pill text-transform-none font-weight-bold px-8 py-3 mud-elevation-4"
+                   IconColor="Color.Success">
+            @Resource.ViewQuestionExamPanel
+        </MudButton>
+    </MudStack>
+</MudPaper>

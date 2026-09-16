@@ -1,0 +1,2 @@
+obj\Debug\net8.0\Protos/Models.cs: C:/Users/PC-7/.nuget/packages/grpc.tools/2.65.0/build/native/include/google/protobuf/timestamp.proto\
+ Protos/models.proto

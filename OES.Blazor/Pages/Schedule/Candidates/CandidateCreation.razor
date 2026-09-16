@@ -1,0 +1,225 @@
+﻿@* @page "/CandidateCreation" *@
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute(nameof(CandidateCreation))]
+
+<PageTitle>@Resource.AddCandidate</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 rounded-lg shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <EditForm Model="@_candidateDto" OnValidSubmit="HandleValidSubmitAsync">
+            <DataAnnotationsValidator />
+
+            <div class="text-center mb-6 d-flex justify-content-center align-items-center">
+                <MudIcon Icon="@Icons.Material.Filled.AccountBox" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h4" Style="line-height: 1;">@Resource.AddCandidate</MudText>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <MudTextField @bind-Value="_candidateDto.CandidateCode"
+                                  Label="@Resource.CandidateCode"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  Immediate="true"
+                                  HelperTextOnFocus="true"
+                                  For="@(() => _candidateDto.CandidateCode)"
+                                  HelperText="@Resource.CandidateCodeHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudTextField @bind-Value="_candidateDto.Name"
+                                  Label="@Resource.FullName"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  Immediate="true"
+                                  HelperTextOnFocus="true"
+                                  For="@(() => _candidateDto.Name)"
+                                  HelperText="@Resource.FullNameHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudTextField @bind-Value="_candidateDto.UserName"
+                                  Label="@Resource.UserName"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  Immediate="true"
+                                  HelperTextOnFocus="true"
+                                  For="@(() => _candidateDto.UserName)"
+                                  HelperText="@Resource.UserNameHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudTextField @bind-Value="_candidateDto.Password"
+                                  Label="@Resource.Password"
+                                  Variant="Variant.Outlined"
+                                  InputType="@PasswordInput"
+                                  Required="true"
+                                  Immediate="true"
+                                  HelperTextOnFocus="true"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@PasswordInputIcon"
+                                  OnAdornmentClick="TogglePasswordVisibility"
+                                  AdornmentAriaLabel="Show Password"
+                                  For="@(() => _candidateDto.Password)"
+                                  HelperText="@Resource.PasswordHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudTextField @bind-Value="_candidateDto.Qualification"
+                                  Label="@Resource.Qualification"
+                                  Variant="Variant.Outlined"
+                                  HelperTextOnFocus="true"
+                                  For="@(() => _candidateDto.Qualification)"
+                                  HelperText="@Resource.QualificationHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudDatePicker @bind-Date="_candidateDto.DateOfBirth"
+                                   Label="@Resource.DateOfBirth"
+                                   Variant="Variant.Outlined"
+                                   Required="true"
+                                   HelperTextOnFocus="true"
+                                   For="@(() => _candidateDto.DateOfBirth)"
+                                   HelperText="@Resource.DateOfBirthHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudTextField @bind-Value="_candidateDto.NationalId"
+                                  Label="@Resource.NationalNumber"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  Immediate="true"
+                                  HelperTextOnFocus="true"
+                                  For="@(() => _candidateDto.NationalId)"
+                                  HelperText="@Resource.NationalNumberHelperText" />
+                </div>
+                <div class="col-12">
+                    <MudTextField @bind-Value="_candidateDto.Address"
+                                  Label="@Resource.Address"
+                                  Variant="Variant.Outlined"
+                                  HelperTextOnFocus="true"
+                                  Lines="3"
+                                  For="@(() => _candidateDto.Address)"
+                                  HelperText="@Resource.AddressHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudTextField @bind-Value="_candidateDto.Mobile"
+                                  Label="@Resource.Mobile"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  HelperTextOnFocus="true"
+                                  Immediate="true"
+                                  For="@(() => _candidateDto.Mobile)"
+                                  HelperText="@Resource.MobileHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudTextField @bind-Value="_candidateDto.Email"
+                                  Label="@Resource.Email"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  HelperTextOnFocus="true"
+                                  Immediate="true"
+                                  For="@(() => _candidateDto.Email)"
+                                  HelperText="@Resource.EmailHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudSelect T="int"
+                               Label="@Resource.Gender"
+                               @bind-Value="_candidateDto.Gender"
+                               HelperTextOnFocus="true"
+                               Variant="Variant.Outlined"
+                               Required="true"
+                               Immediate="true"
+                               HelperText="@Resource.GenderHelperText"
+                               AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="0">@Resource.Male</MudSelectItem>
+                        <MudSelectItem Value="1">@Resource.Female</MudSelectItem>
+                    </MudSelect>
+                </div>
+                <div class="col-md-6">
+                    <MudTextField @bind-Value="_candidateDto.RegistrationCenterCode"
+                                  Label="@Resource.RegistrationCenterCode"
+                                  HelperTextOnFocus="true"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => _candidateDto.RegistrationCenterCode)"
+                                  HelperText="@Resource.RegistrationCenterCodeHelperText" />
+                </div>
+                <div class="col-md-6">
+                    <MudSelect T="long?"
+                               Label="@Resource.Disabilities"
+                               @bind-Value="_candidateDto.DisabilityId"
+                               HelperTextOnFocus="true"
+                               Disabled="@(!_candidateDto.HasDisability)"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Placeholder="@Resource.SelectDisability">
+                        @foreach(var disability in disabilities)
+                        {
+                           <MudSelectItem Value="@disability.Id">@disability.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+                <div class="col-md-6">
+                    <MudFileUpload T="IBrowserFile" @key="_photoKey" Accept=".png,.jpg,.jpeg" FilesChanged="UploadFilePhoto" MaximumFileCount="1">
+                        <ActivatorContent>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       EndIcon="@Icons.Material.Filled.Image">
+                                @Resource.LoadPicture
+                            </MudButton>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                    @if (_photoFile != null)
+                    {
+                        <MudText Typo="Typo.body1" Class="mt-2">@Resource.SelectedPhoto</MudText>
+                        <MudList T="string">
+                            <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="_photoFile">
+                                @_photoFile.Name
+                                <code>@((_photoFile.Size / (1024.0 * 1024.0)).ToString("F2")) @Resource.MB</code>
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Primary" OnClick="@RemovePhotoFile" />
+                            </MudListItem>
+                        </MudList>
+                    }
+                </div>
+                <div class="col-md-6">
+                    <MudFileUpload T="IBrowserFile" @key="_signatureKey" Accept=".png,.jpg,.jpeg" FilesChanged="UploadFileSignature" MaximumFileCount="1">
+                        <ActivatorContent>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       EndIcon="@Icons.Material.Filled.CloudUpload">
+                                @Resource.LoadSignature
+                            </MudButton>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                    @if (_signatureFile != null)
+                    {
+                        <MudText Typo="Typo.body1" Class="mt-2">@Resource.SelectedSignature</MudText>
+                        <MudList T="string">
+                            <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="_signatureFile">
+                                @_signatureFile.Name
+                                <code>@((_signatureFile.Size / (1024.0 * 1024.0)).ToString("F2")) @Resource.MB</code>
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Primary" OnClick="@RemoveSignatureFile" />
+                            </MudListItem>
+                        </MudList>
+                    }
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-6 d-grid">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               ButtonType="ButtonType.Submit"
+                               Disabled="@(!IsFormValid)"
+                               EndIcon="@Icons.Material.Filled.CheckCircle">
+                        @Resource.Add
+                    </MudButton>
+                </div>
+                <div class="col-md-6 d-grid">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Secondary"
+                               ButtonType="ButtonType.Reset"
+                               OnClick="Close"
+                               EndIcon="@Icons.Material.Filled.Cancel">
+                        @Resource.Cancel
+                    </MudButton>
+                </div>
+            </div>
+        </EditForm>
+    </MudCardContent>
+</MudCard>

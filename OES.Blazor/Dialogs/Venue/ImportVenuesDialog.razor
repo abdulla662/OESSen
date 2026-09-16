@@ -1,0 +1,102 @@
+﻿
+<MudDialog Class="overflow-hidden">
+    <DialogContent>
+        <MudPaper Class="p-4" Style="max-height: max-content; overflow-y: auto;">
+            <MudGrid>
+                <MudItem xs="12" class="d-flex justify-content-center">
+                    <div class="form-group d-flex justify-content-center mt-5 gap-3">
+                        <MudTooltip Text=@Resource.DownloadTemplate>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       EndIcon="@Icons.Material.Filled.Download"
+                                       Target="_blank"
+                                       Href="files/AddVenueTemplate.xlsx">
+                                @Resource.DownloadTemplate
+                            </MudButton>
+                        </MudTooltip>
+
+                        <MudFileUpload T="IBrowserFile" @ref="fileUploaderRef" FilesChanged="HandleFileSelected" Accept=".xls,.xlsx,.csv">
+                            <ActivatorContent>
+                                <MudTooltip Text=@Resource.UploadFile>
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               EndIcon="@Icons.Material.Filled.Upload">
+                                        @Resource.UploadFile
+                                    </MudButton>
+                                </MudTooltip>
+                            </ActivatorContent>
+                        </MudFileUpload>
+                    </div>
+                </MudItem>
+
+                @if (files?.Any() == true)
+                {
+                    <MudItem xs="12" class="mt-4">
+                        <MudStack Row Justify="Justify.Center" Wrap="Wrap.Wrap" Spacing="2" Style="max-width: 100%;">
+                            <MudChipSet T="string"
+                                        SelectionMode="SelectionMode.MultiSelection"
+                                        Color="Color.Default"
+                                        Variant="Variant.Text"
+                                        Style="max-width: 100%; display: flex; flex-wrap: wrap; gap: 8px;">
+                                @foreach (var file in files)
+                                {
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <MudChip Icon="@Icons.Material.Filled.AttachFile"
+                                                 Text="@file.Name"
+                                                 Disabled
+                                                 Style="max-width: 400px; overflow: hidden; text-overflow: ellipsis;" />
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                       Color="Color.Error"
+                                                       OnClick="@(() => DeleteFile(file))"
+                                                       Size="Size.Small" />
+                                    </div>
+                                }
+                            </MudChipSet>
+                        </MudStack>
+                    </MudItem>
+                }
+
+                @if (ErrorListDto.Count > 0)
+                {
+                    <MudItem xs="12" class="mt-4" Style="width: 100%;">
+                        <MudPaper Class="error-list p-4" Style="width: 100%; max-height: 300px; overflow-y: auto; background-color: rgba(var(--mud-palette-error-rgb), 0.1); border: 1px solid var(--mud-palette-error); border-radius: 12px;">
+                            <MudText Typo="Typo.h6" Color="Color.Error" Class="mb-2">Errors:</MudText>
+                            <MudDivider Class="mb-2" />
+                            <div style="width: 100%;">
+                                @foreach (var row in ErrorListDto)
+                                {
+                                    <MudCard Class="mb-3" Style="width: 100%; background-color: rgba(var(--mud-palette-error-rgb), 0.05); border-left: 5px solid var(--mud-palette-error);">
+                                        <MudCardContent>
+                                            <MudText Color="Color.Error"
+                                                     Typo="Typo.body1"
+                                                     Style="word-break: break-word;">
+                                                @row
+                                            </MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                }
+                            </div>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudPaper>
+    </DialogContent>
+
+    <DialogActions>
+        <MudStack Row Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="2" Class="w-100 mt-6">
+            <GeneralLoadingButton EndIcon="@Icons.Material.Filled.CloudUpload"
+                                  Class="flex-fill"
+                                  Type="ButtonType.Button"
+                                  OnClick="SubmitSelection"
+                                  ButtonText=@Resource.Submit />
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       EndIcon="@Icons.Material.Filled.Cancel"
+                       OnClick="Cancel"
+                       Class="flex-fill">
+                @Resource.Cancel
+            </MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

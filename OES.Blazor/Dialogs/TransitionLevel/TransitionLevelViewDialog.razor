@@ -1,0 +1,105 @@
+﻿@if (IsInitialized)
+{
+    <MudDialog Class="pa-5" dir="@(RightToLeft ? "rtl" : "ltr")">
+        <TitleContent>
+            <div class="d-flex align-center justify-center mt-5">
+                <div class="d-flex align-center justify-center align-self-center pa-3 w-75" style="border-radius: 8px;" dir="@(RightToLeft ? "rtl" : "ltr")">
+                    <MudIcon Icon="@Icons.Material.Filled.AlignVerticalBottom" Class="mr-2" Color="Color.Primary" Size="Size.Large" />
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold">
+                        @Resource.TransitionLevelDetails - (@Model.Name)
+                    </MudText>
+                </div>
+            </div>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid Spacing="4" Class="animate__animated animate__fadeIn py-3">
+                <MudItem xs="12">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                            @Resource.GeneralInformation
+                        </MudText>
+                        <MudGrid Spacing="3">
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1"><strong>@Resource.Name:</strong></MudText>
+                                    <MudText Class="ml-2">@Model.Name</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1"><strong>@Resource.LowerDScore:</strong></MudText>
+                                    <MudText Class="ml-2">@Model.LowerDScoreFormatted (@Model.LowerDScoreFormatted)</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1"><strong>@Resource.UpperDScore:</strong></MudText>
+                                    <MudText Class="ml-2">@Model.UpperDScoreFormatted (@Model.UpperDScoreFormatted)</MudText>
+                                </MudStack>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.Description" Class="mr-2" />
+                            @Resource.TransitionProfile
+                        </MudText>
+                        <MudGrid Spacing="3">
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.TextFields" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1"><strong>@Resource.ProfileName:</strong></MudText>
+                                    <MudText Class="ml-2">@Model.TransitionProfileName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Notes" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1"><strong>@Resource.Description:</strong></MudText>
+                                    <MudText Class="ml-2">@Model.TransitionProfileDescription</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.List" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.DifficultyProfile:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">@Model.DifficultyProfileName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Leaderboard" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.DifficultyLevel:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">@Model.DifficultyLevelName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Category" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.QuestionCategory:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">@Model.QuestionCategoryName</MudText>
+                                </MudStack>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+    </MudDialog>
+}
+else
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}

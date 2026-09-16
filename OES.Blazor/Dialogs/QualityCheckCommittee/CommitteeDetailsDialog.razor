@@ -1,0 +1,148 @@
+﻿@using MudBlazor
+@using OES.Helper.Dtos.QualityCheckCommittee
+
+@if (IsInitialized)
+{
+    <MudDialog Class="pa-5">
+        <TitleContent>
+            <div class="d-flex align-center justify-center mt-5">
+                <div class="d-flex align-center justify-center align-self-center pa-3 w-75" style="border-radius: 8px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Groups" Class="mr-2" Color="Color.Primary" Size="Size.Large" />
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold">
+                        @Resource.CommitteeDetails
+                    </MudText>
+                </div>
+            </div>
+        </TitleContent>
+
+        <DialogContent>
+            <MudGrid Spacing="4" Class="animate__animated animate__fadeIn py-3">
+
+                <!-- Basic Info -->
+                <MudItem xs="12">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                            @Resource.BasicInformation
+                        </MudText>
+
+                        <MudGrid Spacing="3">
+                            <MudItem xs="12">
+                                <MudStack Row Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary"><strong>@Resource.Name:</strong></MudText>
+                                    <MudText Class="ml-2">@Model.Name</MudText>
+                                </MudStack>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudStack Row Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary"><strong>@Resource.Description:</strong></MudText>
+                                    <MudText Class="ml-2">@Model.Description</MudText>
+                                </MudStack>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudStack Row Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary"><strong>@Resource.Chief:</strong></MudText>
+                                    <MudText Class="ml-2">@Model.ChiefName</MudText>
+                                </MudStack>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+
+                <!-- Members -->
+                <MudItem xs="12">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.People" Class="mr-2" />
+                            @Resource.Members
+                        </MudText>
+
+                        @if (QcCommitteeMembers?.Any() == true)
+                        {
+                            <MudTable Items="QcCommitteeMembers" Elevation="0" Dense="true" Bordered="true" Hover="true">
+                                <HeaderContent>
+                                    <MudTh>@Resource.UserName</MudTh>
+                                    <MudTh>@Resource.Roles</MudTh>
+                                    <MudTh>@Resource.Active</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="@Resource.UserName">
+                                        <MudStack Row Spacing="1">
+                                            <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary" />
+                                            <MudText>@context.Username</MudText>
+                                        </MudStack>
+                                    </MudTd>
+
+                                    <MudTd DataLabel="@Resource.Roles">
+                                        @if (context.UserId == Model.ChiefId)
+                                        {
+                                            <MudChip T="string" Color="Color.Primary" Variant="Variant.Text">@Resource.ChiefAndMember</MudChip>
+                                        }
+                                        else
+                                        {
+                                            <MudChip T="string" Color="Color.Default" Variant="Variant.Text">@Resource.Member</MudChip>
+                                        }
+                                    </MudTd>
+
+                                    <MudTd DataLabel="@Resource.Active">
+                                        <MudChip T="string" Color="@(context.IsActive? Color.Success: Color.Error)"
+                                                 Variant="Variant.Filled" Size="Size.Small">
+                                            @(context.IsActive? Resource.Active: Resource.Inactive)
+                                        </MudChip>
+                                    </MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                                @Resource.NoMembers
+                            </MudAlert>
+                        }
+                    </MudPaper>
+                </MudItem>
+
+                <!-- Item Banks -->
+                <MudItem xs="12">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-3 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.AccountBalance" Class="mr-2" />
+                            @Resource.AssignedItemBanks
+                        </MudText>
+
+                        @if (Model.ItemBanks?.Any() == true)
+                        {
+                            <MudChipSet T="string">
+                                @foreach (var itemBank in Model.ItemBanks)
+                                {
+                                    <MudChip T="string"
+                                             Icon="@Icons.Material.Filled.LibraryBooks"
+                                             Color="Color.Primary"
+                                             Variant="Variant.Outlined">
+                                        @itemBank.Name
+                                    </MudChip>
+                                }
+                            </MudChipSet>
+                        }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                                @Resource.NoItemBanksAssigned
+                            </MudAlert>
+                        }
+                    </MudPaper>
+                </MudItem>
+
+            </MudGrid>
+        </DialogContent>
+    </MudDialog>
+}
+else
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}

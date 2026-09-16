@@ -1,0 +1,68 @@
+@page "/AIItemBankGenerator"
+
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using MudExtensions
+@using MudExtensions.Utilities
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Pages.AIItemBankGenerator.FirstStep
+@using OES.Blazor.Pages.AIItemBankGenerator.FourthStep
+@using OES.Blazor.Pages.AIItemBankGenerator.SecondStep
+@using OES.Blazor.Pages.AIItemBankGenerator.ThirdStep
+@using OES.Helper.ResourceFiles
+
+@attribute [DynamicAuthorizeAttribute(nameof(AIItemBankGenerator))]
+
+<PageTitle>@Resource.AIItemBankGenerator</PageTitle>
+
+<MudItem Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <div class="d-flex justify-content-center align-items-center my-5">
+        <MudIcon Icon="@Icons.Material.Rounded.AutoAwesome" Color="Color.Primary" Size="Size.Large" Class="me-3" Style="vertical-align: middle;" />
+        <MudText Typo="Typo.h4" Align="Align.Center" Color="Color.Primary" Style="line-height: 1;">@Resource.AIItemBankGenerator</MudText>
+    </div>
+
+    <MudStepperExtended @ref="_stepper"
+                        Class="mud-width-full"
+                        ContentStyle="min-height: 400px"
+                        Linear="@_linear"
+                        Vertical="@_vertical"
+                        PreventStepChangeAsync="CheckChangeAsync"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        MobileView="@_mobileView"
+                        Loading="@_loading"
+                        LocalizedStrings="GetLocalizedStrings()"
+                        @bind-ShowPreviousButton="_showPreviousButton"
+                        @bind-ShowNextButton="_showNextButton"
+                        ActiveStepChanged="OnActiveStepChanged"
+                        HeaderTextView="HeaderTextView.All"
+                        ShowStepResultIndicator="false">
+        <ChildContent>
+
+            <MudStepExtended Icon="@Icons.Material.Filled.Settings" Title="@Resource.ItemBankConfiguration">
+                <ChildContent>
+                    <AIItemBankConfigurationsStep @bind-SelectedLevelsCreation="ItemBankLevelsCreation" @ref="_configurationsStepComponent" IsConfigurationLocked="IsConfigurationStepLocked" />
+                </ChildContent>
+            </MudStepExtended>
+
+            <MudStepExtended Icon="@Icons.Material.Filled.Memory" Title="@Resource.ItemBankGeneration">
+                <ChildContent>
+                    <AIItemBankGenerationStep ConfigurationData="_configurationData" OnGenerated="OnItemBankGenerated" IsConfigurationLocked="_isConfigurationLocked" OnProcessingStateChanged="OnGeneratingStateChanged" />
+                </ChildContent>
+            </MudStepExtended>
+
+            <MudStepExtended Icon="@Icons.Material.Filled.AccountTree" Title="@Resource.Review">
+                <ChildContent>
+                    <AIItemBankReviewStep ExistingLevels="_existingLevels" ItemBankLevelsCreation="ItemBankLevelsCreation" MaxDepth="_configurationData.MaxLevelsCount" MaxChildrenPerNode="_configurationData.MaxChildrenPerNode" GeneratedTree="_generatedTree" @bind-IsConfigurationLocked="_isConfigurationLocked" />
+                </ChildContent>
+            </MudStepExtended>
+
+            <MudStepExtended Icon="@Icons.Material.Filled.Done" Title="@Resource.Finish" IsResultStep="true">
+                <ChildContent>
+                    <AIItemBankCompleteStep OnReset="ResetStepper" />
+                </ChildContent>
+            </MudStepExtended>
+
+        </ChildContent>
+    </MudStepperExtended>
+</MudItem>

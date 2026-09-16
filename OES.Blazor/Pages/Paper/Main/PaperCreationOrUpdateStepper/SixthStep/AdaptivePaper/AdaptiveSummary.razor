@@ -1,0 +1,176 @@
+﻿@using OES.Helper.Dtos.Paper.Responses.AdaptiveSummary
+
+<MudPaper Elevation="3" Class="pa-4 mt-4" Style="border-radius: 8px;">
+    <div class="d-flex justify-center">
+        <MudText Typo="Typo.h5" Class="fw-bold" Align="Align.Center" Style="word-break:break-word;">
+            @Resource.PaperName @summaryDto?.PaperName
+        </MudText>
+    </div>
+    <div class="d-flex align-center">
+        <MudIcon Icon="@Icons.Material.Filled.Book" Class="mr-2" />
+        <MudText Typo="Typo.h6" Class="fw-bold">@Resource.PaperStructureSummary</MudText>
+    </div>
+
+    <MudDivider Class="my-3" />
+
+    <MudGrid Class="mt-2">
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100" Style="border-radius: 6px;">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Timer" Class="mr-2" Color="Color.Info" />
+                    <MudText Typo="Typo.body2">@Resource.TotalTime</MudText>
+                    <MudSpacer />
+                    <MudText Color="Color.Info" Class="ml-2">@DurationDisplay</MudText>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100" Style="border-radius: 6px;">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Language" Class="mr-2" Color="Color.Info" />
+                    <MudText Typo="Typo.body2">@Resource.Language</MudText>
+                    <MudSpacer />
+                    <MudText Color="Color.Info" Class="ml-2">@LanguageDisplay</MudText>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        @* <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100" Style="border-radius: 6px;">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Autorenew" Class="mr-2" Color="Color.Info" />
+                    <MudText Typo="Typo.body2">@Resource.Select</MudText>
+                    <MudSpacer />
+                    <MudText Color="Color.Info" Class="ml-2">@SelectionTypeDisplay</MudText>
+                </div>
+            </MudCard>
+        </MudItem> *@
+
+        @* <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100" Style="border-radius: 6px;">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Star" Class="mr-2" Color="Color.Info" />
+                    <MudText Typo="Typo.body2">@Resource.TotalMark</MudText>
+                    <MudSpacer />
+                    <MudText Color="Color.Info" Class="ml-2">@TotalMarkDisplay</MudText>
+                </div>
+            </MudCard>
+        </MudItem> *@
+
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100" Style="border-radius: 6px;">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Settings" Class="mr-2" Color="Color.Info" />
+                    <MudText Typo="Typo.body2">@Resource.Type</MudText>
+                    <MudSpacer />
+                    <MudText Color="Color.Info" Class="ml-2">@PaperTypeDisplay</MudText>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100" Style="border-radius: 6px;">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.TwoTone.Settings" Class="mr-2" Color="Color.Info" />
+                    <MudText Typo="Typo.body2">@Resource.SubType</MudText>
+                    <MudSpacer />
+                    <MudText Color="Color.Info" Class="ml-2">@PaperSubTypeDisplay</MudText>
+                </div>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudGrid Class="mt-3">
+    <MudItem xs="12" sm="4">
+        <MudCard Elevation="1" Class="pa-4 h-100" Style="border-radius: 6px;">
+            <div class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.Layers" Class="mr-2" Color="Color.Info" />
+                <MudText Typo="Typo.body2">@Resource.TotalStages</MudText>
+                <MudSpacer />
+                <MudText Color="Color.Info" Class="ml-2">@summaryDto?.NumberOfStages</MudText>
+            </div>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" sm="4">
+        <MudCard Elevation="1" Class="pa-4 h-100" Style="border-radius: 6px;">
+            <div class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.ViewAgenda" Class="mr-2" Color="Color.Info" />
+                <MudText Typo="Typo.body2">@Resource.TotalSections</MudText>
+                <MudSpacer />
+                <MudText Color="Color.Info" Class="ml-2">@summaryDto?.NumberOfSection</MudText>
+            </div>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" sm="4">
+        <MudCard Elevation="1" Class="pa-4 h-100" Style="border-radius: 6px;">
+            <div class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.Quiz" Class="mr-2" Color="Color.Info" />
+                <MudText Typo="Typo.body2">@Resource.TotalBlocks</MudText>
+                <MudSpacer />
+                <MudText Color="Color.Info" Class="ml-2">@TotalBlockCount</MudText>
+            </div>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@if (summaryDto?.Stages?.Any() == true)
+{
+    <MudPaper Elevation="3" Class="pa-4 mt-4" Style="border-radius: 8px;">
+        <div class="d-flex align-center mb-3">
+            <MudIcon Icon="@Icons.Material.Filled.TableChart" Class="mr-2" Color="Color.Primary" />
+            <MudText Typo="Typo.h6" Class="fw-bold" Color="Color.Primary">@Resource.DetailedStructureBreakdown</MudText>
+        </div>
+
+        <MudTable Items="@flatBlocks.OrderBy(b => b.BlockName)"
+                  Hover="true"
+                  Dense="true"
+                  Bordered="true"
+                  Striped="true"
+                  Style="border-radius: 6px;">
+            <HeaderContent>
+                <MudTh>@Resource.BlockName</MudTh>
+                <MudTh>@Resource.BlockCode</MudTh>
+                <MudTh>@Resource.Stage</MudTh>
+                <MudTh>@Resource.Time</MudTh>
+                <MudTh>@Resource.Section</MudTh>
+                <MudTh Class="text-right">@Resource.Questions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@Resource.BlockName">@context.BlockName</MudTd>
+                <MudTd DataLabel="@Resource.BlockCode">
+                    <MudText Typo="Typo.caption">@context.BlockCode</MudText>
+                </MudTd>
+                <MudTd DataLabel="@Resource.Stage">
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+                        @context.StageName
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="@Resource.Time">
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+                        @context.StageTime
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="@Resource.Section">
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Label" Size="Size.Small" Class="mr-1" />
+                        @context.SectionName
+                    </div>
+                </MudTd>
+                <MudTd DataLabel="@Resource.Questions" Class="text-right">
+                    <MudText Color="Color.Secondary">@context.QuestionCount</MudText>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+}
+else
+{
+    <MudPaper Elevation="3" Class="pa-4 mt-4 d-flex align-center" Style="border-radius: 8px; min-height: 100px;">
+        <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Warning" Class="mr-2" />
+        <MudText Color="Color.Secondary">@Resource.NoStructureData</MudText>
+    </MudPaper>
+}

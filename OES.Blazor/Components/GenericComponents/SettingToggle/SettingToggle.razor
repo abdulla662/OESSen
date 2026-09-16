@@ -1,0 +1,14 @@
+﻿
+<div class="d-flex align-center gap-2">
+    <MudTooltip Text="@OperationsText">
+        <MudIconButton Icon="@Icons.Material.Filled.Settings" Class=@($"label-{nameof(Resource.Operations)}") Size="Size.Medium" OnClick="ToggleActions" />
+    </MudTooltip>
+
+    @if (isExpanded)
+    {
+        <div class="d-flex align-center gap-2" style="animation: fadeIn 0.3s;">
+            @ChildContent
+        </div>
+    }
+</div>
+

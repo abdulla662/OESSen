@@ -1,0 +1,68 @@
+
+<div class="w-100">
+
+    @if (ShowSearchBar)
+    {
+        <MudTextField T="string"
+                      Value="SearchText"
+                      ValueChanged="OnSearchTextChanged"
+                      Immediate="true"
+                      Placeholder="@Resource.Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Clearable="true"
+                      Class="mb-3" />
+    }
+
+    <div class="d-flex justify-end gap-2 mb-3">
+        <MudButton @onclick="ExpandAllAsync" Class="ExpandCollapseStyling">
+            @Resource.ExpandAll
+        </MudButton>
+        <MudButton @onclick="CollapseAll" Class="ExpandCollapseStyling">
+            @Resource.CollapseAll
+        </MudButton>
+    </div>
+
+    @if (IsLoading)
+    {
+        <div class="d-flex justify-center pa-4">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+        </div>
+    }
+    else if (RootNode != null)
+    {
+        <ul class="pa-0 ma-0" style="list-style: none; position: relative; direction: inherit;">
+            <ItemBankTreeNodeComponent Node="@RootNode"
+                                       RootNode="@RootNode"
+                                       Depth="0"
+                                       SearchText="@SearchText"
+                                       SelectedNode="@SelectedNode"
+                                       OnNodeSelected="@OnNodeSelected"
+                                       IsReadOnly="@IsReadOnly"
+                                       InsertionButtonShown="@InsertionButtonShown"
+                                       UpdateButtonShown="@UpdateButtonShown"
+                                       DeletionButtonShown="@DeletionButtonShown"
+                                       MoveButtonShown="@MoveButtonShown"
+                                       NodeNumbers="@NodeNumbers"
+                                       InsertTreeItem="@InsertTreeItem"
+                                       UpdateTreeItem="@UpdateTreeItem"
+                                       RemoveTreeItem="@RemoveTreeItem"
+                                       MoveTreeItem="@MoveTreeItem" />
+        </ul>
+    }
+    else
+    {
+        <div class="d-flex flex-column align-center justify-center pa-6">
+            <MudIcon Icon="@Icons.Material.Filled.SearchOff"
+                     Color="Color.Secondary"
+                     Size="Size.Large"
+                     Class="mb-2" />
+            <MudText Color="Color.Secondary">
+                @Resource.NoItemBankFound
+            </MudText>
+        </div>
+    }
+
+</div>

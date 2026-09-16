@@ -1,0 +1,76 @@
+﻿@page "/itemBankTreeView"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.Components.GenericComponents.TreeViewTemplates.GrpcTreeViewTemplate
+@using OES.Helper.Dtos
+@using OES.Helper.Dtos.TreeItem
+@using OES.Blazor.CustomAuthorizationAttribute
+@using SharedHelper.Common
+
+@attribute [DynamicAuthorizeAttribute("ItemBankTreeView")]
+
+<PageTitle>@Resource.ItemBankTreeStructure</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <div class="d-flex justify-content-center align-items-center mb-4">
+            <MudIcon Icon="@Icons.Material.Outlined.AccountBalance" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">@Resource.ItemBankTreeStructure</MudText>
+        </div>
+        @* <MudIconButton Variant="Variant.Filled"
+                       Class="bookmark"
+                       Icon="@Icons.Material.Filled.Bookmark"
+                       OnClick="ToggleDrawer"
+                       Color="Color.Primary" /> *@
+
+        @if (UserItemBankDtos.Any())
+        {
+            <MudDrawer @bind-Open="@_drawerOpen"
+                       Anchor="Anchor.Right"
+                       Elevation="10"
+                       Width="25%"
+                       Variant="DrawerVariant.Temporary">
+                <MudDrawerHeader Class="d-flex justify-content-center mb-3">
+                    <MudChip T="string"
+                             Icon="@Icons.Material.Filled.Bookmarks"
+                             Variant="Variant.Outlined"
+                             Color="Color.Primary"
+                             Size="Size.Large"
+                             Style="font-size: 17pt">@Resource.OwnItemBanks</MudChip>
+                </MudDrawerHeader>
+                <MudNavMenu Class="ms-3">
+                    @foreach (var userItemBank in UserItemBankDtos)
+                    {
+                        <MudFab Color="Color.Secondary"
+                                Class="mb-4"
+                                IconSize="Size.Medium"
+                                IconColor="Color.Warning"
+                                OnClick="() => ScrollToItem(userItemBank.Id)"
+                                EndIcon="@Icons.Material.Filled.Bookmark"
+                                Label="@userItemBank.Name.TruncateToNumberOfChars(28)" />
+                    }
+                </MudNavMenu>
+            </MudDrawer>
+        }
+
+        @if (IsComponentInitialized)
+        {
+            <GrpcTreeViewTemplate Items="Items"
+                                  @key="_treeKey"
+                                  @ref="_treeViewRef"
+                                  LabelClass="mb-3 mt-2 fs-4 text-center"
+                                  TreeCrudButtonsRolesPlaceholders="TreeCrudButtonsRolesPlaceholders"
+                                  InsertTreeItemInDb="InsertItemInDbAsync"
+                                  UpdateTreeItemInDb="UpdateItemInDbAsync"
+                                  RemoveTreeItemFromDb="RemoveItemFromDbAsync"
+                                  ShowItemDetails="ShowItemDetailsAsync"
+                                  ShowSearchBar="true">
+                <NodeCustomButton Context="context">
+                    <MudTooltip Text="@Resource.TransferQuestions">
+                        <MudIconButton Icon="@Icons.Material.Filled.OfflineShare" Color="Color.Secondary" OnClick="@(() => TransferItemBankQuestionsAsync(context))" Class="pa-0" />
+                    </MudTooltip>
+                </NodeCustomButton>
+            </GrpcTreeViewTemplate>
+        }
+    </MudCardContent>
+</MudCard>

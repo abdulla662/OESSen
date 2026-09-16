@@ -1,0 +1,56 @@
+﻿@using OES.Helper.Dtos.Form
+@using OES.Helper.Enums
+
+<MudCard Class="mx-auto w-100 pa-2 shadow-lg">
+    <MudCardContent>
+        <MudGrid Spacing="2">
+            @foreach (var section in sections)
+            {
+                <MudItem xs="12" sm="6" md="4" Style="display: flex; align-items: stretch;">
+                    <MudCard Elevation="2" Class="rounded-lg w-100" Style="display: flex; flex-direction: column;">
+                        <MudCardContent Class="pa-3" Style="flex: 0 1 auto;">
+                            <MudTextField @bind-Value="section.SectionName"
+                                          Label="@Resource.SectionName"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Immediate="true"
+                                          Class="mb-2 w-100" />
+
+                            <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-1 font-weight-bold">
+                                @Resource.Questions
+                            </MudText>
+                            <div style="overflow-y: auto; max-height: 180px; min-height: 0;">
+                                <MudChipSet T="string" ReadOnly="true" Class="flex-wrap gap-1">
+                                    @if (PaperSubType == QuestionSelectionType.Auto)
+                                    {
+                                        <MudChip Color="Color.Info" Variant="Variant.Filled" Size="Size.Small">
+                                            @(section.Questions?.Count ?? 0) @Resource.Questions
+                                        </MudChip>
+                                    }
+                                    else if (PaperSubType == QuestionSelectionType.Manual)
+                                    {
+                                        @foreach (var q in section.Questions)
+                                        {
+                                            <MudChip Color="Color.Info" Variant="Variant.Filled" Size="Size.Small" data-no-convert>
+                                                @q.Code
+                                            </MudChip>
+                                        }
+                                    }
+                                </MudChipSet>
+                            </div>
+                        </MudCardContent>
+                        <MudCardActions Class="justify-end pa-2" Style="margin-top: auto;">
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => SaveSectionAsync(section))"
+                                       EndIcon="@Icons.Material.Filled.CheckCircle">
+                                @Resource.Save
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudCardContent>
+</MudCard>

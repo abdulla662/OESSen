@@ -1,0 +1,146 @@
+@using SharedHelper.Enums
+
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="w-100 h-100" data-no-convert>
+    <MudStack Spacing="0" Class="w-100 h-100">
+        @foreach (var segment in _allSegments)
+        {
+            var properties = segment.SegmentQuestionConfigDto;
+
+            if (properties == null || (!ShowCorrectAnswer && properties.OrderNumber > _currentOrder))
+            {
+                continue;
+            }
+
+            var isCurrentSegment = properties.OrderNumber == _currentOrder;
+            var segmentId = $"segment-{properties.OrderNumber}";
+
+            var layoutClass = ShowCorrectAnswer ? "w-100 mt-6 pa-5 border rounded" : "w-100";
+            var layoutStyle = ShowCorrectAnswer ? "background-color: var(--mud-palette-background-grey);" : "";
+
+            <MudStack Spacing="0" id="@segmentId" Class="@layoutClass" Style="@layoutStyle">
+                <MudText Typo="Typo.body1" Class="sun-editor-editable w-100" data-no-convert>
+                    @(new MarkupString(segment.SegmentQuestionDetailsDto.Body))
+                </MudText>
+
+                @if (!ShowCorrectAnswer)
+                {
+                    @if (isCurrentSegment)
+                    {
+                        <MudStack Spacing="0">
+                            @if (_isAudioPlaying && !string.IsNullOrWhiteSpace(properties?.SegmentAudioUrl))
+                            {
+                                <audio autoplay
+                                       @onended="OnAudioFinishedAsync"
+                                       style="visibility:hidden; height:0; width:0;">
+                                    <source src="@properties.SegmentAudioUrl" type="audio/mpeg" />
+                                </audio>
+                            }
+
+                            @if (_isThinkingTime || _isResponseTime)
+                            {
+                                var isThinking = _isThinkingTime;
+                                var label = isThinking ? Resource.ThinkingTime : Resource.ResponseTime;
+                                var maxValue = isThinking ? (properties.ThinkingTime ?? 0) : (properties.ResponseTime ?? 0);
+
+                                double percentage = maxValue > 0 ? ((double)_countdownValue / maxValue) * 100 : 0;
+                                Color color = percentage > 50 ? Color.Info : (percentage > 20 ? Color.Warning : Color.Error);
+
+                                <MudStack Spacing="1">
+                                    <MudText Color="color" Typo="Typo.subtitle1">
+                                        @label: @FormatTime(_countdownValue)
+                                    </MudText>
+                                    <MudProgressLinear Color="color" Value="@_countdownValue" Max="maxValue" Size="Size.Medium" Striped="true" Rounded="true" />
+                                </MudStack>
+                            }
+
+                            @if (_isResponseTime)
+                            {
+                                <MudStack Spacing="2" Class="mt-3">
+                                    @if (properties.SegmentQuestionResponseType == SegmentQuestionResponseType.Essay)
+                                    {
+                                        <MudTextField T="string"
+                                                      Placeholder="@Resource.WriteYourAnswerHere"
+                                                      FullWidth="true"
+                                                      Lines="3"
+                                                      Immediate="true"
+                                                      Variant="Variant.Outlined"
+                                                      AutoGrow="true" />
+
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="Color.Primary"
+                                                   EndIcon="@Icons.Material.Filled.ArrowForward"
+                                                   OnClick="SubmitAnswerAsync"
+                                                   Class="align-self-end mt-2">
+                                            @Resource.Save
+                                        </MudButton>
+                                    }
+                                    else if (properties.SegmentQuestionResponseType == SegmentQuestionResponseType.Audio)
+                                    {
+                                        <MudPaper Elevation="2" Class="pa-6 rounded-lg" id="@($"audio-recorder-{properties.OrderNumber}")">
+                                            <MudStack Spacing="3" AlignItems="AlignItems.Center">
+                                                @if (_isRecording)
+                                                {
+                                                    <MudStack Spacing="3" AlignItems="AlignItems.Center" Class="w-100">
+                                                        <MudPaper Elevation="0" Class="pa-3 rounded" Style="background-color: #fce4e4;">
+                                                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                                                <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Error" Size="Size.Small" Class="recording-pulse" />
+                                                                <MudText Typo="Typo.body1" Style="font-weight: 500;">@Resource.RecordingInProgress</MudText>
+                                                            </MudStack>
+                                                        </MudPaper>
+
+                                                        <MudText Typo="Typo.h3" Color="Color.Primary" Style="font-family: monospace; font-weight: 600;">
+                                                            @FormatTime(_countdownValue)
+                                                        </MudText>
+
+                                                        <MudPaper Elevation="1" Class="pa-2 w-100 bg-white rounded border" Style="max-width: 600px;">
+                                                            <canvas id="audio-visualizer-canvas" class="w-100 d-block" style="height: 120px;"></canvas>
+                                                        </MudPaper>
+
+                                                        <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2" Style="max-width: 600px;">
+                                                            <MudText Typo="Typo.body2">@Resource.SpeakNow</MudText>
+                                                        </MudAlert>
+
+                                                        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="SubmitAnswerAsync">@Resource.StopRecordingBtn</MudButton>
+                                                    </MudStack>
+                                                }
+                                                else
+                                                {
+                                                    <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                                                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Large" />
+                                                        <MudText Typo="Typo.subtitle1" Color="Color.Success">@Resource.RecordingCompleted</MudText>
+                                                    </MudStack>
+                                                }
+                                            </MudStack>
+                                        </MudPaper>
+                                    }
+                                </MudStack>
+                            }
+                        </MudStack>
+                    }
+                }
+                else
+                {
+                    <MudStack Spacing="2" Class="mt-2">
+                        @if (!string.IsNullOrWhiteSpace(properties?.SegmentAudioUrl))
+                        {
+                            <audio controls class="w-100 mt-2">
+                                <source src="@properties.SegmentAudioUrl" type="audio/mpeg" />
+                            </audio>
+                        }
+                        <MudStack Row="true" Spacing="4" Class="mt-2 text-center">
+                            <MudChip T="string" Variant="Variant.Filled" Color="Color.Info" Size="Size.Small">
+                                @Resource.ThinkingTime: @FormatTime(properties.ThinkingTime ?? 0)
+                            </MudChip>
+                            <MudChip T="string" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small">
+                                @Resource.ResponseTime: @FormatTime(properties.ResponseTime ?? 0)
+                            </MudChip>
+                            <MudChip T="string" Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small">
+                                @Resource.ResponseType: @GetResponseTypeLabel(properties.SegmentQuestionResponseType)
+                            </MudChip>
+                        </MudStack>
+                    </MudStack>
+                }
+            </MudStack>
+        }
+    </MudStack>
+</MudContainer>

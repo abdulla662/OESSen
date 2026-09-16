@@ -1,0 +1,33 @@
+﻿@using OES.Helper.Dtos.Template.Response
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Description" Class="mr-2" /> @Resource.InstructionsTemplate
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <EditForm Model="@Section">
+            <MudAutocomplete T="GetListedTemplateResponseDto"
+                             @bind-Value="SelectedTemplate"
+                             SearchFunc="SearchTemplates"
+                             ToStringFunc="@(t => t?.Name ?? string.Empty)"
+                             Clearable="true"
+                             Dense="false"
+                             Label="@Resource.InstructionsTemplate"
+                             Class="mb-3"
+                             Variant="Variant.Outlined"
+                             AnchorOrigin="Origin.BottomCenter"
+                             CoerceText="true">
+                @if (InstructionTemplate == null || !InstructionTemplate.Any())
+                {
+                    <div class="mud-typography mud-typography-body2">@Resource.NoTemplatesAvailable</div>
+                }
+            </MudAutocomplete>
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Save" Disabled="@(SelectedTemplate == null)" EndIcon="@Icons.Material.Filled.CheckCircle">@Resource.Save</MudButton>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+    </DialogActions>
+</MudDialog>

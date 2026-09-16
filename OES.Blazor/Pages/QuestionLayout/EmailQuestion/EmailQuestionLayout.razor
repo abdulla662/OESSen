@@ -1,0 +1,119 @@
+<div class="@(ScreenSizeClass)" data-no-convert>
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="question-watermark-transparent">
+        <MudGrid Spacing="0" Class="sun-editor-editable question-watermark-transparent mb-2">
+            <MudItem xs="12" Class="question-watermark-transparent px-0" data-no-convert>
+                <MudText Typo="Typo.inherit" Align="Align.Start">
+                    @(new MarkupString(Model?.Body ?? ""))
+                </MudText>
+            </MudItem>
+        </MudGrid>
+
+        <MudCard Elevation="3" Class="pa-0 email-card" Outlined="true">
+
+            @* Header *@
+            <MudPaper Square="true" Elevation="0" Class="pa-3 px-4 d-flex justify-space-between align-center email-header">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Class="email-header-icon" />
+                    <MudText Typo="Typo.subtitle1" Class="font-weight-bold email-header-text">
+                        @Resource.NewMessage
+                    </MudText>
+                </MudStack>
+                <MudText Typo="Typo.caption" Class="font-weight-bold email-system-label">
+                    @Resource.SystemMail
+                </MudText>
+            </MudPaper>
+
+            <MudCardContent Class="pa-0">
+
+                @* To Field *@
+                <MudPaper Square="true" Elevation="0" Class="px-3 d-flex align-center email-field-row">
+                    <MudButton Variant="Variant.Filled"
+                               Size="Size.Small"
+                               Class="email-btn-filled mr-3">
+                        @Resource.To
+                    </MudButton>
+                    <div class="d-flex flex-wrap align-center flex-grow-1 gap-1">
+                        @if (ShowCorrectAnswer && ParsedAnswer?.ExpectedToEmails?.Any() == true)
+                        {
+                            @foreach (var email in ParsedAnswer.ExpectedToEmails)
+                            {
+                                <MudChip T="string" Variant="Variant.Filled" Size="Size.Small" Class="email-chip">@email</MudChip>
+                            }
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Tertiary">@Resource.AddRecipients</MudText>
+                        }
+                    </div>
+                </MudPaper>
+                <MudDivider />
+
+                @* CC Field *@
+                <MudPaper Square="true" Elevation="0" Class="px-3 d-flex align-center email-field-row">
+                    <MudButton Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               Class="email-btn-outlined mr-3">
+                        @Resource.CcEmail
+                    </MudButton>
+                    <div class="d-flex flex-wrap align-center flex-grow-1 gap-1">
+                        @if (ShowCorrectAnswer && ParsedAnswer?.ExpectedCcEmails?.Any() == true)
+                        {
+                            @foreach (var email in ParsedAnswer.ExpectedCcEmails)
+                            {
+                                <MudChip T="string" Variant="Variant.Filled" Size="Size.Small"
+                                         Class="email-chip">@email</MudChip>
+                            }
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Tertiary">@Resource.AddCcRecipients</MudText>
+                        }
+                    </div>
+                </MudPaper>
+                <MudDivider />
+
+                @* Subject Field *@
+                <MudPaper Square="true" Elevation="0" Class="px-3 d-flex align-center email-field-row">
+                    <MudButton Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               Class="email-btn-outlined mr-3">
+                        @Resource.EmailSubject
+                    </MudButton>
+                    @if (ShowCorrectAnswer && ParsedAnswer != null && !string.IsNullOrWhiteSpace(ParsedAnswer.ExpectedSubject))
+                    {
+                        <MudText Typo="Typo.body2" Class="flex-grow-1">@ParsedAnswer.ExpectedSubject</MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Tertiary" Class="flex-grow-1">@Resource.EmailSubjectPlaceholder</MudText>
+                    }
+                </MudPaper>
+                <MudDivider />
+
+                @* Body *@
+                <MudPaper Square="true" Elevation="0" Class="pa-4 email-body-row">
+                    @if (ShowCorrectAnswer && ParsedAnswer?.RequiredBodyKeywords?.Count > 0)
+                    {
+                        <MudStack Spacing="2">
+                            <MudText Typo="Typo.caption" Color="Color.Warning" Class="font-weight-bold">
+                                @Resource.RequiredBodyKeywords
+                            </MudText>
+                            <MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
+                                @foreach (var keyword in ParsedAnswer.RequiredBodyKeywords)
+                                {
+                                    <MudChip T="string" Color="Color.Info" Variant="Variant.Filled" Size="Size.Small">@keyword</MudChip>
+                                }
+                            </MudStack>
+                        </MudStack>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Tertiary">@Resource.EmailBodyPlaceholder</MudText>
+                    }
+                </MudPaper>
+
+            </MudCardContent>
+        </MudCard>
+
+    </MudContainer>
+</div>

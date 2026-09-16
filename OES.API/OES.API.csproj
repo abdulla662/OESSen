@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Exports\**" />
+    <Compile Remove="wwwroot\files\Templates\**" />
+    <Content Remove="Exports\**" />
+    <Content Remove="wwwroot\files\Templates\**" />
+    <EmbeddedResource Remove="Exports\**" />
+    <EmbeddedResource Remove="wwwroot\files\Templates\**" />
+    <None Remove="Exports\**" />
+    <None Remove="wwwroot\files\Templates\**" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	<Content Include="tessdata\**\*">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	</Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Protos\GenericTreeProtoBuf.proto" />
+    <None Remove="Protos\models.proto" />
+    <None Remove="Protos\userProfileService.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlSanitizer" Version="9.1.982" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.65.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.27.4" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.65.0" />
+	<PackageReference Include="Grpc.Net.Client.Web" Version="2.65.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.66.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Aspire.ServiceDefaults\Aspire.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\OES.Services\OES.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\GenericTreeProtoBuf.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\models.proto" GrpcServices="None" />
+    <Protobuf Include="Protos\userProfileService.proto" GrpcServices="Client" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\files\CTRExports\" />
+    <Folder Include="wwwroot\images\UploadFile\" />
+  </ItemGroup>
+</Project>

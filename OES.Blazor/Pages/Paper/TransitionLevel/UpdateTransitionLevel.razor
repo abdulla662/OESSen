@@ -1,0 +1,118 @@
+﻿@page "/UpdateTransitionLevel"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.TransitionProfile
+@using System.Globalization
+
+@attribute [DynamicAuthorizeAttribute("UpdateTransitionLevel")]
+
+<PageTitle>@Resource.updateDifficultyLevel</PageTitle>
+
+<EditForm Model="@Model">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-80 p-4 shadow-lg">
+        <MudCardContent>
+            <div class="d-flex justify-content-center align-items-center mb-6">
+                <MudIcon Icon="@Icons.Material.Filled.AlignVerticalBottom" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h4" Style="line-height: 1;">
+                    @Resource.updateDifficultyLevel
+                </MudText>
+            </div>
+
+            <div class="form-group">
+                <MudTextField Label="@Resource.Name"
+                              Required="true"
+                              Immediate="true"
+                              @bind-Value="Model.Name"
+                              For="@(() => Model.Name)"
+                              Class="mb-3"
+                              Variant="Variant.Outlined" />
+            </div>
+
+            <div class="form-group">
+                <MudNumericField T="decimal"
+                                 Label="@Resource.LowerDScore"
+                                 Required="true"
+                                 Immediate="true"
+                                 @bind-Value="Model.LowerDScore"
+                                 For="@(() => Model.LowerDScore)"
+                                 Class="mb-3"
+                                 Variant="Variant.Outlined"
+                                 Culture="@(CultureInfo.InvariantCulture)" />
+            </div>
+
+            <div class="form-group">
+                <MudNumericField T="decimal"
+                                 Label="@Resource.UpperDScore"
+                                 Required="true"
+                                 Immediate="true"
+                                 @bind-Value="Model.UpperDScore"
+                                 For="@(() => Model.UpperDScore)"
+                                 Class="mb-3"
+                                 Variant="Variant.Outlined"
+                                 Min="Model.LowerDScore"
+                                 Culture="@(CultureInfo.InvariantCulture)" />
+            </div>
+
+            <div class="form-group">
+                <MudAutocomplete T="TransitionProfileDto"
+                                 @key="FetchedProfiles"
+                                 Label=@Resource.SelectTransitionProfile
+                                 Value="SelectedProfile"
+                                 Variant="Variant.Outlined"
+                                 Class="mb-3"
+                                 ValueChanged="GetSelectedProfile"
+                                 SearchFunc="@SearchTransitionLevelProfileAsync"
+                                 ToStringFunc="@(e => e == null ? null : $"{e.Name}")"
+                                 ResetValueOnEmptyText="true"
+                                 CoerceText="false"
+                                 Immediate="true"
+                                 Clearable="true" />
+            </div>
+
+            <div class="form-group">
+                <MudSelect @key="SelectedProfile?.Id"
+                           @bind-Value="SelectedDifficultyLevel"
+                           Label="@Resource.DifficultyLevel"
+                           Variant="Variant.Outlined"
+                           ToStringFunc="@(d => d?.Name ?? string.Empty)"
+                           Required="true"
+                           Disabled="@(DifficultyLevels.Count == 0)"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Class="mb-3">
+                    @foreach (var level in DifficultyLevels)
+                    {
+                        <MudSelectItem Value="@level" />
+                    }
+                </MudSelect>
+            </div>
+
+            <div class="form-group">
+                <MudSelect @bind-Value="SelectedCategory"
+                           Label="@Resource.QuestionCategory"
+                           Variant="Variant.Outlined"
+                           ToStringFunc="@(c => c?.Name ?? string.Empty)"
+                           Required="true"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Disabled="@(DifficultyLevels.Count == 0)"
+                           Class="mb-3">
+                    @foreach (var cat in Categories)
+                    {
+                        <MudSelectItem Value="@cat" />
+                    }
+                </MudSelect>
+            </div>
+        </MudCardContent>
+        <MudCardActions Class="justify-content-center w-100">
+            <GeneralLoadingButton Disabled="@IsSubmitButtonDisabled"
+                                  Class="w-100 m-3"
+                                  OnClick="OnValidSubmitAsync"
+                                  ButtonText="@Resource.Update"
+                                  Type="ButtonType.Submit"
+                                  EndIcon="@Icons.Material.Filled.CheckCircle" />
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="w-100 m-3" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>

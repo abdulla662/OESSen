@@ -1,0 +1,106 @@
+﻿@page "/PaperDetails"
+
+@attribute [DynamicAuthorizeAttribute("PaperViewDetails")]
+
+@using OES.Blazor.Components.GenericComponents.Loader
+@using OES.Blazor.CustomAuthorizationAttribute
+
+<PageTitle>@Resource.PaperDetails</PageTitle>
+
+@if (!_isDataLoaded)
+{
+    <GenericLoader LoaderText="@Resource.Loading" />
+}
+else
+{
+    @if (paperDetails == null || paperDetails.Id == 0)
+    {
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mt-5">No paper details found</MudText>
+    }
+    else
+    {
+        <MudCard Class="mx-auto mt-5 w-75 p-4 shadow-lg rounded">
+            <MudCardContent>
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <MudText Color="Color.Primary" Typo="Typo.h4">@Resource.PaperDetails</MudText>
+                </div>
+
+                <MudGrid Spacing="3">
+                    <MudItem xs="12" sm="12">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">📌 @Resource.Name:&nbsp;&nbsp;</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-2"> @paperDetails.Name</MudText>
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="12">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">📄 @Resource.Description:&nbsp;&nbsp;</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-2"> @paperDetails.Description</MudText>
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">🔢 @Resource.Code:&nbsp;&nbsp;</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-2"> @paperDetails.Code</MudText>
+                        </MudPaper>
+                    </MudItem>
+
+
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">⏳ @Resource.Duration:&nbsp;&nbsp;</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-2"> @paperDetails.Duration</MudText>
+                        </MudPaper>
+                    </MudItem>
+
+
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">📝 @Resource.TotalMarks:&nbsp;&nbsp;</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-2">@paperDetails.TotalMarks</MudText>
+                        </MudPaper>
+                    </MudItem>
+
+
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">🌐 @Resource.Language:&nbsp;&nbsp;</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-2">@paperDetails.Language.Name</MudText>
+                        </MudPaper>
+                    </MudItem>
+
+
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">ℹ️ @Resource.Papertype:&nbsp;&nbsp;</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-2">@paperDetails.Type.ToString()</MudText>
+                        </MudPaper>
+                    </MudItem>
+
+
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">ℹ️ @Resource.QuestionSelectionType:&nbsp;&nbsp;</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-2">@paperDetails.QuestionSelectionType</MudText>
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Elevation="1" Width="90%" Class="p-3 shadow-sm d-flex align-items-center ">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">@Resource.DifficultyProfile:&nbsp;&nbsp;</MudText>
+                            <MudText Typo="Typo.body1" Class="ml-2">@paperDetails.DifficultyProfile.Name</MudText>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+
+            <MudCardActions Class="justify-content-center mt-4">
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="w-50" OnClick="Close" EndIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Close
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    }
+}

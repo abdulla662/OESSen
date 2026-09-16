@@ -1,0 +1,1583 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.MudDebugAnalyzer = 
+build_property.MudAllowedAttributePattern = 
+build_property.MudIllegalParameters = 
+build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = OES.Blazor
+build_property.RootNamespace = OES.Blazor
+build_property.ProjectDir = C:\Users\PC-7\source\repos\MKCL Examination System\Examination.OES\OES.Blazor\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\PC-7\source\repos\MKCL Examination System\Examination.OES\OES.Blazor
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/DualRangeSingleSlider.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cRHVhbFJhbmdlU2luZ2xlU2xpZGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/DualRangeSlider.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cRHVhbFJhbmdlU2xpZGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/ExpandCollapseIcon.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cRXhwYW5kQ29sbGFwc2VJY29uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/FileManagerComponent/FileManagerComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cRmlsZU1hbmFnZXJDb21wb25lbnRcRmlsZU1hbmFnZXJDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/FileManagerComponent/FolderCreationComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cRmlsZU1hbmFnZXJDb21wb25lbnRcRm9sZGVyQ3JlYXRpb25Db21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/GearIcon.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cR2Vhckljb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/GeneralLoadingButton.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cR2VuZXJhbExvYWRpbmdCdXR0b24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/GenericLookUp.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cR2VuZXJpY0xvb2tVcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/MCQComponents/MCQQuestion.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cTUNRQ29tcG9uZW50c1xNQ1FRdWVzdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/MediaAttachment.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cTWVkaWFBdHRhY2htZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/MultiCorrectAnswerComponents/MultiCorrectAnswerQuestion.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cTXVsdGlDb3JyZWN0QW5zd2VyQ29tcG9uZW50c1xNdWx0aUNvcnJlY3RBbnN3ZXJRdWVzdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/NormalBtnCRUD.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cTm9ybWFsQnRuQ1JVRC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/NumberLanguageSelector.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cTnVtYmVyTGFuZ3VhZ2VTZWxlY3Rvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/OrderingComponent/OrderingQuestion.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cT3JkZXJpbmdDb21wb25lbnRcT3JkZXJpbmdRdWVzdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/Loader/GenericLoader.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xMb2FkZXJcR2VuZXJpY0xvYWRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/Login/OrganizationTreeNodeComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xMb2dpblxPcmdhbml6YXRpb25UcmVlTm9kZUNvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/OrganizationStructure/GenericOrganizationStructureControlPanel.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xPcmdhbml6YXRpb25TdHJ1Y3R1cmVcR2VuZXJpY09yZ2FuaXphdGlvblN0cnVjdHVyZUNvbnRyb2xQYW5lbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/SettingToggle/SettingToggle.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xTZXR0aW5nVG9nZ2xlXFNldHRpbmdUb2dnbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/TextEditor/TextEditor.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xUZXh0RWRpdG9yXFRleHRFZGl0b3IucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/QualityChecker/Comments/CreateComment.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xRdWFsaXR5Q2hlY2tlclxDb21tZW50c1xDcmVhdGVDb21tZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/QualityChecker/Comments/QuestionLogs.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xRdWFsaXR5Q2hlY2tlclxDb21tZW50c1xRdWVzdGlvbkxvZ3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/QualityChecker/Question/MetaDataView.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xRdWFsaXR5Q2hlY2tlclxRdWVzdGlvblxNZXRhRGF0YVZpZXcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/QualityChecker/Versions/QuestionVersionEntry.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xRdWFsaXR5Q2hlY2tlclxWZXJzaW9uc1xRdWVzdGlvblZlcnNpb25FbnRyeS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/QualityChecker/Versions/QuestionVersions.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xRdWFsaXR5Q2hlY2tlclxWZXJzaW9uc1xRdWVzdGlvblZlcnNpb25zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Reports/AnalyticalReportFilter.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSZXBvcnRzXEFuYWx5dGljYWxSZXBvcnRGaWx0ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Reports/ReportInfoButton.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSZXBvcnRzXFJlcG9ydEluZm9CdXR0b24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Reports/ReportInfoDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSZXBvcnRzXFJlcG9ydEluZm9EaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/TakeExam/ExamPanel/ButtonsPanel/ButtonsPanelComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUYWtlRXhhbVxFeGFtUGFuZWxcQnV0dG9uc1BhbmVsXEJ1dHRvbnNQYW5lbENvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/TakeExam/ExamPanel/DynamicMiddlePanelComponent/DynamicMiddlePanel.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUYWtlRXhhbVxFeGFtUGFuZWxcRHluYW1pY01pZGRsZVBhbmVsQ29tcG9uZW50XER5bmFtaWNNaWRkbGVQYW5lbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/TakeExam/ExamPanel/ExamScreenContainer.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUYWtlRXhhbVxFeGFtUGFuZWxcRXhhbVNjcmVlbkNvbnRhaW5lci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/TakeExam/ExamPanel/LayoutFooter/ExamLayoutFooter.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUYWtlRXhhbVxFeGFtUGFuZWxcTGF5b3V0Rm9vdGVyXEV4YW1MYXlvdXRGb290ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/TakeExam/ExamPanel/LeftPanel/LeftPanelComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUYWtlRXhhbVxFeGFtUGFuZWxcTGVmdFBhbmVsXExlZnRQYW5lbENvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/TakeExam/ExamPanel/LeftPanel/Tools/Calculator.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUYWtlRXhhbVxFeGFtUGFuZWxcTGVmdFBhbmVsXFRvb2xzXENhbGN1bGF0b3IucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/TakeExam/ExamPanel/LeftPanel/Tools/Notepad.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUYWtlRXhhbVxFeGFtUGFuZWxcTGVmdFBhbmVsXFRvb2xzXE5vdGVwYWQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/TakeExam/ExamPanel/ScreenHeader/ScreenHeaderComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUYWtlRXhhbVxFeGFtUGFuZWxcU2NyZWVuSGVhZGVyXFNjcmVlbkhlYWRlckNvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/TakeExam/ExamPanel/StaticMiddlePanelComponent/StaticMiddlePanel.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUYWtlRXhhbVxFeGFtUGFuZWxcU3RhdGljTWlkZGxlUGFuZWxDb21wb25lbnRcU3RhdGljTWlkZGxlUGFuZWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Attachment/AttachmentDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xBdHRhY2htZW50XEF0dGFjaG1lbnREaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/AuditLogs/AuditLogsDetailsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xBdWRpdExvZ3NcQXVkaXRMb2dzRGV0YWlsc0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Blocks/BlockDetailsViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xCbG9ja3NcQmxvY2tEZXRhaWxzVmlld0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CandidateBatchImportHistory/CandidateBatchDetailsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVCYXRjaEltcG9ydEhpc3RvcnlcQ2FuZGlkYXRlQmF0Y2hEZXRhaWxzRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CandidateBatchImportHistory/CandidateBatchImportHistoryDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVCYXRjaEltcG9ydEhpc3RvcnlcQ2FuZGlkYXRlQmF0Y2hJbXBvcnRIaXN0b3J5RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CandidateBatchImportHistory/CandidatesUploadDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVCYXRjaEltcG9ydEhpc3RvcnlcQ2FuZGlkYXRlc1VwbG9hZERpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CandidateBatchImportHistory/DumpImportCandidatesDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVCYXRjaEltcG9ydEhpc3RvcnlcRHVtcEltcG9ydENhbmRpZGF0ZXNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CandidateBatchImportHistory/ViewDistributionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVCYXRjaEltcG9ydEhpc3RvcnlcVmlld0Rpc3RyaWJ1dGlvbkRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CandidatesResult/CandidatesResultViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVzUmVzdWx0XENhbmRpZGF0ZXNSZXN1bHRWaWV3RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CandidatesResult/CandidateTrackingLogsDetailsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVzUmVzdWx0XENhbmRpZGF0ZVRyYWNraW5nTG9nc0RldGFpbHNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CandidatesResult/SessionDetailsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVzUmVzdWx0XFNlc3Npb25EZXRhaWxzRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Candidate/AllocationsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVcQWxsb2NhdGlvbnNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Candidate/CandidateImportErrorsViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVcQ2FuZGlkYXRlSW1wb3J0RXJyb3JzVmlld0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Candidate/CandidatesAllocationDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVcQ2FuZGlkYXRlc0FsbG9jYXRpb25EaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Candidate/CandidatesImportDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVcQ2FuZGlkYXRlc0ltcG9ydERpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Candidate/CandidatesImportWithinSchedulePaperDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVcQ2FuZGlkYXRlc0ltcG9ydFdpdGhpblNjaGVkdWxlUGFwZXJEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Candidate/CandidateViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDYW5kaWRhdGVcQ2FuZGlkYXRlVmlld0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/DashboardPanel/SyncDashboardPanelDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xEYXNoYm9hcmRQYW5lbFxTeW5jRGFzaGJvYXJkUGFuZWxEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/DeltaType/DeltaTypeDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xEZWx0YVR5cGVcRGVsdGFUeXBlRGV0YWlscy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/DifficultyLevel/DifficultyLevelDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xEaWZmaWN1bHR5TGV2ZWxcRGlmZmljdWx0eUxldmVsRGV0YWlscy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/DifficultyProfile/DifficultyProfileDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xEaWZmaWN1bHR5UHJvZmlsZVxEaWZmaWN1bHR5UHJvZmlsZURldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/DownloadProgressDialog/DownloadProgressDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xEb3dubG9hZFByb2dyZXNzRGlhbG9nXERvd25sb2FkUHJvZ3Jlc3NEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/DuplicateGenericTempleateDialog/DuplicateGenericTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xEdXBsaWNhdGVHZW5lcmljVGVtcGxlYXRlRGlhbG9nXER1cGxpY2F0ZUdlbmVyaWNUZW1wbGF0ZURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/EquationTemplate/AddEquationCategoryDialog/AddEquationCategoryDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xFcXVhdGlvblRlbXBsYXRlXEFkZEVxdWF0aW9uQ2F0ZWdvcnlEaWFsb2dcQWRkRXF1YXRpb25DYXRlZ29yeURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/EquationTemplate/EquationTemplateViewDialog/EquationTemplateViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xFcXVhdGlvblRlbXBsYXRlXEVxdWF0aW9uVGVtcGxhdGVWaWV3RGlhbG9nXEVxdWF0aW9uVGVtcGxhdGVWaWV3RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/ExamScreenDialog/ExamScreenContainerDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xFeGFtU2NyZWVuRGlhbG9nXEV4YW1TY3JlZW5Db250YWluZXJEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/FileManager/DocumentDeletionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGaWxlTWFuYWdlclxEb2N1bWVudERlbGV0aW9uRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/FileManager/DocumentUploadDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGaWxlTWFuYWdlclxEb2N1bWVudFVwbG9hZERpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/FileManager/DocumentViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGaWxlTWFuYWdlclxEb2N1bWVudFZpZXdEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/FileManager/FileDetailsProbabilitiesDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGaWxlTWFuYWdlclxGaWxlRGV0YWlsc1Byb2JhYmlsaXRpZXNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/FileManager/FileManagerDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGaWxlTWFuYWdlclxGaWxlTWFuYWdlckRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/FileManager/FolderDeletionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGaWxlTWFuYWdlclxGb2xkZXJEZWxldGlvbkRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/FileManager/NameUpdateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGaWxlTWFuYWdlclxOYW1lVXBkYXRlRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Form/EditFormDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGb3JtXEVkaXRGb3JtRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Form/EditFormSectionsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGb3JtXEVkaXRGb3JtU2VjdGlvbnNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Form/PaperFormsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGb3JtXFBhcGVyRm9ybXNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Form/SuspendForm/SuspendFormDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xGb3JtXFN1c3BlbmRGb3JtXFN1c3BlbmRGb3JtRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Groups/GroupDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xHcm91cHNcR3JvdXBEZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/GroupWizard/GroupCreationWizard.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xHcm91cFdpemFyZFxHcm91cENyZWF0aW9uV2l6YXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/GroupWizard/ResourceSelectorPanel.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xHcm91cFdpemFyZFxSZXNvdXJjZVNlbGVjdG9yUGFuZWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/ItemBank/ItemBankTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xJdGVtQmFua1xJdGVtQmFua1RlbXBsYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/LoadRolesTemplates/LoadRolesTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xMb2FkUm9sZXNUZW1wbGF0ZXNcTG9hZFJvbGVzVGVtcGxhdGVEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/ManualSyncOptionsDialog/ManualSyncOptionsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xNYW51YWxTeW5jT3B0aW9uc0RpYWxvZ1xNYW51YWxTeW5jT3B0aW9uc0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/MediaConfiguration/ViewMediaSettingDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xNZWRpYUNvbmZpZ3VyYXRpb25cVmlld01lZGlhU2V0dGluZ0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Notification/NotificationDetailsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xOb3RpZmljYXRpb25cTm90aWZpY2F0aW9uRGV0YWlsc0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/OrganizationStructure/AddOrUpdateOrganizationNodeLookupItemDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xPcmdhbml6YXRpb25TdHJ1Y3R1cmVcQWRkT3JVcGRhdGVPcmdhbml6YXRpb25Ob2RlTG9va3VwSXRlbURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/OrganizationStructure/AddOrUpdateOrganizationStructureNodeDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xPcmdhbml6YXRpb25TdHJ1Y3R1cmVcQWRkT3JVcGRhdGVPcmdhbml6YXRpb25TdHJ1Y3R1cmVOb2RlRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/OrganizationStructure/ViewOrganizationLookupItemsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xPcmdhbml6YXRpb25TdHJ1Y3R1cmVcVmlld09yZ2FuaXphdGlvbkxvb2t1cEl0ZW1zRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/ImportQuestionsWithItemBanksDialog/ImportQuestionsWithItemBanksDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxJbXBvcnRRdWVzdGlvbnNXaXRoSXRlbUJhbmtzRGlhbG9nXEltcG9ydFF1ZXN0aW9uc1dpdGhJdGVtQmFua3NEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/PaperItemBanks/PaperItemBankTreeViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxQYXBlckl0ZW1CYW5rc1xQYXBlckl0ZW1CYW5rVHJlZVZpZXdEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/PaperTemplates/PaperMetadataTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxQYXBlclRlbXBsYXRlc1xQYXBlck1ldGFkYXRhVGVtcGxhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/Sectioning/AutoSectioning/AutoSectionInstructionTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxTZWN0aW9uaW5nXEF1dG9TZWN0aW9uaW5nXEF1dG9TZWN0aW9uSW5zdHJ1Y3Rpb25UZW1wbGF0ZURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/Sectioning/AutoSectioning/AutoSectionPropertiesDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxTZWN0aW9uaW5nXEF1dG9TZWN0aW9uaW5nXEF1dG9TZWN0aW9uUHJvcGVydGllc0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/Sectioning/AutoSectioning/DistributionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxTZWN0aW9uaW5nXEF1dG9TZWN0aW9uaW5nXERpc3RyaWJ1dGlvbkRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/Sectioning/AutoSectioning/DistributionSummaryDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxTZWN0aW9uaW5nXEF1dG9TZWN0aW9uaW5nXERpc3RyaWJ1dGlvblN1bW1hcnlEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/Sectioning/AutoSectioning/DistributionTransferWarningDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxTZWN0aW9uaW5nXEF1dG9TZWN0aW9uaW5nXERpc3RyaWJ1dGlvblRyYW5zZmVyV2FybmluZ0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/Sectioning/ManualSectioning/ManualSectionInstructionTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxTZWN0aW9uaW5nXE1hbnVhbFNlY3Rpb25pbmdcTWFudWFsU2VjdGlvbkluc3RydWN0aW9uVGVtcGxhdGVEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/Sectioning/ManualSectioning/ManualSectionPropertiesDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxTZWN0aW9uaW5nXE1hbnVhbFNlY3Rpb25pbmdcTWFudWFsU2VjdGlvblByb3BlcnRpZXNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/SuspendPaper/SuspendPaperDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxTdXNwZW5kUGFwZXJcU3VzcGVuZFBhcGVyRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/TransitionProfiles/TransitionProfileViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxUcmFuc2l0aW9uUHJvZmlsZXNcVHJhbnNpdGlvblByb2ZpbGVWaWV3RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/ViewAdaptivePaperDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxWaWV3QWRhcHRpdmVQYXBlckRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/ViewFormsPaperDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxWaWV3Rm9ybXNQYXBlckRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/QualityCheckCommittee/CommitteeDetailsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWFsaXR5Q2hlY2tDb21taXR0ZWVcQ29tbWl0dGVlRGV0YWlsc0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/IloSelectionDialog/IloSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxJbG9TZWxlY3Rpb25EaWFsb2dcSWxvU2VsZWN0aW9uRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/InstructionTemplateDialog/InstructionTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxJbnN0cnVjdGlvblRlbXBsYXRlRGlhbG9nXEluc3RydWN0aW9uVGVtcGxhdGVEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/ItemBankMultiSelectionDialog/ItemBankMultiSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxJdGVtQmFua011bHRpU2VsZWN0aW9uRGlhbG9nXEl0ZW1CYW5rTXVsdGlTZWxlY3Rpb25EaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/ItemBankSelectionDialog/ItemBankSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxJdGVtQmFua1NlbGVjdGlvbkRpYWxvZ1xJdGVtQmFua1NlbGVjdGlvbkRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/ItemBankTreeViewReadOnlyDialog/ItemBankTreeViewReadOnlyDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxJdGVtQmFua1RyZWVWaWV3UmVhZE9ubHlEaWFsb2dcSXRlbUJhbmtUcmVlVmlld1JlYWRPbmx5RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/QuestionCategory/QuestionCategoryDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxRdWVzdGlvbkNhdGVnb3J5XFF1ZXN0aW9uQ2F0ZWdvcnlEZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/QuestionDetailsDialog/ComprehensionSubQuestionDetailsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxRdWVzdGlvbkRldGFpbHNEaWFsb2dcQ29tcHJlaGVuc2lvblN1YlF1ZXN0aW9uRGV0YWlsc0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/QuestionDetailsDialog/QuestionDetailsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxRdWVzdGlvbkRldGFpbHNEaWFsb2dcUXVlc3Rpb25EZXRhaWxzRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/QuestionLanguageSelectionDialog/QuestionLanguageSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxRdWVzdGlvbkxhbmd1YWdlU2VsZWN0aW9uRGlhbG9nXFF1ZXN0aW9uTGFuZ3VhZ2VTZWxlY3Rpb25EaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/QuestionLayoutShowingDialog/QuestionLayoutShowingDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxRdWVzdGlvbkxheW91dFNob3dpbmdEaWFsb2dcUXVlc3Rpb25MYXlvdXRTaG93aW5nRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/QuestionSubjectDetails/QuestionSubjectDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxRdWVzdGlvblN1YmplY3REZXRhaWxzXFF1ZXN0aW9uU3ViamVjdERldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/QuestionTemplate/QuestionTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxRdWVzdGlvblRlbXBsYXRlXFF1ZXN0aW9uVGVtcGxhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/QuestionViewDialog/QuestionViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxRdWVzdGlvblZpZXdEaWFsb2dcUXVlc3Rpb25WaWV3RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/QuestionWithForms/ViewQuestionWithFormDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxRdWVzdGlvbldpdGhGb3Jtc1xWaWV3UXVlc3Rpb25XaXRoRm9ybURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/ScreenSizeDialog/ScreenSizeDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxTY3JlZW5TaXplRGlhbG9nXFNjcmVlblNpemVEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/TemplateDialog/TemplateNameDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxUZW1wbGF0ZURpYWxvZ1xUZW1wbGF0ZU5hbWVEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/UploadFileTemplate/UploadFileTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxVcGxvYWRGaWxlVGVtcGxhdGVcVXBsb2FkRmlsZVRlbXBsYXRlRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Question/UploadFreeQuestionsDialog/UploadFreeQuestionsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xRdWVzdGlvblxVcGxvYWRGcmVlUXVlc3Rpb25zRGlhbG9nXFVwbG9hZEZyZWVRdWVzdGlvbnNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Reports/ItemBankReportSelectionDialog/ItemBankReportSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xSZXBvcnRzXEl0ZW1CYW5rUmVwb3J0U2VsZWN0aW9uRGlhbG9nXEl0ZW1CYW5rUmVwb3J0U2VsZWN0aW9uRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/AddOrUpdateSchedulePaperDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxBZGRPclVwZGF0ZVNjaGVkdWxlUGFwZXJEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/ConfigureSchedulePaperSettingsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxDb25maWd1cmVTY2hlZHVsZVBhcGVyU2V0dGluZ3NEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/SchedulePaperSettingsTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxTY2hlZHVsZVBhcGVyU2V0dGluZ3NUZW1wbGF0ZURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/SchedulePaperSettingsTemplatesDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxTY2hlZHVsZVBhcGVyU2V0dGluZ3NUZW1wbGF0ZXNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/ScheduleTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxTY2hlZHVsZVRlbXBsYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/ScheduleTemplateNameDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxTY2hlZHVsZVRlbXBsYXRlTmFtZURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/ScheduleViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxTY2hlZHVsZVZpZXdEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/SecurityConfigurationsTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxTZWN1cml0eUNvbmZpZ3VyYXRpb25zVGVtcGxhdGVEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/SecurityConfigurationsTemplatesDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxTZWN1cml0eUNvbmZpZ3VyYXRpb25zVGVtcGxhdGVzRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Schedule/SyncScheduleDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTY2hlZHVsZVxTeW5jU2NoZWR1bGVEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Templates/AddTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xUZW1wbGF0ZXNcQWRkVGVtcGxhdGVEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Templates/EditTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xUZW1wbGF0ZXNcRWRpdFRlbXBsYXRlRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/TransitionLevel/TransitionLevelViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xUcmFuc2l0aW9uTGV2ZWxcVHJhbnNpdGlvbkxldmVsVmlld0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/UserDialogs/ChiefSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xVc2VyRGlhbG9nc1xDaGllZlNlbGVjdGlvbkRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/UserDialogs/MemberSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xVc2VyRGlhbG9nc1xNZW1iZXJTZWxlY3Rpb25EaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/UserDialogs/UserSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xVc2VyRGlhbG9nc1xVc2VyU2VsZWN0aW9uRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Venue/ImportVenuesDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xWZW51ZVxJbXBvcnRWZW51ZXNEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Venue/VenueViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xWZW51ZVxWZW51ZVZpZXdEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/VerificationCode/ExportVerificationCodeDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xWZXJpZmljYXRpb25Db2RlXEV4cG9ydFZlcmlmaWNhdGlvbkNvZGVEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIItemBankGenerator/Dialogs/AIItemBankNodeAddDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlJdGVtQmFua0dlbmVyYXRvclxEaWFsb2dzXEFJSXRlbUJhbmtOb2RlQWRkRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIItemBankGenerator/Dialogs/AIItemBankNodeEditDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlJdGVtQmFua0dlbmVyYXRvclxEaWFsb2dzXEFJSXRlbUJhbmtOb2RlRWRpdERpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIItemBankGenerator/FirstStep/AIItemBankConfigurationsStep.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlJdGVtQmFua0dlbmVyYXRvclxGaXJzdFN0ZXBcQUlJdGVtQmFua0NvbmZpZ3VyYXRpb25zU3RlcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIItemBankGenerator/FourthStep/AIItemBankCompleteStep.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlJdGVtQmFua0dlbmVyYXRvclxGb3VydGhTdGVwXEFJSXRlbUJhbmtDb21wbGV0ZVN0ZXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIItemBankGenerator/MainComponent/AIItembankGeneratorMain.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlJdGVtQmFua0dlbmVyYXRvclxNYWluQ29tcG9uZW50XEFJSXRlbWJhbmtHZW5lcmF0b3JNYWluLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIItemBankGenerator/SecondStep/AIItemBankGenerationStep.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlJdGVtQmFua0dlbmVyYXRvclxTZWNvbmRTdGVwXEFJSXRlbUJhbmtHZW5lcmF0aW9uU3RlcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIItemBankGenerator/ThirdStep/AIItemBankReviewStep.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlJdGVtQmFua0dlbmVyYXRvclxUaGlyZFN0ZXBcQUlJdGVtQmFua1Jldmlld1N0ZXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIQuestionGenerator/Dialogs/AIQuestionEditDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlRdWVzdGlvbkdlbmVyYXRvclxEaWFsb2dzXEFJUXVlc3Rpb25FZGl0RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIQuestionGenerator/Dialogs/AIQuestionMetadataDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlRdWVzdGlvbkdlbmVyYXRvclxEaWFsb2dzXEFJUXVlc3Rpb25NZXRhZGF0YURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIQuestionGenerator/Dialogs/AIQuestionViewDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlRdWVzdGlvbkdlbmVyYXRvclxEaWFsb2dzXEFJUXVlc3Rpb25WaWV3RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIQuestionGenerator/FirstStep/ConfigurationStep.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlRdWVzdGlvbkdlbmVyYXRvclxGaXJzdFN0ZXBcQ29uZmlndXJhdGlvblN0ZXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIQuestionGenerator/FourthStep/CompleteStep.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlRdWVzdGlvbkdlbmVyYXRvclxGb3VydGhTdGVwXENvbXBsZXRlU3RlcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIQuestionGenerator/MainComponent/AIQuestionGenerator.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlRdWVzdGlvbkdlbmVyYXRvclxNYWluQ29tcG9uZW50XEFJUXVlc3Rpb25HZW5lcmF0b3IucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIQuestionGenerator/SecondStep/GenerateStep.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlRdWVzdGlvbkdlbmVyYXRvclxTZWNvbmRTdGVwXEdlbmVyYXRlU3RlcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AIQuestionGenerator/ThirdStep/ReviewStep.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQUlRdWVzdGlvbkdlbmVyYXRvclxUaGlyZFN0ZXBcUmV2aWV3U3RlcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/AuditLogs/AuditLogsList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXVkaXRMb2dzXEF1ZGl0TG9nc0xpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/CandidateSchedule/CandidateSchedules.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2FuZGlkYXRlU2NoZWR1bGVcQ2FuZGlkYXRlU2NoZWR1bGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/CandidatesResult/CandidatesResultList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2FuZGlkYXRlc1Jlc3VsdFxDYW5kaWRhdGVzUmVzdWx0TGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/CBTSyncSetting/CBTSyncSettingList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ0JUU3luY1NldHRpbmdcQ0JUU3luY1NldHRpbmdMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Common/ForbiddenPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uXEZvcmJpZGRlblBhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Common/NotFoundPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uXE5vdEZvdW5kUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Common/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/DeltaType/AddDeltaType.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGVsdGFUeXBlXEFkZERlbHRhVHlwZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/DeltaType/DeltaTypeList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGVsdGFUeXBlXERlbHRhVHlwZUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/DeltaType/UpdatedeltaType.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGVsdGFUeXBlXFVwZGF0ZWRlbHRhVHlwZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/DifficultyLevel/AddNewDifficultyLevel.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlmZmljdWx0eUxldmVsXEFkZE5ld0RpZmZpY3VsdHlMZXZlbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/DifficultyLevel/DifficultyLevelList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlmZmljdWx0eUxldmVsXERpZmZpY3VsdHlMZXZlbExpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/DifficultyLevel/UpdateDifficultyLevel.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlmZmljdWx0eUxldmVsXFVwZGF0ZURpZmZpY3VsdHlMZXZlbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/DifficultyProfile/AddDifficultyProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlmZmljdWx0eVByb2ZpbGVcQWRkRGlmZmljdWx0eVByb2ZpbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/DifficultyProfile/DifficultyProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlmZmljdWx0eVByb2ZpbGVcRGlmZmljdWx0eVByb2ZpbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/DifficultyProfile/UpdateDifficultyProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlmZmljdWx0eVByb2ZpbGVcVXBkYXRlRGlmZmljdWx0eVByb2ZpbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Disabilities/AddDisability.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzYWJpbGl0aWVzXEFkZERpc2FiaWxpdHkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Disabilities/DisabilitiesList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzYWJpbGl0aWVzXERpc2FiaWxpdGllc0xpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Disabilities/UpdateDisability.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzYWJpbGl0aWVzXFVwZGF0ZURpc2FiaWxpdHkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/EquationTemplate/AddEquationTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXF1YXRpb25UZW1wbGF0ZVxBZGRFcXVhdGlvblRlbXBsYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/EquationTemplate/EquationTemplateList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXF1YXRpb25UZW1wbGF0ZVxFcXVhdGlvblRlbXBsYXRlTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/EquationTemplate/UpdateEquationTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXF1YXRpb25UZW1wbGF0ZVxVcGRhdGVFcXVhdGlvblRlbXBsYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ExamScreenPage/ExamScreenContainerPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhhbVNjcmVlblBhZ2VcRXhhbVNjcmVlbkNvbnRhaW5lclBhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ExamScreenPage/PaperFormExamScreenPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhhbVNjcmVlblBhZ2VcUGFwZXJGb3JtRXhhbVNjcmVlblBhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ExportFiles/ExportFiles.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhwb3J0RmlsZXNcRXhwb3J0RmlsZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/FileManager/FileManager.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmlsZU1hbmFnZXJcRmlsZU1hbmFnZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ILOSection/ILOEditRoot.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSUxPU2VjdGlvblxJTE9FZGl0Um9vdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ILOSection/ILORoots.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSUxPU2VjdGlvblxJTE9Sb290cy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ILOSection/NewRoot.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSUxPU2VjdGlvblxOZXdSb290LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ILOTreeView/ILODetailsDialogBox/ILODetailsDialogBox.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSUxPVHJlZVZpZXdcSUxPRGV0YWlsc0RpYWxvZ0JveFxJTE9EZXRhaWxzRGlhbG9nQm94LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ILOTreeView/ILOEditDialog/ILOEditDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSUxPVHJlZVZpZXdcSUxPRWRpdERpYWxvZ1xJTE9FZGl0RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ILOTreeView/ILOInsertionDialogBox/ILOInsertionDialogBox.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSUxPVHJlZVZpZXdcSUxPSW5zZXJ0aW9uRGlhbG9nQm94XElMT0luc2VydGlvbkRpYWxvZ0JveC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ILOTreeView/ILOTreeView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSUxPVHJlZVZpZXdcSUxPVHJlZVZpZXcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ItemBankTreeView/ItemBankDetailsDialogBox/ItemBankDetailsDialogBox.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbUJhbmtUcmVlVmlld1xJdGVtQmFua0RldGFpbHNEaWFsb2dCb3hcSXRlbUJhbmtEZXRhaWxzRGlhbG9nQm94LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ItemBankTreeView/ItemBankStatisticsComponent/ItemBankStatisticsComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbUJhbmtUcmVlVmlld1xJdGVtQmFua1N0YXRpc3RpY3NDb21wb25lbnRcSXRlbUJhbmtTdGF0aXN0aWNzQ29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ItemBankTreeView/ItemBankTreeView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbUJhbmtUcmVlVmlld1xJdGVtQmFua1RyZWVWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ItemBank/Dialog/AddItemBankNodeDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbUJhbmtcRGlhbG9nXEFkZEl0ZW1CYW5rTm9kZURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ItemBank/Dialog/TransferQuestionsToItemBankDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbUJhbmtcRGlhbG9nXFRyYW5zZmVyUXVlc3Rpb25zVG9JdGVtQmFua0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ItemBank/ItemBankEditDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbUJhbmtcSXRlbUJhbmtFZGl0RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ItemBank/ItemBankList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbUJhbmtcSXRlbUJhbmtMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ItemBank/Update.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbUJhbmtcVXBkYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Language/AddLanguage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGFuZ3VhZ2VcQWRkTGFuZ3VhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Language/EditLanguage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGFuZ3VhZ2VcRWRpdExhbmd1YWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Language/Language.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGFuZ3VhZ2VcTGFuZ3VhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Login/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW5cTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/MediaConfiguration/AddMediaSetting.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWVkaWFDb25maWd1cmF0aW9uXEFkZE1lZGlhU2V0dGluZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/MediaConfiguration/MediaSettingList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWVkaWFDb25maWd1cmF0aW9uXE1lZGlhU2V0dGluZ0xpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/MediaConfiguration/UpdateMediaSetting.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWVkaWFDb25maWd1cmF0aW9uXFVwZGF0ZU1lZGlhU2V0dGluZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Notification/NotificationList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm90aWZpY2F0aW9uXE5vdGlmaWNhdGlvbkxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/OrganizationStructure/AddOrUpdateOrganizationStructureRoot.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JnYW5pemF0aW9uU3RydWN0dXJlXEFkZE9yVXBkYXRlT3JnYW5pemF0aW9uU3RydWN0dXJlUm9vdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/OrganizationStructure/OrganizationStructureList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JnYW5pemF0aW9uU3RydWN0dXJlXE9yZ2FuaXphdGlvblN0cnVjdHVyZUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/OrganizationStructure/OrganizationStructureTreePage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JnYW5pemF0aW9uU3RydWN0dXJlXE9yZ2FuaXphdGlvblN0cnVjdHVyZVRyZWVQYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/PagesAndRoles/AssignRoleToPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFnZXNBbmRSb2xlc1xBc3NpZ25Sb2xlVG9QYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Block/BlocksPaginatedList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcQmxvY2tcQmxvY2tzUGFnaW5hdGVkTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Block/BlockView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcQmxvY2tcQmxvY2tWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Block/EditBlock.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcQmxvY2tcRWRpdEJsb2NrLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/FifthStep/MarkingScheme.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXEZpZnRoU3RlcFxNYXJraW5nU2NoZW1lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/FirstStep/PaperMetadata.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXEZpcnN0U3RlcFxQYXBlck1ldGFkYXRhLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/FourthStep/BlockDistribution/MSTBlockDistributionDropZone.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXEZvdXJ0aFN0ZXBcQmxvY2tEaXN0cmlidXRpb25cTVNUQmxvY2tEaXN0cmlidXRpb25Ecm9wWm9uZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/FourthStep/BlockDistribution/STEPBlockDistributionDropZone.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXEZvdXJ0aFN0ZXBcQmxvY2tEaXN0cmlidXRpb25cU1RFUEJsb2NrRGlzdHJpYnV0aW9uRHJvcFpvbmUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/FourthStep/QuestionsOrBlocksSectioningContainer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXEZvdXJ0aFN0ZXBcUXVlc3Rpb25zT3JCbG9ja3NTZWN0aW9uaW5nQ29udGFpbmVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/FourthStep/QuestionsSectioning/AutoSelectedQuestionsSectioning.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXEZvdXJ0aFN0ZXBcUXVlc3Rpb25zU2VjdGlvbmluZ1xBdXRvU2VsZWN0ZWRRdWVzdGlvbnNTZWN0aW9uaW5nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/FourthStep/QuestionsSectioning/ManuallySelectedQuestionsSectioning.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXEZvdXJ0aFN0ZXBcUXVlc3Rpb25zU2VjdGlvbmluZ1xNYW51YWxseVNlbGVjdGVkUXVlc3Rpb25zU2VjdGlvbmluZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/SecondStep/BlocksSelection/BlocksSelection.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFNlY29uZFN0ZXBcQmxvY2tzU2VsZWN0aW9uXEJsb2Nrc1NlbGVjdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/SecondStep/ItemBanksOrBlocksSelectionContainer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFNlY29uZFN0ZXBcSXRlbUJhbmtzT3JCbG9ja3NTZWxlY3Rpb25Db250YWluZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/SecondStep/ItemBanksSelection/ItemBanksList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFNlY29uZFN0ZXBcSXRlbUJhbmtzU2VsZWN0aW9uXEl0ZW1CYW5rc0xpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/SixthStep/AdaptivePaper/AdaptiveSummary.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFNpeHRoU3RlcFxBZGFwdGl2ZVBhcGVyXEFkYXB0aXZlU3VtbWFyeS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/SixthStep/PaperSummary.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFNpeHRoU3RlcFxQYXBlclN1bW1hcnkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/SixthStep/StandardPaper/StandardSummary.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFNpeHRoU3RlcFxTdGFuZGFyZFBhcGVyXFN0YW5kYXJkU3VtbWFyeS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/ThirdStep/QuestionsSelectionContainer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFRoaXJkU3RlcFxRdWVzdGlvbnNTZWxlY3Rpb25Db250YWluZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperViewDetails/PaperViewDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlclZpZXdEZXRhaWxzXFBhcGVyVmlld0RldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/UserPapersList/UserPapersList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxVc2VyUGFwZXJzTGlzdFxVc2VyUGFwZXJzTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Template/TemplateList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcVGVtcGxhdGVcVGVtcGxhdGVMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/TransitionLevel/AddTransitionLevel.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcVHJhbnNpdGlvbkxldmVsXEFkZFRyYW5zaXRpb25MZXZlbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/TransitionLevel/TransitionLevel.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcVHJhbnNpdGlvbkxldmVsXFRyYW5zaXRpb25MZXZlbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/TransitionLevel/TransitionLevelDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcVHJhbnNpdGlvbkxldmVsXFRyYW5zaXRpb25MZXZlbERldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/TransitionLevel/UpdateTransitionLevel.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcVHJhbnNpdGlvbkxldmVsXFVwZGF0ZVRyYW5zaXRpb25MZXZlbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/TransitionProfile/AddTransitionProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcVHJhbnNpdGlvblByb2ZpbGVcQWRkVHJhbnNpdGlvblByb2ZpbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/TransitionProfile/EditTransitionProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcVHJhbnNpdGlvblByb2ZpbGVcRWRpdFRyYW5zaXRpb25Qcm9maWxlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/TransitionProfile/TransitionProfileList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcVHJhbnNpdGlvblByb2ZpbGVcVHJhbnNpdGlvblByb2ZpbGVMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/PathsAndRoles/AssignRoleToPath.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF0aHNBbmRSb2xlc1xBc3NpZ25Sb2xlVG9QYXRoLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QQualityCheck/QuestionQualityCheck.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUVF1YWxpdHlDaGVja1xRdWVzdGlvblF1YWxpdHlDaGVjay5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QualityCheckCommittee/AddQualityCheckCommittee.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVhbGl0eUNoZWNrQ29tbWl0dGVlXEFkZFF1YWxpdHlDaGVja0NvbW1pdHRlZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QualityCheckCommittee/QualityCheckCommitteeList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVhbGl0eUNoZWNrQ29tbWl0dGVlXFF1YWxpdHlDaGVja0NvbW1pdHRlZUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QualityCheckCommittee/UpdateQualityCheckCommittee.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVhbGl0eUNoZWNrQ29tbWl0dGVlXFVwZGF0ZVF1YWxpdHlDaGVja0NvbW1pdHRlZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/comprehensionLayouts/ComprehensionLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcY29tcHJlaGVuc2lvbkxheW91dHNcQ29tcHJlaGVuc2lvbkxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/EmailQuestion/EmailQuestionLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcRW1haWxRdWVzdGlvblxFbWFpbFF1ZXN0aW9uTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/EssayLayout/EssayLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcRXNzYXlMYXlvdXRcRXNzYXlMYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/FileUploadResponseLayout/FileUploadResponseLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcRmlsZVVwbG9hZFJlc3BvbnNlTGF5b3V0XEZpbGVVcGxvYWRSZXNwb25zZUxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/FillInTheBlank/FillInTheBlank.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcRmlsbEluVGhlQmxhbmtcRmlsbEluVGhlQmxhbmsucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/HotSpot/HotSpotWithClicksLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcSG90U3BvdFxIb3RTcG90V2l0aENsaWNrc0xheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/HotSpot/HotSpotWithDragAndDropLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcSG90U3BvdFxIb3RTcG90V2l0aERyYWdBbmREcm9wTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/LayoutIllustration.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcTGF5b3V0SWxsdXN0cmF0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/MatchingPairsLayout/MatchingPairsLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcTWF0Y2hpbmdQYWlyc0xheW91dFxNYXRjaGluZ1BhaXJzTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/MatchingPairsWithDragDropLayout/MatchingPairsWithDragDropLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcTWF0Y2hpbmdQYWlyc1dpdGhEcmFnRHJvcExheW91dFxNYXRjaGluZ1BhaXJzV2l0aERyYWdEcm9wTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/McqLayouts/Mcqlayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcTWNxTGF5b3V0c1xNY3FsYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/MultiCorrectAnswerLayout/MultiCorrectAnswer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcTXVsdGlDb3JyZWN0QW5zd2VyTGF5b3V0XE11bHRpQ29ycmVjdEFuc3dlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/OrderingLayout/OrderingQuestionLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcT3JkZXJpbmdMYXlvdXRcT3JkZXJpbmdRdWVzdGlvbkxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/PaperAnsweredQuestion/PaperAnsweredQuestionLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcUGFwZXJBbnN3ZXJlZFF1ZXN0aW9uXFBhcGVyQW5zd2VyZWRRdWVzdGlvbkxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/QuestionLayoutComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcUXVlc3Rpb25MYXlvdXRDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/SegmentLayouts/SegmentLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcU2VnbWVudExheW91dHNcU2VnbWVudExheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/SegmentLayouts/SegmentLayoutWithAudioAnswer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcU2VnbWVudExheW91dHNcU2VnbWVudExheW91dFdpdGhBdWRpb0Fuc3dlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/SegmentLayouts/SegmentLayoutWithVideoAnswer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcU2VnbWVudExheW91dHNcU2VnbWVudExheW91dFdpdGhWaWRlb0Fuc3dlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/TrueAndFalseLayout/TrueAndFalseLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcVHJ1ZUFuZEZhbHNlTGF5b3V0XFRydWVBbmRGYWxzZUxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/WebRegistrationLayout/WebRegistrationLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcV2ViUmVnaXN0cmF0aW9uTGF5b3V0XFdlYlJlZ2lzdHJhdGlvbkxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionLayout/WebSearchLayout/WebSearchLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25MYXlvdXRcV2ViU2VhcmNoTGF5b3V0XFdlYlNlYXJjaExheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionType/CreateQuestionType.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25UeXBlXENyZWF0ZVF1ZXN0aW9uVHlwZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionType/QuestionTypeDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25UeXBlXFF1ZXN0aW9uVHlwZURldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionType/QuestionTypeList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25UeXBlXFF1ZXN0aW9uVHlwZUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/QuestionType/UpdateQuestionType.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25UeXBlXFVwZGF0ZVF1ZXN0aW9uVHlwZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/FreeQuestionsList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cRnJlZVF1ZXN0aW9uc0xpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionCategory/AddQuestionCategory.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25DYXRlZ29yeVxBZGRRdWVzdGlvbkNhdGVnb3J5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionCategory/QuestionCategory.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25DYXRlZ29yeVxRdWVzdGlvbkNhdGVnb3J5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionCategory/UpdateQuestionCategory.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25DYXRlZ29yeVxVcGRhdGVRdWVzdGlvbkNhdGVnb3J5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionCreation.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25DcmVhdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionDeltaUpload.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25EZWx0YVVwbG9hZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionLanguage/QuestionLanguageList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25MYW5ndWFnZVxRdWVzdGlvbkxhbmd1YWdlTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionLanguage/SegmentLanguageComponent/SegmentLanguageListComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25MYW5ndWFnZVxTZWdtZW50TGFuZ3VhZ2VDb21wb25lbnRcU2VnbWVudExhbmd1YWdlTGlzdENvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25MaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionMetaData.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25NZXRhRGF0YS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionsAdvancedFilter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25zQWR2YW5jZWRGaWx0ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionsQualityCheckList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25zUXVhbGl0eUNoZWNrTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionsQualityPassingChecklist.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25zUXVhbGl0eVBhc3NpbmdDaGVja2xpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionSubject/AddSubject.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25TdWJqZWN0XEFkZFN1YmplY3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionSubject/SubjectList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25TdWJqZWN0XFN1YmplY3RMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionSubject/UpdateSubject.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25TdWJqZWN0XFVwZGF0ZVN1YmplY3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponents/ComprehensionEssayQuestion.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50c1xDb21wcmVoZW5zaW9uRXNzYXlRdWVzdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponents/ComprehensionFileUploadResponseQuestion.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50c1xDb21wcmVoZW5zaW9uRmlsZVVwbG9hZFJlc3BvbnNlUXVlc3Rpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponents/ComprehensionFillInTheBlankQuestions.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50c1xDb21wcmVoZW5zaW9uRmlsbEluVGhlQmxhbmtRdWVzdGlvbnMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponents/ComprehensionMCQQuestion.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50c1xDb21wcmVoZW5zaW9uTUNRUXVlc3Rpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponents/ComprehensionMultipleCorrectAnswersQuestion.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50c1xDb21wcmVoZW5zaW9uTXVsdGlwbGVDb3JyZWN0QW5zd2Vyc1F1ZXN0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponents/ComprehensionOrderingQuestion.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50c1xDb21wcmVoZW5zaW9uT3JkZXJpbmdRdWVzdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponents/ComprehensionSegmentWithAudioAnswerQuestions.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50c1xDb21wcmVoZW5zaW9uU2VnbWVudFdpdGhBdWRpb0Fuc3dlclF1ZXN0aW9ucy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponents/ComprehensionSegmentWithVideoAnswerQuestions.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50c1xDb21wcmVoZW5zaW9uU2VnbWVudFdpdGhWaWRlb0Fuc3dlclF1ZXN0aW9ucy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/ComprehensionComponents/ComprehensionTrueOrFalseQuestion.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xDb21wcmVoZW5zaW9uQ29tcG9uZW50c1xDb21wcmVoZW5zaW9uVHJ1ZU9yRmFsc2VRdWVzdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/DragAndDropHotSpotComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xEcmFnQW5kRHJvcEhvdFNwb3RDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/EmailQuestionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xFbWFpbFF1ZXN0aW9uQ29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/EssayQuestionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xFc3NheVF1ZXN0aW9uQ29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/FileUploadResponseComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xGaWxlVXBsb2FkUmVzcG9uc2VDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/FillInTheBlankComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xGaWxsSW5UaGVCbGFua0NvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/HotSpotWithClicksComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xIb3RTcG90V2l0aENsaWNrc0NvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/MatchingPairsQuestionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xNYXRjaGluZ1BhaXJzUXVlc3Rpb25Db21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/MatchingPairsWithDragDropComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xNYXRjaGluZ1BhaXJzV2l0aERyYWdEcm9wQ29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/MCQQuestionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xNQ1FRdWVzdGlvbkNvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/MultipleCorrectAnswersQuestionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xNdWx0aXBsZUNvcnJlY3RBbnN3ZXJzUXVlc3Rpb25Db21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/OrderingQuestionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xPcmRlcmluZ1F1ZXN0aW9uQ29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/PaperAnsweredQuestionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xQYXBlckFuc3dlcmVkUXVlc3Rpb25Db21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/SegmentComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xTZWdtZW50Q29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/SegmentQuestionWithAudioAnswerComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xTZWdtZW50UXVlc3Rpb25XaXRoQXVkaW9BbnN3ZXJDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/SegmentQuestionWithVideoAnswerComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xTZWdtZW50UXVlc3Rpb25XaXRoVmlkZW9BbnN3ZXJDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/TrueOrFalseComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xUcnVlT3JGYWxzZUNvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/WebRegistrationQuestionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xXZWJSZWdpc3RyYXRpb25RdWVzdGlvbkNvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Question/QuestionTypes/WebSearchQuestionComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVlc3Rpb25cUXVlc3Rpb25UeXBlc1xXZWJTZWFyY2hRdWVzdGlvbkNvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/CentersAllocationVerification.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xDZW50ZXJzQWxsb2NhdGlvblZlcmlmaWNhdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/CondensedTestReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xDb25kZW5zZWRUZXN0UmVwb3J0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/ItemAnalysisReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xJdGVtQW5hbHlzaXNSZXBvcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/ItemTypeReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xJdGVtVHlwZVJlcG9ydC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/PaperBlueprintReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xQYXBlckJsdWVwcmludFJlcG9ydC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/PerformanceSummaryReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xQZXJmb3JtYW5jZVN1bW1hcnlSZXBvcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/QuestionBlockActivityReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xRdWVzdGlvbkJsb2NrQWN0aXZpdHlSZXBvcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/QuestionUsageReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xRdWVzdGlvblVzYWdlUmVwb3J0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/RawScoreResultsReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xSYXdTY29yZVJlc3VsdHNSZXBvcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/ResponseMatrixReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xSZXNwb25zZU1hdHJpeFJlcG9ydC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/ScoreDistributionReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xTY29yZURpc3RyaWJ1dGlvblJlcG9ydC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/TestAnalysisReport.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xUZXN0QW5hbHlzaXNSZXBvcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Reports/VenueAttendanceVerification.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xWZW51ZUF0dGVuZGFuY2VWZXJpZmljYXRpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Results/CandidateResults.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzdWx0c1xDYW5kaWRhdGVSZXN1bHRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Results/Configuration.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzdWx0c1xDb25maWd1cmF0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Results/QuestionIndicators.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzdWx0c1xRdWVzdGlvbkluZGljYXRvcnMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Results/ResultGeneration.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzdWx0c1xSZXN1bHRHZW5lcmF0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Results/ReviewUnfinished.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzdWx0c1xSZXZpZXdVbmZpbmlzaGVkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Results/TrackingLogs.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzdWx0c1xUcmFja2luZ0xvZ3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/RuleMatrix/AllGroupsList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUnVsZU1hdHJpeFxBbGxHcm91cHNMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/RuleMatrix/GroupWizardCreate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUnVsZU1hdHJpeFxHcm91cFdpemFyZENyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/RuleMatrix/GroupWizardList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUnVsZU1hdHJpeFxHcm91cFdpemFyZExpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/SchedulePaperCandidate/EditSchedulePaperCandidate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVQYXBlckNhbmRpZGF0ZVxFZGl0U2NoZWR1bGVQYXBlckNhbmRpZGF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Candidates/AddCandidateExtraTimeList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcQ2FuZGlkYXRlc1xBZGRDYW5kaWRhdGVFeHRyYVRpbWVMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Candidates/CandidateCreation.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcQ2FuZGlkYXRlc1xDYW5kaWRhdGVDcmVhdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Candidates/CandidateList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcQ2FuZGlkYXRlc1xDYW5kaWRhdGVMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Candidates/UpdateCandidate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcQ2FuZGlkYXRlc1xVcGRhdGVDYW5kaWRhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Main/ScheduleCreationOrUpdateStepper/FirstStep/ScheduleMetadata.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcTWFpblxTY2hlZHVsZUNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXEZpcnN0U3RlcFxTY2hlZHVsZU1ldGFkYXRhLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Main/ScheduleCreationOrUpdateStepper/FourthStep/ScheduleSummary.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcTWFpblxTY2hlZHVsZUNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXEZvdXJ0aFN0ZXBcU2NoZWR1bGVTdW1tYXJ5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Main/ScheduleCreationOrUpdateStepper/MainComponent/ScheduleCreationStepper.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcTWFpblxTY2hlZHVsZUNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXE1haW5Db21wb25lbnRcU2NoZWR1bGVDcmVhdGlvblN0ZXBwZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Main/ScheduleCreationOrUpdateStepper/SecondStep/AddSecurityConfigurations.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcTWFpblxTY2hlZHVsZUNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFNlY29uZFN0ZXBcQWRkU2VjdXJpdHlDb25maWd1cmF0aW9ucy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Main/ScheduleCreationOrUpdateStepper/ThirdStep/SchedulePapersList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcTWFpblxTY2hlZHVsZUNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFRoaXJkU3RlcFxTY2hlZHVsZVBhcGVyc0xpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Main/SchedulesList/ScheduleList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcTWFpblxTY2hlZHVsZXNMaXN0XFNjaGVkdWxlTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/PaperSettingTemplates/Common/PaperSettingComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcUGFwZXJTZXR0aW5nVGVtcGxhdGVzXENvbW1vblxQYXBlclNldHRpbmdDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/PaperSettingTemplates/CreatePaperSettingTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcUGFwZXJTZXR0aW5nVGVtcGxhdGVzXENyZWF0ZVBhcGVyU2V0dGluZ1RlbXBsYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/PaperSettingTemplates/EditPaperSettingTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcUGFwZXJTZXR0aW5nVGVtcGxhdGVzXEVkaXRQYXBlclNldHRpbmdUZW1wbGF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/PaperSettingTemplates/PaperSettingTemplateList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcUGFwZXJTZXR0aW5nVGVtcGxhdGVzXFBhcGVyU2V0dGluZ1RlbXBsYXRlTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/PaperSettingTemplates/PaperSettingTemplateView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcUGFwZXJTZXR0aW5nVGVtcGxhdGVzXFBhcGVyU2V0dGluZ1RlbXBsYXRlVmlldy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/ScheduleSecurityTemplates/CreateScheduleSecurityConfigurationTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcU2NoZWR1bGVTZWN1cml0eVRlbXBsYXRlc1xDcmVhdGVTY2hlZHVsZVNlY3VyaXR5Q29uZmlndXJhdGlvblRlbXBsYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/ScheduleSecurityTemplates/EditScheduleSecurityConfigurationTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcU2NoZWR1bGVTZWN1cml0eVRlbXBsYXRlc1xFZGl0U2NoZWR1bGVTZWN1cml0eUNvbmZpZ3VyYXRpb25UZW1wbGF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/ScheduleSecurityTemplates/ScheduleSecurityConfigurationView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcU2NoZWR1bGVTZWN1cml0eVRlbXBsYXRlc1xTY2hlZHVsZVNlY3VyaXR5Q29uZmlndXJhdGlvblZpZXcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/ScheduleSecurityTemplates/ScheduleSecurityTemplatesList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcU2NoZWR1bGVTZWN1cml0eVRlbXBsYXRlc1xTY2hlZHVsZVNlY3VyaXR5VGVtcGxhdGVzTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Venues/AddNewVenue.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcVmVudWVzXEFkZE5ld1ZlbnVlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Venues/VenueEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcVmVudWVzXFZlbnVlRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Schedule/Venues/VenueList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVcVmVudWVzXFZlbnVlTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/SyncStatus/CenterDetailDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3luY1N0YXR1c1xDZW50ZXJEZXRhaWxEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/SyncStatus/SyncStatus.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3luY1N0YXR1c1xTeW5jU3RhdHVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/TokenHandler/TokenHandler.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG9rZW5IYW5kbGVyXFRva2VuSGFuZGxlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/UploadFiles/UploadFile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXBsb2FkRmlsZXNcVXBsb2FkRmlsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/UsersAndRoles/AppUserProfileList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlcnNBbmRSb2xlc1xBcHBVc2VyUHJvZmlsZUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/UsersAndRoles/AssignRoleToUser.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlcnNBbmRSb2xlc1xBc3NpZ25Sb2xlVG9Vc2VyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/VerificationCodeGenerator/VerificationCodeGenerator.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmVyaWZpY2F0aW9uQ29kZUdlbmVyYXRvclxWZXJpZmljYXRpb25Db2RlR2VuZXJhdG9yLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Shared/Layout/EmptyLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExheW91dFxFbXB0eUxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Shared/Layout/ExamViewLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExheW91dFxFeGFtVmlld0xheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Shared/Layout/OESLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExheW91dFxPRVNMYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Shared/Layout/OesLayoutFooter.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExheW91dFxPZXNMYXlvdXRGb290ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Shared/Layout/PageAuthGuard.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExheW91dFxQYWdlQXV0aEd1YXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/GenericDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cR2VuZXJpY0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-vs8cfjxirp
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/Common/ListItem.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21tb25cTGlzdEl0ZW0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-he3vjlxq9j
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/GroupRolesSelectionDialogs/GenericGroupSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xHcm91cFJvbGVzU2VsZWN0aW9uRGlhbG9nc1xHZW5lcmljR3JvdXBTZWxlY3Rpb25EaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-awbu46oka3
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/GroupRolesSelectionDialogs/GenericGroupSelectorDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xHcm91cFJvbGVzU2VsZWN0aW9uRGlhbG9nc1xHZW5lcmljR3JvdXBTZWxlY3RvckRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-fvc43yvp1z
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/TreeViewTemplates/AIItemBankTreeViewTemplate/ItemBankTreeNodeComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xUcmVlVmlld1RlbXBsYXRlc1xBSUl0ZW1CYW5rVHJlZVZpZXdUZW1wbGF0ZVxJdGVtQmFua1RyZWVOb2RlQ29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-0d8lpfg5zh
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/TreeViewTemplates/AIItemBankTreeViewTemplate/ItemBankTreeViewTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xUcmVlVmlld1RlbXBsYXRlc1xBSUl0ZW1CYW5rVHJlZVZpZXdUZW1wbGF0ZVxJdGVtQmFua1RyZWVWaWV3VGVtcGxhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-8ox4od4ysy
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/TreeViewTemplates/GrpcTreeViewTemplate/GrpcTreeViewTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xUcmVlVmlld1RlbXBsYXRlc1xHcnBjVHJlZVZpZXdUZW1wbGF0ZVxHcnBjVHJlZVZpZXdUZW1wbGF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-d3blf7d7pc
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Components/GenericComponents/TreeViewTemplates/GrpcTreeViewTemplate/TreeNodeComponent/TreeNodeComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHZW5lcmljQ29tcG9uZW50c1xUcmVlVmlld1RlbXBsYXRlc1xHcnBjVHJlZVZpZXdUZW1wbGF0ZVxUcmVlTm9kZUNvbXBvbmVudFxUcmVlTm9kZUNvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-6r7yagxq86
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CBTSyncSetting/ViewCBTSyncSettingDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDQlRTeW5jU2V0dGluZ1xWaWV3Q0JUU3luY1NldHRpbmdEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-myes8yws6m
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Common/GenericSelectionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDb21tb25cR2VuZXJpY1NlbGVjdGlvbkRpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-8gyfk2ormx
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/CreateGroupTemplate/CreateTemplateDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDcmVhdGVHcm91cFRlbXBsYXRlXENyZWF0ZVRlbXBsYXRlRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-djo1yc2e0i
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/Paper/PaperSummary/SummaryDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXBlclxQYXBlclN1bW1hcnlcU3VtbWFyeURpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-d5hpq4uue4
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Dialogs/User/UserAccessDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xVc2VyXFVzZXJBY2Nlc3NEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-kvlls4j3di
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/CandidateSchedule/CandidateSchedulePapersList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2FuZGlkYXRlU2NoZWR1bGVcQ2FuZGlkYXRlU2NoZWR1bGVQYXBlcnNMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-qovtabgcst
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/CBTSyncSetting/UpdateCBTSyncSetting.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ0JUU3luY1NldHRpbmdcVXBkYXRlQ0JUU3luY1NldHRpbmcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-t4ol3p601h
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Dashboard/Dashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkXERhc2hib2FyZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-6v8tdhhpaw
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/ItemBank/AddItemBank.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbUJhbmtcQWRkSXRlbUJhbmsucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-mwqkdrb0kv
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Block/CreateNewBlock.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcQmxvY2tcQ3JlYXRlTmV3QmxvY2sucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-a1280v7wb5
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/MainComponent/PaperStepper.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXE1haW5Db21wb25lbnRcUGFwZXJTdGVwcGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-smdu3pni24
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Paper/Main/PaperCreationOrUpdateStepper/ThirdStep/QuestionsSelection/ManualQuestionsSelection.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFwZXJcTWFpblxQYXBlckNyZWF0aW9uT3JVcGRhdGVTdGVwcGVyXFRoaXJkU3RlcFxRdWVzdGlvbnNTZWxlY3Rpb25cTWFudWFsUXVlc3Rpb25zU2VsZWN0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-77qq4rcguh
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/Results/ResultsStatus.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzdWx0c1xSZXN1bHRzU3RhdHVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-8mijzxgb04
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Pages/RuleMatrix/EditRoleTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUnVsZU1hdHJpeFxFZGl0Um9sZVRlbXBsYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-trqc752rc3
+
+[C:/Users/PC-7/source/repos/MKCL Examination System/Examination.OES/OES.Blazor/Shared/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExheW91dFxOYXZNZW51LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-xq954xtyda

@@ -1,0 +1,27 @@
+﻿<MudPaper Class="exam-header-container" Elevation="1">
+    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="exam-header-inline">
+        <MudChip T="string"
+                 Variant="Variant.Outlined"
+                 Color="Color.Secondary"
+                 Icon="@Icons.Material.Filled.Timer"
+                 Class="exam-timer-chip">
+            <MudText Color="Color.Inherit" Class="exam-counters" data-no-convert>
+                00:00:00
+            </MudText>
+        </MudChip>
+        <MudText Typo="Typo.h6" Align="Align.Center" Class="exam-title-inline">
+            @Resource.PaperName
+        </MudText>
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+            <MudText Typo="Typo.subtitle2" Class="exam-timer-text-inline">
+                @Resource.Unanswered: <strong>@Questions.Count</strong> |
+                @Resource.Answered: <strong>0</strong> |
+                @Resource.TotalMarkedForReviewQuestions: <strong>10</strong>
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                           Color="Color.Error"
+                           Size="Size.Large"
+                           OnClick="EndExamPreview" />
+        </MudStack>
+    </MudStack>
+</MudPaper>

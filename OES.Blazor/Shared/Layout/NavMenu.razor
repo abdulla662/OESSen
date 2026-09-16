@@ -1,0 +1,513 @@
+﻿@using OES.Helper.General;
+@using OES.Helper.General.GlobalUserContext;
+@using SharedHelper.RolesNames
+
+<MudPaper Class="m-2" Elevation="0">
+    <MudNavMenu Class="mud-width-full" Color="Color.Info">
+        <MudNavLink class="mt-3" Href="/" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">
+            @Resource.Dashboard
+        </MudNavLink>
+
+        @if (HasAccess(IloRoles))
+        {
+            <MudNavLink class="mt-3" Href="/ILORoots" Icon="@Icons.Material.Outlined.Quiz">
+                @Resource.ILOs
+            </MudNavLink>
+        }
+
+        @if (HasAccess(ItemBankRoles))
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.ItemBanks" Icon="@Icons.Material.Filled.HelpCenter" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                <MudNavLink Class="mt-3" Href="/ItemBankList" Icon="@Icons.Material.Outlined.AccountBalance">
+                    @Resource.ItemBanks
+                </MudNavLink>
+
+                @* @if (GlobalUserContext.HasAIFeaturesAccess)
+                {
+                    <MudNavLink Class="mt-3" Href="/AIItemBankGenerator" Icon="@Icons.Material.Outlined.AutoAwesomeMosaic">
+                        @Resource.AIItemBankGenerator
+                    </MudNavLink>
+                }
+                else
+                {
+                    <MudNavLink Class="mt-3"
+                                Disabled="true"
+                                Icon="@Icons.Material.Filled.AutoAwesomeMosaic"
+                                Style="cursor: default; opacity: 0.6;">
+                        @Resource.AIItemBankGenerator 🔒
+                    </MudNavLink>
+                } *@
+
+            </MudNavGroup>
+        }
+
+        @if (HasAccess(QuestionRoles))
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.Question" Icon="@Icons.Material.Filled.HelpCenter" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                @if (HasAccess(QuestionRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/Questions" Icon="@Icons.Material.Rounded.Quiz">
+                        @Resource.Questions
+                    </MudNavLink>
+
+                    @* @if (GlobalUserContext.HasAIFeaturesAccess)
+                    {
+                        <MudNavLink class="mt-3" Href="/AIQuestionGenerator" Icon="@Icons.Material.Filled.AutoAwesome">
+                            @Resource.AIQuestionGenerator
+                        </MudNavLink>
+                    }
+                    else
+                    {
+                        <MudNavLink Class="mt-3"
+                                    Disabled="true"
+                                    Icon="@Icons.Material.Filled.AutoAwesome"
+                                    Style="cursor: default; opacity: 0.6;">
+                            @Resource.AIQuestionGenerator 🔒
+                        </MudNavLink>
+                    } *@
+                }
+
+                @if (HasAccess(QuestionRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/StandaloneQuestions" Icon="@Icons.Material.Rounded.Star">
+                        @Resource.StandaloneQuestions
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.QuestionFileUpload }))
+                {
+                    <MudNavLink class="mt-3" Href="/UploadFile" Icon="@Icons.Material.Rounded.UploadFile">
+                        @Resource.UploadQuestionFile
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.QuestionExport }))
+                {
+                    <MudNavLink class="mt-3" Href="/ExportFile" Icon="@Icons.Material.Rounded.ImportExport">
+                        @Resource.Export
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.QuestionFileUpload }))
+                {
+                    <MudNavLink class="mt-3" Href="/QuestionDeltaUpload" Icon="@Icons.Material.Rounded.FileUpload">
+                        @Resource.UpdateQuestionDelta
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.QuestionQualityChecker }))
+                {
+                    <MudNavLink class="mt-3" Href="/QuestionsQualityCheck" Icon="@Icons.Material.Rounded.PendingActions">
+                        @Resource.QuestionsQualityCheck
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.QuestionQualityCheckBypass }))
+                {
+                    <MudNavLink class="mt-3" Href="/BypassQuestionsQualityCheck" Icon="@Icons.Material.Filled.Checklist">
+                        @Resource.QuestionsQualityPassingChecklist
+                    </MudNavLink>
+                }
+
+            </MudNavGroup>
+        }
+
+        @if (HasAccess(PaperRoles) || HasAccess(EquationRoles) || HasAccess(BlockRoles) || HasAccess(TransitionProfileRoles) || HasAccess(TransitionLevelRoles))
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.Paper" Icon="@Icons.Material.Filled.DocumentScanner" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.Paperviewer }))
+                {
+                    <MudNavLink class="mt-3" Href="/UserPapers" Icon="@Icons.Material.Outlined.ListAlt">
+                        @Resource.UserPapers
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(EquationRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/EquationTemplateList" Icon="@Icons.Material.Filled.Functions">
+                        @Resource.EquationTemplates
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(BlockRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/BlocksList" Icon="@Icons.Material.Filled.BorderAll">
+                        @Resource.Blocks
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(TransitionProfileRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/TransitionProfiles" Icon="@Icons.Material.Filled.DirectionsTransit">
+                        @Resource.TransitionProfiles
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(TransitionLevelRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/TransitionLevels" Icon="@Icons.Material.Filled.AlignVerticalBottom">
+                        @Resource.TransitionLevels
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.PaperExamSettingstempelate }))
+                {
+                    <MudNavLink class="mt-3" Href="/ExaminationTemplates" Icon="@Icons.Material.Filled.CopyAll">
+                        @Resource.ExaminationTemplates
+                    </MudNavLink>
+                }
+
+            </MudNavGroup>
+        }
+
+        @if (HasAccess(ScheduleRoles) || HasAccess(VenueRoles) || HasAccess(new[] { OesTemplateRoleConstants.ScheduleSecurityTempelate, OesTemplateRoleConstants.ScheduleExamSettingsTempelate }))
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.ExamSchedules" Icon="@Icons.Material.Filled.Schedule" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ScheduleViewer }))
+                {
+                    <MudNavLink class="mt-3" Href="/Schedules" Icon="@Icons.Material.Rounded.ListAlt">
+                        @Resource.Schedules
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(VenueRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/Venues" Icon="@Icons.Material.Filled.Place">
+                        @Resource.Venues
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ScheduleSecurityTempelate }))
+                {
+                    <MudNavLink class="mt-3" Href="/ScheduleSecurityTemplates" Icon="@Icons.Material.Filled.SystemSecurityUpdateGood">
+                        @Resource.ScheduleSecurityTemplates
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ScheduleExamSettingsTempelate }))
+                {
+                    <MudNavLink class="mt-3" Href="/PaperSettingTemplates" Icon="@Icons.Material.Filled.ContentCopy">
+                        @Resource.PaperSettingsTemplates
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ScheduleSync, OesTemplateRoleConstants.ScheduleCbtSyncer, OesTemplateRoleConstants.ScheduleCbtViewer }))
+                {
+                    <MudNavLink class="mt-3" Href="/SyncStatus" Icon="@Icons.Material.Filled.CloudSync">
+                        @Resource.SyncStatusDisplay
+                    </MudNavLink>
+                }
+
+            </MudNavGroup>
+        }
+
+        @if (HasAccess(CandidateRoles))
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.Candidates" Icon="@Icons.Material.Filled.Groups" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.CandidateList }))
+                {
+                    <MudNavLink class="mt-3" Href="/Candidates" Icon="@Icons.Material.Filled.AccountBox">
+                        @Resource.CandidateList
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.CandidateSchedules }))
+                {
+                    <MudNavLink class="mt-3" Href="/CandidateSchedules" Icon="@Icons.Material.Rounded.ListAlt">
+                        @Resource.CandidatesSchedules
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.CandidateResultView }))
+                {
+                    <MudNavLink class="mt-3" Href="/CandidatesResultList" Icon="@Icons.Material.Rounded.TableChart">
+                        @Resource.CandidatesResultList
+                    </MudNavLink>
+                }
+
+                @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.ConvertAll(r => r.Name), [AdminRoles.SuperAdmin]))
+                {
+                    <MudNavLink class="mt-3" Href="/EditSchedulePaperCandidate" Icon="@Icons.Material.Rounded.PendingActions">
+                        @Resource.CandidateExamDetails
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.CandidateExtraTime }))
+                {
+                    <MudNavLink class="mt-3" Href="/AddCandidateExtraTimeList" Icon="@Icons.Material.Filled.MoreTime">
+                        @Resource.CandidateExtraTime
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.CandidateVerificationCodeGenerator }))
+                {
+                    <MudNavLink class="mt-3" Href="/VerificationCodeGenerator" Icon="@Icons.Material.Filled.VerifiedUser">
+                        @Resource.VerificationCodeGenerator
+                    </MudNavLink>
+                }
+
+            </MudNavGroup>
+        }
+
+        @if (GlobalUserContext.SsoUserRoles.Any(r => r.Name == AdminRoles.SuperAdmin || r.Name == AdminRoles.Entity_Admin) || (!GlobalUserContext.SsoUserRoles.Any(r => r.Name == AdminRoles.Entity_Admin) && HasAccess(ResultRoles)))
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.Results" Icon="@Icons.Material.Filled.Assessment" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ResultGenerate }))
+                {
+                    <MudNavLink class="mt-3" Href="/ResultGeneration" Icon="@Icons.Material.Filled.SettingsSuggest">
+                        @Resource.ResultGeneration
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ResultStatus }))
+                {
+                    <MudNavLink class="mt-3" Href="/ResultsStatus" Icon="@Icons.Material.Filled.QueryStats">
+                        @Resource.ResultsStatus
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ResultReviewUnfinished }))
+                {
+                    <MudNavLink class="mt-3" Href="/ReviewUnfinished" Icon="@Icons.Material.Filled.RateReview">
+                        @Resource.ReviewUnfinished
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ResultTrackingLogs }))
+                {
+                    <MudNavLink class="mt-3" Href="/TrackingLogs" Icon="@Icons.Material.Filled.TrackChanges">
+                        @Resource.TrackingLogs
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ResultCandidateResults }))
+                {
+                    <MudNavLink class="mt-3" Href="/CandidateResults" Icon="@Icons.Material.Filled.AssignmentInd">
+                        @Resource.CandidateResults
+                    </MudNavLink>
+                }
+
+            </MudNavGroup>
+        }
+
+        @if (HasAccess(ReportRole))
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.RptNavReports" Icon="@Icons.Material.Filled.BarChart" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ReportGenerator, OesTemplateRoleConstants.ReportGeneratorViewer }))
+                {
+                    <MudNavLink class="mt-3" Href="/reports/item-analysis" Icon="@Icons.Material.Filled.Analytics">
+                        @Resource.RptTitleItemAnalysis
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(new[] { OesTemplateRoleConstants.ReportQuestionIndicator }))
+                {
+                    <MudNavLink Class="mt-3"
+                                Href="/QuestionIndicators"
+                                Icon="@Icons.Material.Filled.AssignmentInd">
+                        @Resource.QuestionIndicators
+                    </MudNavLink>
+                }
+
+                @* <MudNavLink Href="/reports/question-usage" Icon="@Icons.Material.Filled.Quiz">
+                    @Resource.RptTitleQuestionUsage
+                </MudNavLink>
+                <MudNavLink Href="/reports/item-type" Icon="@Icons.Material.Filled.Category">
+                    @Resource.RptTitleItemType
+                </MudNavLink>
+                <MudNavLink Href="/reports/paper-blueprint" Icon="@Icons.Material.Filled.MenuBook">
+                    @Resource.RptTitlePaperBlueprint
+                </MudNavLink>
+                <MudNavLink Href="/reports/condensed-test" Icon="@Icons.Material.Filled.Analytics">
+                    @Resource.RptTitleCondensedTest
+                </MudNavLink>
+                <MudNavLink Href="/reports/test-analysis" Icon="@Icons.Material.Filled.BarChart">
+                    @Resource.RptTitleTestAnalysis
+                </MudNavLink>
+                <MudNavLink Href="/reports/performance-summary" Icon="@Icons.Material.Filled.Assessment">
+                    @Resource.RptTitlePerformanceSummary
+                </MudNavLink>
+                <MudNavLink Href="/reports/response-matrix" Icon="@Icons.Material.Filled.GridOn">
+                    @Resource.RptTitleResponseMatrix
+                </MudNavLink>
+                <MudNavLink Href="/reports/raw-score-results" Icon="@Icons.Material.Filled.Score">
+                    @Resource.RptTitleRawScoreResults
+                </MudNavLink>
+                <MudNavLink Href="/reports/score-distribution" Icon="@Icons.Material.Filled.BarChart">
+                    @Resource.RptTitleScoreDistribution
+                </MudNavLink>
+                <MudNavLink Href="/reports/question-block-activity" Icon="@Icons.Material.Filled.ViewModule">
+                    @Resource.RptTitleQuestionBlockActivity
+                </MudNavLink>
+                <MudNavLink Href="/reports/center-attendance-verification" Icon="@Icons.Material.Filled.FactCheck">
+                    @Resource.CenterAttendanceVerification
+                </MudNavLink>
+                <MudNavLink Href="/reports/centers-allocation-verification" Icon="@Icons.Material.Filled.Verified">
+                    @Resource.CentersAllocationVerification
+                </MudNavLink> *@
+
+            </MudNavGroup>
+        }
+
+        @if (HasAccess(FileManagerRoles))
+        {
+            <MudNavLink class="mt-3" Href="/FileManager" Icon="@Icons.Material.Outlined.FolderOpen">
+                @Resource.FileManager
+            </MudNavLink>
+        }
+
+        <MudDivider Class="my-4" Style="opacity: 1 !important;" />
+
+        @if (HasAccess(QuestionCategoryRoles)
+             || HasAccess(DeltaTypeRoles)
+             || HasAccess(DifficultyProfileRoles)
+             || HasAccess(DifficultyLevelRoles)
+             || HasAccess(LanguageRoles)
+             || HasAccess(MaterialRoles)
+             || HasAccess(MediaConfigurationRoles)
+             || HasAccess(QualityCheckCommitteeRoles)
+             || HasAccess(AutoSyncConfigurationRoles)
+             || HasAccess(SpecialCasesRoles)
+        )
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.Configurations" Icon="@Icons.Material.Filled.SettingsApplications" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                @if (HasAccess(QuestionCategoryRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/QuestionCategory" Icon="@Icons.Material.Rounded.Category">
+                        @Resource.QuestionCategories
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(DeltaTypeRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/DeltaTypeList" Icon="@Icons.Material.Filled.TableView">
+                        @Resource.DeltaTypes
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(DifficultyProfileRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/DifficultyProfile" Icon="@Icons.Material.Rounded.DriveFileRenameOutline">
+                        @Resource.DifficultyProfiles
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(DifficultyLevelRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/DifficultyLevel" Icon="@Icons.Material.Rounded.FilePresent">
+                        @Resource.DifficultyLevels
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(LanguageRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/Language" Icon="@Icons.Material.Rounded.Language">
+                        @Resource.DefinedLanguages
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(MaterialRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/SubjectList" Icon="@Icons.Material.Filled.Subject">
+                        @Resource.DefinedSubjects
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(MediaConfigurationRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/MediaConfiguration" Icon="@Icons.Material.Rounded.PermMedia">
+                        @Resource.MediaConfiguration
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(QualityCheckCommitteeRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/QualityCheckCommittees" Icon="@Icons.Material.Filled.Groups2">
+                        @Resource.QuestionsQualityCheckCommittees
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(AutoSyncConfigurationRoles))
+                {
+                    <MudNavLink Class="mt-3" Href="/CBTSyncSetting" Icon="@Icons.Material.Filled.Sync">
+                        @Resource.AutoSyncConfiguration
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(SpecialCasesRoles))
+                {
+                    <MudNavLink Class="mt-3" Href="/Disabilities" Icon="@Icons.Material.Filled.Groups2">
+                        @Resource.Disabilities
+                    </MudNavLink>
+                }
+
+            </MudNavGroup>
+        }
+
+        @if (HasAccess(BaseAdminRoles))
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.Authentication" Icon="@Icons.Material.Filled.AdminPanelSettings" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                @if (HasAccess(new[] { AdminRoles.Admin, AdminRoles.SuperAdmin, AdminRoles.Entity_Admin, AdminRoles.SyncRole }))
+                {
+                    <MudNavLink class="mt-3" Href="/AppUserList" Icon="@Icons.Material.Filled.SupervisorAccount">
+                        @Resource.SyncUsers
+                    </MudNavLink>
+                }
+
+                @if (HasAccess(BaseAdminRoles))
+                {
+                    <MudNavLink class="mt-3" Href="/AllGroupsList" Icon="@Icons.Material.Outlined.Groups">
+                        @Resource.Groups
+                    </MudNavLink>
+
+                    @* <MudNavLink class="mt-3" Href="/GroupWizardList" Icon="@Icons.Material.Filled.AutoAwesome">
+                        @Resource.GroupWizard
+                    </MudNavLink> *@
+
+                    @if (GlobalUserContext.SsoUserRoles.Any(r => r.Name == AdminRoles.SuperAdmin))
+                    {
+                        <MudNavLink class="mt-3" Href="/AssignRoleToPage" Icon="@Icons.Material.Filled.AssignmentReturned">
+                            @Resource.RoleAndPage
+                        </MudNavLink>
+                    }
+                }
+
+            </MudNavGroup>
+        }
+
+        @if (HasAccess(BaseAdminRoles) || HasAccess(AuditLogsRoles))
+        {
+            <MudNavGroup Class="mt-3" Title="@Resource.Security" Icon="@Icons.Material.Filled.Shield" Expanded="false" ExpandIcon="@Icons.Material.Filled.ArrowDropDown">
+
+                @if (HasAccess(BaseAdminRoles))
+                {
+                    <MudNavLink class="mt-3" Href="@(SsoUrl)" Icon="@Icons.Material.Outlined.Security">
+                        @Resource.SecurityManagement
+                    </MudNavLink>
+                }
+
+                <MudNavLink class="mt-3" Href="/AuditLogs" Icon="@Icons.Material.Rounded.ListAlt">
+                    @Resource.AuditLogs
+                </MudNavLink>
+                 
+                @* @if (GlobalUserContext.OesUserRoles.Any(r => r.Name == AdminRoles.SuperAdmin || r.Name == AdminRoles.Entity_Admin))
+                {
+                    <MudNavLink class="mt-3" Href="/QuestionsAdvancedFilter" Icon="@Icons.Material.Filled.FilterAlt">
+                        @Resource.QuestionFilter
+                    </MudNavLink>
+                } *@
+                
+            </MudNavGroup>
+        }
+
+    </MudNavMenu>
+</MudPaper>

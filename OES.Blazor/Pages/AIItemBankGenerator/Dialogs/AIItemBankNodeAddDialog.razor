@@ -1,0 +1,179 @@
+@using MudBlazor
+@using OES.Helper.Dtos.ItemBankLevel
+@using OES.Helper.ResourceFiles
+@using OES.Helper.Enums
+
+<MudDialog Class="rounded-lg">
+    <TitleContent>
+        <div class="d-flex align-center justify-space-between w-100">
+            <div class="d-flex align-center gap-2">                
+                <MudIcon Icon="@Icons.Material.Filled.AddCircle"
+                         Color="Color.Primary"
+                         Size="Size.Medium" />
+                <MudText Typo="Typo.h6" Color="Color.Primary" Class="fw-bold">
+                    @Resource.AddChildNode
+                </MudText>
+            </div>
+            <MudIconButton Icon="@Icons.Material.Filled.GroupAdd"
+                           Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           Size="Size.Medium"
+                           OnClick="OpenGroupDialog" />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="_isValid" Class="pt-2">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="6">
+                    <MudTextField T="string"
+                                  Label="@Resource.Name"
+                                  @bind-Value="NodeModel.Name"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Title"
+                                  Required="true"
+                                  RequiredError="@Resource.NameIsRequired" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField T="string"
+                                  Label="@Resource.Code"
+                                  @bind-Value="NodeModel.Code"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Code"
+                                  Required="true"
+                                  RequiredError="@Resource.CodeIsRequired" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField T="string"
+                                  Label="@Resource.Description"
+                                  @bind-Value="NodeModel.Description"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Description"
+                                  Lines="3" />
+                </MudItem>
+                <MudItem xs="12" Class="d-flex align-center">
+                    <MudSwitch @bind-Value="NodeModel.IsActive"
+                               Label="@Resource.IsActive"
+                               Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12">
+                    @if (IsLevelPredefined)
+                    {
+                        <MudTextField T="string"
+                                      Label="@Resource.Level"
+                                      Value="@NodeModel.Level"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Layers"
+                                      Disabled="true" />
+                    }
+                    else if (ItemBankLevelsCreation == ItemBankLevelsCreation.UseExisting)
+                    {
+                        <MudAutocomplete T="ItemLevelsDto"
+                                         Label="@Resource.Level"
+                                         SearchFunc="SearchExistingLevelsAsync"
+                                         ValueChanged="OnExistingLevelSelected"
+                                         Variant="Variant.Outlined"
+                                         Margin="Margin.Dense"
+                                         ToStringFunc="x => x?.Name"
+                                         Clearable="true"
+                                         Required="true"
+                                         RequiredError="@Resource.LevelIsRequiredHere" />
+                    }
+                    else if (ItemBankLevelsCreation == ItemBankLevelsCreation.CreateNew)
+                    {
+                        <MudTextField T="string"
+                                      Label="@Resource.Level"
+                                      @bind-Value="NodeModel.Level"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Layers"
+                                      Required="true"
+                                      RequiredError="@Resource.ThisFieldIsRequired" />
+                    }
+                    else if (ItemBankLevelsCreation == ItemBankLevelsCreation.Mix)
+                    {
+                        <MudGrid Spacing="1">
+
+                            <MudItem xs="12">
+                                <MudRadioGroup T="ItemBankLevelInsertionWay"
+                                               Value="_insertionWay"
+                                               ValueChanged="OnInsertionWayChanged"
+                                               Row="true"
+                                               Dense="true">
+                                    <MudRadio T="ItemBankLevelInsertionWay"
+                                              Value="@(ItemBankLevelInsertionWay.Selected)"
+                                              Color="Color.Primary"
+                                              Dense="true">
+                                        @Resource.SelectExistingLevel
+                                    </MudRadio>
+
+                                    <MudRadio T="ItemBankLevelInsertionWay"
+                                              Value="@(ItemBankLevelInsertionWay.Written)"
+                                              Color="Color.Primary"
+                                              Dense="true">
+                                        @Resource.WriteNewLevel
+                                    </MudRadio>
+                                </MudRadioGroup>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                @if (_insertionWay == ItemBankLevelInsertionWay.Selected)
+                                {
+                                    <MudAutocomplete T="ItemLevelsDto"
+                                                     Label="@Resource.Level"
+                                                     SearchFunc="SearchExistingLevelsAsync"
+                                                     ValueChanged="OnExistingLevelSelected"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"
+                                                     ToStringFunc="x => x?.Name"
+                                                     Clearable="true"
+                                                     Required="true"
+                                                     RequiredError="@Resource.LevelIsRequiredHere" />
+                                }
+                                else
+                                {
+                                    <MudTextField T="string"
+                                                  Label="@Resource.Level"
+                                                  @bind-Value="NodeModel.Level"
+                                                  Variant="Variant.Outlined"
+                                                  Margin="Margin.Dense"
+                                                  Adornment="Adornment.Start"
+                                                  AdornmentIcon="@Icons.Material.Filled.Layers"
+                                                  Required="true"
+                                                  RequiredError="@Resource.ThisFieldIsRequired" />
+                                }
+                            </MudItem>
+
+                        </MudGrid>
+                    }
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <div class="d-flex justify-end gap-2 w-100 pa-2">
+            <MudButton OnClick="Submit"
+                       Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       Size="Size.Small"
+                       EndIcon="@Icons.Material.Filled.AddCircle">
+                @Resource.Add
+            </MudButton>
+            <MudButton OnClick="Cancel"
+                       Color="Color.Secondary"
+                       Variant="Variant.Filled"
+                       Size="Size.Small"
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Cancel
+            </MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>

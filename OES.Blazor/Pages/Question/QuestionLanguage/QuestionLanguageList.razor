@@ -1,0 +1,103 @@
+@using OES.Blazor.Pages.Question.QuestionLanguage.SegmentLanguageComponent
+@using OES.Blazor.Services.Interfaces.Question
+@using OES.Blazor.Services.Interfaces.SubQuestion
+@using OES.Helper.Dtos.Question.ComprehensionQuestionDtos.ComprehensionSubQuestionDtos
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.Questionlanguage
+@using OES.Helper.Dtos.QyestionType
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("QuestionLanguageList")]
+
+@{
+    var _isCurrentQuestionTypeComprehension = Enum.TryParse<Helper.Enums.QuestionType>(QuestionType?.ToString(), out var questionType) && questionType == Helper.Enums.QuestionType.Comprehension;
+    var _isCurrentQuestionTypeSegment = questionType == Helper.Enums.QuestionType.Segment;
+}
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    @if (_isCurrentQuestionTypeSegment)
+    {
+        <SegmentLanguageListComponent @key="@($"{CreatedQuestionMetaDataId}_{_questionLanguageVariantsListKey}")"
+                                      SegmentsChanged="@OnSegmentsChanged"
+                                      CreatedQuestionMetaDataId="@CreatedQuestionMetaDataId"
+                                      QuestionType="@QuestionType"
+                                      RootQuestionCode="@RootQuestionCode"
+                                      MainQuestionLanguageId="@_mainQuestionLanguageId"
+                                      MainQuestionLanguageIdChanged="@OnMainQuestionLanguageIdChanged" />
+    }
+    else
+    {
+        <!--Question Section-->
+        <MudPaper Class="pa-4 mb-4" Elevation="3">
+            <div class="text-center mb-3">
+                @if (_isCurrentQuestionTypeComprehension)
+                {
+                    <MudText Typo="Typo.h6" Color="Color.Surface">@Resource.AddMainComprehensionLanguage</MudText>
+                }
+            </div>
+            <ListItem T="QuestionLanguageDTO"
+                      SearchPanelVisible="false"
+                      @key="_questionLanguageVariantsListKey"
+                      Caption="@Resource.QuestionLanguage"
+                      CaptionIcon="@Icons.Material.Rounded.Quiz"
+                      DisplayColumns='["Body", "LanguageName", "HasChild"]'
+                      EndpointServerice="GetAllQuestionLanguageVariantsAsync"
+                      Create_Btn="true"
+                      CreateClick_fun="CreateQuestionAsync"
+                      ShowActionsColumn="true">
+                <ButtonChildContent Context="value">
+                    <MudTooltip Text="@Resource.Edit">
+                        <MudFab Color="Color.Secondary"
+                                Class=@($"label-{nameof(Resource.Edit)}")
+                                EndIcon="@Icons.Material.Filled.Edit"
+                                Size="Size.Small"
+                                OnClick='async () => await UpdateQuestionAsync((value as QuestionLanguageDTO).Id)' />
+                    </MudTooltip>
+                    @if (_questionLanguageVariantDeletionButtonShown)
+                    {
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    EndIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    Class=@($"label-{nameof(Resource.Delete)}")
+                                    OnClick='async () => await DeleteQuestionAsync((value as QuestionLanguageDTO).Id)'
+                                    Disabled='(value as QuestionLanguageDTO).HasChild' />
+                        </MudTooltip>
+                    }
+                </ButtonChildContent>
+            </ListItem>
+        </MudPaper>
+    }
+
+    @if (_isCurrentQuestionTypeComprehension)
+    {
+        <div class="d-flex justify-content-center align-items-center my-5">
+            <MudDivider Class="w-100" />
+            <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" Color="Color.Primary" Size="Size.Large" Class="mx-3" />
+            <MudDivider Class="w-100" />
+        </div>
+
+        <!-- Sub-Question Section -->
+        <MudPaper Class="pa-4" Elevation="3">
+            <div class="text-center mb-3">
+                <MudText Typo="Typo.h6" Color="Color.Surface">@Resource.AddComprehensionSubQuestions</MudText>
+            </div>
+            <ListItem T="PaginatedListSubQuestionDto"
+                      @key="_subQuestionLanguageVariantsListKey"
+                      SearchPanelVisible="false"
+                      Caption="@Resource.SubQuestion"
+                      CaptionIcon="@Icons.Material.Rounded.Quiz"
+                      EndpointServerice="GetAllSubQuestionLanguageVariantsGroupsAsync"
+                      DisplayColumns='["Body", "LanguageNames", "NumberOfLanguages", "Delta"]'
+                      Create_Btn="_subQuestionLanguageVariantsListCreationButtonShown"
+                      CreateClick_fun="CreateSubQuestionAsync"
+                      CRUD_Add_Btn="true"
+                      AddClick_fun="AddSubQuestionLanguageVariantAsync"
+                      CRUD_Edit_Btn="true"
+                      EditClick_fun="UpdateSubQuestionAsync"
+                      CRUD_Delete_Btn="true"
+                      DeleteClick_fun="DeleteSubQuestionAsync" />
+        </MudPaper>
+    }
+</MudContainer>

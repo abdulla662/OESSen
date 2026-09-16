@@ -1,0 +1,93 @@
+@using OES.Blazor.InternalHelperTypes.General
+@using OES.Helper.ResourceFiles
+
+<div class="@($"{ScreenSizeClass}")" data-no-convert>
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="pa-1 d-flex flex-column">
+        <MudGrid Spacing="0" Class="sun-editor-editable mb-6 p-0">
+            @if (!string.IsNullOrWhiteSpace(Model.Instructions))
+            {
+                <MudItem xs="@ColumnsCount" data-no-convert>
+                    <MudAlert Severity="Severity.Info" Elevation="0" Dense Class="mb-3 instructions-alert-row">
+                        <MudText Typo="Typo.subtitle1" Align="Align.Start">@(new MarkupString(Model.Instructions))</MudText>
+                    </MudAlert>
+                </MudItem>
+            }
+
+            <MudItem xs="@ColumnsCount" data-no-convert>
+                <MudText Typo="Typo.inherit" Align="Align.Start" Class="mb-0">
+                    @(new MarkupString(Model.Body))
+                </MudText>
+            </MudItem>
+            
+            @if (Model?.HasAttachment ?? false)
+            {
+                <MediaAttachment Url="@(Model.AttachmentFileUrl)" />
+            }
+        </MudGrid>
+
+        <MudStack Spacing="0" Class="flex-grow-1">
+            <MudStack AlignItems="AlignItems.Center" Spacing="4" Class="mb-6">
+                <MudText Typo="Typo.h4" Align="Align.Center">
+                    @if (System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en")
+                    {
+                        <span style="color:#4285F4;">W</span><span style="color:#EA4335;">e</span><span style="color:#FBBC05;">b</span><span style="color:#4285F4;">S</span><span style="color:#34A853;">e</span><span style="color:#EA4335;">a</span><span style="color:#4285F4;">r</span><span style="color:#34A853;">c</span><span style="color:#FBBC05;">h</span>
+                    }
+                    else
+                    {
+                        <span style="color:#4285F4;">الـ</span><span style="color:#EA4335">بحث</span>
+                        <span style="color:#FBBC05;">عبر</span>
+                        <span style="color:#4285F4;">الإنـ</span><span style="color:#34A853;">تر</span><span style="color:#EA4335;">نت</span>
+                    }
+                </MudText>
+
+                <MudStack Row="true" AlignItems="AlignItems.Center" Class="w-100 mx-auto">
+                    <MudTextField @bind-Value="_keyword"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Disabled="true"
+                                  Class="flex-grow-1 bg-white custom-pill-shape" />
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Default"
+                               Disabled="true"
+                               Class="px-8">
+                        @Resource.Search
+                    </MudButton>
+                </MudStack>
+            </MudStack>
+
+            @if (_results.Any())
+            {
+                <MudStack Spacing="2" Class="w-100 mt-2 mx-auto">
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        @string.Format(Resource.AboutResults, _results.Count)
+                    </MudText>
+
+                    @foreach (var result in _results)
+                    {
+                        var isCorrect = result.IsCorrect && ShowCorrectAnswer;
+                        
+                        <MudStack Row="true" AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Class="pb-2 w-100 border-bottom">
+                            <MudStack Spacing="0" Class="flex-grow-1">
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                    @result.Url
+                                </MudText>
+                                <MudText Typo="Typo.h6" Color="Color.Primary" Class="cursor-pointer font-weight-medium">
+                                    @result.Title
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                    @result.Description
+                                </MudText>
+                            </MudStack>
+
+                            <MudIconButton Icon="@(isCorrect ? Icons.Material.Filled.Star : Icons.Material.Outlined.StarBorder)"
+                                           Size="Size.Medium"
+                                           Disabled="true"
+                                           Class="@(isCorrect ? "bookmark-icon-active" : "bookmark-icon")" />
+                        </MudStack>
+                    }
+                </MudStack>
+            }
+        </MudStack>
+    </MudContainer>
+</div>

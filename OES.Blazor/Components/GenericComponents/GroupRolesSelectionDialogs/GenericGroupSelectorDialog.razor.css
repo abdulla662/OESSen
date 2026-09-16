@@ -1,0 +1,19 @@
+::deep .bg-grey {
+    background-color: var(--mud-palette-background-grey);
+}
+
+::deep .fw-600 {
+    font-weight: 600;
+}
+
+::deep .fw-500 {
+    font-weight: 500;
+}
+
+::deep .opacity-half {
+    opacity: 0.5;
+}
+
+::deep .border-dashed-primary {
+    border: 2px dashed var(--mud-palette-primary);
+}

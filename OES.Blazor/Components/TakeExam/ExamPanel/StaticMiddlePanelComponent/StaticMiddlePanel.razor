@@ -1,0 +1,133 @@
+@using OES.Blazor.Pages.Question.QuestionTypes
+@using OES.Blazor.Pages.Question.QuestionTypes.ComprehensionComponents
+@using OES.Blazor.Pages.QuestionLayout.EssayLayout
+@using OES.Blazor.Pages.QuestionLayout.FillInTheBlank
+@using OES.Blazor.Pages.QuestionLayout.EmailQuestion
+@using OES.Blazor.Pages.QuestionLayout.HotSpot
+@using OES.Blazor.Pages.QuestionLayout.McqLayouts
+@using OES.Blazor.Pages.QuestionLayout.MultiCorrectAnswerLayout
+@using OES.Blazor.Pages.QuestionLayout.OrderingLayout
+@using OES.Blazor.Components.Common.OrderingComponent
+@using OES.Blazor.Pages.QuestionLayout.PaperAnsweredQuestion
+@using OES.Blazor.Pages.QuestionLayout.SegmentLayouts
+@using OES.Blazor.Pages.QuestionLayout.TrueAndFalseLayout
+@using OES.Blazor.Pages.QuestionLayout.WebSearchLayout
+@using OES.Blazor.Pages.QuestionLayout.comprehensionLayouts
+@using OES.Helper
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Blazor.Pages.QuestionLayout.MatchingPairsLayout
+@using OES.Blazor.Pages.QuestionLayout.FileUploadResponseLayout
+@using OES.Blazor.Pages.QuestionLayout.WebRegistrationLayout
+@using OES.Blazor.Pages.QuestionLayout.MatchingPairsWithDragDropLayout
+
+
+<div class="pa-2 question-font-container" tabindex="0">
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false">
+        @if (!IsInitialized)
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        }
+        else if (Model != null)
+        {
+            <!-- Question Layout -->
+            <MudPaper Class="pa-4 mt-3" Elevation="2">
+                @if (Model?.QuestionDetails is { Count: > 0 })
+                {
+                    @foreach (var qd in Model.QuestionDetails)
+                    {
+                        var dto = new QuestionDataDto
+                        {
+                            Id = qd.Id,
+                            Body = qd.Body,
+                            ModelAnswer = qd.ModelAnswer,
+                            Instructions = qd.Instruction,
+                            LanguageId = qd.LanguageId,
+                            QuestionMetadataId = qd.QuestionMetadataId,
+                            Choices = qd.QuestionsChoices,
+                            HasShuffled = qd.HasShuffled,
+                            HasAttachment = qd.HasAttachment,
+                            AttachmentFileName = qd.AttachmentFileName
+                        };
+
+                        if (QuestionType == nameof(Helper.Enums.QuestionType.Essay))
+                        {
+                            <EssayLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.FillInTheBlank))
+                        {
+                            <FillInTheBlank ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.TrueAndFalse))
+                        {
+                            <TrueAndFalseLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.Comprehension))
+                        {
+                            <ComprehensionLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.MCQ))
+                        {
+                            <Mcqlayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.MultipleCorrectAnswers))
+                        {
+                            <MultiCorrectAnswer ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.Segment))
+                        {
+                            <SegmentLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.SegmentWithAudioAnswer))
+                        {
+                            <SegmentLayoutWithAudioAnswer ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.SegmentWithVideoAnswer))
+                        {
+                            <SegmentLayoutWithVideoAnswer ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.HotSpotWithClicks))
+                        {
+                            <HotSpotWithClicksLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.HotSpotWithDragDrop))
+                        {
+                            <HotSpotWithDragAndDropLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.MatchingPairs))
+                        {
+                            <MatchingPairsLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.Ordering))
+                        {
+                            <OrderingQuestion ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.MatchingPairsWithDragDrop))
+                        {
+                            <MatchingPairsWithDragDropLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.PaperAnsweredQuestion))
+                        {
+                            <PaperAnsweredQuestionLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.FileUploadResponse))
+                        {
+                            <FileUploadResponseLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.WebSearch))
+                        {
+                            <WebSearchLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.Email))
+                        {
+                            <EmailQuestionLayout ShowCorrectAnswer=false ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                        else if (QuestionType == nameof(Helper.Enums.QuestionType.WebRegistration))
+                        {
+                            <WebRegistrationLayout IsReadOnly="true" ShowCorrectAnswer="false" ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                        }
+                    }
+                }
+            </MudPaper>
+        }
+    </MudContainer>
+</div>

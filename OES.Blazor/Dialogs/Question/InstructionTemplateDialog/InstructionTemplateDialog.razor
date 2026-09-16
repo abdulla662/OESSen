@@ -1,0 +1,37 @@
+﻿@using OES.Blazor.Services.Interfaces.Question
+@using OES.Helper.Dtos.Question.QuestionInstructionDto
+@using OES.Blazor.Components.Common
+@using OES.Helper.ResourceFiles
+@using System.Net
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Primary" Class="mt-5">
+            @Resource.InstructionsTemplate
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <ListItem T="QuestionInstructionTemplateDto"
+                  FilterObject="false"
+                  @key="listChangingKey"
+                  Caption="@Resource.InstructionsTemplate"
+                  CaptionIcon="@Icons.Material.Filled.Article"
+                  EndpointServerice="BlazInstructionTemplateService.GetPaginatedInstructionTemplatesAsync"
+                  DisplayColumns='[nameof(QuestionInstructionTemplateDto.Name)]'
+                  Hide_DescriptionSearch="true"
+                  CRUD_Delete_Btn="true"
+                  DeleteClick_fun="DeleteInstructionTemplateAsync"
+                  SearchPanelVisible="false">
+            <ButtonChildContent Context="value">
+                <MudTooltip Text="@Resource.SelectTemplate">
+                    <MudFab Color="Color.Primary"
+                            EndIcon="@Icons.Material.Filled.SelectAll"
+                            Class=@($"label-{nameof(Resource.SelectTemplate)}")
+                            Size="Size.Small"
+                            @onclick='() => SelectInstructionTemplate((QuestionInstructionTemplateDto)value)' />
+                </MudTooltip>
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+</MudDialog>

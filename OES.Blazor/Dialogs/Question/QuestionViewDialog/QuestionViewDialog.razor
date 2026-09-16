@@ -1,0 +1,392 @@
+@using OES.Blazor.Components.QualityChecker.Comments
+@using OES.Blazor.Components.QualityChecker.Versions
+@using OES.Blazor.Pages.QuestionLayout.EssayLayout
+@using OES.Blazor.Pages.QuestionLayout.FileUploadResponseLayout
+@using OES.Blazor.Pages.QuestionLayout.FillInTheBlank
+@using OES.Blazor.Pages.QuestionLayout.EmailQuestion
+@using OES.Blazor.Pages.QuestionLayout.HotSpot
+@using OES.Blazor.Pages.QuestionLayout.MatchingPairsLayout
+@using OES.Blazor.Pages.QuestionLayout.MatchingPairsWithDragDropLayout
+@using OES.Blazor.Pages.QuestionLayout.McqLayouts
+@using OES.Blazor.Pages.QuestionLayout.MultiCorrectAnswerLayout
+@using OES.Blazor.Pages.QuestionLayout.PaperAnsweredQuestion
+@using OES.Blazor.Pages.QuestionLayout.SegmentLayouts
+@using OES.Blazor.Pages.QuestionLayout.TrueAndFalseLayout
+@using OES.Blazor.Pages.QuestionLayout.WebSearchLayout
+@using OES.Blazor.Pages.QuestionLayout.WebRegistrationLayout
+@using OES.Blazor.Pages.QuestionLayout.comprehensionLayouts
+@using OES.Blazor.Pages.QuestionLayout.OrderingLayout
+@using OES.Helper
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Enums
+@using OES.Helper.General
+
+@if (IsInitialized)
+{
+    <MudDialog>
+        <TitleContent>
+            <div class="d-flex align-center justify-start" dir="@(RightToLeft ? "rtl" : "ltr")">
+                <MudIcon Icon="@Icons.Material.Filled.ViewTimeline" Class="mr-2" Color="Color.Primary" Size="Size.Small" />
+                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="font-weight-bold">@Resource.QuestionDetails</MudText>
+            </div>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid Spacing="2" Class="animate__animated animate__fadeIn">
+                <MudItem xs="12">
+                    <MudPaper Class="pa-3" Elevation="1">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-2 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" Class="mr-1" />
+                            @Resource.BasicInformation
+                        </MudText>
+
+                        <MudGrid Spacing="1">
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Numbers" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Code:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2" data-no-convert>@Model.Code</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Attribution" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Author:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.Author</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.MenuBook" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Subject:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.SubjectName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.ContactSupport" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Type:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        @(Model.QuestionTypeName.ToLocalizedString<QuestionType>())
+                                    </MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Category" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Category:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.QuestionCategoryName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.ProfileName:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.ProfileName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Stairs" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.DifficultyLevel:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.DifficultyLevel</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                    <MudIcon Icon="@Icons.Material.Filled.ChangeHistory" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.DeltaValue:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">@FormatDeltaValue(Model?.DeltaValue)</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Pageview" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.ILO:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.IloName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.AccountBalance" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.ItemBank:</strong>
+                                    </MudText>
+                                    <MudTooltip Text="@Resource.ClickToViewItemBankTree" Placement="Placement.Top">
+                                        <MudChip T="string"
+                                                 Color="Color.Primary"
+                                                 Variant="Variant.Outlined"
+                                                 Size="Size.Small"
+                                                 Icon="@Icons.Material.Filled.AccountTree"
+                                                 OnClick="OpenItemBankTreeViewDialogAsync"
+                                                 Style="cursor:pointer;">
+                                            @Model.ItemBankName
+                                        </MudChip>
+                                    </MudTooltip>
+                                </MudStack>
+                            </MudItem>
+                            @* <MudItem xs="12" sm="6" md="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                    <MudIcon Icon="@Icons.Material.Filled.AlarmOn" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.MaximumAnswerTime:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">@Model.MaximumAnswerTime @Resource.Mins</MudText>
+                                </MudStack>
+                            </MudItem> *@
+                            <MudItem xs="12" sm="6" md="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                    <MudIcon Icon="@Icons.Material.Filled.QuestionMark" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.QuestionExhaustionCount:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">
+                                        @(Model.QuestionsExhaustionCount == MiscConstants.CommonQuestionExhaustionCount ? string.Empty : (Model.QuestionsExhaustionCount > 0 ? Model.QuestionsExhaustionCount.ToString() : Resource.NotAvailable))
+                                    </MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Language" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.LanguagesNames:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@(string.IsNullOrWhiteSpace(LanguagesNames) ? Resource.NotAvailable : LanguagesNames)</MudText>
+                                </MudStack>
+                            </MudItem>
+
+                            @if (HasMaxWords)
+                            {
+                                <MudItem xs="12" sm="6" md="6">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                        <MudIcon Icon="@Icons.Material.Filled.TextFields" Color="Color.Primary" />
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                            <strong>@Resource.MaximumNumberOfWords:</strong>
+                                        </MudText>
+                                        <MudText Typo="Typo.body2" Class="ml-2">@Model.MaxWords</MudText>
+                                    </MudStack>
+                                </MudItem>
+                            }
+
+                            @if (IsSegmentQuestion && Model?.MaxRecordingTimeInSeconds > 0)
+                            {
+                                <MudItem xs="12" sm="6" md="6">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                        <MudIcon Icon="@Icons.Material.Filled.Timer" Color="Color.Primary" />
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                            <strong>@Resource.MaxRecordingTime:</strong>
+                                        </MudText>
+                                        <MudText Typo="Typo.body2" Class="ml-2">@Model.MaxRecordingTimeInSeconds @Resource.Seconds</MudText>
+                                    </MudStack>
+                                </MudItem>
+                            }
+
+                            @if (Model?.QuestionTypeId == (long)OES.Helper.Enums.QuestionType.FileUploadResponse && Model.FileUploadSettings != null)
+                            {
+                                <MudItem xs="12">
+                                    <MudPaper Class="pa-2 mt-2" Elevation="1" Style="border-radius:8px;">
+                                        <MudText Typo="Typo.body2" Class="mb-2 font-weight-bold" Color="Color.Primary">
+                                            <MudIcon Icon="@Icons.Material.Filled.SettingsApplications" Size="Size.Small" Class="mr-1" />
+                                            @Resource.FileUploadSettings
+                                        </MudText>
+
+                                        <MudGrid Spacing="1">
+                                            <MudItem xs="12" sm="6">
+                                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                                    <MudIcon Icon="@Icons.Material.Filled.FileUpload" Color="Color.Primary" Size="Size.Small" />
+                                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                                        <strong>@Resource.UploadedFilesCount:</strong>
+                                                    </MudText>
+                                                    <MudText Typo="Typo.body2">@Model.FileUploadSettings.UploadedFilesCount</MudText>
+                                                </MudStack>
+                                            </MudItem>
+
+                                            <MudItem xs="12" sm="6">
+                                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                                    <MudIcon Icon="@Icons.Material.Filled.AspectRatio" Color="Color.Primary" Size="Size.Small" />
+                                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                                        <strong>@Resource.SingleFileMaxSize:</strong>
+                                                    </MudText>
+                                                    <MudText Typo="Typo.body2">@Model.FileUploadSettings.SingleFileMaxSizeInMB</MudText>
+                                                </MudStack>
+                                            </MudItem>
+
+                                            <MudItem xs="12" sm="6">
+                                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Crop75" Color="Color.Primary" Size="Size.Small" />
+                                                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                                        <strong>@Resource.ShowAnswerTextArea:</strong>
+                                                    </MudText>
+                                                    <MudText Typo="Typo.body2">@(Model.FileUploadSettings.ShowAnswerTextArea? Resource.Yes: Resource.No)</MudText>
+                                                </MudStack>
+                                            </MudItem>
+
+                                            <MudItem xs="12" sm="6">
+                                                <MudStack Spacing="1">
+                                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Extension" Color="Color.Primary" Size="Size.Small" />
+                                                        <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                                            <strong>@Resource.SupportedFileExtensions:</strong>
+                                                        </MudText>
+                                                    </MudStack>
+                                                    <div class="d-flex flex-wrap gap-1">
+                                                        @if (DeserializedExtensions.Any())
+                                                        {
+                                                            @foreach (var ext in DeserializedExtensions)
+                                                            {
+                                                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small">@ext</MudChip>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <MudText Typo="Typo.body2" Color="Color.Secondary">N/A</MudText>
+                                                        }
+                                                    </div>
+                                                </MudStack>
+                                            </MudItem>
+                                        </MudGrid>
+                                    </MudPaper>
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudPaper Class="pa-3 question-details-content" Elevation="1" Style="min-height:200px;">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-2 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.SpaceDashboard" Size="Size.Small" Class="mr-1" />
+                            @Resource.QuestionLayout
+                        </MudText>
+
+                        @if (Model?.QuestionDetails is { Count: > 0 })
+                        {
+                            <MudGrid Spacing="2">
+                                @foreach (var qd in Model.QuestionDetails)
+                                {
+                                    var dto = new QuestionDataDto
+                                    {
+                                        Id = qd.Id,
+                                        Body = qd.Body,
+                                        ModelAnswer = qd.ModelAnswer,
+                                        Instructions = qd.Instruction,
+                                        LanguageId = qd.LanguageId,
+                                        QuestionMetadataId = qd.QuestionMetadataId,
+                                        Choices = qd.QuestionsChoices,
+                                        HasShuffled = qd.HasShuffled,
+                                        HasAttachment = qd.HasAttachment,
+                                        AttachmentFileName = qd.AttachmentFileName,
+                                        MaxWords = qd.MaxWords,
+                                        MaxRecordingTimeInSeconds = qd.MaxRecordingTimeInSeconds,
+                                    };
+
+                                    <MudItem xs="12" Class="mt-2">
+                                        @if (QuestionType == nameof(Helper.Enums.QuestionType.Essay))
+                                        {
+                                            <EssayLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.FileUploadResponse))
+                                        {
+                                            <FileUploadResponseLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.HotSpotWithDragDrop))
+                                        {
+                                            <HotSpotWithDragAndDropLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.HotSpotWithClicks))
+                                        {
+                                            <HotSpotWithClicksLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.Segment))
+                                        {
+                                            <SegmentLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.SegmentWithAudioAnswer))
+                                        {
+                                            <SegmentLayoutWithAudioAnswer ShowCorrectAnswer ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.SegmentWithVideoAnswer))
+                                        {
+                                            <SegmentLayoutWithVideoAnswer ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.FillInTheBlank))
+                                        {
+                                            <FillInTheBlank ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.TrueAndFalse))
+                                        {
+                                            <TrueAndFalseLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.Comprehension))
+                                        {
+                                            <ComprehensionLayout ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.MCQ))
+                                        {
+                                            <Mcqlayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.MultipleCorrectAnswers))
+                                        {
+                                            <MultiCorrectAnswer ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.MatchingPairs))
+                                        {
+                                            <MatchingPairsLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.Ordering))
+                                        {
+                                            <OrderingQuestionLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.PaperAnsweredQuestion))
+                                        {
+                                            <PaperAnsweredQuestionLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.WebSearch))
+                                        {
+                                            <WebSearchLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.Email))
+                                        {
+                                            <EmailQuestionLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.WebRegistration))
+                                        {
+                                            <WebRegistrationLayout IsReadOnly="true" ShowCorrectAnswer="true" ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionType == nameof(Helper.Enums.QuestionType.MatchingPairsWithDragDrop))
+                                        {
+                                            <MatchingPairsWithDragDropLayout ShowCorrectAnswer=true ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        }
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+            <QuestionLogs QuestionMetaDataId="@QuestionMetaDataId" />
+            <QuestionVersions QuestionMetaDataId="@QuestionMetaDataId" />
+        </DialogContent>
+    </MudDialog>
+}
+else
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}

@@ -1,0 +1,20 @@
+@page "/ExamScreen"
+
+@attribute [DynamicAuthorizeAttribute("PaperFormExamScreen")]
+
+@using OES.Blazor.Components.TakeExam.ExamPanel
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Enums
+
+@layout ExamViewLayout
+
+<div class="mud-dialog-fullscreen">
+    @if (_loading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+    }
+    else
+    {
+        <ExamScreenContainer Questions="@_questions" ViewStatus="ExamViewStatus.Dynamic" />
+    }
+</div>

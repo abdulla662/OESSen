@@ -1,0 +1,268 @@
+﻿
+<MudDialog>
+    <DialogContent>
+        <MudTabs Elevation="4" Rounded="true" Color="Color.Primary">
+            <!-- Overview Tab -->
+            <MudTabPanel Text="Overview" Icon="@Icons.Material.Filled.Dashboard">
+                <MudGrid Spacing="3" Class="pa-4">
+                    <!-- Center Information Card -->
+                    <MudItem xs="12" md="6">
+                        <MudCard Elevation="2">
+                            <MudCardContent>
+                                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-3">
+                                    <MudIcon Icon="@Icons.Material.Filled.Domain" Class="mr-2" />
+                                    Center Information
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Code:</strong> @CenterStatus.CenterCode
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Name:</strong> @CenterStatus.CenterName
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Region:</strong> @CenterStatus.Region
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Status:</strong>
+                                    <MudChip T="string" Size="Size.Small" Color="@GetStatusColor()">
+                                        @CenterStatus.Status.ToString()
+                                    </MudChip>
+                                </MudText>
+                                <MudText Typo="Typo.body1">
+                                    <strong>Last Successful Sync:</strong>
+                                    @CenterStatus.LastSuccessfulSync?.ToString("yyyy-MM-dd HH:mm:ss")
+                                </MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+
+                    <!-- Sync Statistics Card -->
+                    <MudItem xs="12" md="6">
+                        <MudCard Elevation="2">
+                            <MudCardContent>
+                                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-3">
+                                    <MudIcon Icon="@Icons.Material.Filled.Analytics" Class="mr-2" />
+                                    Sync Statistics
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Expected Examinees:</strong> @CenterStatus.ExpectedExaminees
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Imported to Central:</strong> @CenterStatus.ImportedToCentral
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Pushed to Server:</strong> @CenterStatus.PushedToServer
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">
+                                    <strong>Acknowledged:</strong> @CenterStatus.AckReceived
+                                </MudText>
+                                <MudProgressLinear Value="@GetCompletionPercentage()"
+                                                   Color="@GetProgressColor()"
+                                                   Size="Size.Medium"
+                                                   Class="mb-2" />
+                                <MudText Typo="Typo.body2" Align="Align.Center">
+                                    Completion: @GetCompletionPercentage().ToString("F1")%
+                                </MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+
+                    <!-- Performance Metrics Card -->
+                    <MudItem xs="12" md="6">
+                        <MudCard Elevation="2">
+                            <MudCardContent>
+                                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-3">
+                                    <MudIcon Icon="@Icons.Material.Filled.Speed" Class="mr-2" />
+                                    Performance Metrics
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Average Latency:</strong> @_mockAverageLatency ms
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Max Latency:</strong> @_mockMaxLatency ms
+                                </MudText>
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Min Latency:</strong> @_mockMinLatency ms
+                                </MudText>
+                                <MudText Typo="Typo.body1">
+                                    <strong>Success Rate:</strong> @_mockSuccessRate%
+                                </MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+
+                    <!-- Error Information Card -->
+                    <MudItem xs="12" md="6">
+                        <MudCard Elevation="2">
+                            <MudCardContent>
+                                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-3">
+                                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Class="mr-2" />
+                                    Error Information
+                                </MudText>
+                                @if (!string.IsNullOrWhiteSpace(CenterStatus.LastError))
+                                {
+                                    <MudAlert Severity="Severity.Error" Dense="true" Class="mb-2">
+                                        @CenterStatus.LastError
+                                    </MudAlert>
+                                }
+                                else
+                                {
+                                    <MudAlert Severity="Severity.Success" Dense="true" Class="mb-2">
+                                        No errors reported
+                                    </MudAlert>
+                                }
+                                <MudText Typo="Typo.body1" Class="mb-2">
+                                    <strong>Total Errors Today:</strong> @_mockTotalErrors
+                                </MudText>
+                                <MudText Typo="Typo.body1">
+                                    <strong>Retry Attempts:</strong> @_mockRetryAttempts
+                                </MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
+            </MudTabPanel>
+
+            <!-- Examinee List Tab -->
+            <MudTabPanel Text="Examinee List" Icon="@Icons.Material.Filled.People">
+                <MudTable Items="@_mockExaminees"
+                          Hover="true"
+                          Dense="true"
+                          Filter="new Func<ExamineeRecord, bool>(FilterExaminee)"
+                          Class="pa-4">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Examinee Records</MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="_searchExamineeString"
+                                      Placeholder="Search"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium"
+                                      Class="mt-0" />
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Registration ID</MudTh>
+                        <MudTh>National ID</MudTh>
+                        <MudTh>Full Name</MudTh>
+                        <MudTh>Exam Series</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh>Last Updated</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Registration ID">@context.RegistrationId</MudTd>
+                        <MudTd DataLabel="National ID">@context.NationalId</MudTd>
+                        <MudTd DataLabel="Full Name">@context.FullName</MudTd>
+                        <MudTd DataLabel="Exam Series">@context.ExamSeriesCode</MudTd>
+                        <MudTd DataLabel="Status">
+                            <MudChip T="string" Size="Size.Small" Color="@GetExamineeStatusColor(context.Status)">
+                                @context.Status
+                            </MudChip>
+                        </MudTd>
+                        <MudTd DataLabel="Last Updated">
+                            @context.LastUpdated.ToString("HH:mm:ss")
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }" />
+                    </PagerContent>
+                </MudTable>
+            </MudTabPanel>
+
+            <!-- History Tab -->
+            <MudTabPanel Text="History" Icon="@Icons.Material.Filled.History">
+                <MudTable Items="@_mockSyncHistory"
+                          Hover="true"
+                          Dense="true"
+                          Class="pa-4">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Sync History (Last 7 Days)</MudText>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Date</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh>Examinees Processed</MudTh>
+                        <MudTh>Duration</MudTh>
+                        <MudTh>Errors</MudTh>
+                        <MudTh>Success Rate</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Date">@context.Date.ToString("yyyy-MM-dd HH:mm")</MudTd>
+                        <MudTd DataLabel="Status">
+                            <MudChip T="string" Size="Size.Small" Color="@GetHistoryStatusColor(context.Status)">
+                                @context.Status.ToString()
+                            </MudChip>
+                        </MudTd>
+                        <MudTd DataLabel="Examinees Processed">@context.ExamineesProcessed</MudTd>
+                        <MudTd DataLabel="Duration">@context.Duration</MudTd>
+                        <MudTd DataLabel="Errors">
+                            <MudChip T="string" Size="Size.Small" Color="@(context.Errors > 0 ? Color.Error : Color.Success)">
+                                @context.Errors
+                            </MudChip>
+                        </MudTd>
+                        <MudTd DataLabel="Success Rate">
+                            <div class="d-flex align-center">
+                                <MudText>@context.SuccessRate%</MudText>
+                                <MudProgressLinear Value="@context.SuccessRate"
+                                                   Color="@GetSuccessRateColor(context.SuccessRate)"
+                                                   Size="Size.Small"
+                                                   Class="ml-2"
+                                                   Style="width: 80px;" />
+                            </div>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="new int[] { 5, 10, 20 }" />
+                    </PagerContent>
+                </MudTable>
+            </MudTabPanel>
+
+            <!-- Errors & Logs Tab -->
+            <MudTabPanel Text="Errors & Logs" Icon="@Icons.Material.Filled.BugReport">
+                <MudPaper Class="pa-4">
+                    <MudText Typo="Typo.h6" Class="mb-3">Error Log</MudText>
+
+                    @foreach (var log in _mockErrorLogs)
+                    {
+                        <MudPaper Elevation="1" Class="pa-3 mb-2">
+                            <div class="d-flex justify-space-between align-center mb-2">
+                                <MudChip T="string" Size="Size.Small" Color="@GetLogSeverityColor(log.Severity)">
+                                    @log.Severity
+                                </MudChip>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                    @log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")
+                                </MudText>
+                            </div>
+                            <MudText Typo="Typo.body2" Class="mb-1">
+                                <strong>Error Code:</strong> @log.ErrorCode
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                <strong>Message:</strong> @log.Message
+                            </MudText>
+                            @if (!string.IsNullOrWhiteSpace(log.StackTrace))
+                            {
+                                <MudExpansionPanels Class="mt-2">
+                                    <MudExpansionPanel Text="Stack Trace" Dense="true">
+                                        <MudText Typo="Typo.body2" Style="font-family: monospace; font-size: 0.75rem;">
+                                            @log.StackTrace
+                                        </MudText>
+                                    </MudExpansionPanel>
+                                </MudExpansionPanels>
+                            }
+                        </MudPaper>
+                    }
+
+                    @if (!_mockErrorLogs.Any())
+                    {
+                        <MudAlert Severity="Severity.Success" Dense="true">
+                            No errors in the log
+                        </MudAlert>
+                    }
+                </MudPaper>
+            </MudTabPanel>
+
+        </MudTabs>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close" Color="Color.Primary" Variant="Variant.Filled">Close</MudButton>
+    </DialogActions>
+</MudDialog>

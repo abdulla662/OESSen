@@ -1,0 +1,127 @@
+@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Enums
+@using OES.Blazor.InternalHelperTypes.General
+
+<div class="pa-2 @ScreenSizeClass d-flex flex-column align-center web-registration-layout" data-no-convert dir="@DirectionHelper.GetDirection()">
+
+    @if (!string.IsNullOrWhiteSpace(Model.Body))
+    {
+        <MudPaper Class="pa-2 mb-2 w-100" Outlined="true" Style="background-color: var(--mud-palette-background-grey); border-radius: 4px;">
+            <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Start" Class="web-registration-question-text">
+                @(DirectionHelper.GetDirectionalContent(Model.Body))
+            </MudText>
+        </MudPaper>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Instructions))
+    {
+        <MudPaper Class="pa-2 mb-2 w-100" Outlined="true" Style="background-color: var(--mud-palette-background-grey); border-radius: 4px;">
+            <MudText Typo="Typo.caption" Style="font-weight:700;" Color="Color.Primary" Class="mb-1 d-block">
+                <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" Style="font-size:0.9rem; vertical-align:middle; margin-right:4px;" />
+                @Resource.Instructions
+            </MudText>
+            <MudText Typo="Typo.caption" Color="Color.Default" Align="Align.Start" Class="web-registration-question-text">
+                @(DirectionHelper.GetDirectionalContent(Model.Instructions))
+            </MudText>
+        </MudPaper>
+    }
+
+    <MudCard Elevation="1" Class="pa-2 w-100" Style="border-radius: 8px;">
+        <MudCardHeader Class="pa-1 d-flex flex-column align-center text-center">
+            <CardHeaderContent>
+                <MudText Typo="Typo.subtitle1" Class="mb-0">🌐</MudText>
+                <MudText Typo="Typo.subtitle2" Style="font-weight:700;" Color="Color.Default" Class="web-registration-title">@Resource.CreateYourAccount</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="web-registration-subtitle">@Resource.FillInYourDetailsToRegister</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent Class="pa-2">
+            <MudRTLProvider RightToLeft="@(DirectionHelper.GetDirection() == "rtl")">
+                <MudGrid Spacing="1" Class="web-registration-form-grid">
+                    <MudItem xs="12">
+                        <MudTextField T="string"
+                                      Label="@Resource.FirstName"
+                                      @bind-Value="_firstName"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      ReadOnly="@IsReadOnly"
+                                      Immediate="true" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField T="string"
+                                      Label="@Resource.LastName"
+                                      @bind-Value="_lastName"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      ReadOnly="@IsReadOnly"
+                                      Immediate="true" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField T="string"
+                                      Label="@Resource.EmailAddress"
+                                      @bind-Value="_email"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      ReadOnly="@IsReadOnly"
+                                      Immediate="true" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField T="string"
+                                      Label="@Resource.ReEnterEmailAddress"
+                                      @bind-Value="_reEmail"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      ReadOnly="@IsReadOnly"
+                                      Immediate="true"
+                                      Error="@(!string.IsNullOrEmpty(_reEmail) && _email != _reEmail)"
+                                      ErrorText="@Resource.EmailsDoNotMatch" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField T="string"
+                                      Label="@Resource.Password"
+                                      @bind-Value="_password"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      InputType="@_passwordInputType"
+                                      ReadOnly="@IsReadOnly"
+                                      Immediate="true"
+                                      Adornment="Adornment.End"
+                                      AdornmentIcon="@_passwordIcon"
+                                      OnAdornmentClick="() => TogglePasswordVisibility(false)" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField T="string"
+                                      Label="@Resource.ReEnterPassword"
+                                      @bind-Value="_rePassword"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      InputType="@_rePasswordInputType"
+                                      ReadOnly="@IsReadOnly"
+                                      Immediate="true"
+                                      Adornment="Adornment.End"
+                                      AdornmentIcon="@_rePasswordIcon"
+                                      OnAdornmentClick="() => TogglePasswordVisibility(true)"
+                                      Error="@(!string.IsNullOrEmpty(_rePassword) && _password != _rePassword)"
+                                      ErrorText="@Resource.PasswordsDoNotMatch" />
+                    </MudItem>
+
+                    <MudItem xs="12" Class="d-flex justify-center mt-2">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   Class="px-10"
+                                   Style="border-radius: 10px; text-transform: none;">
+                            @Resource.Register
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudRTLProvider>
+        </MudCardContent>
+    </MudCard>
+
+</div>

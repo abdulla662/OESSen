@@ -1,0 +1,16 @@
+.expand-col[b-8mijzxgb04] {
+    width: 40px;
+}
+
+.child-row[b-8mijzxgb04] {
+    background-color: var(--mud-palette-background-gray);
+}
+
+.child-name[b-8mijzxgb04] {
+    padding-inline-start: 32px;
+}
+
+.child-tree-icon[b-8mijzxgb04] {
+    vertical-align: middle;
+    opacity: 0.5;
+}

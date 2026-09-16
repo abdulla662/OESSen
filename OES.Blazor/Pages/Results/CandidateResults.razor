@@ -1,0 +1,113 @@
+@page "/CandidateResults"
+
+@attribute [DynamicAuthorizeAttribute("CandidateResults")]
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Enums
+
+<MudText Typo="Typo.h4" Align="Align.Center" Class="my-5">@Resource.CandidateResults</MudText>
+
+<!-- Input Section -->
+<MudPaper Class="pa-4 mb-4">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudTextField @bind-Value="_searchInput"
+                          Label="@Resource.EnterRegistrationOrNationalIDs"
+                          Placeholder="@Resource.EnterIDsSeparatedByCommas"
+                          Variant="Variant.Outlined"
+                          Lines="3" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Search"
+                       OnClick="GetCandidateDetails">
+                @Resource.GetDetails
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<!-- Results Table -->
+<div id="pdfFullResult" dir="auto">
+    @if (_examSessions.Any())
+    {
+        <div id="pdf-source" dir="auto">
+            <MudPaper Class="pa-4 mb-4">
+                <MudText Typo="Typo.h6" Class="mb-3">@Resource.ExamResultsTable</MudText>
+                <MudTable Items="@_examSessions" Hover="true" Striped="true" Dense="true">
+                    <HeaderContent>
+                        <MudTh>@Resource.RegistrationId</MudTh>
+                        <MudTh>@Resource.NationalId</MudTh>
+                        <MudTh>@Resource.CandidateName</MudTh>
+                        <MudTh>@Resource.ExamSeries</MudTh>
+                        <MudTh>@Resource.ExamDate</MudTh>
+                        <MudTh>@Resource.TotalFinalScore</MudTh>
+                        <MudTh>@Resource.AttendantStatus</MudTh>
+                        <MudTh Class="no-pdf">@Resource.Actions</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="@Resource.RegistrationId">@context.RegistrationId</MudTd>
+                        <MudTd DataLabel="@Resource.NationalId">@context.NationalId</MudTd>
+                        <MudTd DataLabel="@Resource.CandidateName">@context.CandidateName</MudTd>
+                        <MudTd DataLabel="@Resource.ExamSeries">@context.ExamSeries</MudTd>
+                        <MudTd DataLabel="@Resource.ExamDate">@context.ExamDate.ToString("yyyy-MM-dd")</MudTd>
+                        <MudTd DataLabel="@Resource.TotalFinalScore">
+                            <MudText Color="Color.Primary"><strong>@context.TotalFinalScore.ToString("F2")</strong></MudText>
+                        </MudTd>
+                        <MudTd DataLabel="@Resource.AttendantStatus">
+                            @if (context.AttendantStatus == AttendantsStatus.Attended)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Success">@Resource.Attended</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Error">@Resource.Absent</MudChip>
+                            }
+                        </MudTd>
+                        <MudTd DataLabel="@Resource.Actions" Class="no-pdf">
+                            <MudStack Row="true" Spacing="1">
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           Size="Size.Small"
+                                           Class="py-0 px-2"
+                                           Style="font-size: 0.75rem;"
+                                           OnClick="@(() => ShowSessionDetails(context))">
+                                    @Resource.ShowDetails
+                                </MudButton>
+                                @{
+                                    bool isSessionLoading = _loadingSessionIds.Contains(context.RegistrationId);
+                                }
+                                <MudButton Variant="Variant.Outlined"
+                                           Color="Color.Success"
+                                           Size="Size.Small"
+                                           Class="py-0 px-2"
+                                           Style="font-size: 0.75rem;"
+                                           StartIcon="@Icons.Material.Filled.Download"
+                                           OnClick="@(() => DownloadSessionFiles(context))"
+                                           Loading="@isSessionLoading"
+                                           Disabled="@isSessionLoading">
+                                    @Resource.Download
+                                </MudButton>
+                            </MudStack>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+
+                <!-- Download All Sessions Button -->
+                <MudStack Row="true" Justify="Justify.Center" Class="mt-4 no-pdf">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Success"
+                               StartIcon="@Icons.Material.Filled.Download"
+                               Size="Size.Large"
+                               OnClick="DownloadAllSessionFiles"
+                               Loading="@_isBatchDownloading"
+                               Disabled="@_isBatchDownloading">
+                        @Resource.DownloadExamFilesForAllSessions
+                    </MudButton>
+                </MudStack>
+            </MudPaper>
+        </div>
+    }
+
+</div>

@@ -1,0 +1,167 @@
+@using MudBlazor
+@using OES.Blazor.Models.Results
+@using OES.Helper
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5">@Resource.CandidateTrackingLogsDetailsDialog</MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (Candidate != null)
+        {
+            <!-- Details Subsection -->
+            <MudPaper Class="pa-4 mb-4" Elevation="1">
+                <MudText Typo="Typo.h6" Class="mb-3">@Resource.Details</MudText>
+                <MudSimpleTable Dense="true" Hover="true" Striped="true">
+                    <tbody>
+                        <tr>
+                            <td><strong>@Resource.NationalId:</strong></td>
+                            <td>@Candidate.NationalId</td>
+                            <td><strong>@Resource.RegistrationId:</strong></td>
+                            <td>@Candidate.RegistrationId</td>
+                        </tr>
+                        <tr>
+                            <td><strong>@Resource.Name:</strong></td>
+                            <td>@Candidate.CandidateName</td>
+                            <td><strong>@Resource.ExamSeries:</strong></td>
+                            <td>@Candidate.ExamSeries</td>
+                        </tr>
+                        <tr>
+                            <td><strong>@Resource.DateOfExam:</strong></td>
+                            <td>@Candidate.ExamDate.ToString("yyyy-MM-dd")</td>
+                            <td><strong>@Resource.TimeSpendInExamSession:</strong></td>
+                            <td>@Candidate.TimeSpentInSession</td>
+                        </tr>
+                        <tr>
+                            <td><strong>@Resource.NumberOfViewedQuestions:</strong></td>
+                            <td>@Candidate.ViewedQuestions</td>
+                            <td><strong>@Resource.NumberOfCorrectAnswered:</strong></td>
+                            <td>@Candidate.CorrectAnswers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>@Resource.NumberOfIncorrectAnswered:</strong></td>
+                            <td>@Candidate.IncorrectAnswers</td>
+                            <td><strong>@Resource.NumberOfSkipped:</strong></td>
+                            <td>@Candidate.SkippedQuestions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>@Resource.ExamSessionsViewed:</strong></td>
+                            <td>@SessionsViewed</td>
+                            <td><strong>@Resource.TotalQuestions:</strong></td>
+                            <td>@Candidate.TotalQuestions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>@Resource.TotalExamDuration</strong></td>
+                            <td>@Candidate.TotalExamDuration min</td>
+                            <td><strong>@Resource.TotalExamSessions</strong></td>
+                            <td>@Candidate.TotalExamSessions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>@Resource.ChangedMachine</strong></td>
+                            <td>
+                                @if (HasMultipleIPs())
+                                {
+                                    <MudChip T="string" Color="Color.Error">@Resource.Yes</MudChip>
+                                }
+                                else
+                                {
+                                    <MudChip T="string" Color="Color.Success">@Resource.No</MudChip>
+                                }
+                            </td>
+                            <td><strong>@Resource.VenueCode:</strong></td>
+                            <td>@Candidate.VenueCode</td>
+                        </tr>
+                    </tbody>
+                </MudSimpleTable>
+            </MudPaper>
+
+            <!-- Activity Log Subsection -->
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudText Typo="Typo.h6" Class="mb-3">@Resource.ActivityLog</MudText>
+
+                <MudTable Items="@ActivityLogs" Hover="true" Dense="true" Striped="true" FixedHeader="true" Height="400px">
+                    <HeaderContent>
+                        <MudTh>#</MudTh>
+                        <MudTh>@Resource.Time</MudTh>
+                        <MudTh>@Resource.Action</MudTh>
+                        <MudTh>@Resource.LogMessage</MudTh>
+                        <MudTh>@Resource.Section</MudTh>
+                        <MudTh>@Resource.QuestionId</MudTh>
+                        <MudTh>@Resource.IPAddress</MudTh>
+                        <MudTh>@Resource.QuestionStatus</MudTh>
+                        <MudTh>@Resource.Duration</MudTh>
+                        <MudTh>@Resource.ElementType</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="#">@context.No</MudTd>
+                        <MudTd DataLabel="@Resource.Time">@context.Time.ToString("HH:mm:ss")</MudTd>
+                        <MudTd DataLabel="@Resource.Action">@context.Action.ToLocalizedString()</MudTd>
+                        <MudTd DataLabel="@Resource.LogMessage">@context.LogMessage</MudTd>
+                        <MudTd DataLabel="@Resource.Section">@context.SectionName</MudTd>
+                        <MudTd DataLabel="@Resource.QuestionId">@context.QuestionId</MudTd>
+                        <MudTd DataLabel="@Resource.IPAddress">@context.IpAddress</MudTd>
+                        <MudTd DataLabel="@Resource.QuestionStatus">
+                            @if (context.QuestionStatus == 0)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Default">@Resource.NotVisited</MudChip>
+                            }
+                            else if (context.QuestionStatus == 1)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Info">@Resource.Visited</MudChip>
+                            }
+                            else if (context.QuestionStatus == 2)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Success">@Resource.Answered</MudChip>
+                            }
+                        </MudTd>
+                        <MudTd DataLabel="@Resource.Duration">
+                            @if (context.DurationInSeconds.HasValue)
+                            {
+                                @FormatDuration(context.DurationInSeconds)
+                            }
+                            else
+                            {
+                                <text>-</text>
+                            }
+                        </MudTd>
+                        <MudTd DataLabel="@Resource.ElementType">@context.ElementType</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudPaper>
+        }
+    </DialogContent>
+    <DialogActions>
+        @if (IsReview)
+        {
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Success"
+                       StartIcon="@Icons.Material.Filled.CheckCircle"
+                       OnClick="OnAccept">
+                @Resource.Accept
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.Cancel"
+                       OnClick="OnReject">
+                @Resource.Reject
+            </MudButton>
+        }
+        else
+        {
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Success"
+                       Size="Size.Small"
+                       StartIcon="@Icons.Material.Filled.FileDownload"
+                       OnClick="@(async () => await ExportCandidateAsync(Candidate))">
+                @Resource.ExportExcel
+            </MudButton>
+        }
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Default"
+                   StartIcon="@Icons.Material.Filled.Close"
+                   OnClick="OnClose">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

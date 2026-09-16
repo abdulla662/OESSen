@@ -1,0 +1,99 @@
+﻿@using OES.Helper
+@using OES.Helper.Enums
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center pa-3">
+            <MudIcon Icon="@Icons.Material.Filled.Assessment" Class="mr-2" />
+            <MudText Typo="Typo.h6">@Resource.DistributionSummary</MudText>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudPaper Class="pa-0" Elevation="0">
+            <MudAlert Severity="@GetCompletionColor()" Class="mx-4 mt-2" ContentAlignment="HorizontalAlignment.Start">@GetCompletionText()</MudAlert>
+
+            <MudTabs Elevation="0" Class="mt-2">
+                    <MudGrid Class="pa-4" Spacing="2">
+                    <MudItem xs="12" Class="d-flex justify-content-between align-content-center">
+                        <MudText Typo="Typo.body1">
+                            @Resource.TotalQuestions: @TotalDistributed / @TotalRequired
+                        </MudText>
+                        <MudFab EndIcon="@(_expandAll ? Icons.Material.Filled.UnfoldLess : Icons.Material.Filled.UnfoldMore)"
+                                OnClick="ToggleExpandAll"
+                                Size="Size.Small"
+                                Color="Color.Primary"
+                                DropShadow="true"
+                                Label="@(_expandAll ? Resource.CollapseAll : Resource.ExpandAll)" />
+                    </MudItem>
+
+                        @foreach (var summaryData in SummaryData.Keys)
+                        {
+                            <MudItem Class="shadow" xs="12">
+                                <MudExpansionPanel Expanded="@_sectionExpanded[summaryData]">
+                                    <TitleContent>
+                                        <div class="d-flex align-center">
+                                            <MudIcon Icon="@Icons.Material.Filled.Article" Class="mr-2" />
+                                            <MudText Typo="Typo.h6">@summaryData</MudText>
+                                            <MudSpacer />
+                                            <MudChip T="String" Color="Color.Primary" Size="Size.Small" Class="ml-2">
+                                                @SummaryData[summaryData].Sum(item => item.TotalCount) @Resource.Questions
+                                            </MudChip>
+                                        </div>
+                                    </TitleContent>
+                                    <ChildContent>
+                                        <MudDivider />
+                                        <MudPaper Elevation="0" Class="pa-4">
+                                            <MudTable Items="@SummaryData[summaryData]" Dense="true" Hover="true">
+                                                <HeaderContent>
+                                                    <MudTh>@Resource.QuestionType</MudTh>
+                                                    <MudTh>@Resource.ItemBank</MudTh>
+                                                    <MudTh Style="width: 100px;">@Resource.Count</MudTh>
+                                                    <MudTh>@Resource.DifficultyDistribution</MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate>
+                                                    <MudTd>
+                                                        <div class="d-flex align-center">
+                                                            <MudIcon Icon="@GetQuestionTypeIcon(context.QuestionType)" Class="mr-2" />
+                                                            <MudText>@(context.QuestionType.ToLocalizedString<QuestionType>())</MudText>
+                                                        </div>
+                                                    </MudTd>
+                                                    <MudTd>
+                                                        <div class="d-flex flex-wrap">
+                                                            @foreach (var bank in context.SourceItemBanks)
+                                                            {
+                                                                <MudChip T="String" Color="Color.Secondary" Size="Size.Small" Class="mr-1 mb-1 p-2">
+                                                                    @bank.Key
+                                                                </MudChip>
+                                                            }
+                                                        </div>
+                                                    </MudTd>
+                                                    <MudTd>
+                                                        <MudChip T="String" Color="Color.Info" Size="Size.Small">@context.TotalCount</MudChip>
+                                                    </MudTd>
+                                                    <MudTd>
+                                                        <div class="d-flex flex-wrap">
+                                                            @foreach (var difficulty in context.DifficultyBreakdown)
+                                                            {
+                                                                <MudChip T="String" Style="@($"background-color: {GetDifficultyColor(difficulty.Key)}; color: white;")"
+                                                                        Size="Size.Small"
+                                                                        Class="mr-1 mb-1">
+                                                                    @difficulty.Key: @difficulty.Value
+                                                                </MudChip>
+                                                            }
+                                                        </div>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        </MudPaper>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        }
+                    </MudGrid>
+            </MudTabs>
+        </MudPaper>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="CloseDialog" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

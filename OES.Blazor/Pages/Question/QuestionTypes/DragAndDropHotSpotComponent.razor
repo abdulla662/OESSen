@@ -1,0 +1,340 @@
+﻿@using OES.Blazor.Components.Common.FileManagerComponent
+@using OES.Blazor.Components.GenericComponents.TextEditor
+@using Microsoft.AspNetCore.Components.Forms
+@using OES.Helper.Dtos.HotSpotDtos
+@using OES.Helper.Enums
+
+<EditForm OnSubmit="OnSubmitAsync" Model="@Model">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12">
+            <MudStack Spacing="1" Class="mb-2">
+                <MudText Typo="Typo.h6" Class="editor-label-text fw-bold">@Resource.Settings</MudText>
+            </MudStack>
+            <MudPaper Elevation="0" Outlined="true" Class="pa-4 rounded-lg question-settings-card-parent">
+                <MudStack Row="true" Spacing="6" AlignItems="AlignItems.Start" Justify="Justify.FlexStart" Wrap="Wrap.Wrap">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+                            @Resource.SelectLanguage
+                        </MudText>
+                        <MudSelect @bind-Value="SelectedLanguage"
+                                   Immediate
+                                   Dense="true"
+                                   Class="rounded-setting-field language-selector"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   ToStringFunc="@(l => l?.Name)"
+                                   Error="@(_isSubmitButtonHit && SelectedLanguage.Id == 0)"
+                                   ErrorText="@_requiredErrorText"
+                                   Required
+                                   Disabled="Model.IsUsedInExam"
+                                   AdornmentIcon="@Icons.Material.Filled.Language"
+                                   AdornmentColor="Color.Primary"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var language in LanguagesList)
+                            {
+                                <MudSelectItem Value="language" />
+                            }
+                        </MudSelect>
+                    </MudStack>
+                    <MudStack Spacing="0">
+                        <NumberLanguageSelector @bind-Value="Model.UseArabicNumbers" />
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="BodyEditorParams"
+                        @ref="@BodyEditorParams.TextEditor">
+                <ActionContent>
+                    @if (IsReplaceMode && !string.IsNullOrEmpty(Model.AttachmentFileName))
+                    {
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="RemoveBodyMedia">@Resource.RemoveMedia</MudButton>
+                    }
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="InstructionsEditorParams"
+                        @ref="@InstructionsEditorParams.TextEditor">
+                <ActionContent>
+                    <MudStack Row="true" Spacing="2">
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.CheckCircle"
+                                              OnClick="async e => await SaveInstructionAsTemplate()"
+                                              ButtonColor="Color.Secondary"
+                                              ButtonText="@Resource.SaveAsTemplateInstructions"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.Article"
+                                              OnClick="async e => await LoadInstructionTemplate()"
+                                              ButtonColor="Color.Surface"
+                                              ButtonText="@Resource.LoadTemplates"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+                    </MudStack>
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudDivider Class="my-4" />
+            <MudText Typo="Typo.h5" Class="mb-3">
+                <MudIcon Icon="@Icons.Material.Filled.TouchApp" Class="me-2" />
+                @Resource.DragDropConfiguration
+            </MudText>
+        </MudItem>
+
+        <MudItem xs="12" Class="mb-4">
+            <MudText Typo="Typo.h6" Class="mb-2">1 @Resource.UploadImge</MudText>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Info"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       OnClick="OpenFileManagerDialog">
+                @Resource.UploadFile
+            </MudButton>
+
+            @if (!string.IsNullOrEmpty(_uploadedImageUrl))
+            {
+                <div class="mt-3" style="width: 100%; display: block;">
+                    <MudText Typo="Typo.h6" Class="mb-2">2 @Resource.DrawDropZonesStepTitle</MudText>
+                    <canvas id="hotspotCanvas"
+                            @ref="_canvasRef"
+                            @onmousedown="@OnCanvasMouseDown"
+                            @onmousemove="@OnCanvasMouseMove"
+                            @onmouseup="@OnCanvasMouseUp"
+                            style="border: 2px solid #594ae2;
+                                width: 100%;
+                                max-width: 800px;
+                                height: auto;
+                                cursor: crosshair;
+                                border-radius: 8px;
+                                background-color: #f5f5f5;
+                                display: block;">
+                    </canvas>
+                    <MudText Typo="Typo.caption" Color="Color.Info" Class="mt-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" Class="me-1" />
+                        @Resource.DragToCreateDropZones
+                    </MudText>
+                </div>
+            }
+        </MudItem>
+
+        @if (_internalModel.HotSpotAreas.Any())
+        {
+            <MudItem xs="12">
+                <MudPaper Class="pa-4" Elevation="2">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <MudText Typo="Typo.h6">
+                            <MudIcon Icon="@Icons.Material.Filled.GridOn" Class="me-2" />
+                            @Resource.DropZonesTitle (@_internalModel.HotSpotAreas.Count)
+                        </MudText>
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Warning"
+                                   Size="Size.Small"
+                                   Disabled="@_processing"
+                                   OnClick="@ClearAllDropZones"
+                                   StartIcon="@Icons.Material.Filled.Clear">
+                            @Resource.ClearAll
+                        </MudButton>
+                    </div>
+
+                    @if (_isSubmitButtonHit && !_internalModel.HotSpotAreas.Any())
+                    {
+                        <MudText Color="Color.Error" Typo="Typo.caption" Class="mb-2 d-block">
+                            <MudIcon Icon="@Icons.Material.Filled.Error" Size="Size.Small" Class="me-1" />
+                            @Resource.AtLeastOneHotSpotRequired
+                        </MudText>
+                    }
+
+                    <MudList T="string" Dense="true">
+                        @foreach (var (zone, index) in _internalModel.HotSpotAreas.Select((z, i) => (z, i)))
+                        {
+                            <MudListItem T="string">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <MudChip Color="Color.Primary" Size="Size.Small" Class="me-3">@(index + 1)</MudChip>
+                                        <MudText Typo="Typo.body2">@Resource.DropZone @(index + 1)</MudText>
+                                    </div>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Color="Color.Error"
+                                                   Size="Size.Small"
+                                                   Class=@($"label-{nameof(RemoveDropZone)}")
+                                                   OnClick="@(() => RemoveDropZone(zone.Id))" />
+                                </div>
+                            </MudListItem>
+                            @if (index < _internalModel.HotSpotAreas.Count - 1)
+                            {
+                                <MudDivider />
+                            }
+                        }
+                    </MudList>
+                </MudPaper>
+            </MudItem>
+        }
+
+        <MudItem xs="12">
+            <MudDivider Class="my-4" />
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudPaper Class="pa-4" Elevation="2">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <MudText Typo="Typo.h6">
+                        <MudIcon Icon="@Icons.Material.Filled.DragIndicator" Class="me-2" />
+                        3. @Resource.DraggableItemsStepTitle (@_draggableItems.Count)
+                    </MudText>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               StartIcon="@Icons.Material.Filled.Add"
+                               OnClick="AddDraggableItem">
+                        @Resource.AddItem
+                    </MudButton>
+                </div>
+
+                <MudText Typo="Typo.caption" Class="mb-3">
+                    @Resource.ConfigureDragItems
+                </MudText>
+
+                @if (_isSubmitButtonHit && !_draggableItems.Any())
+                {
+                    <MudText Color="Color.Error" Typo="Typo.caption" Class="mb-2 d-block">
+                        <MudIcon Icon="@Icons.Material.Filled.Error" Size="Size.Small" Class="me-1" />
+                        @Resource.CreateDragAndDropItemsForDropZones
+                    </MudText>
+                }
+
+                @if (_draggableItems.Any())
+                {
+                    @foreach (var (item, index) in _draggableItems.OrderBy(i => i.OrderIndex).Select((i, idx) => (i, idx)))
+                    {
+                        <MudPaper Class="pa-3 mb-3" Elevation="1" Style="background-color: var(--mud-palette-background-grey);">
+                            <div class="d-flex gap-3 align-items-start">
+                                <MudChip T="int" Color="Color.Info" Size="Size.Small">
+                                    @(index + 1)
+                                </MudChip>
+
+                                <div class="flex-grow-1">
+                                    <MudTextField @bind-Value="item.Label"
+                                                  Label="@Resource.ItemLabel"
+                                                  Variant="Variant.Outlined"
+                                                  Required="true"
+                                                  Placeholder="@Resource.EnterDraggableTextPlaceholder"
+                                                  Class="mb-2"
+                                                  Immediate="true"
+                                                  Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(item.Label))"
+                                                  ErrorText="@Resource.ThisFieldIsRequired" />
+
+                                    <div class="d-flex gap-2 align-items-center mb-2">
+                                        <MudCheckBox @bind-Value="item.IsDistractor"
+                                                     Label="@Resource.DistractorLabel"
+                                                     Color="Color.Warning"
+                                                     Dense="true"
+                                                     T="bool" />
+                                        <MudIcon Icon="@Icons.Material.Filled.HelpOutline"
+                                                 Size="Size.Small"
+                                                 Color="Color.Default"
+                                                 Title="@Resource.DistractorTooltip" />
+                                    </div>
+
+                                    @if (!item.IsDistractor && _internalModel.HotSpotAreas.Any())
+                                    {
+                                        <MudText Typo="Typo.caption" Class="mt-2 mb-1">
+                                            <strong>@Resource.AcceptedDropZones:</strong> (@Resource.ClickToToggle)
+                                        </MudText>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            @foreach (var (zone, zIndex) in _internalModel.HotSpotAreas.Select((h, i) => (h, i)))
+                                            {
+                                                <MudChip T="string"
+                                                         Color="@(item.AcceptedDropZoneIds.Contains(zone.Id) ? Color.Success : Color.Default)"
+                                                         Variant="@(item.AcceptedDropZoneIds.Contains(zone.Id) ? Variant.Filled : Variant.Outlined)"
+                                                         Size="Size.Small"
+                                                         OnClick="() => ToggleDropZone(item, zone.Id)"
+                                                         Style="cursor: pointer;">
+                                                    @Resource.Zone @(zIndex + 1) @(item.AcceptedDropZoneIds.Contains(zone.Id) ? "✓" : "")
+                                                </MudChip>
+                                            }
+                                        </div>
+
+                                        @if (_isSubmitButtonHit && !item.AcceptedDropZoneIds.Any())
+                                        {
+                                            <MudText Color="Color.Error" Typo="Typo.caption" Class="mt-1 d-block">
+                                                <MudIcon Icon="@Icons.Material.Filled.Error" Size="Size.Small" Class="me-1" />
+                                                @Resource.NonDistractorItemAtLeastOneAcceptedDropZone
+                                            </MudText>
+                                        }
+                                    }
+                                    else if (!item.IsDistractor && !_internalModel.HotSpotAreas.Any())
+                                    {
+                                        <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+                                            @Resource.CreateDropZonesFirst
+                                        </MudAlert>
+                                    }
+                                </div>
+
+                                <div class="d-flex flex-column gap-1">
+                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward"
+                                                   Color="Color.Default"
+                                                   Size="Size.Small"
+                                                   Disabled="@(index == 0)"
+                                                   Title="Move Up"
+                                                   OnClick="() => MoveItem(item, -1)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward"
+                                                   Color="Color.Default"
+                                                   Size="Size.Small"
+                                                   Disabled="@(index == _draggableItems.Count - 1)"
+                                                   Title="Move Down"
+                                                   OnClick="() => MoveItem(item, +1)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Color="Color.Error"
+                                                   Size="Size.Small"
+                                                   Title="@Resource.DeleteItem"
+                                                   OnClick="() => DeleteDraggableItem(item)" />
+                                </div>
+                            </div>
+                        </MudPaper>
+                    }
+                }
+                else
+                {
+                    <MudItem xs="12">
+                        <MudPaper Class="pa-4" Elevation="2">
+                            <MudText Typo="Typo.caption" Class="mb-3">@Resource.NoDragItemsAvailable</MudText>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" Class="text-center mt-4">
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Class="w-25"
+                       Color="Color.Primary"
+                       Disabled="@_processing"
+                       StartIcon="@(_processing ? null : Icons.Material.Filled.Save)">
+                @if (_processing)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="me-2" />
+                    <text>@Resource.Processing</text>
+                }
+                else
+                {
+                    <text>@Resource.Save</text>
+                }
+            </MudButton>
+            <MudButton OnClick="CancelDialogAsync"
+                       Variant="Variant.Filled"
+                       Class="w-25 me-5 ms-5"
+                       Color="Color.Secondary"
+                       Disabled="@_processing"
+                       StartIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Cancel
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>

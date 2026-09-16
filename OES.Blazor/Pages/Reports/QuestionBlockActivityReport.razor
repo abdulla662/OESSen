@@ -1,0 +1,172 @@
+@page "/reports/question-block-activity"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.Reports.Analytical
+@using OES.Helper.Enums
+@using SharedHelper.Enums
+
+@attribute [DynamicAuthorizeAttribute("QuestionBlockActivityReport")]
+
+<PageTitle>
+    @Resource.RptTitleQuestionBlockActivity
+</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-4 mt-3 ar-no-print">
+    <MudIcon Icon="@Icons.Material.Filled.ViewModule"
+             Color="Color.Primary"
+             Size="Size.Large"
+             Class="me-2" />
+    <MudText Typo="Typo.h5"
+             Color="Color.Primary">
+        @Resource.RptTitleQuestionBlockActivity
+    </MudText>
+</div>
+
+@if (HasError)
+{
+    <MudAlert Severity="Severity.Error"
+              Class="mb-4 ar-no-print"
+              ShowCloseIcon="true"
+              CloseIconClicked="ClearError">
+        @_errorMessage
+    </MudAlert>
+}
+
+<div class="ar-filter-panel ar-no-print">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="4">
+            <MudSelect T="AdaptivePaperSubtype?"
+                       Label="@Resource.SelectPaperType"
+                       @bind-Value="_examType"
+                       Variant="Variant.Outlined"
+                       Dense="true"
+                       ToStringFunc="GetExamTypeLabel">
+                <MudSelectItem T="AdaptivePaperSubtype?"
+                               Value="@((AdaptivePaperSubtype?)null)">
+                    @Resource.All
+                </MudSelectItem>
+                <MudSelectItem T="AdaptivePaperSubtype?"
+                               Value="@((AdaptivePaperSubtype?)AdaptivePaperSubtype.MST)">
+                    @nameof(AdaptivePaperSubtype.MST)
+                </MudSelectItem>
+                <MudSelectItem T="AdaptivePaperSubtype?"
+                               Value="@((AdaptivePaperSubtype?)AdaptivePaperSubtype.STEP)">
+                    @nameof(AdaptivePaperSubtype.STEP)
+                </MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12"
+                 md="3"
+                 Class="d-flex align-end">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="GenerateAsync"
+                       FullWidth="true">
+                @Resource.RptGenerateReport
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</div>
+
+<div class="d-flex justify-content-end gap-2 mb-3 ar-no-print">
+    @if (HasReport)
+    {
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.TableChart"
+                   Color="Color.Success"
+                   OnClick="ExportAsync"
+                   Disabled="_isExporting">
+            @(_isExporting
+                ? Resource.RptExporting
+                : Resource.RptExportExcel)
+        </MudButton>
+    }
+
+    <MudButton Variant="Variant.Outlined"
+               StartIcon="@Icons.Material.Filled.Print"
+               OnClick="PrintAsync">
+        @Resource.RptPrintSaveAsPdf
+    </MudButton>
+</div>
+
+@if (_isLoading)
+{
+    <MudProgressCircular Indeterminate="true"
+                         Color="Color.Primary"
+                         Class="d-block mx-auto my-8" />
+}
+else if (HasReport)
+{
+    <div class="ar-header-info">
+        <span>
+            <strong>
+                @Resource.PaperType
+            </strong>
+            @ExamTypeLabel
+        </span>
+        <span class="ms-4">
+            <strong>
+                @Resource.RptTotalQuestions
+            </strong>
+            @_report.Rows.Count
+        </span>
+    </div>
+    <MudPaper Elevation="2"
+              Class="pa-0 overflow-auto">
+        <MudTable Items="_report.Rows"
+                  Dense="true"
+                  Hover="true"
+                  Striped="true"
+                  RowsPerPage="100"
+                  AllowUnsorted="false">
+            <HeaderContent>
+                <MudTh>
+                    @Resource.QuestionId
+                </MudTh>
+                <MudTh>
+                    @Resource.RptQuestionCode
+                </MudTh>
+                <MudTh>
+                    @Resource.Block
+                </MudTh>
+                <MudTh>
+                    @Resource.BlockCode
+                </MudTh>
+                <MudTh>
+                    @Resource.Status
+                </MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@Resource.QuestionId">
+                    @context.QuestionId
+                </MudTd>
+                <MudTd DataLabel="@Resource.QuestionCode">
+                    @context.QuestionCode
+                </MudTd>
+                <MudTd DataLabel="@Resource.Block">
+                    @context.BlockId
+                </MudTd>
+                <MudTd DataLabel="@Resource.BlockCode">
+                    @context.BlockCode
+                </MudTd>
+                <MudTd DataLabel="@Resource.Status">
+                    <MudChip T="string"
+                             Color="@GetStatusColor(context.Status)"
+                             Size="Size.Small"
+                             Variant="Variant.Filled">
+                        @context.Status
+                    </MudChip>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new[] { 50, 100, 250, 500 }" />
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+}
+else if (!_isLoading)
+{
+    <MudAlert Severity="Severity.Info">
+        @Resource.RptNoQuestionBlockAssignments
+    </MudAlert>
+}

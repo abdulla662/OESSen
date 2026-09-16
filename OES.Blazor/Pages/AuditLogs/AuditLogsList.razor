@@ -1,0 +1,126 @@
+@page "/AuditLogs"
+
+@using OES.Blazor.CustomAuthorizationAttribute;
+@using OES.Helper.Dtos.AuditLogs
+@using OES.Helper.ResourceFiles
+
+@attribute [DynamicAuthorizeAttribute("AuditLogs")]
+
+<PageTitle>@Resource.AuditLogs</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center audit-logs-page">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.ListAlt" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.AuditLogs</MudText>
+        </MudStack>
+
+        <ListItem @key="_logListChangingKey"
+                  T="GetAuditLogsDto"
+                  Caption="@Resource.AuditLogs"
+                  CaptionIcon="@Icons.Material.Rounded.ListAlt"
+                  EndpointServerice="BlazAuditLogsService.GetAllAsync"
+                  DisplayColumns="[ nameof(GetAuditLogsDto.CreationUser),
+                                    nameof(GetAuditLogsDto.Action),
+                                    nameof(GetAuditLogsDto.PageName),
+                                    nameof(GetAuditLogsDto.PathName),
+                                    nameof(GetAuditLogsDto.ActionAt),
+                                    nameof(GetAuditLogsDto.Url),
+                                    nameof(GetAuditLogsDto.IPAddress) ]"
+                  FilterObject="_filterObject"
+                  SearchPanelVisible="false"
+                  HideSearchInBody="true">
+            <TopChildContent>
+                <MudCard Class="mb-3" Elevation="1">
+                    <MudCardContent>
+                        <MudGrid Justify="Justify.FlexStart" Spacing="2">
+
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudTextField @bind-Value="_username"
+                                              Label="@Resource.UserName"
+                                              Variant="Variant.Outlined"
+                                              Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.Person"
+                                              Clearable="true"
+                                              Immediate="false" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudSelect @bind-Value="_selectedPageName"
+                                           Label="@Resource.PageName"
+                                           Placeholder="@Resource.SelectPage"
+                                           Variant="Variant.Outlined"
+                                           Adornment="Adornment.Start"
+                                           AdornmentIcon="@Icons.Material.Filled.Description"
+                                           Clearable="true"
+                                           ToStringFunc="@((string x) => x)">
+                                    @foreach (var name in _pageNames)
+                                    {
+                                        <MudSelectItem Value="@name">@name</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudTextField @bind-Value="_pathName"
+                                              Label="@Resource.PathName"
+                                              Variant="Variant.Outlined"
+                                              Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.Route"
+                                              Clearable="true"
+                                              Immediate="false" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="3" Class="pt-4">
+                                <MudDateRangePicker @bind-DateRange="_dateRange"
+                                                    Label="@($"{Resource.StartDate} - {Resource.EndDate}")"
+                                                    Variant="Variant.Outlined"
+                                                    AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                                                    Editable="true"
+                                                    Clearable="true"
+                                                    DateFormat="yyyy-MM-dd" />
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudStack Row="true" Spacing="2">
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               StartIcon="@Icons.Material.Filled.Search"
+                                               OnClick="ApplyFilters">
+                                        @Resource.Search
+                                    </MudButton>
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Secondary"
+                                               StartIcon="@Icons.Material.Filled.FilterAltOff"
+                                               OnClick="ResetFilters">
+                                        @Resource.ResetFilters
+                                    </MudButton>
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Success"
+                                               StartIcon="@Icons.Material.Filled.FileDownload"
+                                               OnClick="ExportToExcelAsync"
+                                               Disabled="_isExporting">
+                                        @(_isExporting? Resource.Exporting: Resource.ExportExcel)
+                                    </MudButton>
+                                </MudStack>
+                            </MudItem>
+
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </TopChildContent>
+            <ButtonChildContent Context="value">
+                @if (value is GetAuditLogsDto log)
+                {
+                    <MudTooltip Text="@Resource.Details">
+                        <MudFab class="fab-xsmall"
+                                Color="Color.Primary"
+                                StartIcon="@Icons.Material.Outlined.Preview"
+                                Size="Size.Small"
+                                OnClick="() => ViewDetails(log)" />
+                    </MudTooltip>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

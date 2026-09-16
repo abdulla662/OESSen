@@ -1,0 +1,148 @@
+@* @page "/ResultsConfiguration" *@
+
+@attribute [DynamicAuthorizeAttribute("Configuration")]
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper
+
+<MudText Typo="Typo.h4" Align="Align.Center" Class="my-5">@Resource.ResultsConfiguration</MudText>
+
+<MudPaper Class="pa-4 mb-4">
+    <!-- Auto Generate Results Section -->
+    <MudPaper Class="pa-4 mb-4" Elevation="1">
+        <MudText Typo="Typo.h6" Class="mb-3">@Resource.AutoGenerateResults</MudText>
+
+        <MudSwitch T="bool"
+                   @bind-Value="@_autoGenerateEnabledField"
+                   Color="Color.Primary"
+                   Label="@Resource.EnableAutoGenerateResults"
+                   Class="mb-4" />
+
+        @if (_autoGenerateEnabledField)
+        {
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTimePicker Label="@Resource.AutoGenerateTime"
+                                   @bind-Time="_autoGenerateTime"
+                                   Variant="Variant.Outlined"
+                                   AmPm="true" />
+                </MudItem>
+            </MudGrid>
+        }
+    </MudPaper>
+
+    <!-- Auto Send to CTR Section -->
+    <MudPaper Class="pa-4 mb-4" Elevation="1">
+        <MudText Typo="Typo.h6" Class="mb-3">@Resource.AutoSendToCTR</MudText>
+
+        <MudSwitch T="bool"
+                   @bind-Value="@_autoSendToCTREnabledField"
+                   Color="Color.Primary"
+                   Label="@Resource.EnableAutoSendToCTRForTakenGrade"
+                   Class="mb-4"
+                   Disabled="!_autoGenerateEnabledField" />
+
+        @if (_autoSendToCTREnabledField && _autoGenerateEnabledField)
+        {
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTimePicker Label="@Resource.AutoSendToCTRTime"
+                                   @bind-Time="_autoSendToCTRTime"
+                                   Variant="Variant.Outlined"
+                                   AmPm="true" />
+                </MudItem>
+            </MudGrid>
+
+            @if (_autoSendToCTRTime.HasValue && _autoGenerateTime.HasValue && _autoSendToCTRTime <= _autoGenerateTime)
+            {
+                <MudAlert Severity="Severity.Warning" Class="mt-3">
+                    @Resource.AutoSendTimeMustBeAfterAutoGenerateTime
+                </MudAlert>
+            }
+        }
+    </MudPaper>
+
+    <!-- Email Notifications Section -->
+    <MudPaper Class="pa-4 mb-4" Elevation="1">
+        <MudText Typo="Typo.h6" Class="mb-3">@Resource.EmailNotifications</MudText>
+
+        <MudTextField @bind-Value="_emailList"
+                      Label="@Resource.EmailListForNotifications"
+                      Placeholder="@Resource.EmailListPlaceholder"
+                      Variant="Variant.Outlined"
+                      Lines="4"
+                      HelperText="@Resource.EmailListHelperText"
+                      Class="mb-4" />
+
+        <MudText Typo="Typo.subtitle2" Class="mb-2"><strong>@Resource.SendNotificationWhen:</strong></MudText>
+
+        <MudCheckBox T="bool" @bind-Checked="_notifyOnManualGeneration"
+                     Label="@Resource.ManualResultsGenerationComplete"
+                     Color="Color.Primary" />
+
+        <MudCheckBox T="bool" @bind-Checked="_notifyOnAutoGeneration"
+                     Label="@Resource.AutoResultsGenerationComplete"
+                     Color="Color.Primary"
+                     Disabled="!_autoGenerateEnabledField" />
+
+        <MudCheckBox T="bool" @bind-Checked="_notifyOnManualSendToCTR"
+                     Label="@Resource.ManualSendToCTRComplete"
+                     Color="Color.Primary" />
+
+        <MudCheckBox T="bool" @bind-Checked="_notifyOnAutoSendToCTR"
+                     Label="@Resource.AutoSendToCTRComplete"
+                     Color="Color.Primary"
+                     Disabled="!_autoSendToCTREnabledField" />
+
+        <MudCheckBox T="bool" @bind-Checked="_notifyOnReviewSendToCTR"
+                     Label="@Resource.ReviewSendToCTRComplete"
+                     Color="Color.Primary" />
+    </MudPaper>
+
+    <!-- CTR Folder Configuration Section -->
+    <MudPaper Class="pa-4 mb-4" Elevation="1">
+        <MudText Typo="Typo.h6" Class="mb-3">@Resource.CTRFolderConfiguration</MudText>
+
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_ctrFolderUrl"
+                              Label="@Resource.CTRFolderURL"
+                              Placeholder="@Resource.CTRFolderURLPlaceholder"
+                              Variant="Variant.Outlined"
+                              Class="mb-3" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_ctrUsername"
+                              Label="@Resource.CTRUsername"
+                              Variant="Variant.Outlined"
+                              Class="mb-3" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_ctrPassword"
+                              Label="@Resource.CTRPassword"
+                              Variant="Variant.Outlined"
+                              InputType="@_passwordInput"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@_passwordIcon"
+                              OnAdornmentClick="TogglePasswordVisibility"
+                              AdornmentAriaLabel="@Resource.ShowPassword" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <!-- Action Buttons -->
+    <MudStack Row="true" Justify="Justify.Center" Spacing="3" Class="mt-4">
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   OnClick="SaveConfiguration">
+            @Resource.SaveConfiguration
+        </MudButton>
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Default"
+                   StartIcon="@Icons.Material.Filled.Refresh"
+                   OnClick="ResetConfiguration">
+            @Resource.Reset
+        </MudButton>
+    </MudStack>
+</MudPaper>

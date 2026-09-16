@@ -1,0 +1,129 @@
+@using OES.Helper
+
+<div class="tree-node" id="@Node.Id">
+    <div class="w-100 d-flex justify-content-between" @onclick:stopPropagation style="cursor: pointer;">
+        <MudText Class=@($"align-self-center {(Node.IsExpanded ? "expanded" : "collapsed")}")>
+            @if (Node.Children.Any())
+            {
+                <span @onclick="ToggleNode" @onclick:stopPropagation style="cursor: pointer; display: inline-block; width: 24px;">
+                    <ExpandCollapseIcon IsExpanded="@Node.IsExpanded" />
+                </span>
+            }
+            else
+            {
+                <span style="display: inline-block; width: 24px;"></span>
+            }
+
+            <span>@Node.Text</span>
+            @if (!Node.IsActive)
+            {
+                <MudChip T="string" Color="Color.Error" Size="Size.Small" Class="ms-2 py-0">@Resource.Inactive</MudChip>
+            }
+        </MudText>
+        <div class="menu-container" @onclick:stopPropagation>
+            @if (IsSingleSelectionTree)
+            {
+                <span>
+                    <input class="form-check-input"
+                           type="radio"
+                           name="flexRadioDefault"
+                           checked="@(SelectedItemId == Node.Id)"
+                           disabled="@(!Node.IsActive || IsReadOnlyTree)"
+                           @onclick="@(() => FetchSelectedTreeItem(Node))"
+                           @onclick:stopPropagation>
+                </span>
+            }
+            else if (IsMultipleSelectionTree)
+            {
+                <span>
+                    <input class="form-check-input"
+                           type="checkbox"
+                           checked="@(SelectedItems != null && SelectedItems.Any() && SelectedItems.Select(static x => x.Id).Contains(Node.Id))"
+                           disabled="@(OldSelectedItems != null && OldSelectedItems.Any() && OldSelectedItems.Select(static x => x.Id).Contains(Node.Id) && OldSelectedItemsDisabled)"
+                           @onclick="@(() => FetchSelectedTreeItems(Node))"
+                           @onclick:stopPropagation>
+                </span>
+            }
+            else
+            {
+                <MudTooltip Text="@Resource.Operations">
+                    <span @onclick="ToggleMenu" @onclick:stopPropagation class="gear-icon @(ShowMenu ? "expanded rotate" : "collapsed")">
+                        <GearIcon IsExpanded="Node.IsExpanded" />
+                    </span>
+                </MudTooltip>
+                @if (ShowMenu)
+                {
+                    <div class="menu-show">
+                        @if (InsertionButtonShown && !Node.IsLeaf && HasAccess(TreeCrudButtonsRolesPlaceholders?.InsertionRole)) // Here !Node.IsLeaf assumes that all nodes in all trees in the system are not leaves, so this expression (!Node.IsLeaf) always evaluates to TRUE, except in the case of OrganizationStructure nodes, which can contain a leaf node.
+                        {
+                            <MudTooltip Text="@InsertionButtonTooltip" Placement="Placement.Right">
+                                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                                               Color="Color.Success"
+                                               Disabled="@(IsHierarchicalTree && Node?.Children?.Count > 0)"
+                                               OnClick="@(() => AddNewTreeItemAsync(Node))"
+                                               Class=@($"pa-0 label-{nameof(Resource.AddNewTreeItem)}") />
+                            </MudTooltip>
+                        }
+
+                        @if (Node.ParentId != null && UpdateButtonShown && HasAccess(TreeCrudButtonsRolesPlaceholders?.UpdateRole))
+                        {
+                            <MudTooltip Text="@Resource.UpdateTreeItem">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Secondary" OnClick="@(() => UpdateTreeItemAsync(Node))" Class=@($"pa-0 label-{nameof(Resource.UpdateTreeItem)}") />
+                            </MudTooltip>
+                        }
+
+                        @if (NodeCustomButton != null && Node.ParentId != null)
+                        {
+                            @NodeCustomButton(Node)
+                        }
+
+                        @if (Node.ParentId != null && DeletionButtonShown && HasAccess(TreeCrudButtonsRolesPlaceholders?.DeletionRole))
+                        {
+                            <MudTooltip Text="@Resource.RemoveTreeItem">
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => RemoveTreeItemAsync(Node))" Class=@($"pa-0 label-{nameof(Resource.RemoveTreeItem)}") />
+                            </MudTooltip>
+                        }
+
+                        @if (DetailsButtonShown && HasAccess(TreeCrudButtonsRolesPlaceholders?.ViewRole))
+                        {
+                            <MudTooltip Text="@Resource.ShowTreeItemDetails">
+                                <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Primary" OnClick="@(() => ShowTreeItemDetailsAsync(Node))" Class=@($"pa-0 label-{nameof(Resource.ShowTreeItemDetails)}") />
+                            </MudTooltip>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@if (Node.IsExpanded && Node.Children.Any())
+{
+    <ul style="position:relative; direction:inherit">
+        @foreach (var child in Node.Children)
+        {
+            <TreeNodeComponent Node="child"
+                               InsertionButtonShown="InsertionButtonShown"
+                               UpdateButtonShown="UpdateButtonShown"
+                               DeletionButtonShown="DeletionButtonShown"
+                               DetailsButtonShown="DetailsButtonShown"
+                               IsSingleSelectionTree="IsSingleSelectionTree"
+                               IsMultipleSelectionTree="IsMultipleSelectionTree"
+                               IsHierarchicalTree="IsHierarchicalTree"
+                               EnableCascadingSelection="EnableCascadingSelection"
+                               IsReadOnlyTree="IsReadOnlyTree"
+                               OldSelectedItems="OldSelectedItems"
+                               OldSelectedItemsDisabled="OldSelectedItemsDisabled"
+                               SelectedItemId="SelectedItemId"
+                               SelectedItems="SelectedItems"
+                               GetSelectedTreeItem="GetSelectedTreeItem"
+                               GetSelectedTreeItems="GetSelectedTreeItems"
+                               InsertTreeItemInDb="InsertTreeItemInDb"
+                               UpdateTreeItemInDb="UpdateTreeItemInDb"
+                               RemoveTreeItemFromDb="RemoveTreeItemFromDb"
+                               ShowItemDetails="ShowItemDetails"
+                               TreeCrudButtonsRolesPlaceholders="TreeCrudButtonsRolesPlaceholders"
+                               NodeCustomButton="NodeCustomButton" />
+        }
+    </ul>
+}

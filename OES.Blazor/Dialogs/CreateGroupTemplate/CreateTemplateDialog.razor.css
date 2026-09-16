@@ -1,0 +1,11 @@
+::deep .bg-grey {
+    background-color: var(--mud-palette-background-grey);
+}
+
+::deep .fw-600 {
+    font-weight: 600;
+}
+
+::deep .border-dashed-default {
+    border: 1px dashed var(--mud-palette-lines-default);
+}

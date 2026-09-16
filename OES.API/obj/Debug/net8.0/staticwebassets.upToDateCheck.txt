@@ -1,0 +1,8 @@
+wwwroot\files\Candidates\ImportCandidateWithVenueCode.xlsx
+wwwroot\fonts\Cairo-Bold.ttf
+wwwroot\fonts\Cairo-Medium.ttf
+wwwroot\fonts\Cairo-Regular.ttf
+wwwroot\fonts\Cairo-SemiBold.ttf
+wwwroot\fonts\NotoColorEmoji-Regular.ttf
+wwwroot\images\UploadFile\9c633288-a04d-4e26-b0b5-7a764e532375..jpg
+wwwroot\videos\fa17d354-4db7-4b88-b61a-ea2c189599ec.mp4

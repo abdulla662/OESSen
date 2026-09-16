@@ -1,0 +1,52 @@
+@using OES.Blazor.Components.TakeExam.ExamPanel.ButtonsPanel
+@using OES.Blazor.Components.TakeExam.ExamPanel.DynamicMiddlePanelComponent
+@using OES.Blazor.Components.TakeExam.ExamPanel.LayoutFooter
+@using OES.Blazor.Components.TakeExam.ExamPanel.LeftPanel
+@using OES.Blazor.Components.TakeExam.ExamPanel.ScreenHeader
+@using OES.Blazor.Components.TakeExam.ExamPanel.StaticMiddlePanelComponent
+@using OES.Helper.Enums
+
+<MudContainer MaxWidth="MaxWidth.False" Class="pa-1 ExamScreenContainer-container hide-scrollbar">
+    <MudPaper Class="mb-2 ExamScreenContainer-header">
+        <ScreenHeaderComponent ExamFormName="Sample Exam Form"
+                               Questions="@Questions"
+                               ViewStatus="@ViewStatus" />
+    </MudPaper>
+    <MudGrid Class="exam-content-grid">
+        <MudItem xs="12" md="3" lg="3">
+            <MudPaper Class="ExamScreenContainer-panel exam-column-flex-display">
+                <LeftPanelComponent Questions="@Questions"
+                                    CurrentQuestion="@CurrentQuestion"
+                                    ViewStatus="@ViewStatus"
+                                    OnQuestionSelected="@LoadQuestionInMiddlePanel"
+                                    @ref="LeftPanelRef" />
+
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="9" lg="9" Class="hide-scrollbar pl-2">
+            <MudPaper Class="ExamScreenContainer-panel exam-content-wrapper">
+                <div class="exam-question-area">
+                    @if (ViewStatus == ExamViewStatus.Dynamic)
+                    {
+                        @if (CurrentQuestion != null)
+                        {
+                            <DynamicMiddlePanel @key="@($"question-{CurrentIndex}")"
+                                                QuestionMetaDataId="@CurrentIndex"
+                                                Question="@CurrentQuestion"
+                                                AllSections="@AllSectionsCache" />
+                        }
+                    }
+                    else
+                    {
+                        <StaticMiddlePanel QuestionMetaDataId="@SelectedQuestionId" />
+                    }
+                </div>
+                <div class="exam-actions-bar">
+                    <ButtonsPanelComponent OnPreviousClicked="OnPreviousClicked" OnNextClicked="OnNextClicked" />
+                </div>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<ExamLayoutFooter />

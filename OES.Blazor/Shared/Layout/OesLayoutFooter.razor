@@ -1,0 +1,20 @@
+@using SharedHelper.General;
+
+<footer class="modern-footer">
+    <div class="footer-content">
+        <div class="footer-gradient-line"></div>
+        <div class="footer-main">
+            <div class="footer-brand">
+                <MudIcon Icon="@Icons.Material.Filled.School" Size="Size.Small" Class="footer-icon" />
+                <span class="footer-app-name">@Resource.NmrDashboard</span>
+            </div>
+            <div class="footer-divider"></div>
+            <span>@Resource.MadeInKSA</span>
+            <div class="footer-copyright">
+                <span>&copy; @DateTimeHelper.Now.Year</span>
+                <span class="footer-separator">&bull;</span>
+                <span>@Resource.AllRightsReserved</span>
+            </div>
+        </div>
+    </div>
+</footer>

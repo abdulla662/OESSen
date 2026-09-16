@@ -1,0 +1,322 @@
+﻿@using OES.Helper.Dtos.Folder.Response
+@using OES.Helper.Enums
+
+<MudCard Class="mt-4 mx-auto mt-sm-5 shadow-lg p-2 p-sm-4 justify-content-center" Style="max-width: 100%; width: 100%;">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="my-4">
+            <MudIcon Icon="@Icons.Material.Rounded.FolderOpen" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Style="line-height: 1;" Color="Color.Primary">@Resource.FileManager</MudText>
+        </MudStack>
+
+        <MudPaper Elevation=@Elevation Width="100%" Class="my-3 p-3 border rounded-lg bg-white">
+            <MudToolBar WrapContent="true" Class="px-2 px-sm-4">
+                <MudStack Spacing="2" Class="py-4" Style="width: 100%;">
+                    <MudStack Row Spacing="1" Wrap="Wrap.Wrap" AlignItems="AlignItems.Stretch" Class="w-100">
+                        <MudTextField @bind-Value="SearchKey"
+                                      Label=@Resource.FileFolderName
+                                      Variant="Variant.Outlined"
+                                      Disabled="_currentFolder is null"
+                                      Margin="Margin.Dense"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Outlined.Search"
+                                      AdornmentColor="Color.Primary"
+                                      Style="flex:1; min-width:0;" />
+                        <MudStack Row Spacing="1" Class="flex-grow-0" Style="min-width: 100px;">
+                            <MudTooltip Text="@Resource.Search">
+                                <GeneralLoadingButton Disabled="_currentFolder is null"
+                                                      OnClick="OnTableSearchAsync"
+                                                      EndIcon="@Icons.Material.Filled.Search"
+                                                      Variant="Variant.Filled"
+                                                      ButtonColor="Color.Primary"
+                                                      ButtonText="@Resource.Search"
+                                                      Size="Size.Medium"
+                                                      Type="ButtonType.Button"
+                                                      Class="mt-2 py-2 px-3 rounded-pill" />
+                            </MudTooltip>
+
+                            @if (_searchModeEnabled)
+                            {
+                                <MudTooltip Text="@Resource.Reset" Class="">
+                                    <GeneralLoadingButton OnClick="ResetSearchAsync"
+                                                          EndIcon="@Icons.Material.Filled.RestartAlt"
+                                                          Variant="Variant.Outlined"
+                                                          ButtonColor="Color.Error"
+                                                          ButtonText="@Resource.Reset"
+                                                          Size="Size.Medium"
+                                                          Type="ButtonType.Button"
+                                                          Class="mt-2 py-2 px-3 rounded-pill" />
+                                </MudTooltip>
+                            }
+                        </MudStack>
+                    </MudStack>
+                    <MudStack Row Spacing="1" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Class="w-100">
+                        @if (!_searchModeEnabled)
+                        {
+                            <div class="d-flex gap-2 flex-wrap">
+                                <MudTooltip Text="@Resource.UploadFile">
+                                    <GeneralLoadingButton Disabled="_currentFolder is null || _currentFolderStatus == CurrentFolderStatus.CheckingContent"
+                                                          OnClick="UploadDocumentAsync"
+                                                          Variant="Variant.Outlined"
+                                                          EndIcon="@Icons.Material.Filled.UploadFile"
+                                                          ButtonColor="Color.Primary"
+                                                          ButtonText="@Resource.UploadFile"
+                                                          Type="ButtonType.Submit"
+                                                          Size="Size.Medium"
+                                                          Class="mt-2 py-2 px-3 rounded-3 fa-bold" />
+                                </MudTooltip>
+
+                                <MudTooltip Text="@Resource.CreateFolder">
+                                    <GeneralLoadingButton Disabled="_currentFolder is null || _currentFolderStatus == CurrentFolderStatus.CheckingContent"
+                                                          OnClick="CreateNewFolderToggle"
+                                                          Variant="Variant.Outlined"
+                                                          EndIcon="@(_showCreateFolderInline ? Icons.Material.Filled.FolderOff : Icons.Material.Filled.CreateNewFolder)"
+                                                          ButtonColor="@(_showCreateFolderInline ? Color.Secondary : Color.Default)"
+                                                          ButtonText="@Resource.CreateFolder"
+                                                          Type="ButtonType.Button"
+                                                          Size="Size.Medium"
+                                                          Class="mt-2 py-2 px-3 rounded-3 fa-bold" />
+                                </MudTooltip>
+                            </div>
+                        }
+                    </MudStack>
+                </MudStack>
+            </MudToolBar>
+
+            <div class="fm-folder-creation-wrapper shadow border rounded-3 @(_showCreateFolderInline && _currentFolder is not null ? "fm-folder-creation-open" : "")">
+                @if (_currentFolder is not null)
+                {
+                    <FolderCreationComponent ParentFolderId="_currentFolder.Id"
+                                             OnCreated="@OnFolderCreatedAsync"
+                                             OnCancelled="@OnCreateFolderCancelled" />
+                }
+            </div>
+        </MudPaper>
+
+        @if (!_searchModeEnabled)
+        {
+            var _items = _foldersNavigationStack.Reverse().ToList().ConvertAll(x => new BreadcrumbItem(x.Name, x.Id.ToString()));
+            <MudBreadcrumbs Items="_items" Separator=">" MaxItems="3" Class="mb-2">
+                <ItemTemplate Context="folderBreadcrumb">
+                    <MudLink OnClick="@(() => NavigateToFolderThroughBreadcrumbAsync(folderBreadcrumb))"
+                             Style="font-size: 0.8rem;"
+                             Disabled="@(_items.IndexOf(folderBreadcrumb) == _items.Count - 1)">
+                        @folderBreadcrumb.Text.ToUpper()
+                    </MudLink>
+                </ItemTemplate>
+            </MudBreadcrumbs>
+
+            @if (BlazDocumentService.GetCutDocument() is not null && isVisible)
+            {
+                <MudPaper Class="rounded-3 border border-primary mb-3 p-4"
+                          Elevation="0"
+                          Style="background-color: var(--mud-palette-primary-hover);">
+                    <div class="d-flex gap-2 align-items-center justify-content-end">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   EndIcon="@Icons.Material.Filled.MoveToInbox"
+                                   Disabled="@(_currentFolder.Id == selectedFile_FolderId || _processingMoving)"
+                                   OnClick="@(async () => await MoveDocumentAsync(_currentFolder.Id))">
+                            @Resource.Cut
+                            @if (_processingMoving)
+                            {
+                                <MudProgressCircular Size="Size.Small" Color="Color.Surface" Indeterminate="true" Class="ms-1" />
+                            }
+                        </MudButton>
+
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   EndIcon="@Icons.Material.Filled.ContentCopy"
+                                   Disabled="_processingCopy"
+                                   OnClick="@(async () => await CopyDocumentAsync(_currentFolder.Id))">
+                            @Resource.Copy
+                            @if (_processingCopy)
+                            {
+                                <MudProgressCircular Size="Size.Small" Color="Color.Primary" Indeterminate="true" Class="ms-1" />
+                            }
+                        </MudButton>
+
+                        <MudTooltip Text="@Resource.Cancel">
+                            <MudIconButton Icon="@Icons.Material.Filled.Cancel"
+                                           Size="Size.Small"
+                                           Color="Color.Error"
+                                           Class="rounded-2"
+                                           OnClick="CancelMoving" />
+                        </MudTooltip>
+                    </div>
+
+                </MudPaper>
+            }
+        }
+
+        <MudPaper Width="100%" Elevation=@Elevation Class="fm-file-list py-4">
+            <MudTreeView T="FolderDocumentListResponseDto"
+                         Hover="true"
+                         SelectionMode="SelectionMode.SingleSelection"
+                         SelectedValue="_selectedFileForDialog"
+                         SelectedValueChanged="CaptureSelectedFile">
+                @if (_currentFolderStatus == CurrentFolderStatus.CheckingContent)
+                {
+                    <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-5">
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Medium" />
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@Resource.Loading</MudText>
+                    </div>
+                }
+                else if (_currentFolderStatus == CurrentFolderStatus.HasContent)
+                {
+                    @foreach (var dto in _folderDocumentListDtos)
+                    {
+                        <MudTreeViewItem Value="dto"
+                                         Icon="@(dto.IsFolder? Icons.Material.Rounded.Folder : Icons.Custom.FileFormats.FileDocument)"
+                                         IconColor="@(dto.IsFolder? Color.Warning: Color.Primary)"
+                                         OnDoubleClick="@(() => OpenFolderAsync(dto))">
+                            <BodyContent>
+                                <div class="d-flex align-items-center justify-content-between w-100 py-1 gap-2">
+
+                                    <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1">
+                                        <MudText Class="fm-item-name">@dto.Name</MudText>
+                                    </div>
+
+                                    @if (!FileSelectionEnabled)
+                                    {
+                                        <div class="d-flex align-items-center gap-1 pe-4 flex-shrink-0">
+
+                                            @if (!dto.IsFolder)
+                                            {
+                                                <div class="fm-expanded-actions @(isOpen.Contains(dto.Id) ? "fm-expanded-open" : "")">
+                                                    <MudTooltip>
+                                                        <MudIconButton Icon="@Icons.Material.Outlined.FileCopy"
+                                                                       Size="Size.Small"
+                                                                       Color="Color.Primary"
+                                                                       Class="@($"rounded-2 label-FileCopy {(BlazDocumentService.GetCutDocument() == dto.Id && isVisible ? "fm-icon-active" : "")}")"
+                                                                       OnClick="@(() => SaveDocumentIdAsync(dto.Id))" />
+                                                    </MudTooltip>
+
+                                                    <MudTooltip>
+                                                        <MudIconButton Icon="@Icons.Material.Outlined.Visibility"
+                                                                       Size="Size.Small"
+                                                                       Color="Color.Info"
+                                                                       Class=@($"rounded-2 label-{nameof(Icons.Material.Outlined.Visibility)}")
+                                                                       OnClick="@(() => ViewFileAsync(dto))" />
+                                                    </MudTooltip>
+
+                                                    <MudTooltip>
+                                                        <MudIconButton Icon="@(_downloadStates.ContainsKey(dto.Id) && _downloadStates[dto.Id] ? Icons.Material.Filled.HourglassBottom : Icons.Material.Outlined.FileDownload)"
+                                                                       Size="Size.Small"
+                                                                       Color="@(_downloadStates.ContainsKey(dto.Id) && _downloadStates[dto.Id] ? Color.Warning : Color.Success)"
+                                                                       Class=@($"rounded-2 label-{nameof(Resource.Download)}")
+                                                                       Disabled="@(_downloadStates.ContainsKey(dto.Id) && _downloadStates[dto.Id])"
+                                                                       OnClick="@(() => DownloadFileAsync(dto.Id))" />
+                                                    </MudTooltip>
+
+                                                    <MudTooltip>
+                                                        <MudIconButton Icon="@Icons.Material.Outlined.DeleteOutline"
+                                                                       Size="Size.Small"
+                                                                       Color="Color.Error"
+                                                                       Class=@($"rounded-2 label-{nameof(Icons.Material.Outlined.Delete)}")
+                                                                       OnClick="@(() => DeleteFileAsync(dto.Id))" />
+                                                    </MudTooltip>
+
+                                                    <MudTooltip>
+                                                        <MudIconButton Icon="@Icons.Material.Outlined.DriveFileRenameOutline"
+                                                                       Size="Size.Small"
+                                                                       Color="Color.Secondary"
+                                                                       Class=@($"rounded-2 label-{nameof(Resource.UpdateName)}")
+                                                                       OnClick="@(() => OpenDialogOfNameUpdateAsync(dto))" />
+                                                    </MudTooltip>
+                                                </div>
+
+                                                <MudTooltip>
+                                                    <span class="d-inline-flex fm-settings-icon @(isOpen.Contains(dto.Id) ? "fm-icon-active" : "")">
+                                                        <MudIconButton Icon="@Icons.Material.Filled.Settings"
+                                                                       Size="Size.Small"
+                                                                       Color="Color.Default"
+                                                                       Class="rounded-2"
+                                                                       OnClick="@(() => ToggleMenu(dto.Id))" />
+                                                    </span>
+                                                </MudTooltip>
+                                            }
+                                            else
+                                            {
+                                                <div class="fm-expanded-actions@(isOpen.Contains(dto.Id) ? "fm-expanded-open" : "")">
+                                                    <MudTooltip>
+                                                        <MudIconButton Icon="@Icons.Material.Outlined.DeleteOutline"
+                                                                       Size="Size.Small"
+                                                                       Color="Color.Error"
+                                                                       Class=@($"rounded-2 label-{nameof(Icons.Material.Outlined.FolderDelete)}")
+                                                                       OnClick="@(() => DeleteFolderAsync(dto.Id))" />
+                                                    </MudTooltip>
+                                                    <MudTooltip>
+                                                        <MudIconButton Icon="@Icons.Material.Outlined.DriveFileRenameOutline"
+                                                                       Size="Size.Small"
+                                                                       Color="Color.Secondary"
+                                                                       Class=@($"rounded-2 label-{nameof(Resource.UpdateName)}")
+                                                                       OnClick="@(() => OpenDialogOfNameUpdateAsync(dto))" />
+                                                    </MudTooltip>
+                                                </div>
+                                                <MudTooltip>
+                                                    <span @onclick:stopPropagation="true" @ondblclick:stopPropagation="true" class="d-inline-flex fm-settings-icon @(isOpen.Contains(dto.Id) ? "fm-icon-active" : "")">
+                                                        <MudIconButton Icon="@Icons.Material.Filled.Settings"
+                                                                       Size="Size.Small"
+                                                                       Color="Color.Default"
+                                                                       Class="rounded-2"
+                                                                       OnClick="@(() => ToggleMenu(dto.Id))" />
+                                                    </span>
+                                                </MudTooltip>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </BodyContent>
+                        </MudTreeViewItem>
+                    }
+                }
+                else
+                {
+                    <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-5">
+                        <MudIcon Icon="@Icons.Material.Outlined.FolderOpen" Style="font-size:3rem;" Color="Color.Secondary" />
+                        <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center">
+                            @Resource.NofoldersOrDocumentsFoundForYou
+                        </MudText>
+                    </div>
+                }
+            </MudTreeView>
+        </MudPaper>
+
+        @if (_currentFolderStatus != CurrentFolderStatus.CheckingContent && _areThereMorePages)
+        {
+            <div class="d-flex justify-content-start border-top">
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           OnClick="ViewMoreAsync"
+                           Size="Size.Small"
+                           Disabled="_processing"
+                           Class="rounded-3 text-capitalize fw-semibold m-2"
+                           StartIcon="@Icons.Material.Outlined.ExpandMore">
+                    @if (_processing)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="me-2" />
+                        @Resource.Processing
+                    }
+                    else
+                    {
+                        @Resource.ViewMore
+                    }
+                </MudButton>
+            </div>
+        }
+
+        @if (FileSelectionEnabled)
+        {
+            <div class="d-flex justify-content-center align-content-center gap-2 mt-3 mt-sm-5">
+                <MudButton Variant="Variant.Filled"
+                           OnClick="ExposeSelectedFileOutsideAsync"
+                           Disabled="_selectedFileForDialog is null"
+                           data-bs-dismiss="modal"
+                           Style="width:50%;"
+                           Color="Color.Primary">@Resource.Insert</MudButton>
+            </div>
+        }
+    </MudCardContent>
+</MudCard>

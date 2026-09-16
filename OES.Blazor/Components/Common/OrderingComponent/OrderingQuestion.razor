@@ -1,0 +1,57 @@
+﻿@using OES.Blazor.InternalHelperTypes.General
+
+<div class="@(ScreenSizeClass)" data-no-convert dir="@DirectionHelper.GetDirection()">
+    <MudContainer Gutters="false" Class="responsive-container d-flex flex-column">
+        @if (Model != null)
+        {
+            <MudGrid Spacing="0" Class="@($"sun-editor-editable question-watermark-transparent p-0 {DirectionHelper.GetQuestionBodyClass()}")">
+                <MudItem xs="12" Class="question-watermark-transparent px-0" data-no-convert>
+                    <MudPaper Class="mb-4" Elevation="0">
+                        <div class="pa-2 sun-editor-editable">
+                            <MudText Typo="Typo.inherit" Align="Align.Start" data-no-convert>@DirectionHelper.GetDirectionalContent(Model.Body.ToString())</MudText>
+                            @if (Model.HasAttachment)
+                            {
+                                <MediaAttachment Url="@(Model.AttachmentFileUrl)" />
+                            }
+                        </div>
+                    </MudPaper>
+                </MudItem>
+                @* <MudItem xs="12" Class="question-watermark-transparent px-0" data-no-convert>
+                @if (!string.IsNullOrWhiteSpace(Model.Instructions))
+                {
+                    <MudPaper Class="pa-4 mb-4" Elevation="0">
+                        <div class="pa-2">
+                            @((MarkupString)Model.Instructions)
+                        </div>
+                    </MudPaper>
+                }
+                </MudItem> *@
+                <MudItem xs="12" Class="question-watermark-transparent px-0" data-no-convert>
+                    <MudDropContainer T="OrderItem" Items="_items" ItemsSelector="@((item, dropzone) => true)" ItemDropped="ItemUpdated" Class="d-flex flex-column">
+                        <ChildContent>
+                            <MudDropZone Disabled="@IsDisabled" T="OrderItem" Identifier="dropzone" Class="pa-4 rounded-lg" AllowReorder="@(!IsDisabled)" />
+                        </ChildContent>
+                        <ItemRenderer>
+                            <MudPaper Elevation="2" Class="py-0 px-4 my-2 d-flex align-center rounded-lg" Style="@(IsDisabled ? "cursor: default;" : "cursor: grab;")">
+                                <MudIcon Icon="@Icons.Material.Filled.DragIndicator" Class="me-3" Color="Color.Default" Size="Size.Small" />
+                                <MudText Typo="Typo.body1" Class="flex-grow-1 d-flex align-center ma-0">
+                                    @((MarkupString)context.Text)
+                                </MudText>
+                                <div class="d-flex flex-column align-center ms-auto ps-2" style="cursor: pointer; border-inline-start: 1px solid var(--mud-palette-divider); min-width: 32px;">
+                                    <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowUp"
+                                                   Size="Size.Small"
+                                                   Class="pa-0"
+                                                   Color="Color.Primary" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowDown"
+                                                   Size="Size.Small"
+                                                   Class="pa-0"
+                                                   Color="Color.Primary" />
+                                </div>
+                            </MudPaper>
+                        </ItemRenderer>
+                    </MudDropContainer>
+                </MudItem>
+            </MudGrid>
+        }
+    </MudContainer>
+</div>

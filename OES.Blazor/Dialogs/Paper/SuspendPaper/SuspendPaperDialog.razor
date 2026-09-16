@@ -1,0 +1,101 @@
+@using OES.Blazor.Services.Interfaces.Paper
+@using OES.Blazor.Services.Interfaces.Schedule
+@using OES.Helper.Dtos.QueueSuspend
+@using OES.Helper.Dtos.Schedule.Responses
+
+<MudDialog>
+    <DialogContent>
+        @if (_isInitialLoading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-3" />
+        }
+        else
+        {
+            <ListItem T="QueueSuspendResponseDto"
+                      EndpointServerice="GetPaginatedVenuesAsync"
+                      DisplayColumns='[ nameof(QueueSuspendResponseDto.ServerName),
+                                        nameof(QueueSuspendResponseDto.ServerIp),
+                                        nameof(QueueSuspendResponseDto.CurrentStatus) ]'
+                      SearchPanelVisible="true"
+                      HideSearchInCode="true"
+                      HideSearchInBody="true"
+                      HideDateRangeFilter="true"
+                      HideOrderByFilter="true"
+                      FirstSearchParameterLabel="@Resource.ServerName">
+                <TopChildContent>
+                    <div class="d-flex align-center mt-n2 mb-3" style="gap:6px;">
+                        <MudButton Size="Size.Small"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Warning"
+                                   StartIcon="@Icons.Material.Filled.PauseCircle"
+                                   OnClick="() => ToggleSelectAllCurrentPage(true)">
+                            @Resource.SuspendAll
+                        </MudButton>
+                        <MudButton Size="Size.Small"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Success"
+                                   StartIcon="@Icons.Material.Filled.PlayCircle"
+                                   OnClick="() => ToggleSelectAllCurrentPage(false)">
+                            @Resource.UnsuspendAll
+                        </MudButton>
+                    </div>
+                </TopChildContent>
+                <ButtonChildContent Context="objContext">
+                    @{
+                        var venue = (QueueSuspendResponseDto)objContext;
+                        var isSuspended = IsVenueSelected(venue);
+                    }
+                    <div class="d-flex align-center" style="gap:6px; min-width: 140px; justify-content: center;">
+                        <MudSwitch T="bool"
+                                   Value="@isSuspended"
+                                   ValueChanged="@((bool val) => ToggleVenueSelection(venue, val))"
+                                   Color="Color.Warning"
+                                   UncheckedColor="Color.Success"
+                                   Style="margin:0;" />
+                        <MudText Typo="Typo.body2"
+                                 Style="@($"font-weight:600; white-space:nowrap; color:{(isSuspended ? "var(--mud-palette-warning-darken)" : "var(--mud-palette-success-darken)")}")">
+                            @(isSuspended? Resource.Suspended: Resource.Active)
+                        </MudText>
+                    </div>
+                </ButtonChildContent>
+                <BottomChildContent>
+                    @* Legend *@
+                    <div class="d-flex gap-4 mt-2 px-1">
+                        <div class="d-flex align-center gap-1">
+                            <MudIcon Icon="@Icons.Material.Filled.ToggleOn" Color="Color.Warning" Size="Size.Small" />
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">@Resource.ToggleOnMeansSuspended</MudText>
+                        </div>
+                        <div class="d-flex align-center gap-1">
+                            <MudIcon Icon="@Icons.Material.Filled.ToggleOff" Color="Color.Success" Size="Size.Small" />
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">@Resource.ToggleOffMeansActive</MudText>
+                        </div>
+                    </div>
+                </BottomChildContent>
+            </ListItem>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="ConfirmSuspend"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Disabled="@_isProcessing"
+                   EndIcon="@(_isProcessing ? null : Icons.Material.Filled.Save)">
+            @if (_isProcessing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">@Resource.Processing</MudText>
+            }
+            else
+            {
+                @Resource.Save
+            }
+        </MudButton>
+        <MudButton OnClick="CloseDialog"
+                   Color="Color.Secondary"
+                   Variant="Variant.Filled"
+                   EndIcon="@Icons.Material.Filled.Cancel">
+            @Resource.Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

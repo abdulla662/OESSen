@@ -1,0 +1,142 @@
+﻿@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.Question.QuestionMetadataDtos
+@using OES.Helper.Enums
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Rounded.FileUpload" Color="Color.Primary" />
+            <MudText Typo="Typo.h6">@Resource.UploadFreeQuestions</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudToolBar Class="mb-4 d-flex justify-start" Gutters="@false">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       EndIcon="@Icons.Material.Filled.Download"
+                       Target="_blank"
+                       Href="/files/UploadFreeQuestions.xlsx">
+                @Resource.DownloadTemplate
+            </MudButton>
+        </MudToolBar>
+
+        <MudItem xs="12">
+            <MudFileUpload T="IBrowserFile"
+                           OnFilesChanged="OnFileSelected"
+                           Hidden="@false"
+                           InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                           InputStyle="opacity:0"
+                           Accept=".xls,.xlsx"
+                           @ondrop="ClearDragClass"
+                           @ondragenter="SetDragClass"
+                           @ondragleave="ClearDragClass"
+                           @ondragend="ClearDragClass">
+                <ActivatorContent>
+                    <MudPaper Height="200px"
+                              Outlined="true"
+                              Class="@_dragClass">
+                        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Style="height:100%;" Spacing="2">
+                            @if (_formFile is null)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CloudUpload"
+                                         Color="Color.Primary"
+                                         Style="font-size: 3rem;" />
+                                <MudText Typo="Typo.h6">
+                                    @Resource.Draganddropfileshereorclick
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">.xlsx</MudText>
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel"
+                                         Color="Color.Success"
+                                         Style="font-size: 3rem;" />
+                                <MudChip T="string" Color="Color.Dark" Text="@_fileName" />
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">@_fileSize</MudText>
+                            }
+                        </MudStack>
+                    </MudPaper>
+                </ActivatorContent>
+            </MudFileUpload>
+
+            <MudToolBar Gutters="@false" Class="relative d-flex justify-end gap-4 mt-2">
+                <MudButton Color="Color.Error"
+                           Disabled="@(_formFile is null)"
+                           OnClick="@ClearFile"
+                           Variant="Variant.Filled"
+                           EndIcon="@Icons.Material.Filled.Clear">
+                    @Resource.Clear
+                </MudButton>
+
+                <GeneralLoadingButton Disabled="@(_formFile is null || _isValidating)"
+                                      OnClick="ValidateAndUploadAsync"
+                                      EndIcon="@Icons.Material.Filled.Upload"
+                                      ButtonColor="Color.Primary"
+                                      ButtonText="@Resource.Validate"
+                                      Type="ButtonType.Button" />
+            </MudToolBar>
+        </MudItem>
+
+        @if (_validationResponse is not null && _validationResponse.Any(r => r.ErrorMessage != null))
+        {
+            <MudDivider Class="my-6" />
+
+            <div class="d-flex justify-space-between align-center mb-3">
+                <MudTextField T="string"
+                              Value="_errorSearchText"
+                              ValueChanged="@(value => FilterErrors(value))"
+                              Placeholder="@Resource.SearchByQuestionCode"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Clearable="true"
+                              Immediate="true"
+                              DebounceInterval="300"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Style="width:260px;"
+                              Class="rounded-pill" />
+            </div>
+
+            <div style="max-height: 400px; overflow-y: auto;">
+                <MudTable T="StandaloneQuestionExcelValidationErrorDto"
+                          Items="_filteredErrorRows"
+                          Dense="true"
+                          Hover="true"
+                          Striped="true"
+                          Elevation="0"
+                          Outlined="true"
+                          FixedHeader="true">
+                    <HeaderContent>
+                        <MudTh Class="fw-bold">@Resource.row</MudTh>
+                        <MudTh Class="fw-bold">@Resource.QuestionCode</MudTh>
+                        <MudTh Class="fw-bold">@Resource.Error</MudTh>
+                    </HeaderContent>
+                    <RowTemplate Context="row">
+                        <MudTd DataLabel="Row">@row.RowNumber</MudTd>
+                        <MudTd DataLabel="QuestionCode">@row.QuestionCode</MudTd>
+                        <MudTd DataLabel="Error">
+                            <MudText Color="Color.Error" Typo="Typo.body2">@row.ErrorMessage</MudText>
+                        </MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText Typo="Typo.body2" Class="pa-4">@Resource.NoData</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </div>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">
+            @Resource.Cancel
+        </MudButton>
+        <GeneralLoadingButton Disabled="@(_isUpdating || !_isValid)"
+                              OnClick="ConfirmUpdateAsync"
+                              EndIcon="@Icons.Material.Filled.CheckCircle"
+                              ButtonColor="Color.Warning"
+                              ButtonText="@Resource.Processed"
+                              Type="ButtonType.Button" />
+    </DialogActions>
+</MudDialog>
+

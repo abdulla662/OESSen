@@ -1,0 +1,319 @@
+﻿@using OES.Helper.Dtos.Candidate.Requests
+@using OES.Helper.Dtos.Venue.Responses
+
+<MudDialog Class="overflow-hidden">
+    <DialogContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.AccountBox" Color="Color.Primary" />
+            <MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Start">@Resource.ImportCandidates</MudText>
+        </MudStack>
+        <MudPaper Class="p-4" Style="max-height: max-content; overflow-y: auto;">
+            <MudTabs Elevation="2" Rounded="true" PanelClass="px-4 py-6" ActivePanelIndexChanged="OnTabChanged">
+                <MudTabPanel Text="@Resource.UploadCandidatesFileTab">
+                    <MudGrid xs="12" Class="d-flex justify-end">
+                        <MudItem xs="12">
+                            <div class="form-group d-flex justify-content-center mt-5 gap-3">
+                                <MudTooltip Text="@Resource.DownloadTemplate">
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               EndIcon="@Icons.Material.Filled.Download"
+                                               Target="_blank"
+                                               Href="files/Candidates/AddCandidatesTemplate.xlsx">
+                                        @Resource.DownloadTemplate
+                                    </MudButton>
+                                </MudTooltip>
+                                <MudTooltip Text="@Resource.ShowCandidateRecordSample">
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               EndIcon="@Icons.Material.Filled.TableView"
+                                               Target="_blank"
+                                               Href="/CandidateTemplateRecordSample.png">
+                                        @Resource.ShowCandidateRecordSample
+                                    </MudButton>
+                                </MudTooltip>
+                                <MudFileUpload T="IBrowserFile"
+                                               @ref="normalExcelFileUploaderRef"
+                                               FilesChanged="HandleFileSelected"
+                                               Accept=".xls,.xlsx,.csv">
+                                    <ActivatorContent>
+                                        <MudTooltip Text="@Resource.UploadFile">
+                                            <MudButton Variant="Variant.Filled"
+                                                       Color="Color.Primary"
+                                                       EndIcon="@Icons.Material.Filled.Upload">
+                                                @Resource.UploadFile
+                                            </MudButton>
+                                        </MudTooltip>
+                                    </ActivatorContent>
+                                </MudFileUpload>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="12">
+                            @if (normalExcelFile != null)
+                            {
+                                <MudStack Row Justify="Justify.Center" Style="width: 100%" Wrap="Wrap.Wrap">
+                                    <MudChipSet T="string" SelectionMode="SelectionMode.SingleSelection" Color="Color.Default" Variant="Variant.Text">
+                                        <MudChip Icon="@Icons.Material.Filled.AttachFile" Text="@normalExcelFile.Name" Disabled />
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => DeleteFile())"></MudIconButton>
+                                    </MudChipSet>
+                                </MudStack>
+                            }
+                        </MudItem>
+                        <MudItem xs="12">
+                            <div class="text-divider mb-5">@Resource.SelectVenueForCandidates</div>
+                            <MudSelect T="GetVenueResponseDto"
+                                       Label="@Resource.Venues"
+                                       @bind-Value="_selectedVenue"
+                                       Variant="Variant.Outlined"
+                                       AnchorOrigin="Origin.BottomCenter"
+                                       Required
+                                       Immediate
+                                       Clearable
+                                       HelperText="@Resource.SelectoneormoreVenuesfortheSchedule"
+                                       ToStringFunc="@(l => l.Name)">
+                                @foreach (var venue in ScheduleVenues)
+                                {
+                                    <MudSelectItem Value="@venue">@venue.Name</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" Class="mt-4">
+                            <MudAlert Severity="Severity.Info"
+                                      Variant="Variant.Filled"
+                                      Class="pa-6 rounded-xl border border-info shadow-sm">
+                                <div>
+                                    <MudStack AlignItems="AlignItems.Start" Spacing="2" Class="mb-4">
+                                        <MudStack>
+                                            <MudText Typo="Typo.h6" Class="font-weight-bold text-warning-dark">
+                                                @Resource.ImportantImportGuidelines
+                                            </MudText>
+                                            <MudText Typo="Typo.body2" Class="font-weight-bold text-warning-dark">
+                                                @Resource.EnsureFileMeetsRequirementsBeforeImport
+                                            </MudText>
+                                        </MudStack>
+                                    </MudStack>
+
+                                    <!-- Guidelines Grid -->
+                                    <MudGrid Spacing="3" Class="mb-4">
+                                        <MudItem xs="12" sm="6">
+                                            <MudPaper Elevation="2" Class="pa-3 rounded-lg border-left-error bg-error-light">
+                                                <div class="d-flex align-center mb-2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Error" Size="Size.Small" Class="mr-2" />
+                                                    <MudText Typo="Typo.subtitle2" Class="font-weight-bold text-error-dark">
+                                                        @Resource.NoDuplicatesRequired
+                                                    </MudText>
+                                                </div>
+                                                <MudText Typo="Typo.body2" Color="Color.Primary">
+                                                    @((MarkupString)Resource.NoDuplicatesBody)
+                                                </MudText>
+                                            </MudPaper>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="6">
+                                            <MudPaper Elevation="2" Class="pa-3 rounded-lg border-left-warning bg-warning-light">
+                                                <div class="d-flex align-center mb-2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.ChecklistRtl" Color="Color.Warning" Size="Size.Small" Class="mr-2" />
+                                                    <MudText Typo="Typo.subtitle2" Class="font-weight-bold text-warning-dark">
+                                                        @Resource.CompleteAllFields
+                                                    </MudText>
+                                                </div>
+                                                <MudText Typo="Typo.body2" Color="Color.Primary">
+                                                    @Resource.CompleteAllFieldsBody
+                                                </MudText>
+                                            </MudPaper>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="6">
+                                            <MudPaper Elevation="2" Class="pa-3 rounded-lg border-left-secondary bg-secondary-light">
+                                                <div class="d-flex align-center mb-2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.DateRange" Color="Color.Secondary" Size="Size.Small" Class="mr-2" />
+                                                    <MudText Typo="Typo.subtitle2" Class="font-weight-bold text-secondary-dark">
+                                                        @Resource.CorrectDateFormat
+                                                    </MudText>
+                                                </div>
+                                                <MudText Typo="Typo.body2" Color="Color.Primary">
+                                                    @Resource.CorrectDateFormatBody
+                                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Secondary" Class="ml-1 font-monospace">
+                                                        @Resource.DateTimeFormatExample
+                                                    </MudChip>
+                                                </MudText>
+                                            </MudPaper>
+                                        </MudItem>
+                                    </MudGrid>
+                                    <MudDivider Class="my-3" />
+                                    <div class="d-flex align-center justify-center pa-2 bg-error-light rounded-lg">
+                                        <MudIcon Icon="@Icons.Material.Filled.TipsAndUpdates" Color="Color.Error" Size="Size.Small" Class="mr-2" />
+                                        <MudText Typo="Typo.body2" Class="text-center font-weight-medium text-error-dark">
+                                            @Resource.FooterGuidelinesWarning
+                                        </MudText>
+                                    </div>
+                                </div>
+                            </MudAlert>
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
+
+                <MudTabPanel Text="@Resource.DumpImportCandidatesTab">
+                    <MudGrid xs="12" Class="d-flex justify-end">
+                        <MudItem xs="12">
+                            <div class="form-group d-flex justify-content-center mt-5 gap-3">
+                                <MudTooltip Text="@Resource.DownloadTemplate">
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               EndIcon="@Icons.Material.Filled.Download"
+                                               OnClick="DownloadCandidatesWithVenuesTemplateAsync">
+                                        @Resource.DownloadTemplate
+                                    </MudButton>
+                                </MudTooltip>
+                                <MudTooltip Text="@Resource.ShowCandidateRecordSample">
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               EndIcon="@Icons.Material.Filled.TableView"
+                                               Target="_blank"
+                                               Href="/DumpCandidateTemplateRecordSample.png">
+                                        @Resource.ShowCandidateRecordSample
+                                    </MudButton>
+                                </MudTooltip>
+                                <MudFileUpload T="IBrowserFile"
+                                               @ref="autoExcelFileUploaderRef"
+                                               FilesChanged="HandleFileSelected"
+                                               Accept=".xls,.xlsx,.csv">
+                                    <ActivatorContent>
+                                        <MudTooltip Text="@Resource.UploadFile">
+                                            <MudButton Variant="Variant.Filled"
+                                                       Color="Color.Primary"
+                                                       EndIcon="@Icons.Material.Filled.SupervisedUserCircle">
+                                                @Resource.AutoImport
+                                            </MudButton>
+                                        </MudTooltip>
+                                    </ActivatorContent>
+                                </MudFileUpload>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="12" Class="my-5">
+                            @if (autoExcelFile != null)
+                            {
+                                <MudStack Row Justify="Justify.Center" Style="width: 100%" Wrap="Wrap.Wrap">
+                                    <MudChipSet T="string" SelectionMode="SelectionMode.SingleSelection" Color="Color.Default" Variant="Variant.Text">
+                                        <MudChip Icon="@Icons.Material.Filled.AttachFile" Text="@autoExcelFile.Name" Disabled />
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => DeleteFile())"></MudIconButton>
+                                    </MudChipSet>
+                                </MudStack>
+                            }
+                        </MudItem>
+                        <MudItem xs="12" Class="mt-4">
+                            <MudAlert Severity="Severity.Info"
+                                      Variant="Variant.Filled"
+                                      Class="pa-6 rounded-xl border border-info shadow-sm">
+                                <div>
+                                    <MudStack AlignItems="AlignItems.Start" Spacing="2" Class="mb-4">
+                                        <MudStack>
+                                            <MudText Typo="Typo.h6" Class="font-weight-bold text-warning-dark">
+                                                @Resource.ImportantImportGuidelines
+                                            </MudText>
+                                            <MudText Typo="Typo.body2" Class="font-weight-bold text-warning-dark">
+                                                @Resource.EnsureFileMeetsRequirementsBeforeImport
+                                            </MudText>
+                                        </MudStack>
+                                    </MudStack>
+
+                                    <!-- Guidelines Grid -->
+                                    <MudGrid Spacing="3" Class="mb-4">
+                                        <MudItem xs="12" sm="6">
+                                            <MudPaper Elevation="2" Class="pa-3 rounded-lg border-left-error bg-error-light">
+                                                <div class="d-flex align-center mb-2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Error" Size="Size.Small" Class="mr-2" />
+                                                    <MudText Typo="Typo.subtitle2" Class="font-weight-bold text-error-dark">
+                                                        @Resource.NoDuplicatesRequired
+                                                    </MudText>
+                                                </div>
+                                                <MudText Typo="Typo.body2" Color="Color.Primary">
+                                                    @((MarkupString)Resource.NoDuplicatesBody)
+                                                </MudText>
+                                            </MudPaper>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="6">
+                                            <MudPaper Elevation="2" Class="pa-3 rounded-lg border-left-warning bg-warning-light">
+                                                <div class="d-flex align-center mb-2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.ChecklistRtl" Color="Color.Warning" Size="Size.Small" Class="mr-2" />
+                                                    <MudText Typo="Typo.subtitle2" Class="font-weight-bold text-warning-dark">
+                                                        @Resource.CompleteAllFields
+                                                    </MudText>
+                                                </div>
+                                                <MudText Typo="Typo.body2" Color="Color.Primary">
+                                                    @Resource.CompleteAllFieldsBody
+                                                </MudText>
+                                            </MudPaper>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="6">
+                                            <MudPaper Elevation="2" Class="pa-3 rounded-lg border-left-info bg-info-light">
+                                                <div class="d-flex align-center mb-2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.FindInPage" Color="Color.Info" Size="Size.Small" Class="mr-2" />
+                                                    <MudText Typo="Typo.subtitle2" Class="font-weight-bold text-info-dark">
+                                                        @Resource.ValidSystemIds
+                                                    </MudText>
+                                                </div>
+                                                <MudText Typo="Typo.body2" Color="Color.Primary">
+                                                    @Resource.ValidSystemIdsBody
+                                                </MudText>
+                                            </MudPaper>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="6">
+                                            <MudPaper Elevation="2" Class="pa-3 rounded-lg border-left-secondary bg-secondary-light">
+                                                <div class="d-flex align-center mb-2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.DateRange" Color="Color.Secondary" Size="Size.Small" Class="mr-2" />
+                                                    <MudText Typo="Typo.subtitle2" Class="font-weight-bold text-secondary-dark">
+                                                        @Resource.CorrectDateFormat
+                                                    </MudText>
+                                                </div>
+                                                <MudText Typo="Typo.body2" Color="Color.Primary">
+                                                    @Resource.CorrectDateFormatBody
+                                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Secondary" Class="ml-1 font-monospace">
+                                                        @Resource.DateTimeFormatExample
+                                                    </MudChip>
+                                                </MudText>
+                                            </MudPaper>
+                                        </MudItem>
+                                    </MudGrid>
+                                    <MudDivider Class="my-3" />
+                                    <div class="d-flex align-center justify-center pa-2 bg-error-light rounded-lg">
+                                        <MudIcon Icon="@Icons.Material.Filled.TipsAndUpdates" Color="Color.Error" Size="Size.Small" Class="mr-2" />
+                                        <MudText Typo="Typo.body2" Class="text-center font-weight-medium text-error-dark">
+                                            @Resource.FooterGuidelinesWarning
+                                        </MudText>
+                                    </div>
+                                </div>
+                            </MudAlert>
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
+            </MudTabs>
+        </MudPaper>
+    </DialogContent>
+    <DialogActions>
+        <MudStack Row Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="2" Class="w-100 mt-6">
+            @if (_activeTabIndex == 0)
+            {
+                <GeneralLoadingButton Disabled="@isProcessingFile"
+                                      EndIcon="@Icons.Material.Filled.CloudUpload"
+                                      Class="flex-fill"
+                                      Type="ButtonType.Button"
+                                      OnClick="SubmitSelection"
+                                      ButtonText="@Resource.Upload" />
+            }
+            else if (_activeTabIndex == 1)
+            {
+                <GeneralLoadingButton Disabled="@isProcessingFile"
+                                      EndIcon="@Icons.Material.Filled.CloudUpload"
+                                      Class="flex-fill"
+                                      Type="ButtonType.Button"
+                                      OnClick="SubmitDumpImport"
+                                      ButtonText="@Resource.Upload" />
+            }
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       EndIcon="@Icons.Material.Filled.Cancel"
+                       OnClick="Cancel"
+                       Class="flex-fill">
+                @Resource.Cancel
+            </MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

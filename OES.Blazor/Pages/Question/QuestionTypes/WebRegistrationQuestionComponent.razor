@@ -1,0 +1,142 @@
+@using OES.Blazor.Components.GenericComponents.TextEditor
+
+<EditForm OnSubmit="OnSubmitAsync" Model="@Model">
+    <DataAnnotationsValidator />
+    <MudGrid Spacing="1">
+        <MudItem xs="12">
+            <MudStack Spacing="1" Class="mb-2">
+                <MudText Typo="Typo.h6" Class="editor-label-text fw-bold">@Resource.Settings</MudText>
+            </MudStack>
+            <MudPaper Elevation="0" Outlined="true" Class="pa-4 rounded-lg question-settings-card-parent">
+                <MudStack Row="true" Spacing="6" AlignItems="AlignItems.Start" Justify="Justify.FlexStart" Wrap="Wrap.Wrap">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+                            @Resource.SelectLanguage
+                        </MudText>
+                        <MudSelect @bind-Value="SelectedLanguage"
+                                   Immediate
+                                   Dense="true"
+                                   Class="rounded-setting-field language-selector"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   ToStringFunc="@(l => l?.Name)"
+                                   Error="@(_isSubmitButtonHit && SelectedLanguage.Id == 0)"
+                                   ErrorText="@_requiredErrorText"
+                                   Required
+                                   AdornmentIcon="@Icons.Material.Filled.Language"
+                                   AdornmentColor="Color.Primary"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var language in LanguagesList)
+                            {
+                                <MudSelectItem Value="language" />
+                            }
+                        </MudSelect>
+                    </MudStack>
+
+                    <MudStack Spacing="0">
+                        <NumberLanguageSelector @bind-Value="Model.UseArabicNumbers" />
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="QuestionBodyParams"
+                        @ref="@QuestionBodyParams.TextEditor">
+                <ActionContent>
+                    @if (IsReplaceMode && !string.IsNullOrEmpty(Model.AttachmentFileName))
+                    {
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="RemoveBodyMedia">@Resource.RemoveMedia</MudButton>
+                    }
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="InstructionsEditorParams"
+                        @ref="@InstructionsEditorParams.TextEditor">
+                <ActionContent>
+                    <MudStack Row="true" Spacing="2">
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.CheckCircle"
+                                              OnClick="async e => await SaveInstructionAsTemplate()"
+                                              ButtonColor="Color.Secondary"
+                                              ButtonText="@Resource.SaveAsTemplateInstructions"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.Article"
+                                              OnClick="async e => await LoadInstructionTemplate()"
+                                              ButtonColor="Color.Surface"
+                                              ButtonText="@Resource.LoadTemplates"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+                    </MudStack>
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.h6" Class="mb-3" Style="font-weight:600;">@Resource.ExpectedRegistrationDetails</MudText>
+            <MudPaper Elevation="0" Outlined="true" Class="pa-4 rounded-lg">
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_expectedFirstName"
+                                      Label="@Resource.ExpectedFirstName"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_expectedFirstName))"
+                                      ErrorText="@_requiredErrorText"
+                                      Class="mb-3" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_expectedLastName"
+                                      Label="@Resource.ExpectedLastName"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_expectedLastName))"
+                                      ErrorText="@_requiredErrorText"
+                                      Class="mb-3" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_expectedEmail"
+                                      Label="@Resource.ExpectedEmail"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_expectedEmail))"
+                                      ErrorText="@_requiredErrorText"
+                                      Class="mb-3" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_expectedPassword"
+                                      Label="@Resource.ExpectedPassword"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_expectedPassword))"
+                                      ErrorText="@_requiredErrorText"
+                                      Class="mb-3" />
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" Class="d-flex justify-content-center mt-4">
+            <MudStack Row="true" Spacing="4" Class="w-50">
+                <GeneralLoadingButton Class="flex-grow-1 p-2 rounded-pill"
+                                      Size="Size.Small"
+                                      ButtonText="@Resource.Save"
+                                      IsLoading="@_processing"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit" />
+
+                <MudButton Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           Color="Color.Secondary"
+                           OnClick="CancelDialogAsync"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</EditForm>

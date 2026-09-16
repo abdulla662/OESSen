@@ -1,0 +1,92 @@
+@using OES.Blazor.Components.GenericComponents.TreeViewTemplates.GrpcTreeViewTemplate
+@using OES.Helper.Dtos.OESUserGroups
+@using OES.Helper.General
+
+<MudDialog Style="max-height: 84vh; max-width: 60vw; overflow-y: auto;">
+    <TitleContent>
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <MudIcon Icon="@Icons.Material.Outlined.AccountBalance" Color="Color.Primary" Class="me-2" Size="Size.Small" />
+            <MudText Typo="Typo.h4" Color="Color.Primary">
+                @Resource.EditItemBank
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.GroupAdd"
+                           Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           Size="Size.Medium"
+                           OnClick="OpenGroupDialog" />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField T="string"
+                      Label="@Resource.Name"
+                      @bind-Value="EditItemBankNodeDto.Name"
+                      AutoFocus="true"
+                      Clearable="true"
+                      Immediate="true"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense">
+        </MudTextField>
+
+        <MudTextField T="string"
+                      Label="@Resource.Code"
+                      Value="@EditItemBankNodeDto.Code"
+                      ValueChanged="@((string val) => EditItemBankNodeDto.Code = ListHelpers.SanitizeCode(val))"
+                      AutoFocus="true"
+                      Clearable="true"
+                      Immediate="true"
+                      Variant="Variant.Outlined"
+                      Class="mt-4">
+        </MudTextField>
+
+        <MudTextField T="string"
+                      Label="@Resource.Description"
+                      @bind-Value="EditItemBankNodeDto.Description"
+                      Clearable="true"
+                      Immediate="true"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense">
+        </MudTextField>
+
+        <div class="form-group d-flex justify-content-center gap-4 mt-4 mb-2">
+            <MudSwitch Value="_unscored"
+                       ValueChanged="@((bool val) => OnUnscoredChanged(val))" 
+                       Label="@Resource.Unscored" 
+                       Color="Color.Warning" />
+        @* NOTE: Hours field is disabled for now *@
+        @* <MudNumericField T="float"
+                         Label="@Resource.Hours"
+                         @bind-Value="EditItemBankNodeDto.Hours"
+                         Clearable="true"
+                         Immediate="true"
+                         Variant="Variant.Outlined"
+                         Margin="Margin.Dense">
+            </MudNumericField> *@
+
+            <MudSwitch @bind-Value="EditItemBankNodeDto.IsActive" Disabled="!EditItemBankNodeDto.ParentIsActive" Label="@Resource.Active" Color="Color.Primary" />
+        </div>
+
+        <GrpcTreeViewTemplate LabelClass="mt-2 mb-1"
+                              Label="@Resource.ParentNodewithNoteMessage"
+                              Items="@Parents"
+                              IsSingleSelectionTree="true"
+                              GetSelectedTreeItem="GetSelectedTreeItem"
+                              SelectedItemId="@Convert.ToInt64(EditItemBankNodeDto.ParentId)" />
+    </DialogContent>
+    <DialogActions>
+        <div class="d-flex justify-content-center align-content-center gap-2 w-100 pb-2">
+            <GeneralLoadingButton Disabled="IsSubmitButtonDisabled"
+                                  Class="flex-fill"
+                                  Size="Size.Small"
+                                  OnClick="Submit"
+                                  ButtonText="@Resource.Update"
+                                  EndIcon="@Icons.Material.Filled.CheckCircle"
+                                  Type="ButtonType.Submit" />
+            <MudButton OnClick="Cancel"
+                       Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       Class="flex-fill"
+                       Size="Size.Small"
+                       EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>

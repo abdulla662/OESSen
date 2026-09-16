@@ -1,0 +1,77 @@
+﻿@using OES.Helper.Dtos.Candidate
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center justify-space-between pa-2">
+            <div class="d-flex align-center gap-3">
+                <MudAvatar Color="Color.Error" Size="Size.Medium" Variant="Variant.Filled">
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Size="Size.Medium" />
+                </MudAvatar>
+                <div>
+                    <MudText Typo="Typo.h5" Class="font-weight-bold">@Resource.ImportIssuesDetected</MudText>
+                    <MudText Typo="Typo.body2" Class="text-muted">@Resource.ReviewAndDismissResolvedIssues</MudText>
+                </div>
+            </div>
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                           Color="Color.Inherit"
+                           OnClick="CloseDialog"
+                           Size="Size.Medium" />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        @if (CandidateCombinedErrorsResponseDto.IsExcelValid != null)
+        {
+            <MudPaper Class="mb-3 p-2 d-flex align-center justify-center" Style="background-color: #E8F5E9; border-radius: 8px;">
+                <MudIcon Icon="@(CandidateCombinedErrorsResponseDto.IsExcelValid == true ? Icons.Material.Filled.CheckCircle : @Icons.Material.Filled.Cancel)" Color="@(CandidateCombinedErrorsResponseDto.IsExcelValid == true? Color.Success: Color.Error)" Class="mr-2" />
+                <MudText Typo="Typo.body1" Color="Color.Success">
+                    @(CandidateCombinedErrorsResponseDto.IsExcelValid == true? Resource.ExcelValid: Resource.ExcelNotValid)
+                </MudText>
+            </MudPaper>
+        }
+        @if (CandidateCombinedErrorsResponseDto.AreVenuesValid != null)
+        {
+            <MudPaper Class="mb-3 p-2 d-flex align-center justify-center" Style="background-color: #E8F5E9; border-radius: 8px;">
+                <MudIcon Icon="@(CandidateCombinedErrorsResponseDto.AreVenuesValid == true ? Icons.Material.Filled.CheckCircle : @Icons.Material.Filled.Cancel)" Color="@(CandidateCombinedErrorsResponseDto.AreVenuesValid == true? Color.Success: Color.Error)" Class="mr-2" />
+                <MudText Typo="Typo.body1" Color="Color.Success">
+                    @(CandidateCombinedErrorsResponseDto.AreVenuesValid == true ? Resource.VenueValid: Resource.VenueNotValid)
+                </MudText>
+            </MudPaper>
+        }
+        @if (CandidateCombinedErrorsResponseDto.IsDuplicationValid != null)
+        {
+            <MudPaper Class="mb-3 p-2 d-flex align-center justify-center" Style="background: var(--mud-palette-surface);">
+                <MudIcon Icon="@(CandidateCombinedErrorsResponseDto.IsDuplicationValid == true? Icons.Material.Filled.CheckCircle : @Icons.Material.Filled.Cancel)" Color="@(CandidateCombinedErrorsResponseDto.IsDuplicationValid == true? Color.Success: Color.Error)" Class="mr-2" />
+                <MudText Typo="Typo.body1" Color="Color.Success">
+                    @(CandidateCombinedErrorsResponseDto.IsDuplicationValid == true ? Resource.DbDuplicationValid: Resource.DbDuplicationNotValid)
+                </MudText>
+            </MudPaper>
+        }
+        <MudContainer MaxWidth="MaxWidth.False" Class="pa-0">
+            <ListItem T="ExcelValidationErrorDto"
+                      Caption="@Resource.Candidate"
+                      CaptionIcon="@Icons.Material.Filled.AccountBox"
+                      EndpointServerice="ConvertToDataTableAsync"
+                      DisplayColumns='[ nameof(ExcelValidationErrorDto.RowNumber),
+                                        nameof(ExcelValidationErrorDto.CandidateIdentifier),
+                                        nameof(ExcelValidationErrorDto.FieldName),
+                                        nameof(ExcelValidationErrorDto.ErrorMessage),
+                                        nameof(ExcelValidationErrorDto.Value) ]'
+                      SearchPanelVisible="false">
+            </ListItem>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <div class="d-flex align-center gap-2">
+            <MudIcon Icon="@Icons.Material.Filled.Lightbulb" Color="Color.Warning" Size="Size.Small" />
+            <MudText Typo="Typo.body2" Class="text-muted">
+                @Resource.CheckItemsYouveResolvedToDismissThemFromView
+            </MudText>
+        </div>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Secondary"
+                   OnClick="CloseDialog"
+                   EndIcon="@Icons.Material.Filled.Cancel">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

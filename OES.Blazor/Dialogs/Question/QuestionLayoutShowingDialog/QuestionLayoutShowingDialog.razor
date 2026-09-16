@@ -1,0 +1,168 @@
+@using OES.Blazor.Pages.QuestionLayout.EssayLayout
+@using OES.Blazor.Pages.QuestionLayout.FileUploadResponseLayout
+@using OES.Blazor.Pages.QuestionLayout.FillInTheBlank
+@using OES.Blazor.Pages.QuestionLayout.EmailQuestion
+@using OES.Blazor.Pages.QuestionLayout.HotSpot
+@using OES.Blazor.Pages.QuestionLayout.McqLayouts
+@using OES.Blazor.Pages.QuestionLayout.MultiCorrectAnswerLayout
+@using OES.Blazor.Pages.QuestionLayout.PaperAnsweredQuestion
+@using OES.Blazor.Pages.QuestionLayout.SegmentLayouts
+@using OES.Blazor.Pages.QuestionLayout.TrueAndFalseLayout
+@using OES.Blazor.Pages.QuestionLayout.WebSearchLayout
+@using OES.Blazor.Pages.QuestionLayout.comprehensionLayouts
+@using OES.Blazor.Pages.QuestionLayout.MatchingPairsLayout
+@using OES.Blazor.Pages.QuestionLayout.MatchingPairsWithDragDropLayout
+@using OES.Blazor.Pages.QuestionLayout.OrderingLayout
+@using OES.Blazor.Pages.QuestionLayout.WebRegistrationLayout
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Enums
+
+<MudDialog TitleClass="fw-bold font-weight-bold" Class="device-layout-showcasing">
+    <TitleContent>
+        <MudText Typo="Typo.h5">
+            @Resource.DeviceLayoutShowcasing
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12">
+                @if (QuestionType == nameof(Helper.Enums.QuestionType.Essay))
+                {
+                    <EssayLayout ScreenSize="SelectedScreenSize"
+                                 Model="Model"
+                                 ScreenSizeClass="@SelectScreenSizeClass"
+                                 Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.HotSpotWithClicks))
+                {
+                    <HotSpotWithClicksLayout ScreenSize="SelectedScreenSize"
+                                             Model="Model"
+                                             ScreenSizeClass="@SelectScreenSizeClass"
+                                             Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.HotSpotWithDragDrop))
+                {
+                    <HotSpotWithDragAndDropLayout ScreenSize="SelectedScreenSize"
+                                                  Model="Model"
+                                                  ScreenSizeClass="@SelectScreenSizeClass"
+                                                  Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.FileUploadResponse))
+                {
+                    <FileUploadResponseLayout ScreenSize="SelectedScreenSize"
+                                              Model="Model"
+                                              ScreenSizeClass="@SelectScreenSizeClass"
+                                              Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.Segment))
+                {
+                    <SegmentLayout ScreenSize="SelectedScreenSize"
+                                   Model="Model"
+                                   ScreenSizeClass="@SelectScreenSizeClass"
+                                   Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.SegmentWithAudioAnswer))
+                {
+                    <SegmentLayoutWithAudioAnswer ScreenSize="SelectedScreenSize"
+                                                  Model="Model"
+                                                  ScreenSizeClass="@SelectScreenSizeClass"
+                                                  Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.SegmentWithVideoAnswer))
+                {
+                    <SegmentLayoutWithVideoAnswer ScreenSize="SelectedScreenSize"
+                                                  Model="Model"
+                                                  ScreenSizeClass="@SelectScreenSizeClass"
+                                                  Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.FillInTheBlank))
+                {
+                    <FillInTheBlank ScreenSize="SelectedScreenSize"
+                                    Model="Model"
+                                    ScreenSizeClass="@SelectScreenSizeClass"
+                                    Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.TrueAndFalse))
+                {
+                    <TrueAndFalseLayout ScreenSize="SelectedScreenSize"
+                                        Model="Model"
+                                        ScreenSizeClass="@SelectScreenSizeClass" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.Comprehension))
+                {
+                    <ComprehensionLayout ScreenSize="SelectedScreenSize"
+                                         Model="Model"
+                                         ScreenSizeClass="@SelectScreenSizeClass"
+                                         Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.MCQ))
+                {
+                    <Mcqlayout ScreenSize="SelectedScreenSize"
+                               Model="Model"
+                               ScreenSizeClass="@SelectScreenSizeClass"
+                               Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.MultipleCorrectAnswers))
+                {
+                    <MultiCorrectAnswer ScreenSize="SelectedScreenSize"
+                                        Model="Model"
+                                        ScreenSizeClass="@SelectScreenSizeClass"
+                                        Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.MatchingPairs))
+                {
+                    <MatchingPairsLayout ScreenSize="SelectedScreenSize"
+                                         Model="Model"
+                                         ScreenSizeClass="@SelectScreenSizeClass"
+                                         Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.Ordering))
+                {
+                    <OrderingQuestionLayout ScreenSize="SelectedScreenSize"
+                                            Model="Model"
+                                            ScreenSizeClass="@SelectScreenSizeClass"
+                                            Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.MatchingPairsWithDragDrop))
+                {
+                    <MatchingPairsWithDragDropLayout ScreenSize="SelectedScreenSize"
+                                                     Model="Model"
+                                                     ScreenSizeClass="@SelectScreenSizeClass"
+                                                     Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.PaperAnsweredQuestion))
+                {
+                    <PaperAnsweredQuestionLayout ScreenSize="SelectedScreenSize"
+                                                 Model="Model"
+                                                 ScreenSizeClass="@SelectScreenSizeClass"
+                                                 Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.WebSearch))
+                {
+                    <WebSearchLayout ScreenSize="SelectedScreenSize"
+                                     Model="Model"
+                                     ScreenSizeClass="@SelectScreenSizeClass"
+                                     Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.Email))
+                {
+                    <EmailQuestionLayout ScreenSize="SelectedScreenSize"
+                                         Model="Model"
+                                         ScreenSizeClass="@SelectScreenSizeClass"
+                                         Orientation="Orientation" />
+                }
+                else if (QuestionType == nameof(Helper.Enums.QuestionType.WebRegistration))
+                {
+                    <WebRegistrationLayout ScreenSize="SelectedScreenSize"
+                                           Model="Model"
+                                           ScreenSizeClass="@SelectScreenSizeClass"
+                                           Orientation="Orientation"
+                                           IsReadOnly="true" />
+                }
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

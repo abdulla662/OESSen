@@ -1,0 +1,479 @@
+@page "/SyncStatus"
+
+@attribute [DynamicAuthorizeAttribute("SyncStatus")]
+
+@using MudBlazor
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.ResourceFiles
+@using SharedHelper.Enums
+
+<PageTitle>@Resource.ExamServerSyncMonitoringDashboard</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="mt-4">
+
+    <!-- Page Header -->
+    <MudText Typo="Typo.h4" Class="mb-4" Align="Align.Center">
+        <MudIcon Icon="@Icons.Material.Filled.CloudSync" Class="mr-2" />
+        @Resource.ExamServerSyncMonitoringDashboard
+    </MudText>
+
+    <!-- Global Filters -->
+    <MudPaper Elevation="2" Class="pa-4 mb-4">
+        <MudGrid Spacing="2">
+            <MudItem xs="12" sm="6" md="3">
+                <MudDatePicker @bind-Date="_selectedDate"
+                               Label="@Resource.ExamDate"
+                               Variant="Variant.Outlined"
+                               PickerVariant="PickerVariant.Dialog" />
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudSelect T="SyncRunType" @bind-Value="_selectedRunType"
+                           Label="@Resource.RunType"
+                           Variant="Variant.Outlined">
+                    <MudSelectItem Value="@(SyncRunType.Daily)">@Resource.Daily</MudSelectItem>
+                    <MudSelectItem Value="@(SyncRunType.ManualRerun)">@Resource.ManualRerun</MudSelectItem>
+                    <MudSelectItem Value="@(SyncRunType.Backfill)">@Resource.Backfill</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudSelect T="string" @bind-SelectedValues="_selectedSeriesCodes"
+                           Label="@Resource.ExamSeries"
+                           Variant="Variant.Outlined"
+                           MultiSelection="true"
+                           SelectAll="true"
+                           SelectAllText="@Resource.SelectAll">
+                    @foreach (var series in _examSeriesCodes)
+                    {
+                        <MudSelectItem Value="@series">@series</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudAutocomplete T="string" @bind-Value="_selectedCenter"
+                                 Label="@Resource.FilterByCenter"
+                                 Variant="Variant.Outlined"
+                                 SearchFunc="@SearchCenters"
+                                 ResetValueOnEmptyText="true"
+                                 Clearable="true" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <!-- Manual Sync Action Card -->
+    <MudCard Elevation="3" Class="mb-4">
+        <MudCardContent Class="pa-4">
+            <MudGrid Spacing="2" Justify="Justify.SpaceBetween" Class="align-center">
+                <MudItem xs="12" md="8">
+                    <div class="d-flex align-center">
+                        <MudAvatar Color="Color.Primary" Size="Size.Large" Class="mr-3">
+                            <MudIcon Icon="@Icons.Material.Filled.Sync" />
+                        </MudAvatar>
+                        <div>
+                            <MudText Typo="Typo.h6">@Resource.ManualSyncAllVenues</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                @Resource.ManualSyncDescription
+                            </MudText>
+                        </div>
+                    </div>
+                </MudItem>
+                <MudItem xs="12" md="4" Class="d-flex justify-end align-center">
+                    <GeneralLoadingButton ButtonText="@Resource.StartManualSync"
+                                          LoadingText="@Resource.Syncing"
+                                          StartIcon="@Icons.Material.Filled.PlayArrow"
+                                          OnClick="@OnManualSyncClicked"
+                                          Disabled="@(_isSyncRunning || !_selectedDate.HasValue)"
+                                          Size="Size.Large" />
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
+
+    <MudCard Elevation="3" Class="mb-4">
+        <MudCardContent Class="pa-4">
+            <MudGrid Spacing="2" Justify="Justify.SpaceBetween" Class="align-center">
+                <MudItem xs="12" md="8">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="0">
+                        <MudAvatar Color="Color.Primary" Size="Size.Large" Class="mr-3">
+                            <MudIcon Icon="@Icons.Material.Filled.Sync" />
+                        </MudAvatar>
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.h6">@Resource.ManualSyncCandidateAnswersToEvaluation</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                @Resource.ManualSyncCandidateAnswersToEvaluationDescription
+                            </MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12" md="4" Class="d-flex justify-end align-center">
+                    <GeneralLoadingButton ButtonText="@Resource.StartCandidateAnswersSync"
+                                          LoadingText="@Resource.Syncing"
+                                          StartIcon="@Icons.Material.Filled.PlayArrow"
+                                          OnClick="@OnManualSyncCandidateAnswersClicked"
+                                          Disabled="@(!_selectedDate.HasValue)"
+                                          Size="Size.Large" />
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
+
+    <!-- KPI Cards Section -->
+    <MudGrid Spacing="3" Class="mb-4">
+        <!-- Central to Centers Sync Status -->
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard Elevation="3" Class="pa-4" Style="min-height: 220px;">
+                <MudCardContent Class="d-flex flex-column" Style="height: 100%;">
+                    <div class="d-flex align-center justify-space-between mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Sync" Color="@GetSyncStatusColor()" Size="Size.Large" />
+                        <MudText Typo="Typo.h6">@Resource.CentralToCentersSyncStatus</MudText>
+                    </div>
+                    <div class="flex-grow-1 d-flex flex-column justify-center">
+                        <MudText Typo="Typo.h4" Color="@GetSyncStatusColor()" Class="mb-2">@_syncStatusOESToCESReport.Status</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-1">@Resource.No: @_syncStatusOESToCESReport.JobCount</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-1">@Resource.Venue: @_syncStatusOESToCESReport.VenueName</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-1">@Resource.LastRun: @_syncStatusOESToCESReport.LatestRunDate</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-2">@Resource.Duration: @_syncStatusOESToCESReport.Duration</MudText>
+                    </div>
+                    <MudProgressLinear Value="@_syncProgress" Color="@GetSyncStatusColor()" Size="Size.Medium" />
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <!-- Centers to Central Sync Status -->
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard Elevation="3" Class="pa-4" Style="min-height: 220px;">
+                <MudCardContent Class="d-flex flex-column" Style="height: 100%;">
+                    <div class="d-flex align-center justify-space-between mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.SyncAlt" Color="@GetReverseSyncStatusColor()" Size="Size.Large" />
+                        <MudText Typo="Typo.h6">@Resource.CentersToCentralSyncStatus</MudText>
+                    </div>
+                    <div class="flex-grow-1 d-flex flex-column justify-center">
+                        <MudText Typo="Typo.h4" Color="@GetReverseSyncStatusColor()" Class="mb-2">@_syncStatusCESToOESReport.Status</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-1">@Resource.Examinees: @_syncStatusCESToOESReport.CandidateCount</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-1">@Resource.Venue: @_syncStatusCESToOESReport.VenueCode</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-1">@Resource.LastRun: @_syncStatusCESToOESReport.LatestRunTime</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-2">@Resource.Duration: @($"{(_syncStatusCESToOESReport.Duration / 60):D2}:{(_syncStatusCESToOESReport.Duration % 60):D2}")</MudText>
+                    </div>
+                    <MudProgressLinear Value="@_reverseSyncProgress" Color="@GetReverseSyncStatusColor()" Size="Size.Medium" />
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <!-- Total Examinees (CBT → Central) -->
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard Elevation="3" Class="pa-4" Style="min-height: 220px;">
+                <MudCardContent Class="d-flex flex-column" Style="height: 100%;">
+                    <div class="d-flex align-center justify-space-between mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Primary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6">@Resource.CBTToCentral</MudText>
+                    </div>
+                    <div class="flex-grow-1 d-flex flex-column justify-center">
+                        <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-2">@_totalExamineesPulled @Resource.Candidates</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-1">@Resource.LastRun: @_cbtLastRunTimestamp</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-1">
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" Class="mr-1" />
+                            @Resource.AssignedToPaper: @_assignedToPaperCount
+                        </MudText>
+                        <MudText Typo="Typo.body2" Class="mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" Class="mr-1" />
+                            @Resource.NotAssigned: @_notAssignedToPaperCount
+                        </MudText>
+                    </div>
+                    <MudProgressLinear Value="@_cbtImportProgress" Color="Color.Primary" Size="Size.Medium" />
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+    <!-- Pipeline Health Visualization -->
+    <MudPaper Elevation="2" Class="pa-4 mb-4">
+        <MudText Typo="Typo.h5" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.Timeline" Class="mr-2" />
+            @Resource.SyncPipelineHealth
+        </MudText>
+        <MudGrid Spacing="2">
+            <!-- Step 1: CBT Pull -->
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="1" Class="pa-3">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Download" Color="@_step1Color" Size="Size.Medium" Class="mr-2" />
+                        <MudText Typo="Typo.h6">1. @Resource.CBTPull</MudText>
+                    </div>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Status: @_step1Status</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.SuccessCenterCalls: @_step1ApiCalls</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Examinees: @_step1Examinees</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">@Resource.AvgTime: @_step1AvgTime ms</MudText>
+                    <MudProgressLinear Value="100" Color="@_step1Color" Size="Size.Small" />
+                </MudPaper>
+            </MudItem>
+
+            <!-- Step 2: Central Processing -->
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="1" Class="pa-3">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Storage" Color="@_step2Color" Size="Size.Medium" Class="mr-2" />
+                        <MudText Typo="Typo.h6">2. @Resource.CentralProcessing</MudText>
+                    </div>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Status: @_step2Status</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Processed: @_step2Valid</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Rejected: @_step2Rejected</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">@Resource.Centers: @_step2Centers</MudText>
+                    <MudProgressLinear Value="100" Color="@_step2Color" Size="Size.Small" />
+                </MudPaper>
+            </MudItem>
+
+            <!-- Step 3: Distribution to Centers -->
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="1" Class="pa-3">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Color="@_step3Color" Size="Size.Medium" Class="mr-2" />
+                        <MudText Typo="Typo.h6">3. @Resource.Distribution</MudText>
+                    </div>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Status: @_step3Status</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Distributed: @_step3Distributed</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Success: @_step3Success</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">@Resource.Partial: @_step3Partial / @Resource.Failed: @_step3Failed</MudText>
+                    <MudProgressLinear Value="@_step3Progress" Color="@_step3Color" Size="Size.Small" />
+                </MudPaper>
+            </MudItem>
+
+            <!-- Step 4: Server Acknowledgments -->
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="1" Class="pa-3">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.DoneAll" Color="@_step4Color" Size="Size.Medium" Class="mr-2" />
+                        <MudText Typo="Typo.h6">4. @Resource.Acknowledgments</MudText>
+                    </div>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Status: @_step4Status</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Acknowledged: @_step4Acked</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Pending: @_step4Pending</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">@Resource.Timeout: @_step4Timeout</MudText>
+                    <MudProgressLinear Value="@_step4Progress" Color="@_step4Color" Size="Size.Small" />
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <!-- Reverse Sync Pipeline Health Visualization (Exam Servers → Central) -->
+    <MudPaper Elevation="2" Class="pa-4 mb-4">
+        <MudText Typo="Typo.h5" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.SyncAlt" Class="mr-2" />
+            @Resource.ResultsSyncPipelineHealth
+        </MudText>
+        <MudGrid Spacing="2">
+            <!-- Step 1: Exam Completion at Centers -->
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="1" Class="pa-3">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Assignment" Color="@_reverseStep1Color" Size="Size.Medium" Class="mr-2" />
+                        <MudText Typo="Typo.h6">1. @Resource.ExamCompletion</MudText>
+                    </div>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Status: @_reverseStep1Status</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.ExamsCompleted: @_reverseStep1Completed</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.ActiveCenters: @_reverseStep1ActiveCenters</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">@Resource.CompletionRate: @_reverseStep1CompletionRate%</MudText>
+                    <MudProgressLinear Value="@_reverseStep1CompletionRate" Color="@_reverseStep1Color" Size="Size.Small" />
+                </MudPaper>
+            </MudItem>
+
+            <!-- Step 2: Results Packaging at Servers -->
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="1" Class="pa-3">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Inventory" Color="@_reverseStep2Color" Size="Size.Medium" Class="mr-2" />
+                        <MudText Typo="Typo.h6">2. @Resource.ResultsPackaging</MudText>
+                    </div>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Status: @_reverseStep2Status</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Packaged: @_reverseStep2Packaged</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Pending: @_reverseStep2Pending</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">@Resource.Failed: @_reverseStep2Failed</MudText>
+                    <MudProgressLinear Value="@_reverseStep2Progress" Color="@_reverseStep2Color" Size="Size.Small" />
+                </MudPaper>
+            </MudItem>
+
+            <!-- Step 3: Upload to Central -->
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="1" Class="pa-3">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Color="@_reverseStep3Color" Size="Size.Medium" Class="mr-2" />
+                        <MudText Typo="Typo.h6">3. @Resource.UploadToCentral</MudText>
+                    </div>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Status: @_reverseStep3Status</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Uploaded: @_reverseStep3Uploaded</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.InProgress: @_reverseStep3InProgress</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">@Resource.UploadFailed: @_reverseStep3UploadFailed</MudText>
+                    <MudProgressLinear Value="@_reverseStep3Progress" Color="@_reverseStep3Color" Size="Size.Small" />
+                </MudPaper>
+            </MudItem>
+
+            <!-- Step 4: Central Processing & Verification -->
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="1" Class="pa-3">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.VerifiedUser" Color="@_reverseStep4Color" Size="Size.Medium" Class="mr-2" />
+                        <MudText Typo="Typo.h6">4. @Resource.CentralVerification</MudText>
+                    </div>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Status: @_reverseStep4Status</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Verified: @_reverseStep4Verified</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-1">@Resource.Pending: @_reverseStep4Pending</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">@Resource.Failed: @_reverseStep4Failed</MudText>
+                    <MudProgressLinear Value="@_reverseStep4Progress" Color="@_reverseStep4Color" Size="Size.Small" />
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <!-- Centers Sync Status Table -->
+    <MudPaper Elevation="2" Class="pa-4 mb-4">
+        <MudText Typo="Typo.h5" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.List" Class="mr-2" />
+            @Resource.CentersSyncStatus
+        </MudText>
+
+        <!-- Status Filter -->
+        <MudPaper Elevation="0" Class="pa-3 mb-3">
+            <MudText Typo="Typo.body1" Class="mb-2"><strong>@Resource.FilterByStatus:</strong></MudText>
+            <MudChipSet T="SyncJobStatus">
+                <MudChip T="SyncJobStatus" Color="Color.Success" Icon="@Icons.Material.Filled.CheckCircle" OnClick="@(() => ToggleStatusFilter(SyncJobStatus.Success))">
+                    @Resource.Success (@_centerStatuses.Count(c => c.Status == SyncJobStatus.Success))
+                </MudChip>
+                <MudChip T="SyncJobStatus" Color="Color.Info" Icon="@Icons.Material.Filled.Sync" OnClick="@(() => ToggleStatusFilter(SyncJobStatus.InProgress))">
+                    @Resource.InProgress (@_centerStatuses.Count(c => c.Status == SyncJobStatus.InProgress))
+                </MudChip>
+                <MudChip T="SyncJobStatus" Color="Color.Warning" Icon="@Icons.Material.Filled.Pending" OnClick="@(() => ToggleStatusFilter(SyncJobStatus.Pending))">
+                    @Resource.Pending (@_centerStatuses.Count(c => c.Status == SyncJobStatus.Pending))
+                </MudChip>
+                <MudChip T="SyncJobStatus" Color="Color.Error" Icon="@Icons.Material.Filled.Error" OnClick="@(() => ToggleStatusFilter(SyncJobStatus.Failed))">
+                    @Resource.Failed (@_centerStatuses.Count(c => c.Status == SyncJobStatus.Failed))
+                </MudChip>
+            </MudChipSet>
+        </MudPaper>
+
+        <MudTable Items="@GetSortedAndFilteredCenters()"
+                  Hover="true"
+                  Striped="true"
+                  Dense="true"
+                  @bind-SelectedItem="_selectedCenterStatus">
+            <HeaderContent>
+                <MudTh>@Resource.CenterCode</MudTh>
+                <MudTh>@Resource.CenterName</MudTh>
+                <MudTh>@Resource.Region</MudTh>
+                <MudTh>@Resource.Expected</MudTh>
+                <MudTh>@Resource.Imported</MudTh>
+                <MudTh>@Resource.Pushed</MudTh>
+                <MudTh>@Resource.Acknowledged</MudTh>
+                <MudTh>@Resource.Status</MudTh>
+                <MudTh>@Resource.LastSync</MudTh>
+                <MudTh>@Resource.Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@Resource.CenterCode">@context.CenterCode</MudTd>
+                <MudTd DataLabel="@Resource.CenterName">@context.CenterName</MudTd>
+                <MudTd DataLabel="@Resource.Region">@context.Region</MudTd>
+                <MudTd DataLabel="@Resource.Expected">@context.ExpectedExaminees</MudTd>
+                <MudTd DataLabel="@Resource.Imported">@context.ImportedToCentral</MudTd>
+                <MudTd DataLabel="@Resource.Pushed">@context.PushedToServer</MudTd>
+                <MudTd DataLabel="@Resource.Acknowledged">
+                    <div class="d-flex align-center">
+                        <MudText>@context.AckReceived</MudText>
+                        <MudProgressLinear Value="@GetAckPercentage(context)"
+                                           Color="@GetAckProgressColor(context)"
+                                           Size="Size.Small"
+                                           Class="ml-2"
+                                           Style="width: 60px;" />
+                    </div>
+                </MudTd>
+                <MudTd DataLabel="@Resource.Status">
+                    <MudChip T="SyncJobStatus" Size="Size.Small" Color="@GetStatusColor(context.Status)">
+                        @context.Status.ToString()
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="@Resource.LastSync">@context.LastSuccessfulSync?.ToString("MM/dd HH:mm")</MudTd>
+                <MudTd DataLabel="@Resource.Actions">
+                    <MudTooltip Text="@Resource.ViewDetails">
+                        <MudFab Color="Color.Primary"
+                                StartIcon="@Icons.Material.Filled.Visibility"
+                                Size="Size.Small"
+                                OnClick="@(() => OpenCenterDetailDialog(context))" />
+                    </MudTooltip>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }" />
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+
+    <!-- Errors and Warnings Section -->
+    <MudPaper Elevation="2" Class="pa-4 mb-4">
+        <MudText Typo="Typo.h5" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.BugReport" Class="mr-2" />
+            @Resource.ErrorsWarningsAnomalies
+        </MudText>
+
+        <!-- Error Summary Table -->
+        <MudText Typo="Typo.h6" Class="mb-3">@Resource.ErrorSummary</MudText>
+        <MudTable Items="@_errorSummaries" Dense="true" Hover="true" Class="mb-4">
+            <HeaderContent>
+                <MudTh>@Resource.ErrorCode</MudTh>
+                <MudTh>@Resource.Description</MudTh>
+                <MudTh>@Resource.CountToday</MudTh>
+                <MudTh>@Resource.ImpactedCenters</MudTh>
+                <MudTh>@Resource.ImpactedExaminees</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@Resource.ErrorCode">@context.ErrorCode</MudTd>
+                <MudTd DataLabel="@Resource.Description">@context.Description</MudTd>
+                <MudTd DataLabel="@Resource.CountToday">
+                    <MudChip T="string" Size="Size.Small" Color="Color.Error">@context.CountToday</MudChip>
+                </MudTd>
+                <MudTd DataLabel="@Resource.ImpactedCenters">@context.ImpactedCenters</MudTd>
+                <MudTd DataLabel="@Resource.ImpactedExaminees">@context.ImpactedExaminees</MudTd>
+            </RowTemplate>
+        </MudTable>
+
+        <!-- Failed Jobs & Retries -->
+        <MudText Typo="Typo.h6" Class="mb-3">@Resource.FailedJobsRetries</MudText>
+        <MudTable Items="@_failedJobsList" Dense="true" Hover="true">
+            <HeaderContent>
+                <MudTh>@Resource.JobId</MudTh>
+                <MudTh>@Resource.Center</MudTh>
+                <MudTh>@Resource.SyncStage</MudTh>
+                <MudTh>@Resource.StartTime</MudTh>
+                <MudTh>@Resource.EndTime</MudTh>
+                <MudTh>@Resource.Status</MudTh>
+                <MudTh>@Resource.ErrorMessage</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@Resource.JobId">@context.JobId</MudTd>
+                <MudTd DataLabel="@Resource.Center">@context.CenterCode</MudTd>
+                <MudTd DataLabel="@Resource.SyncStage">@context.SyncStage</MudTd>
+                <MudTd DataLabel="@Resource.StartTime">@context.StartTime.ToString("HH:mm:ss")</MudTd>
+                <MudTd DataLabel="@Resource.EndTime">@context.EndTime?.ToString("HH:mm:ss")</MudTd>
+                <MudTd DataLabel="@Resource.Status">
+                    <MudChip T="string" Size="Size.Small" Color="@GetJobStatusColor(context.Status)">
+                        @context.Status
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="@Resource.ErrorMessage">@context.ErrorMessage</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[] { 5, 10, 20 }" />
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+
+    <!-- Alerts Section -->
+    <MudPaper Elevation="2" Class="pa-4 mb-4">
+        <MudText Typo="Typo.h5" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.Notifications" Class="mr-2" />
+            @Resource.ActiveAlertsSLAMonitoring
+        </MudText>
+        @foreach (var alert in _activeAlerts)
+        {
+            <MudAlert Severity="@alert.Severity" Class="mb-2" Elevation="1">
+                <strong>@alert.Title:</strong> @alert.Message
+            </MudAlert>
+        }
+    </MudPaper>
+
+</MudContainer>

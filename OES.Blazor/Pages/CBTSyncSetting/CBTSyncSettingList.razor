@@ -1,0 +1,51 @@
+@page "/CBTSyncSetting"
+
+@attribute [DynamicAuthorizeAttribute("CBTSyncSettingList")]
+
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.CBTSyncSetting.Responses
+@using OES.Helper.ResourceFiles
+
+<PageTitle>@Resource.AutoSyncConfiguration</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.Sync" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.AutoSyncConfiguration</MudText>
+        </MudStack>
+
+        <ListItem T="CBTSyncSettingResponseDto"
+                  @key="_listChangingKey"
+                  Caption="@Resource.AutoSyncConfiguration"
+                  CaptionIcon="@Icons.Material.Rounded.Sync"
+                  EndpointServerice="BlazCBTSyncSettingService.GetPaginatedAsync"
+                  DisplayColumns=@_displayColumnNames
+                  HideSearchInBody="true"
+                  HideCodeSearch="true"
+                  Hide_DescriptionSearch="true">
+            <ButtonChildContent Context="currentDtoContext">
+                @if (currentDtoContext is CBTSyncSettingResponseDto cbtSyncSetting)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.Details">
+                            <MudFab Color="Color.Info"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Details)}")
+                                    StartIcon="@Icons.Material.Filled.Visibility"
+                                    Size="Size.Small"
+                                    OnClick="() => ViewAsync(cbtSyncSetting.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    OnClick="() => UpdateAsync(cbtSyncSetting.Id)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

@@ -1,0 +1,170 @@
+﻿@page "/SecurityConfigurationsTemplateView"
+
+@attribute [DynamicAuthorizeAttribute("ScheduleSecurityConfigurationView")]
+
+@using MudBlazor
+@using OES.Blazor.CustomAuthorizationAttribute
+
+
+<MudCard Class="mx-auto mt-2 p-4 shadow-lg rounded-lg">
+    <div class="d-flex align-center justify-center mt-5">
+        <div class="d-flex align-center justify-center align-self-center pa-3 w-75" style="border-radius: 8px;">
+            <MudIcon Icon="@Icons.Material.Filled.SystemSecurityUpdateGood" Class="mr-2" Color="Color.Primary" Size="Size.Large" />
+            <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold">@Resource.SecurityConfigurationsTemplateDetails</MudText>
+        </div>
+    </div>
+    <MudCardContent>
+        <MudGrid>
+
+            <!-- Main Configuration Card -->
+            <MudItem xs="12">
+                <MudCard Elevation="2" Class="rounded-lg" Style="border-left: 4px solid var(--mud-palette-primary);">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.ExamSecuritySettings</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid Spacing="3">
+                            <!-- Monitoring & Security Section -->
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-3">
+                                    <MudIcon Icon="@Icons.Material.Filled.Visibility" Class="mr-2" />
+                                    @Resource.MonitoringAndSecurity
+                                </MudText>
+                                <MudGrid Spacing="2">
+
+                                    @* <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">@Resource.SecuredBrowser</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.SecuredBrowser</MudText>
+                                    </MudItem> *@
+
+                                    @* <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Enable Logging:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.EnableLog</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Display Logging:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.DisplayLog</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">ScreenShots:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.ScreenShots</MudText>
+                                    </MudItem> *@
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">@Resource.CameraShots:</MudText>
+                                        <MudIcon Icon="@(Model.CamShot? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
+                                                 Color="@(Model.CamShot ? Color.Success : Color.Error)"
+                                                 Class="ml-3" />
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">@Resource.CandidateCameraShots:</MudText>
+                                        <MudIcon Icon="@(Model.CandidateCameraAndCameraShots? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
+                                                 Color="@(Model.CandidateCameraAndCameraShots ? Color.Success : Color.Error)"
+                                                 Class="ml-3" />
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">@Resource.SupervisorCameraShots:</MudText>
+                                        <MudIcon Icon="@(Model.SuperVisorAndCandidateCameraShot? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
+                                                 Color="@(Model.SuperVisorAndCandidateCameraShot ? Color.Success : Color.Error)"
+                                                 Class="ml-3" />
+                                    </MudItem>
+
+                                    @* <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Combined Camera Shot:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.SuperVisorAndCandidateCombinedCameraShot</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Screenshot on Focus Out:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.FocusOutWindowsMinimizedScreenShot</MudText>
+                                    </MudItem> *@
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">@Resource.EnableViolationsDetector:</MudText>
+                                        <MudIcon Icon="@(Model.FocusOutWindowsMinimizedCameraShot? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
+                                                 Color="@(Model.FocusOutWindowsMinimizedCameraShot ? Color.Success : Color.Error)"
+                                                 Class="ml-3" />
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">@Resource.EvidenceDurationseconds:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.EvidenceDurationPerSeconds</MudText>
+                                    </MudItem>
+
+                                    @* <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Shots on Submit Skip:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.ScreenShotsOnSubmitOrSkip</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Warn When No Face Detected:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.SystemWarningWhenNoFace</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Audio Recording:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.AudioRecording</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Enable Proctoring:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.Proctoring</MudText>
+                                    </MudItem> *@
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">@Resource.ProctoringWarnings:</MudText>
+                                        <MudIcon Icon="@(Model.ProctoringWarning? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)"
+                                                 Color="@(Model.ProctoringWarning ? Color.Success : Color.Error)"
+                                                 Class="ml-3" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudItem>
+
+                            @* <MudDivider Class="my-4" /> *@
+
+                            <!-- Browser & Access Control -->
+                            @* <MudItem xs="12">
+                                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-3">
+                                    <MudIcon Icon="@Icons.Material.Filled.Lock" Class="mr-2" />
+                                    @Resource.AccessControl
+                                </MudText>
+                                <MudGrid Spacing="2">
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Require ID Card for candidate:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.IsCandidateIdCardRequired</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Password to Close App:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.CloseApplicationPasswordRequired</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Restrict Access:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.RestrictAccessRequire</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Online Exam Mode:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.IsOnLineExam</MudText>
+                                    </MudItem>
+
+                                    <MudItem xs="12" Class="p-3 shadow-sm d-flex align-items-center">
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">Supported Browser Version:</MudText>
+                                        <MudText Class="font-weight-bold ml-3">@Model.SupportedVersionForSecuredBrowser</MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudItem> *@
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudCardContent>
+</MudCard>

@@ -1,0 +1,44 @@
+.menu-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.menu-show {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.expanded {
+    color: var(--mud-palette-info);
+}
+
+.collapsed {
+    color: var(--mud-palette-info);
+}
+
+.tree-children {
+    padding-inline-start: 24px !important;
+}
+
+.tree-node-row {
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    border-inline-start: 4px solid transparent;
+}
+
+.tree-node-row:hover {
+    background-color: var(--mud-palette-action-default-hover, rgba(0, 0, 0, 0.04));
+}
+
+.selected-tree-node {
+    background-color: var(--mud-palette-action-default-hover, rgba(25, 118, 210, 0.12)) !important;
+    border-inline-start: 4px solid var(--mud-palette-primary) !important;
+}
+
+.selected-tree-node .node-title {
+    font-weight: 700;
+    color: var(--mud-palette-primary);
+}

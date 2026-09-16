@@ -1,0 +1,50 @@
+﻿@using OES.Blazor.InternalHelperTypes.General
+
+<div class="@(ScreenSizeClass)" data-no-convert dir="@DirectionHelper.GetDirection()">
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="responsive-container d-flex flex-column">
+        <MudGrid Spacing="0" Class="@($"sun-editor-editable question-watermark-transparent p-0 {DirectionHelper.GetQuestionBodyClass()}")">
+            <MudItem xs="@ColumnsCount" Class="question-watermark-transparent px-0" data-no-convert>
+                <div style="max-height: 85vh; overflow-y: auto;">
+                    <MudText Typo="Typo.inherit" Align="Align.Start" data-no-convert>@DirectionHelper.GetDirectionalContent(QuestionBody.ToString())</MudText>
+                    @if (HasAttachment)
+                    {
+                        <MediaAttachment Url="@(AttachmentFileUrl)" />
+                    }
+                </div>
+            </MudItem>
+
+            @* <MudAlert Severity="Severity.Info" Elevation="0" Dense Class="mt-4">
+                <MudText Typo="Typo.subtitle1">@QuestionInstructions</MudText>
+            </MudAlert> *@
+
+            <MudItem xs="12">
+                <div style="max-height: 85vh; overflow-y: auto;">
+                    <MudRadioGroup T="long"
+                                   Value="@(ShowCorrectAnswer ? (Options?.Find(x => x.IsCorrectAnswer)?.Id ?? 0L) : 0L)"
+                                   ReadOnly>
+                        <div class="d-flex flex-wrap w-100">
+                            @foreach (var option in Options)
+                            {
+                                <div style="@OptionWidthStyle" class="p-2">
+                                    <div class="d-flex flex-column">
+                                        <MudStack Row="true">
+                                            <MudRadio T="long" Value="@option.Id" Color="Color.Primary" Size="Size.Small" Class="ms-2 align-start-radio">
+                                                <MudText Typo="Typo.subtitle1" Align="Align.Start" Class="ms-2" data-no-convert>
+                                                    @(new MarkupString(option.ChoiceText))
+                                                </MudText>
+                                            </MudRadio>
+                                            @if (option.HasAttachment)
+                                            {
+                                                <MediaAttachment Url="@option.AttachmentFileUrl" ImageStyle="max-width:200px; height:auto; border-radius:4px;" />
+                                            }
+                                        </MudStack>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </MudRadioGroup>
+                </div>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</div>

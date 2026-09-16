@@ -1,0 +1,89 @@
+﻿.tree-node {
+    cursor: pointer;
+    margin: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-left: 1px solid var(--mud-palette-secondary);
+    position: relative; /* Ensure positioning context for relative children */
+    padding: 0.5rem;
+    border: 1px solid var(--mud-palette-divider);
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    background-color: var(--mud-palette-surface);
+    color: var(--mud-palette-info);
+}
+
+    .tree-node .body-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .tree-node .justify-self-start {
+        justify-self: start;
+    }
+
+    .tree-node .justify-self-end {
+        justify-self: end;
+    }
+
+    .tree-node:hover {
+        background-color: var(--mud-palette-tertiary);
+        color: var(--mud-palette-primary-text);
+    }
+
+.gear-icon {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin-right: 0;
+    color: var(--mud-palette-primary-text);
+}
+
+    .gear-icon.expanded {
+        margin-right: 5px;
+        color: var(--mud-palette-primary-text); /* Highlight when expanded */
+    }
+
+    .gear-icon.rotate {
+        transition: transform 0.3s ease;
+    }
+
+    .gear-icon.expanded.rotate {
+        transform: rotate(90deg);
+    }
+
+.menu-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    right: 5px;
+    top: 50%;
+    gap: 0.5rem;
+}
+
+.menu {
+    display: none;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+    .menu.show {
+        display: inline-flex;
+        opacity: 1;
+    }
+
+    .menu .mud-icon-button {
+        transition: transform 0.2s;
+        color: var(--mud-palette-primary-text);
+    }
+
+.expanded {
+    color: var(--mud-palette-info);
+}
+
+.collapsed {
+    color: var(--mud-palette-info);
+}

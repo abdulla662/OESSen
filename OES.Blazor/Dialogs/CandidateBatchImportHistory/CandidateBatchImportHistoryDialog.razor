@@ -1,0 +1,42 @@
+﻿@using OES.Helper.Dtos.ScheduleCandidate.Responses
+@using OES.Helper.Enums
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Row="true" Justify="Justify.FlexStart" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.AccountBox" Color="Color.Primary" />
+            <MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Start">@Resource.BatchImportHistory</MudText>
+        </MudStack>
+        <ListItem T="GetCandidateBatchImportHistoryPaginationDto"
+                  Caption="@Resource.BatchImportHistory"
+                  CaptionIcon="@Icons.Material.Filled.History"
+                  EndpointServerice="GetCandidateBatchImportHistoryAsync"
+                  DisplayColumns='[nameof(GetCandidateBatchImportHistoryPaginationDto.Name),
+                                   nameof(GetCandidateBatchImportHistoryPaginationDto.CreationUser),
+                                   nameof(GetCandidateBatchImportHistoryPaginationDto.CreationDate)]'
+                  SearchPanelVisible="true"
+                  FilterObject="PaperId">
+            <ButtonChildContent Context="batchHistoryRow">
+                <MudTooltip Text="@Resource.DownloadImportedExcel">
+                    <MudFab Class=@($"me-2 ms-2 label-{nameof(Resource.DownloadImportedExcel)}")
+                            Color="Color.Primary"
+                            EndIcon="@Icons.Material.Filled.Download"
+                            Size="Size.Small"
+                            OnClick="@(() => DownloadImportedExcelAsync((GetCandidateBatchImportHistoryPaginationDto)batchHistoryRow))" />
+                </MudTooltip>
+                <MudTooltip Text="@Resource.Reverse">
+                    <MudFab Color="Color.Error"
+                            EndIcon="@Icons.Material.Filled.RestorePage"
+                            Size="Size.Small"
+                            Class=@($"label-{nameof(Resource.Reverse)}")
+                            OnClick="@(() => ReverseBatchAsync((GetCandidateBatchImportHistoryPaginationDto)batchHistoryRow))"
+                            Disabled="@(_busy || ((GetCandidateBatchImportHistoryPaginationDto)batchHistoryRow).IsReversed)" />
+                </MudTooltip>
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+    <DialogActions>
+        <MudSpacer />
+        <MudButton OnClick="Close" Color="Color.Secondary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

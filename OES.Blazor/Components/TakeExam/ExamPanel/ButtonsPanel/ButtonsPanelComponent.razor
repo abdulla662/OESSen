@@ -1,0 +1,21 @@
+﻿<MudCard Elevation="4" Class="exam-control-card mt-1">
+    <MudCardContent>
+        <div class="exam-actions-content">
+            <div class="exam-actions-left">
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Default"
+                           Class="exam-nav-button previous-btn"
+                           OnClick="@OnPreviousClicked">
+                    @Resource.Previous
+                </MudButton>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Class="exam-nav-button save-next-btn"
+                           OnClick="@OnNextClicked">
+                    @Resource.Next
+                </MudButton>
+            </div>
+        </div>
+    </MudCardContent>
+</MudCard>

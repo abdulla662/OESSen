@@ -1,0 +1,11 @@
+[b-djo1yc2e0i] .bg-grey {
+    background-color: var(--mud-palette-background-grey);
+}
+
+[b-djo1yc2e0i] .fw-600 {
+    font-weight: 600;
+}
+
+[b-djo1yc2e0i] .border-dashed-default {
+    border: 1px dashed var(--mud-palette-lines-default);
+}

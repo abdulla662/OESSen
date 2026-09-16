@@ -1,0 +1,68 @@
+﻿@page "/AddLanguage"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.Questionlanguage
+
+@attribute [DynamicAuthorize("AddLanguage")]
+
+<PageTitle>@Resource.AddNewLanguage</PageTitle>
+
+<EditForm Model="@_model">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-80 p-4 shadow-lg justify-content-center">
+        <MudCardContent>
+            <div class="d-flex justify-content-center align-items-center mb-6">
+                <MudIcon Icon="@Icons.Material.Rounded.Language" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+                <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">
+                    @Resource.AddNewLanguage
+                </MudText>
+            </div>
+
+            <MudTextField Label=@Resource.LanguageName
+                          @bind-Value="_model.Name"
+                          For="@(() => _model.Name)"
+                          Required="true"
+                          Immediate="true"
+                          Variant="Variant.Outlined"
+                          Class="mb-3" />
+
+            <MudSelect Label=@Resource.LanguageDirection
+                       T="string"
+                       @bind-Value="_model.LanguageDirection"
+                       For="@(() => _model.LanguageDirection)"
+                       Required="true"
+                       Variant="Variant.Outlined"
+                       Class="mb-4"
+                       AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem Value="@("RTL")">@Resource.RTL</MudSelectItem>
+                <MudSelectItem Value="@("LTR")">@Resource.LTR</MudSelectItem>
+            </MudSelect>
+
+            <MudCardActions Class="justify-content-center mt-2">
+                <MudStack Row="true"
+                          Spacing="4"
+                          Class="w-50"
+                          Justify="Justify.Center"
+                          AlignItems="AlignItems.Center">
+                    <GeneralLoadingButton ButtonText="@Resource.Add"
+                                          Size="Size.Small"
+                                          Class="flex-grow-1 p-2 rounded-pill"
+                                          EndIcon="@Icons.Material.Filled.CheckCircle"
+                                          Type="ButtonType.Submit"
+                                          OnClick="HandleValidSubmit"
+                                          Disabled="IsSubmitButtonDisabled" />
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Secondary"
+                               Size="Size.Small"
+                               Class="flex-grow-1 p-2 rounded-pill"
+                               OnClick="Cancel"
+                               EndIcon="@Icons.Material.Filled.Cancel">
+                        @Resource.Cancel
+                    </MudButton>
+                </MudStack>
+            </MudCardActions>
+        </MudCardContent>
+    </MudCard>
+</EditForm>

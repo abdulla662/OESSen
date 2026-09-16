@@ -1,0 +1,20 @@
+.loading-container[b-myes8yws6m] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+}
+
+.kpi-card[b-myes8yws6m] {
+    min-height: 150px;
+    padding: 24px 16px;
+}
+
+.kpi-card-content[b-myes8yws6m] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 8px;
+}

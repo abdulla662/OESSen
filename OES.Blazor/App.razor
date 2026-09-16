@@ -1,0 +1,107 @@
+@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Components.Authorization
+@using OES.Blazor.Components.GenericComponents.Loader
+@using OES.Blazor.Pages.Common;
+@using OES.Blazor.Services.Interfaces.AuthServices
+@using OES.Helper.General.GlobalUserContext
+@using System.Globalization
+@using SharedHelper.General
+
+@inject NavigationManager NavigationManager
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly" OnNavigateAsync="HandleAuthorizationOnNavigationAsync">
+        <Found Context="routeData">
+            <PageAuthGuard RouteData="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(OESLayout)">
+                    <NotAuthorized>
+                        @if (context.User.Identity?.IsAuthenticated == true)
+                        {
+                            <ForbiddenPage />
+                        }
+                        else
+                        {
+                            <RedirectToLogin />
+                        }
+                    </NotAuthorized>
+                    <Authorizing>
+                        <GenericLoader LoaderText="@Resource.Authorizing" />
+                    </Authorizing>
+                </AuthorizeRouteView>
+            </PageAuthGuard>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(OESLayout)">
+                <NotFoundPage />
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+
+    [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    [Inject] private IBlazAuthService BlazAuthService { get; set; } = default!;
+
+    [Inject] private GlobalUserContext GlobalUserContext { get; set; } = default!;
+
+    [Inject] private ILocalStorageService _localStorageService { get; set; } = default;
+
+    private const string CultureKey = "appCulture";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var culture = await _localStorageService.GetItemAsync<string>("appCulture");
+
+        if (culture == null)
+        {
+            var cultureInfo = new CultureInfo(LanguageCode.ENGLISH_CODE);
+
+            CultureInfo.CurrentCulture = cultureInfo;
+
+            CultureInfo.CurrentUICulture = cultureInfo;
+
+            await _localStorageService.SetItemAsStringAsync(CultureKey, LanguageCode.ENGLISH_CODE);
+        }
+        else
+        {
+            var cultureInfo = new CultureInfo(culture);
+
+            CultureInfo.CurrentCulture = cultureInfo;
+
+            CultureInfo.CurrentUICulture = cultureInfo;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+
+    private async Task HandleAuthorizationOnNavigationAsync(Microsoft.AspNetCore.Components.Routing.NavigationContext navigationContext)
+    {
+        if (!navigationContext.Path.Contains("login", StringComparison.OrdinalIgnoreCase) &&
+            !navigationContext.Path.Contains("handler", StringComparison.OrdinalIgnoreCase)
+        )
+        {
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            var validationResult = await BlazAuthService.IsTokenExpiredOrRemovedAsync();
+
+            if (validationResult && !string.IsNullOrWhiteSpace(GlobalUserContext.UserEmail))
+            {
+                await BlazAuthService.LogOutAsync();
+            }
+        }
+        else if (navigationContext.Path.Contains("login", StringComparison.OrdinalIgnoreCase))
+        {
+            var isTokenExpiredOrRemoved = await BlazAuthService.IsTokenExpiredOrRemovedAsync();
+
+            if (!isTokenExpiredOrRemoved)
+            {
+                NavigationManager.NavigateTo("/", replace: true);
+            }
+        }
+    }
+}

@@ -1,0 +1,259 @@
+@page "/reports/test-analysis"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("TestAnalysisReport")]
+
+<PageTitle>
+    @Resource.RptTitleTestAnalysis
+</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-4 mt-3 ar-no-print">
+    <MudIcon Icon="@Icons.Material.Filled.BarChart"
+             Color="Color.Primary"
+             Size="Size.Large"
+             Class="me-2" />
+    <MudText Typo="Typo.h5"
+             Color="Color.Primary">
+        @Resource.RptTitleTestAnalysis
+    </MudText>
+    <ReportInfoButton Title="@Resource.RptTitleTestAnalysis"
+                      Overview="@_infoOverview"
+                      Sections="@_infoSections" />
+</div>
+
+@if (HasError)
+{
+    <MudAlert Severity="Severity.Error"
+              Class="mb-4 ar-no-print"
+              ShowCloseIcon="true"
+              CloseIconClicked="ClearError">
+        @_errorMessage
+    </MudAlert>
+}
+
+<AnalyticalReportFilter ShowVenue="true"
+                        ShowPaper="true"
+                        ShowItemBank="false"
+                        FilterChanged="OnFilterChangedAsync"
+                        OnGenerateClicked="GenerateAsync" />
+
+<div class="d-flex justify-content-end gap-2 mb-3 ar-no-print">
+    @if (HasReport)
+    {
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.TableChart"
+                   Color="Color.Success"
+                   OnClick="ExportAsync"
+                   Disabled="_isExporting">
+            @(_isExporting
+                ? Resource.RptExporting
+                : Resource.RptExportExcel)
+        </MudButton>
+    }
+
+    <MudButton Variant="Variant.Outlined"
+               StartIcon="@Icons.Material.Filled.Print"
+               OnClick="PrintAsync">
+        @Resource.RptPrintSaveAsPdf
+    </MudButton>
+</div>
+
+@if (_isLoading)
+{
+    <MudProgressCircular Indeterminate="true"
+                         Color="Color.Primary"
+                         Class="d-block mx-auto my-8" />
+}
+else if (HasReport)
+{
+    var report = _report;
+
+    <div class="ar-header-info">
+        <span>
+            <strong>
+                @Resource.RptScheduleLabel
+            </strong>
+            @report.Schedule
+        </span>
+        <span class="ms-4">
+            <strong>
+                @Resource.RptVenueLabel
+            </strong>
+            @report.Venue
+        </span>
+        <span class="ms-4">
+            <strong>
+                @Resource.RptPaperLabel
+            </strong>
+            @report.PaperCode
+        </span>
+    </div>
+    @if (HasBuckets)
+    {
+        <div class="ar-section-title">
+            @Resource.RptScoreFreqDistribution
+        </div>
+        <MudPaper Elevation="2"
+                  Class="pa-0 mb-4 overflow-auto">
+            <table class="ar-table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Resource.RptScoreRange
+                        </th>
+                        <th>
+                            @Resource.RptRawScoreRange
+                        </th>
+                        <th>
+                            @Resource.RptFrequency
+                        </th>
+                        <th>
+                            @Resource.RptPercent
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var bucket in report.FrequencyBuckets)
+                    {
+                        <tr>
+                            <td>
+                                @bucket.PercentScoreRange
+                            </td>
+                            <td>
+                                @bucket.RawScoreRange
+                            </td>
+                            <td>
+                                @bucket.Frequency
+                            </td>
+                            <td>
+                                @bucket.Percent
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </MudPaper>
+        <div class="ar-section-title">
+            @Resource.RptScoreDistHistogram
+        </div>
+        <MudPaper Elevation="2"
+                  Class="pa-4 mb-4">
+            <MudChart ChartType="ChartType.Bar"
+                      ChartSeries="ChartSeries"
+                      XAxisLabels="ChartLabels"
+                      Width="100%"
+                      Height="300px"
+                      ChartOptions="_chartOptions" />
+        </MudPaper>
+    }
+
+    <div class="ar-section-title">
+        @Resource.RptStatisticalSummary
+    </div>
+    <MudPaper Elevation="2"
+              Class="pa-3 overflow-auto">
+        <table class="ar-table">
+            <tbody>
+                <tr>
+                    <td>
+                        @Resource.RptNoOfCandidates
+                    </td>
+                    <td>
+                        @report.Stats.NoOfCandidates
+                    </td>
+                    <td>
+                        @Resource.RptStdDeviation
+                    </td>
+                    <td>
+                        @report.Stats.StdDev
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Resource.RptNoOfItems
+                    </td>
+                    <td>
+                        @report.Stats.NoOfItems
+                    </td>
+                    <td>
+                        @Resource.RptVariance
+                    </td>
+                    <td>
+                        @report.Stats.Variance
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Resource.RptMinScore
+                    </td>
+                    <td>
+                        @report.Stats.MinScore
+                    </td>
+                    <td>
+                        @Resource.RptKr20
+                    </td>
+                    <td>
+                        @(report.Stats.CronbachAlpha?.ToString("F3") ?? "â€”")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Resource.RptMaxScore
+                    </td>
+                    <td>
+                        @report.Stats.MaxScore
+                    </td>
+                    <td>
+                        @Resource.RptStdErrorOfMean
+                    </td>
+                    <td>
+                        @report.Stats.StdErrorOfMean
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Resource.RptMean
+                    </td>
+                    <td>
+                        @report.Stats.Mean
+                    </td>
+                    <td>
+                        @Resource.RptStdErrorOfMeasurement
+                    </td>
+                    <td>
+                        @(report.Stats.StdErrorOfMeasurement?.ToString("F3") ?? "â€”")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Resource.RptMedian
+                    </td>
+                    <td>
+                        @report.Stats.Median
+                    </td>
+                    <td>
+                        @Resource.RptSkewness
+                    </td>
+                    <td>
+                        @report.Stats.Skew
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Resource.RptMode
+                    </td>
+                    <td>
+                        @report.Stats.Mode
+                    </td>
+                    <td>
+                        @Resource.RptKurtosis
+                    </td>
+                    <td>
+                        @report.Stats.Kurtosis
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </MudPaper>
+}

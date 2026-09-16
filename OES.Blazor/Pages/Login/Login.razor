@@ -1,0 +1,209 @@
+@page "/login"
+
+@layout EmptyLayout
+
+@using OES.Blazor.Components.GenericComponents.Login
+@using OES.Helper.Dtos.User
+@using OES.Helper.RegularExpressions
+@using System.Text.RegularExpressions
+
+<PageTitle>@Resource.LogIn</PageTitle>
+
+<div class="login-container">
+    <!-- Animated Background -->
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+        <!-- Left Panel - Branding -->
+        <div class="brand-panel">
+            <div class="brand-content">
+                <!-- Animated Education Icon -->
+                <div class="icon-wrapper">
+                    <div class="icon-bg"></div>
+                    <svg class="education-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Graduation Cap -->
+                        <path d="M32 8L4 22L32 36L60 22L32 8Z" fill="currentColor" opacity="0.9" />
+                        <path d="M12 26V42C12 42 20 50 32 50C44 50 52 42 52 42V26" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" />
+                        <path d="M56 24V40" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                        <circle cx="56" cy="44" r="3" fill="currentColor" />
+                    </svg>
+                </div>
+
+                <!-- Floating Elements -->
+                <div class="floating-elements">
+                    <div class="float-item float-1">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+                    </div>
+                    <div class="float-item float-2">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" /></svg>
+                    </div>
+                    <div class="float-item float-3">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" /></svg>
+                    </div>
+                    <div class="float-item float-4">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-decoration">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="grid-pattern"></div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Form -->
+        <div class="form-panel">
+            <EditForm Model="@_loginDto" OnSubmit="@LogInAsync">
+                <DataAnnotationsValidator />
+
+                @if (_showOrganizationsDropdown)
+                {
+                    <div class="form-content org-selection-content">
+                        <div class="form-header">
+                            <h2 class="form-title">@Resource.SelectOrganization</h2>
+                            <p class="form-subtitle">@Resource.PleaseEnterTheOrganizationYouWishToEnter</p>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="org-toolbar">
+                            <div class="search-input-container">
+                                <MudIcon Icon="@Icons.Material.Filled.Search" Class="search-icon" />
+                                <input type="text"
+                                       class="org-search-native"
+                                       placeholder="@Resource.SearchText..."
+                                       value="@_searchText"
+                                       @oninput="OnSearchInput" />
+                            </div>
+                            <div class="tree-actions-vertical">
+                                <span class="action-icon-btn" @onclick="ToggleExpandCollapse" title="@(_isExpanded ? "Collapse All" : "Expand All")">
+                                    <MudIcon Icon="@(_isExpanded ? Icons.Material.Filled.UnfoldLess : Icons.Material.Filled.UnfoldMore)" Size="Size.Small" />
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Organization Tree -->
+                        <div class="org-tree-container">
+                            @if (_filteredTreeNodes == null || !_filteredTreeNodes.Any())
+                            {
+                                <div class="org-empty-state">
+                                    <MudIcon Icon="@Icons.Material.Outlined.Business" Size="Size.Large" Class="empty-icon" />
+                                    <span>@Resource.ErrorNoOrganizationsAvailable</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="org-tree-list">
+                                    @foreach (var node in _filteredTreeNodes)
+                                    {
+                                        <OrganizationTreeNodeComponent  Node="node"
+                                                                        Level="0"
+                                                                        SelectedId="_selectedOrganization?.Id"
+                                                                        OnSelectOrganization="SelectOrganization"
+                                                                        OnToggleNode="ToggleNode" />
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Disabled="@(_selectedOrganization == null ||
+                                               _isFormBasedLoginProcessing ||
+                                               _isSamlBasedLoginProcessing)"
+                                   Variant="Variant.Filled"
+                                   Class="submit-button"
+                                   FullWidth>
+                            @if (_isFormBasedLoginProcessing)
+                            {
+                                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="button-loader" />
+                                <MudText Class="ms-2">@Resource.Processing</MudText>
+                            }
+                            else
+                            {
+                                <MudText>@Resource.LogIn</MudText>
+                            }
+                        </MudButton>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-content">
+                        <div class="form-header">
+                            <h2 class="form-title">@Resource.LogIn</h2>
+                        </div>
+
+                        @if (ShowLogin)
+                        {
+                            <div class="input-group">
+                                <MudTextField @bind-Value="@(_loginDto.Email)"
+                                              Label="@Resource.EmailAddress"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"
+                                              For="@(() => _loginDto.Email)"
+                                              InputMode="InputMode.email"
+                                              Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Outlined.Email"
+                                              Class="custom-input" />
+
+                                <MudTextField @bind-Value="_loginDto.Password"
+                                              Label="@Resource.Password"
+                                              InputType="@PasswordInput"
+                                              Adornment="Adornment.End"
+                                              AdornmentIcon="@PasswordInputIcon"
+                                              OnAdornmentClick="TogglePasswordVisibility"
+                                              AdornmentAriaLabel="@Resource.ShowPassword"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"
+                                              For="@(() => _loginDto.Password)"
+                                              Class="custom-input" />
+                            </div>
+
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Disabled="@(string.IsNullOrWhiteSpace(_loginDto.Email) || string.IsNullOrWhiteSpace(_loginDto.Password) || !Regex.IsMatch(_loginDto.Email, RegularExpressions.EmailExpression) || _isFormBasedLoginProcessing || _isSamlBasedLoginProcessing)"
+                                       Variant="Variant.Filled"
+                                       Class="submit-button"
+                                       FullWidth>
+                                @if (_isFormBasedLoginProcessing)
+                                {
+                                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="button-loader" />
+                                    <MudText Class="ms-2">@Resource.Processing</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>@Resource.LogIn</MudText>
+                                }
+                            </MudButton>
+
+                            <MudDivider Class="my-4" />
+                        }
+
+                        <MudButton OnClick="@LoginWithMicrosoft"
+                                   FullWidth
+                                   Disabled="@(_isFormBasedLoginProcessing || _isSamlBasedLoginProcessing)"
+                                   Color="Color.Primary"
+                                   Class="submit-button"
+                                   StartIcon="@(!_isSamlBasedLoginProcessing ? Icons.Material.Filled.Login : string.Empty)">
+                            @if (_isSamlBasedLoginProcessing)
+                            {
+                                <MudProgressCircular Size="Size.Small"
+                                                     Indeterminate="true"
+                                                     Class="button-loader" />
+                                <MudText Class="ms-2">@Resource.Processing</MudText>
+                            }
+                            else
+                            {
+                                <MudText>@Resource.ContinueWithMicrosoft</MudText>
+                            }
+                        </MudButton>
+                    </div>
+                }
+            </EditForm>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+﻿@page "/AssignRoleToPage"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.PagesEndpointsRolesDtos
+
+@attribute [DynamicAuthorizeAttribute("AssignRoleToPage")]
+
+<PageTitle>@Resource.AssignRoleToPage</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <div class="d-flex justify-content-center align-items-center mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.AssignmentReturned" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+            <MudText Typo="Typo.h4" Align="Align.Center" Color="Color.Primary" Style="line-height: 1;">
+                @Resource.AssignRoleToPage
+            </MudText>
+        </div>
+        <MudItem xs="12" Class="mb-3">
+            <MudAutocomplete T="BalzPageDTO"
+                             @key="Pages"
+                             Label="@Resource.SelectPage"
+                             Value="SelectedPage"
+                             Variant="Variant.Outlined"
+                             ValueChanged="GetPageRolesAsync"
+                             SearchFunc="@SearchPagesAsync"
+                             ToStringFunc="@(e => e == null ? null : $"{e.Name}")"
+                             ResetValueOnEmptyText="true"
+                             CoerceText="true"
+                             CoerceValue="false"
+                             Immediate="true"
+                             Required="true"
+                             RequiredError="@Resource.Pageisrequiredhere"
+                             Clearable="true" />
+
+        </MudItem>
+        <MudItem xs="12" Class="mb-3">
+            <MudSelect T="RoleDto"
+                       Label="@Resource.SelectRole"
+                       MultiSelection="true"
+                       @bind-SelectedValues="CurrentRoles"
+                       ToStringFunc="@(org => org == null ? null : $"{org.Name}")"
+                       Variant="Variant.Outlined"
+                       Immediate="true"
+                       Required="true"
+                       Clearable="true"
+                       SelectAll="true"
+                       SelectAllText="@Resource.SelectallRoles"
+                       RequiredError="@Resource.Selectatleastonerole"
+                       AnchorOrigin="Origin.BottomCenter">
+                @foreach (var role in Roles)
+                {
+                    <MudSelectItem T="RoleDto" Value="@role">@role.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" Class="ms-1">
+            @if (CurrentRoles.Any())
+            {
+                <MudText Typo="Typo.subtitle2" Class="mb-1">@Resource.SelectedRoles</MudText>
+                @foreach (var role in CurrentRoles)
+                {
+                    <MudChip T="RoleDto" Color="Color.Primary">@role.Name</MudChip>
+                }
+            }
+        </MudItem>
+    </MudCardContent>
+    <MudCardActions Class="justify-content-between mb-5 ">
+        <GeneralLoadingButton Disabled="@(!CurrentRoles.Any() || SelectedPage == null)"
+                              Class="flex-fill"
+                              OnClick="OnSubmit"
+                              EndIcon="@Icons.Material.Filled.CheckCircle"
+                              ButtonColor="Color.Primary"
+                              ButtonText="@Resource.Assign"
+                              Type="ButtonType.Button" />
+    </MudCardActions>
+</MudCard>

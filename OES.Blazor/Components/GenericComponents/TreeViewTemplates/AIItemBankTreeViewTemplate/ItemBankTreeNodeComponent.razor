@@ -1,0 +1,132 @@
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.ResourceFiles
+
+@if (IsVisible())
+{
+    <li style="list-style: none;">
+        <div @onclick:stopPropagation>
+            <div class="w-100 d-flex justify-content-between align-center pa-2 tree-node-row @(IsSelected ? "selected-tree-node" : "")"
+                 @onclick="HandleNodeClick">
+                <MudText Class="@($"align-self-center d-flex align-center {(Node.IsExpanded ? "expanded" : "collapsed")}")">
+                    @if (Node.Children.Any())
+                    {
+                        <span @onclick="ToggleNode"
+                              @onclick:stopPropagation
+                              style="cursor: pointer; display: inline-flex; width: 24px;">
+                            <ExpandCollapseIcon IsExpanded="@Node.IsExpanded" />
+                        </span>
+                    }
+                    else
+                    {
+                        <span style="display: inline-block; width: 24px;"></span>
+                    }
+
+                    @if (NodeNumbers.TryGetValue(Node, out var nodeNumber))
+                    {
+                        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Class="me-2 py-0">
+                            @nodeNumber
+                        </MudChip>
+                    }
+
+                    <span class="node-title">@Node.Name</span>
+
+                    @if (!string.IsNullOrWhiteSpace(Node.Level))
+                    {
+                        <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Size="Size.Small" Class="ms-2 py-0">
+                            @Node.Level
+                        </MudChip>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Node.Code))
+                    {
+                        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="d-inline ms-2">
+                            (@Node.Code)
+                        </MudText>
+                    }
+
+                    @if (!Node.IsActive)
+                    {
+                        <MudChip T="string" Color="Color.Error" Size="Size.Small" Class="ms-2 py-0">
+                            @Resource.Inactive
+                        </MudChip>
+                    }
+                </MudText>
+
+                @if (!IsReadOnly)
+                {
+                    <div class="menu-container" @onclick:stopPropagation>
+                        <MudTooltip Text="@Resource.Operations">
+                            <span @onclick="ToggleMenu" @onclick:stopPropagation
+                                  class="gear-icon @(ShowMenu ? "expanded rotate" : "collapsed")">
+                                <GearIcon IsExpanded="@ShowMenu" />
+                            </span>
+                        </MudTooltip>
+
+                        @if (ShowMenu)
+                        {
+                            <div class="menu-show">
+                                @if (InsertionButtonShown)
+                                {
+                                    <MudTooltip Text="@Resource.AddNewTreeItem" Placement="Placement.Right">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success"
+                                                       OnClick="@(() => AddTreeItemAsync(Node))" Class="pa-0" />
+                                    </MudTooltip>
+                                }
+
+                                @if (UpdateButtonShown)
+                                {
+                                    <MudTooltip Text="@Resource.UpdateTreeItem">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Secondary"
+                                                       OnClick="@(() => UpdateTreeItemAsync(Node))" Class="pa-0" />
+                                    </MudTooltip>
+                                }
+
+                                @if (MoveButtonShown && Node != RootNode)
+                                {
+                                    <MudTooltip Text="@Resource.Move">
+                                        <MudIconButton Icon="@Icons.Material.Filled.DriveFileMove" Color="Color.Info"
+                                                       OnClick="@(() => MoveTreeItemAsync(Node))" Class="pa-0" />
+                                    </MudTooltip>
+                                }
+
+                                @if (DeletionButtonShown && Node != RootNode)
+                                {
+                                    <MudTooltip Text="@Resource.RemoveTreeItem">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                                                       OnClick="@(() => RemoveTreeItemAsync(Node))" Class="pa-0" />
+                                    </MudTooltip>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        @if ((Node.IsExpanded || !string.IsNullOrWhiteSpace(SearchText)) && Node.Children.Any())
+        {
+            <ul class="pa-0 ma-0 tree-children"
+                style="position: relative; direction: inherit;">
+                @foreach (var child in Node.Children)
+                {
+                    <ItemBankTreeNodeComponent Node="@child"
+                                               RootNode="@RootNode"
+                                               Depth="@(Depth + 1)"
+                                               SearchText="@SearchText"
+                                               SelectedNode="@SelectedNode"
+                                               OnNodeSelected="@OnNodeSelected"
+                                               InsertionButtonShown="@InsertionButtonShown"
+                                               UpdateButtonShown="@UpdateButtonShown"
+                                               DeletionButtonShown="@DeletionButtonShown"
+                                               MoveButtonShown="@MoveButtonShown"
+                                               IsReadOnly="@IsReadOnly"
+                                               NodeNumbers="@NodeNumbers"
+                                               InsertTreeItem="@InsertTreeItem"
+                                               UpdateTreeItem="@UpdateTreeItem"
+                                               RemoveTreeItem="@RemoveTreeItem"
+                                               MoveTreeItem="@MoveTreeItem" />
+                }
+            </ul>
+        }
+    </li>
+}

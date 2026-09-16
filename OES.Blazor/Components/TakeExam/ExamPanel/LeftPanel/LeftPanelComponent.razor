@@ -1,0 +1,109 @@
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+@using System.Globalization
+
+<div class="left-panel-container">
+    <!-- Section 1 - Exam Info -->
+    <MudCard Class="exam-candidate-info-card" Elevation="4">
+        <MudCardContent>
+            @if (CurrentQuestion?.Metadata != null)
+            {
+                <div class="info-list">
+                    <div class="d-flex justify-space-between align-center mb-3">
+                        <div class="info-item">
+                            <MudIcon Icon="@Icons.Material.Filled.Code" /> &nbsp;
+                            <span class="label">@Resource.QuestionCode</span>
+                            <span class="value">@CurrentQuestion.Metadata.Code</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <MudIcon Icon="@Icons.Material.Filled.AccountTree" /> &nbsp;
+                        <span class="label">@Resource.ItemBankName</span>
+                        <span class="value">@CurrentQuestion.Metadata.ItemBank</span>
+                    </div>
+                </div>
+            }
+        </MudCardContent>
+    </MudCard>
+
+    <!-- Section 2 - Questions Panel -->
+    @if (ViewStatus == ExamViewStatus.Dynamic)
+    {
+        <MudCard Class="question-panel question-panel-expandable" Elevation="4">
+            <MudCardContent>
+                <div class="question-grid-flex">
+                    @for (int i = 0; i < Questions.Count; i++)
+                    {
+                        var questionIndex = i;
+
+                        <MudButton @key="@($"question-btn-{questionIndex}")"
+                                   Variant="@(questionIndex == CurrentIndex ? Variant.Filled : Variant.Outlined)"
+                                   Color="@(questionIndex == CurrentIndex ? Color.Primary : Color.Default)"
+                                   Class="@($"question-button w-100 {(questionIndex == CurrentIndex ? "question-btn-current" : "")}")"
+                                   OnClick="@(() => SelectQuestion(questionIndex))">
+                            @(questionIndex + 1)
+                        </MudButton>
+                    }
+                </div>
+            </MudCardContent>
+        </MudCard>
+    }
+    else
+    {
+        <MudCard Class="question-panel question-panel-expandable" Elevation="4">
+            <MudCardContent>
+                <div class="question-grid-flex">
+                    @for (int i = 1; i <= 11; i++)
+                    {
+                        var index = i;
+                        <MudButton @key="index"
+                                   Variant="Variant.Filled"
+                                   Color="@(index == 3 ? Color.Warning : Color.Primary)"
+                                   Class="question-button">
+                            @index
+                        </MudButton>
+                    }
+                </div>
+            </MudCardContent>
+        </MudCard>
+    }
+
+    <div class="left-panel-bottom-fixed">
+        <!-- Section 3 - Status Legend -->
+        <MudCard Class="status-legend-card" Elevation="4">
+            <MudCardContent>
+                <MudGrid Spacing="1">
+                    <MudItem xs="6" Class="legend-item">
+                        <div class="legend-circle not-visited"></div>
+                        <MudText Typo="Typo.body2">@Resource.NotVisited</MudText>
+                    </MudItem>
+                    <MudItem xs="6" Class="legend-item">
+                        <div class="legend-circle not-answered"></div>
+                        <MudText Typo="Typo.body2">@Resource.NotAnswered</MudText>
+                    </MudItem>
+                    <MudItem xs="6" Class="legend-item">
+                        <div class="legend-circle answered"></div>
+                        <MudText Typo="Typo.body2">@Resource.Answered</MudText>
+                    </MudItem>
+                    <MudItem xs="6" Class="legend-item">
+                        <div class="legend-circle marked-review"></div>
+                        <MudText Typo="Typo.body2">@Resource.MarkedForReview</MudText>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+
+        <!-- Section 4 - Action Buttons -->
+        <MudCard Class="tools-card action-buttons-card" Elevation="4">
+            <MudCardContent>
+                <div class="action-buttons-wrapper">
+                    <GeneralLoadingButton Size="Size.Small"
+                                          ButtonColor="Color.Error"
+                                          Class="exam-action-button end-preview-btn"
+                                          ButtonText="@Resource.EndPreview"
+                                          OnClick="EndExamPreview" />
+                </div>
+            </MudCardContent>
+        </MudCard>
+    </div>
+</div>

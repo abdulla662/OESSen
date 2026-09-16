@@ -1,0 +1,62 @@
+﻿@page "/AddCandidateExtraTimeList"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Services.Implementation.Candidate
+@using OES.Blazor.Services.Interfaces.Candidate
+@using OES.Helper.Dtos.Candidate.Responses
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.Dtos.Disabilities
+
+@attribute [DynamicAuthorizeAttribute("AddCandidateExtraTimeList")]
+
+<PageTitle>@Resource.Candidates</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.AccountBox" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.Candidates</MudText>
+        </MudStack>
+
+        <ListItem @key="Key"
+                  T="CandidatesListResponseDto"
+                  Caption="@Resource.Candidate"
+                  CaptionIcon="@Icons.Material.Filled.AccountBox"
+                  EndpointServerice="BlazCandidateService.GetCandidatesWithExamDateAroundAsync"
+                  DisplayColumns='["CandidateCode", "UserName", "Name", "Email", "MobileNumber", "NationalId"]'
+                  HideSearchInBody="false"
+                  FirstSearchParameterLabel="@Resource.Code"
+                  SecondSearchParameterLabel="@Resource.Email"
+                  ThirdSearchParameterLabel="@Resource.NationalId">
+            <ButtonChildContent Context="value">
+                @if (value is CandidatesListResponseDto candidate)
+                {
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                        <MudSelect T="long?"
+                                   Value="@(GetSelectedDisabilityForCandidate(candidate))"
+                                   ValueChanged="@(v => OnDisabilityChanged(candidate.Id, v))"
+                                   Label="@Resource.Disabilities"
+                                   Dense
+                                   Clearable
+                                   Variant="Variant.Outlined"
+                                   Style="min-width:200px">
+                            @foreach (var d in Disabilities ?? Enumerable.Empty<AddOrUpdateDisabilityDto>())
+                            {
+                                <MudSelectItem Value="@d.Id">@d.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudButton Size="Size.Large"
+                                   Variant="Variant.Filled"
+                                   Class="m-3"
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   Color="Color.Primary"
+                                   OnClick="() => SaveCandidateDisability(candidate.Id, GetSelectedDisabilityForCandidate(candidate))">
+                            @Resource.Save
+                        </MudButton>
+                    </MudStack>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

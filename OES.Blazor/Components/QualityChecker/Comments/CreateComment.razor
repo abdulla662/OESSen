@@ -1,0 +1,60 @@
+﻿@using OES.Blazor.Services.Interfaces.QComment
+@using OES.Helper.Dtos.QuestionComment
+@using OES.Helper.Enums
+@inject NavigationManager _navigationManager
+@inject IBlazQCommentService _blazQCommentService
+
+<MudCard Class="mx-auto mt-5 w-100">
+    <MudCardContent>
+        <MudTextField @bind-Value="qCommentDto.Comment"
+                      Label="@Resource.Comment"
+                      Variant="Variant.Outlined"
+                      Lines="5"
+                      Required
+                      ErrorText="@Resource.ThisFieldIsRequired">
+        </MudTextField>
+    </MudCardContent>
+    <MudCardActions Class="d-flex justify-center flex-wrap pa-4">
+        <MudSpacer />
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Surface"
+                   EndIcon="@Icons.Material.Filled.List"
+                   OnClick="LoadQuestionInMiddlePanelAsync"
+                   Class="rounded-pill text-transform-none font-weight-bold ma-2 mud-elevation-4"
+                   IconColor="Color.Success">
+            @Resource.ViewQuestionExamPanel
+        </MudButton>
+        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.SafetyCheck"
+                              OnClick="SubmitCommentAsync"
+                              Variant="Variant.Filled"
+                              ButtonColor="Color.Surface"
+                              Class="ma-2"
+                              Size="Size.Medium"
+                              ButtonText="@Resource.Approve"
+                              Type="ButtonType.Submit" />
+        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.Edit"
+                              OnClick="ReturnToEditAsync"
+                              Variant="Variant.Filled"
+                              ButtonColor="Color.Surface"
+                              Class="ma-2"
+                              Size="Size.Medium"
+                              ButtonText="@Resource.ReturnToEdit"
+                              Type="ButtonType.Submit" />
+        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.ErrorOutline"
+                              OnClick="RefuseAsync"
+                              Variant="Variant.Filled"
+                              ButtonColor="Color.Surface"
+                              Class="ma-2"
+                              Size="Size.Medium"
+                              ButtonText="@Resource.Refuse"
+                              Type="ButtonType.Submit" />
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Secondary"
+                   Size="Size.Medium"
+                   Class="ma-2"
+                   OnClick="Cancel">
+            @Resource.Cancel
+        </MudButton>
+        <MudSpacer />
+    </MudCardActions>
+</MudCard>

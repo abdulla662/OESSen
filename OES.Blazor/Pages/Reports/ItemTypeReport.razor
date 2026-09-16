@@ -1,0 +1,172 @@
+@page "/reports/item-type"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper
+
+@attribute [DynamicAuthorizeAttribute("ItemTypeReport")]
+
+<PageTitle>
+    @Resource.RptTitleItemType
+</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-4 mt-3 ar-no-print">
+    <MudIcon Icon="@Icons.Material.Filled.Category"
+             Color="Color.Primary"
+             Size="Size.Large"
+             Class="me-2" />
+    <MudText Typo="Typo.h5"
+             Color="Color.Primary">
+        @Resource.RptTitleItemType
+    </MudText>
+    <ReportInfoButton Title="@Resource.RptTitleItemType"
+                      Overview="@_infoOverview"
+                      Sections="@_infoSections" />
+</div>
+
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error"
+              Class="mb-4 ar-no-print"
+              ShowCloseIcon="true"
+              CloseIconClicked="ClearError">
+        @_errorMessage
+    </MudAlert>
+}
+
+<div class="ar-filter-panel ar-no-print">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="6">
+            <div class="d-flex align-center gap-2">
+                <MudTextField Label="@Resource.RptItemBankLabel"
+                              Value="@(_selectedBank?.Name ?? Resource.All)"
+                              ReadOnly="true"
+                              Variant="Variant.Outlined"
+                              Class="flex-grow-1" />
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.AccountTree"
+                           OnClick="OpenItemBankTreeAsync">
+                    @Resource.RptBrowse
+                </MudButton>
+                @if (_selectedBank is not null)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Clear"
+                                   OnClick="ClearBankAsync"
+                                   Title="@Resource.ClearSelection" />
+                }
+            </div>
+        </MudItem>
+        <MudItem xs="12" md="3" Class="d-flex align-end">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="GenerateAsync"
+                       FullWidth="true">
+                @Resource.RptGenerateReport
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</div>
+
+<div class="d-flex justify-content-end gap-2 mb-3 ar-no-print">
+    @if (HasReport)
+    {
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.TableChart"
+                   Color="Color.Success"
+                   OnClick="ExportAsync"
+                   Disabled="_isExporting">
+            @(_isExporting? Resource.RptExporting: Resource.RptExportExcel)
+        </MudButton>
+    }
+
+    <MudButton Variant="Variant.Outlined"
+               StartIcon="@Icons.Material.Filled.Print"
+               OnClick="PrintAsync">
+        @Resource.RptPrintSaveAsPdf
+    </MudButton>
+</div>
+
+@if (_isLoading)
+{
+    <MudProgressCircular Indeterminate="true"
+                         Color="Color.Primary"
+                         Class="d-block mx-auto my-8" />
+}
+else if (HasReport)
+{
+    var report = _report!;
+    <div class="ar-header-info">
+        <span>
+            <strong>
+                @Resource.RptItemBankLabel
+            </strong>
+            @report.FilterLabel
+        </span>
+    </div>
+    @if (report.Rows.Count == 0)
+    {
+        <MudAlert Severity="Severity.Info">
+            @Resource.RptNoQuestionsForBank
+        </MudAlert>
+    }
+    else
+    {
+        <div class="ar-section-title">
+            @Resource.RptItemTypeDistribution
+        </div>
+        <div class="ar-hbar-container mb-4">
+            @foreach (var type in report.ItemTypes)
+            {
+                var count = TypeTotals.GetValueOrDefault(type);
+
+                var widthPercentage = (double)count / MaxTypeTotal * 100;
+
+                <div data-no-convert class="ar-hbar-row">
+                    <span class="ar-hbar-label">
+                        @LocalizeType(type)
+                    </span>
+                    <div data-no-convert class="ar-hbar-track">
+                        <div data-no-convert class="ar-hbar-fill" style="@($"width:{Math.Max(widthPercentage, 2):F1}%")"></div>
+                    </div>
+                    <span class="ar-hbar-count">
+                        @count
+                        (@widthPercentage.ToString("F0")%)
+                    </span>
+                </div>
+            }
+        </div>
+        <MudPaper Elevation="2" Class="pa-0 overflow-auto">
+            <table class="ar-table">
+                <thead>
+                    <tr>
+                        <th class="text-start">
+                            @Resource.RptItemBankLabel
+                        </th>
+                        @foreach (var itemType in report.ItemTypes)
+                        {
+                            <th>
+                                @LocalizeType(itemType)
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in report.Rows)
+                    {
+                        <tr>
+                            <td class="text-start">
+                                @row.ItemBankName
+                            </td>
+                            @foreach (var itemType in report.ItemTypes)
+                            {
+                                <td>
+                                    @row.CountsByType.GetValueOrDefault(itemType)
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </MudPaper>
+    }
+}

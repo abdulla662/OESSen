@@ -1,0 +1,193 @@
+﻿
+@if (IsInitialized)
+{
+    <MudDialog>
+        <TitleContent>
+            <div class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.Place" Class="mr-2" Color="Color.Primary" Size="Size.Small" />
+                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="font-weight-bold">@Resource.VenueDetails</MudText>
+            </div>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid Spacing="2" Class="animate__animated animate__fadeIn">
+                <MudItem xs="12">
+                    <MudPaper Class="pa-2" Elevation="1">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-2 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" Class="mr-1" />
+                            @Resource.VenueMainInformation
+                        </MudText>
+
+                        <MudGrid Spacing="1">
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Name:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        @Model.Name
+                                    </MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Numbers" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Code:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        @Model.Code
+                                    </MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.VenueDisplayName:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        @Model.DisplayName
+                                    </MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.PushPin" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Address:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        @Model.Address
+                                    </MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.LocationOn" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.GeoLocation:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.GeoLocation</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.VpnKey" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.PinCode:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        @Model.PinCode
+                                    </MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Email:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.VenueEmail</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.PhoneIphone" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Mobile:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.Mobile</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.WhereToVote" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.IPAddress:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.IPAddress</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Language" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Url:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.Url</MudText>
+                                </MudStack>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+
+                @if (!string.IsNullOrWhiteSpace(Model.TCIds))
+                {
+                    <MudItem xs="12">
+                        <MudPaper Class="pa-2" Elevation="1">
+                            <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-2 font-weight-bold">
+                                <MudIcon Icon="@Icons.Material.Filled.Code" Size="Size.Small" Class="mr-1" />
+                                @Resource.TCCodesCommaSeparated
+                            </MudText>
+                            <MudChipSet T="string" ReadOnly>
+                                @foreach (var tcCode in Model.TCIds.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                                {
+                                    <MudChip T="string"
+                                             Color="Color.Primary"
+                                             Variant="Variant.Filled"
+                                             Size="Size.Medium">
+                                        @tcCode
+                                    </MudChip>
+                                }
+                            </MudChipSet>
+                        </MudPaper>
+                    </MudItem>
+                }
+
+                <MudItem xs="12">
+                    <MudPaper Class="pa-2" Elevation="1">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-2 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="Size.Small" Class="mr-1" />
+                            @Resource.VenueCoordinatorInformation
+                        </MudText>
+
+                        <MudGrid Spacing="1">
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.CoordinatorName:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.CoordinatorFullName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.CoordinatorEmail:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.CoordinatorEmail</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.PhoneIphone" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.CoordinatorMobile:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Model.CoordinatorMobile</MudText>
+                                </MudStack>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+    </MudDialog>
+}
+else
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}

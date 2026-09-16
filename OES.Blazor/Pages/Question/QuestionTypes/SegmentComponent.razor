@@ -1,0 +1,138 @@
+﻿@using OES.Blazor.Components.GenericComponents.TextEditor
+@using OES.Helper
+@using SharedHelper.Enums
+
+<EditForm OnSubmit="OnSubmitAsync" Model="@Model">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12">
+            <MudStack AlignItems="AlignItems.Start" Justify="Justify.Center" Spacing="1" Class="w-100">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.AttachFile"
+                           OnClick="UploadDocumentAsync"
+                           Class="ms-2 w-25">
+                    @Resource.AttachAudio
+                </MudButton>
+                @if (!string.IsNullOrWhiteSpace(Model.SegmentQuestionDetailsDto.MediaFileName))
+                {
+                    <MudTooltip Text="@Model.SegmentQuestionDetailsDto.MediaFileName" Arrow="true" Placement="Placement.Bottom">
+                        <MudChip T="string"
+                                 Variant="Variant.Text"
+                                 Color="Color.Info"
+                                 OnClose="RemoveAttachedFile"
+                                 Icon="@Icons.Material.Filled.AudioFile">
+                            @GetTruncatedAudioFileName(Model.SegmentQuestionDetailsDto.MediaFileName)
+                        </MudChip>
+                    </MudTooltip>
+                }
+            </MudStack>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="6">
+            <MudTextField @bind-Value="Model.SegmentMetaDataDto.Code"
+                          Label="@Resource.QuestionCode"
+                          Required="true"
+                          Immediate="true"
+                          Variant="Variant.Outlined"
+                          Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(Model.SegmentMetaDataDto.Code))"
+                          ErrorText="@_requiredErrorText" />
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="BodyEditorParams"
+                        @ref="@BodyEditorParams.TextEditor" />
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudCard Elevation="2" Class="pa-4">
+                <MudGrid Spacing="3" Justify="Justify.FlexStart">
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="SegmentQuestionResponseType"
+                                   Label="@Resource.ResponseType"
+                                   Variant="Variant.Outlined"
+                                   ValueChanged="OnResponseTypeChanged"
+                                   Required
+                                   Value="Model.SegmentQuestionConfigDto.SegmentQuestionResponseType"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   ErrorText="@_requiredErrorText">
+                            @foreach (SegmentQuestionResponseType item in Enum.GetValues(typeof(SegmentQuestionResponseType)))
+                            {
+                                <MudSelectItem Value="@item">@item.ToLocalizedString()</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12" md="6">
+                        <MudNumericField Label="@Resource.ThinkingTime"
+                                         @bind-Value="Model.SegmentQuestionConfigDto.ThinkingTime"
+                                         Variant="Variant.Outlined"
+                                         HideSpinButtons="true"
+                                         Error="@(_isSubmitButtonHit && (Model.SegmentQuestionConfigDto.ThinkingTime ?? 0) < 0)"
+                                         ErrorText="@_requiredErrorText"
+                                         Min="0" />
+                    </MudItem>
+
+                    @if (Model.SegmentQuestionConfigDto.SegmentQuestionResponseType != SegmentQuestionResponseType.None)
+                    {
+                        <MudItem xs="12" md="6">
+                            <MudNumericField Label="@Resource.ResponseTime"
+                                             @bind-Value="Model.SegmentQuestionConfigDto.ResponseTime"
+                                             Variant="Variant.Outlined"
+                                             HideSpinButtons="true"
+                                             Error="@(_isSubmitButtonHit && (Model.SegmentQuestionConfigDto.ResponseTime.GetValueOrDefault() <= 0))"
+                                             ErrorText="@_requiredErrorText"
+                                             Min="0" />
+                        </MudItem>
+                    }
+
+                    @if (Model.SegmentQuestionConfigDto.SegmentQuestionResponseType == SegmentQuestionResponseType.Essay)
+                    {
+                        <MudItem xs="12" md="6">
+                            <MudNumericField Label="@Resource.WordCountLimit"
+                                             @bind-Value="Model.SegmentQuestionConfigDto.WordsCount"
+                                             Variant="Variant.Outlined"
+                                             HideSpinButtons="true"
+                                             Error="@(_isSubmitButtonHit && (Model.SegmentQuestionConfigDto.WordsCount ?? 0) <= 0)"
+                                             ErrorText="@_requiredErrorText"
+                                             Min="0" />
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudCard>
+        </MudItem>
+
+        @if (Model.SegmentQuestionConfigDto.SegmentQuestionResponseType == SegmentQuestionResponseType.Essay)
+        {
+            <MudItem xs="12">
+                <TextEditor TextEditorParams="ModelAnswerEditorParams"
+                            @ref="@ModelAnswerEditorParams.TextEditor" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <TextEditor TextEditorParams="InstructionsEditorParams"
+                            @ref="@InstructionsEditorParams.TextEditor" />
+            </MudItem>
+        }
+
+        <MudItem xs="12" Class="d-flex justify-content-center mt-2">
+            <MudStack Row="true" Spacing="4" Class="w-50">
+                <GeneralLoadingButton Class="flex-grow-1 p-2 rounded-pill"
+                                      Size="Size.Small"
+                                      ButtonText="@Resource.Save"
+                                      IsLoading="@_processing"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit" />
+
+                <MudButton Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           Color="Color.Secondary"
+                           OnClick="CancelDialogAsync"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</EditForm>

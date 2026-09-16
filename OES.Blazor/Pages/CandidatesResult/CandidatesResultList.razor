@@ -1,0 +1,50 @@
+﻿@page "/CandidatesResultList"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.Components.Common;
+@using OES.Blazor.Services.Implementation.Candidate;
+@using OES.Blazor.Services.Interfaces.CandidatesResult
+@using OES.Helper
+@using OES.Helper.Dtos.CandidatesResult
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.General
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+
+@attribute [DynamicAuthorizeAttribute("CandidatesResultList")]
+
+<PageTitle>@Resource.CandidatesResultList</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.TableChart" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.CandidatesResultList</MudText>
+        </MudStack>
+
+        <ListItem T="GetCandidateQuestionsAnswersDto"
+                  Caption="@Resource.CandidatesResultList"
+                  CaptionIcon="@Icons.Material.Rounded.TableChart"
+                  EndpointServerice="BlazCandidatesResultService.GetAllCandidateQuestionsAnswersAsync"
+                  DisplayColumns='[ nameof(GetCandidateQuestionsAnswersDto.CandidateCode),
+                                    nameof(GetCandidateQuestionsAnswersDto.CandidateName),
+                                    nameof(GetCandidateQuestionsAnswersDto.CandidateEmail),
+                                    nameof(GetCandidateQuestionsAnswersDto.VenueCode) ]'
+                  FirstSearchParameterLabel="@Resource.Code"
+                  SecondSearchParameterLabel="@Resource.Email">
+            <ButtonChildContent Context="value">
+                @if (value is GetCandidateQuestionsAnswersDto candidate && IsCurrentUserSuperAdminOrEntityAdmin)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    OnClick="() => CandidatesResultViewAsync(candidate.CandidateId)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

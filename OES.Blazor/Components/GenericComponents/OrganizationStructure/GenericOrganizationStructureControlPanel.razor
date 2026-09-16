@@ -1,0 +1,72 @@
+﻿@using OES.Helper.Dtos.OrganizationStructure.Responses
+
+<MudStack Row="DisplayHorizontal" Class="@($"text-start w-100 {CssClasses}")">
+    @if (IsLoading)
+    {
+        <MudProgressCircular Indeterminate="true" Class="mx-auto my-4" />
+    }
+    else if (GetAllOrganizationStructureRoots?.Any() != true)
+    {
+        <MudText>@Resource.NoOrganizationStructure<MudLink Href="/OrganizationStructureList">@Resource.OrganizationStructureMatrix</MudLink> @Resource.ToBuildTheOrganization</MudText>
+    }
+    else
+    {
+        <MudSelect T="GetOrganizationRootResponseDto"
+                   Value="SelectedRoot"
+                   ValueChanged="OnRootChanged"
+                   Label="@Resource.SelectOrganizationRoot"
+                   HelperTextOnFocus="true"
+                   Variant="Variant.Outlined"
+                   AnchorOrigin="Origin.BottomCenter"
+                   FullWidth
+                   Disabled="@IsReadOnly"
+                   HelperText="@Resource.SelectOrganizationRootHelperText">
+            @foreach (var root in GetAllOrganizationStructureRoots)
+            {
+                <MudSelectItem Value="root">@root.Name</MudSelectItem>
+            }
+        </MudSelect>
+
+        @if (!string.IsNullOrEmpty(WarningMessage))
+        {
+            <MudAlert Severity="Severity.Warning" Class="my-2">@WarningMessage</MudAlert>
+        }
+
+        @if (SelectedRoot != null)
+        {
+            @if (IsLoading)
+            {
+                <MudProgressCircular Indeterminate="true" Class="mx-auto my-4" />
+            }
+            else
+            {
+                @foreach (var key in NodeLookupItemsDictionary.Keys)
+                {
+                    @if (key.IsFirstLevelChildOfRootNode)
+                    {
+                        <MudDivider Style="opacity: 1 !important; my-2" DividerType="DividerType.Middle" />
+                    }
+
+                    <MudSelect T="GetOrganizationNodeLookupItemResponseDto"
+                               Value="@SelectedNodeLookupItemDictionary[key.Id]"
+                               ValueChanged="OnLookupItemChanged"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               HelperTextOnFocus="true"
+                               ReadOnly="@IsReadOnly"
+                               Label="@key.Name"
+                               HelperText="@key.Description"
+                               FullWidth>
+                        @if (NodeLookupItemsDictionary[key] != null)
+                        {
+                            @foreach (var lookupItem in NodeLookupItemsDictionary[key])
+                            {
+                                <MudSelectItem Value="lookupItem">@lookupItem.Name</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                }
+            }
+        }
+    }
+</MudStack>

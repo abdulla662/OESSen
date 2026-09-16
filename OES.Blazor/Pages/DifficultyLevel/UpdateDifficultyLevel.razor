@@ -1,0 +1,103 @@
+﻿@page "/UpdateDifficultyLevel"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.DifficultyProfile
+@using System.Globalization
+
+@attribute [DynamicAuthorizeAttribute("UpdateDifficultyLevel")]
+
+<PageTitle>@Resource.updateDifficultyLevel</PageTitle>
+
+<EditForm Model="@Model">
+    <DataAnnotationsValidator />
+
+    <MudCard Class="mx-auto mt-5 w-80 p-4 shadow-lg justify-content-center">
+        <MudCardContent>
+
+            <div class="form-group d-flex justify-content-center align-items-center mb-6">
+                <MudIcon Icon="@Icons.Material.Rounded.FilePresent" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h5" Style="line-height: 1;">
+                    @Resource.updateDifficultyLevel
+                </MudText>
+            </div>
+
+            <div class="form-group">
+                <MudTextField Label="@Resource.Name"
+                              Required="true"
+                              Immediate="true"
+                              @bind-Value="Model.Name"
+                              Class="mb-3"
+                              For="@(() => Model.Name)"
+                              Variant="Variant.Outlined" />
+            </div>
+
+            <div class="form-group">
+                <MudSelect @bind-Value="SelectedDeltaType"
+                           Label="@Resource.DeltaType"
+                           Variant="Variant.Outlined"
+                           AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var deltaType in FetchedDeltaTypes)
+                    {
+                        <MudSelectItem Value="@deltaType">@deltaType.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+
+            <div class="form-group">
+                <MudNumericField T="decimal"
+                                 Label="@Resource.FromDelta"
+                                 Required="true"
+                                 Immediate="true"
+                                 @bind-Value="Model.FromDelta"
+                                 For="@(() => Model.FromDelta)"
+                                 Class="mb-3"
+                                 Variant="Variant.Outlined"
+                                 Max="1.0m"
+                                 Format="G29"
+                                 Culture="@(CultureInfo.InvariantCulture)" />
+            </div>
+
+            <div class="form-group">
+                <MudNumericField T="decimal"
+                                 Label="@Resource.ToDelta"
+                                 Required="true"
+                                 Immediate="true"
+                                 @bind-Value="Model.ToDelta"
+                                 For="@(() => Model.ToDelta)"
+                                 Class="mb-3"
+                                 Variant="Variant.Outlined"
+                                 Max="1.0m"
+                                 Format="G29"
+                                 Culture="@(CultureInfo.InvariantCulture)" />
+            </div>
+
+            <div class="form-group">
+                <MudAutocomplete T="ProfileDto"
+                                 @key="FetchedProfiles"
+                                 Label="@Resource.SelectDifficultyProfile"
+                                 Value="SelectedProfile"
+                                 Variant="Variant.Outlined"
+                                 ValueChanged="GetSelectedProfile"
+                                 SearchFunc="@SearchDifficultyLevelProfileAsync"
+                                 ToStringFunc="@(e => e == null ? null : $"{e.Name}")"
+                                 ResetValueOnEmptyText="true"
+                                 CoerceText="false"
+                                 Immediate="true"
+                                 Clearable="true" />
+            </div>
+
+            <MudCardActions Class="justify-content-center w-100">
+                <GeneralLoadingButton Class="w-100 m-3"
+                                      OnClick="OnSubmitAsync"
+                                      ButtonText="@Resource.Update"
+                                      Type="ButtonType.Submit"
+                                      Disabled="@(IsSubmitButtonDisabled)"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle" />
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="w-100 m-3" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+            </MudCardActions>
+
+        </MudCardContent>
+    </MudCard>
+</EditForm>

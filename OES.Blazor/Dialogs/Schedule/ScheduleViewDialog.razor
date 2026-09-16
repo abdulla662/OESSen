@@ -1,0 +1,263 @@
+﻿@using OES.Blazor.Pages.Schedule.PaperSettingTemplates
+@using OES.Helper.Dtos.UserPapersDto
+@using OES.Helper.Dtos.Schedule
+@using OES.Blazor.Services.Interfaces.Paper
+@using MudBlazor
+@using OES.Helper.Dtos.PaperSetting.Responses;
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Rounded.ListAlt" Class="mr-2" Color="Color.Primary" Size="Size.Small" />
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="font-weight-bold">@Resource.ScheduleDetails</MudText>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Spacing="2" Class="animate__animated animate__fadeIn">
+            <MudItem xs="12">
+                <MudPaper Class="pa-2" Elevation="1">
+                    <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-2 font-weight-bold">
+                        <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" Class="mr-1" />
+                        @Resource.BasicInformation
+                    </MudText>
+
+                    <MudGrid Spacing="1">
+                        <MudItem xs="12" sm="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.Name:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2">
+                                    @Model.Name
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Numbers" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.Code:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2" data-no-convert>
+                                    @Model.Code
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Today" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.StartDate:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2">@Model.StartDate?.ToString("dd/MM/yyyy")</MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.StartTime:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2">@(Model.StartTime.HasValue ? TimeOnly.FromTimeSpan(Model.StartTime.Value).ToString("hh:mm tt") : "-")</MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Today" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.EndDate:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2">@Model.EndDate?.ToString("dd/MM/yyyy")</MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.EndTime:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2">@(Model.EndTime.HasValue ? TimeOnly.FromTimeSpan(Model.EndTime.Value).ToString("hh:mm tt") : "-")</MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.Description:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2">
+                                    @Model.Description
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.LocationOn" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.Venues:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2">@GetVenuesDisplayText()</MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.PushPin" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.Location:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2">
+                                    @Model.ScheduleLocation
+                                </MudText>
+                            </MudStack>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.Translate" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                    <strong>@Resource.LanguageName:</strong>
+                                </MudText>
+                                <MudText Typo="Typo.body2">@GetLanguageDisplayText()</MudText>
+                            </MudStack>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        <MudText Typo="Typo.body1" Align="Align.Start" Color="Color.Primary" Class="my-2 font-weight-bold">@Resource.ScheduledPapers</MudText>
+
+        @foreach (var p in Papers)
+        {
+            <MudPaper @key="p.Id"
+                      Class="pa-2 mb-2"
+                      Elevation="1"
+                      Style="border-inline-start:3px solid var(--mud-palette-primary);">
+                <MudGrid Spacing="1">
+                    <MudItem xs="12" sm="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.FontDownload" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                <strong>@Resource.Name:</strong> @p.PaperName
+                            </MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                <strong>@Resource.SessionDescription:</strong> @p.SessionDescription
+                            </MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.QrCode2" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Color="Color.Secondary" Typo="Typo.body2" data-no-convert>
+                                <strong>@Resource.Code:</strong> @p.PaperCode
+                            </MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Today" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                <strong>@Resource.StartDate:</strong> @p.StartDate.ToDateTime(TimeOnly.MinValue).ToString("dd/MM/yyyy")
+                            </MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                <strong>@Resource.StartTime:</strong> @p.StartTime.ToString("hh:mm tt")
+                            </MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Event" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                <strong>@Resource.EndDate:</strong> @p.EndDate.ToDateTime(TimeOnly.MinValue).ToString("dd/MM/yyyy")
+                            </MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                <strong>@Resource.EndTime:</strong> @p.EndTime.ToString("hh:mm tt")
+                            </MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                <strong>@Resource.Settings:</strong>
+                            </MudText>
+                            <MudChip T="string"
+                                     Size="Size.Small"
+                                     Color="@(p.PaperSettingsConfigured ? Color.Success : Color.Warning)"
+                                     Variant="Variant.Outlined">
+                                @p.PaperSettingsConfiguredDescription
+                            </MudChip>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Groups" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                <strong>@Resource.Candidates:</strong> @p.CandidatesCount
+                            </MudText>
+                            @if (p.CandidatesCount > 0)
+                            {
+                                <MudChip T="string"
+                                         Size="Size.Small"
+                                         Color="Color.Primary"
+                                         Variant="Variant.Filled"
+                                         OnClick="@(() => DownloadCandidatesExcelAsync(p.Id))"
+                                         Icon="@Icons.Material.Filled.FileDownload"
+                                         Style="cursor: pointer;">
+                                    @Resource.DownloadCandidatesExcel
+                                </MudChip>
+                            }
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                            <MudIcon Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" />
+                            <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                <strong>@Resource.PaperSettings:</strong>
+                            </MudText>
+                            <MudChip T="string"
+                                     Class="ml-2"
+                                     Color="Color.Success"
+                                     Variant="Variant.Outlined"
+                                     Size="Size.Medium"
+                                     OnClick="@(() => ViewPaperSettingAsync(p.Id))"
+                                     Style="cursor: pointer;">
+                                @Resource.View
+                            </MudChip>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                            <MudIcon Icon="@Icons.Material.Filled.Groups" Color="Color.Primary" />
+                            <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                <strong>@Resource.SecurityConfiguration:</strong>
+                            </MudText>
+                            <MudChip T="string"
+                                     Class="ml-2"
+                                     Color="@(p.PaperSettingsConfigured ? Color.Success : Color.Warning)"
+                                     Variant="Variant.Outlined"
+                                     OnClick="ViewSecurityConfigurationAsync">
+                                @Resource.View
+                            </MudChip>
+                        </MudStack>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        }
+    </DialogContent>
+</MudDialog>

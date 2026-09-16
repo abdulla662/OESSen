@@ -1,0 +1,48 @@
+
+<div class="@(ScreenSizeClass)" data-no-convert>
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="responsive-container d-flex flex-column">
+        <MudGrid Spacing="0" Class="sun-editor-editable mb-0 p-0">
+            <MudText Typo="Typo.inherit" Align="Align.Start" Class="mb-0">
+                @(new MarkupString(Model.Body))
+            </MudText>
+            @if (Model?.HasAttachment ?? false)
+            {
+                <MediaAttachment Url="@(Model.AttachmentFileUrl)" />
+            }
+        </MudGrid>
+
+        <MudGrid Spacing="0" Class="flex-grow-1 mt-0">
+            @foreach (var matchingPair in MatchingPairRows)
+            {
+                <MudItem xs="12">
+                    <MudGrid Class="d-flex align-center mb-2" Spacing="0">
+                        <MudItem xs="4">
+                            <MudPaper Class="pa-2 term-box">
+                                <MudText Typo="Typo.subtitle1">
+                                    @(new MarkupString(matchingPair.Term))
+                                </MudText>
+                            </MudPaper>
+                        </MudItem>
+
+                        <MudItem xs="1" Class="d-flex justify-center align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" />
+                        </MudItem>
+
+                        <MudItem xs="7" Class="d-flex align-center">
+                            <MudSelect T="string"
+                                       @bind-Value="matchingPair.SelectedAnswer"
+                                       Dense="true"
+                                       Variant="Variant.Outlined"
+                                       Disabled="true">
+                                @foreach (var answer in MatchingPairAnswers.Where(a => matchingPair.LanguageId == 0 || a.LanguageId == 0 || a.LanguageId == matchingPair.LanguageId))
+                                {
+                                    <MudSelectItem Value="@answer.Text">@answer.Text</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudContainer>
+</div>

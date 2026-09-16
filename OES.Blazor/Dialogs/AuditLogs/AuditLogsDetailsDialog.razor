@@ -1,0 +1,108 @@
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <DialogContent>
+        <MudPaper Elevation="0" Class="pa-2">
+
+            <!-- Header banner -->
+            <MudPaper Elevation="0"
+                      Style="background: linear-gradient(135deg, var(--mud-palette-primary) 0%, var(--mud-palette-primary-darken) 100%); border-radius: 12px;"
+                      Class="pa-4 mb-4 d-flex align-center gap-3">
+                <MudAvatar Style="background:rgba(255,255,255,0.2); color:white;" Size="Size.Large">
+                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Medium" />
+                </MudAvatar>
+                <div>
+                    <MudText Typo="Typo.h6" Style="color:white; font-weight:600;">@Log.CreationUser</MudText>
+                    <MudChip T="string"
+                             Size="Size.Small"
+                             Style="background:rgba(255,255,255,0.25); color:white; font-weight:500;"
+                             Icon="@Icons.Material.Filled.Bolt">
+                        @Log.Action
+                    </MudChip>
+                </div>
+            </MudPaper>
+
+            <!-- Info rows -->
+            <MudList T="string" Dense="true" DisablePadding="true">
+
+                <!-- User -->
+                <MudListItem T="string" Class="px-0 py-1">
+                    <MudPaper Elevation="0" Class="d-flex align-center gap-3 pa-3 rounded-lg" Style="background:var(--mud-palette-background-grey);">
+                        <MudIcon Icon="@Icons.Material.Filled.AlternateEmail" Color="Color.Primary" Size="Size.Small" />
+                        <div>
+                            <MudText Typo="Typo.caption" Style="color:var(--mud-palette-text-secondary);">@Resource.UserEmail</MudText>
+                            <MudText Typo="Typo.body2" Style="font-weight:500;">@Log.CreationUser</MudText>
+                        </div>
+                    </MudPaper>
+                </MudListItem>
+
+                <!-- Action -->
+                <MudListItem T="string" Class="px-0 py-1">
+                    <MudPaper Elevation="0" Class="d-flex align-center gap-3 pa-3 rounded-lg" Style="background:var(--mud-palette-background-grey);">
+                        <MudIcon Icon="@Icons.Material.Filled.Bolt" Color="Color.Secondary" Size="Size.Small" />
+                        <div>
+                            <MudText Typo="Typo.caption" Style="color:var(--mud-palette-text-secondary);">@Resource.Action</MudText>
+                            <MudText Typo="Typo.body2" Style="font-weight:500;">@Log.Action</MudText>
+                        </div>
+                    </MudPaper>
+                </MudListItem>
+
+                <!-- Timestamp -->
+                <MudPaper Elevation="0" Class="d-flex align-center gap-3 pa-3 rounded-lg" Style="background:var(--mud-palette-background-grey);">
+                    <MudPaper Elevation="0" Class="d-flex align-center justify-center rounded"
+                              Style="background:var(--mud-palette-warning); width:32px; height:32px; flex-shrink:0;">
+                        <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Surface" Size="Size.Small" />
+                    </MudPaper>
+                    <div>
+                        <MudText Typo="Typo.caption" Style="color:var(--mud-palette-text-secondary);">@Resource.Time</MudText>
+                        <MudText Typo="Typo.body2" Style="font-weight:500;">@Log.ActionAt.ToString("yyyy-MM-dd HH:mm:ss")</MudText>
+                    </div>
+                </MudPaper>
+
+                <!-- PageName -->
+                <MudListItem T="string" Class="px-0 py-1">
+                    <MudPaper Elevation="0" Class="d-flex align-center gap-3 pa-3 rounded-lg" Style="background:var(--mud-palette-background-grey);">
+                        <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Warning" Size="Size.Small" />
+                        <div>
+                            <MudText Typo="Typo.caption" Style="color:var(--mud-palette-text-secondary);">@Resource.PageName</MudText>
+                            <MudText Typo="Typo.body2" Style="font-weight:500;">@Log.PageName</MudText>
+                        </div>
+                    </MudPaper>
+                </MudListItem>
+
+                <!-- PathName -->
+                <MudListItem T="string" Class="px-0 py-1">
+                    <MudPaper Elevation="0" Class="d-flex align-center gap-3 pa-3 rounded-lg" Style="background:var(--mud-palette-background-grey);">
+                        <MudIcon Icon="@Icons.Material.Filled.Route" Color="Color.Success" Size="Size.Small" />
+                        <div>
+                            <MudText Typo="Typo.caption" Style="color:var(--mud-palette-text-secondary);">@Resource.PathName</MudText>
+                            <MudText Typo="Typo.body2" Style="font-weight:500;">@Log.PathName</MudText>
+                        </div>
+                    </MudPaper>
+                </MudListItem>
+
+                <!-- URL -->
+                <MudListItem T="string" Class="px-0 py-1">
+                    <MudPaper Elevation="0" Class="d-flex align-start gap-3 pa-3 rounded-lg" Style="background:var(--mud-palette-background-grey);">
+                        <MudIcon Icon="@Icons.Material.Filled.Link" Color="Color.Info" Size="Size.Small" Class="mt-1" />
+                        <div Style="min-width:0;">
+                            <MudText Typo="Typo.caption" Style="color:var(--mud-palette-text-secondary);">@Resource.Url</MudText>
+                            <MudText Typo="Typo.body2" Style="font-weight:500; word-break:break-all;">@Log.Url</MudText>
+                        </div>
+                    </MudPaper>
+                </MudListItem>
+
+            </MudList>
+        </MudPaper>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Close"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close"
+                   Class="px-6">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

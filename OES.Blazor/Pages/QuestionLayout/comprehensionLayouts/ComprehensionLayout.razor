@@ -1,0 +1,293 @@
+@using OES.Helper.Enums
+@using OES.Blazor.Components.Common.OrderingComponent
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.QuestionChoices
+
+<div>
+    <MudGrid Class="question-watermark-transparent">
+        @if (ComprehensionQuestion != null)
+        {
+            <MudItem xs="12" sm="@ColumnsCount" Class="question-watermark-transparent" style="position: relative;">
+                <div class="mt-0">
+                    <MudText Typo="Typo.inherit" Class="sun-editor-editable markup-body responsive-video-wrapper" Align="Align.Start" data-no-convert>
+                        @(new MarkupString(ComprehensionQuestion.ComprehensionBody.Body))
+                    </MudText>
+
+                    @*@if(Model.Instructions != null)
+                    {
+                        <MudAlert Severity="Severity.Info" Elevation="0" Dense Class="mt-4">
+                            <MudText Typo="Typo.subtitle1">@(new MarkupString(ComprehensionQuestion.ComprehensionBody.Instructions))</MudText>
+                        </MudAlert>
+                    }*@
+
+                    @if (ComprehensionQuestion.ComprehensionBody?.HasAttachment ?? false)
+                    {
+                        <MediaAttachment Url="@ComprehensionQuestion.ComprehensionBody?.AttachmentFileUrl" />
+                    }
+                </div>
+            </MudItem>
+
+            <MudItem xs="12" sm="@ColumnsCount">
+                <div style="max-height: 85vh; overflow-y: auto;" class="question-watermark-transparent">
+                    <div>
+                        @if (Orientation == LayoutOrientation.HorizontalNext || Orientation == LayoutOrientation.VerticalNext)
+                        {
+                            <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="responsive-container question-watermark-transparent d-flex flex-column align-items-start justify-content-start mt-3 p-0">
+                                <MudText HtmlTag="div" Color="Color.Primary" Typo="Typo.h5" Class="mt-0 mb-1 fw-normal">
+                                    @Resource.Question  @(_currentQuestionIndex + 1):
+                                </MudText>
+
+                                @if (ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].QuestionTypeName != QuestionType.Ordering)
+                                {
+                                    <MudText Typo="Typo.inherit" Class="mt-1 sun-editor-editable question-watermark-transparent w-100" Align="Align.Start" data-no-convert>
+                                        @(new MarkupString(ConvertPlaceholdersToHighlight(ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].Body, ShowCorrectAnswer)))
+                                    </MudText>
+
+                                    @if (ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].HasAttachment)
+                                    {
+                                        <MediaAttachment Url="@(ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].AttachmentFileUrl)" />
+                                    }
+                                }
+
+                                @if (ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].QuestionTypeName == QuestionType.Ordering)
+                                {
+                                    <OrderingQuestion Model="@(MapToQuestionData(ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex]))"
+                                                      ScreenSize="@ScreenSize"
+                                                      ScreenSizeClass="@ScreenSizeClass"
+                                                      Orientation="@Orientation"
+                                                      ShowCorrectAnswer="@ShowCorrectAnswer" />
+                                }
+                                else if (ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].Choices?.Count > 0)
+                                {
+                                    <MudRadioGroup @key="_currentQuestionIndex" T="string" Class="mt-3 sun-editor-editable question-watermark-transparent" ReadOnly="true" Value="@GetCorrectChoiceText(ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex])">
+                                        @foreach (var choice in ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].Choices)
+                                        {
+                                            <MudItem xs="12">
+                                                <MudRadio T="string"
+                                                          Color="Color.Primary"
+                                                          Size="Size.Small"
+                                                          Disabled="true"
+                                                          Value="@choice.ChoiceText"
+                                                          Class="d-flex text-editor-style">
+                                                    <MudText Typo="Typo.inherit">
+                                                        @(new MarkupString(choice.ChoiceText ?? ""))
+                                                    </MudText>
+                                                </MudRadio>
+                                            </MudItem>
+                                        }
+                                    </MudRadioGroup>
+                                    @if (ShowCorrectAnswer && !ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].Choices.Any(c => c.IsCorrectAnswer))
+                                    {
+                                        <MudText Typo="Typo.h6" Class="text-warning mt-2 w-100" Align="Align.Start">
+                                            @Resource.NoCorrectAnswerProvidedForQuestion @(_currentQuestionIndex + 1).
+                                        </MudText>
+                                    }
+                                }
+                                else if (!string.IsNullOrWhiteSpace(ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].ModelAnswer))
+                                {
+                                    @if (ShowCorrectAnswer)
+                                    {
+                                        <MudItem xs="12" Class="pa-0 ma-0 mt-3">
+                                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mt-0 mb-0 p-0">
+                                                @Resource.CorrectAnswer
+                                            </MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" Class="sun-editor-editable pa-0 ma-0" Style="margin-top: 5px !important;">
+                                            <MudText Typo="Typo.inherit" Class="sun-editor-editable centered-border rounded p-0 mb-0">
+                                                @(new MarkupString(ComprehensionQuestion.SubQuestionsList[_currentQuestionIndex].ModelAnswer))
+                                            </MudText>
+                                        </MudItem>
+                                    }
+                                    else
+                                    {
+                                        <MudTextField T="string" ShrinkLabel Label="Your Answer" Variant="Variant.Outlined" ReadOnly="true" Lines="2" Class="mt-3" />
+                                    }
+                                }
+                                <div class="d-flex justify-content-between pa-5 question-watermark-transparentw-100 w-100 mt-4">
+                                    @if (Backward)
+                                    {
+                                        <MudButton OnClick="PreviousQuestion"
+                                                   ButtonType="ButtonType.Button"
+                                                   Variant="Variant.Filled"
+                                                   Color="Color.Primary"
+                                                   Size="Size.Small"
+                                                   Disabled="@(_currentQuestionIndex == 0)">
+                                            <MudText Typo="Typo.subtitle1">@Resource.Back</MudText>
+                                        </MudButton>
+                                    }
+
+                                    <MudButton OnClick="NextQuestion"
+                                               ButtonType="ButtonType.Submit"
+                                               Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               Size="Size.Small"
+                                               Disabled="@(_currentQuestionIndex == ComprehensionQuestion.SubQuestionsList.Count - 1)">
+                                        <MudText Typo="Typo.subtitle1">@Resource.Next</MudText>
+                                    </MudButton>
+                                </div>
+
+                                <div class="mt-3">
+                                    <MudText Typo="Typo.subtitle1">
+                                        @Resource.Question @(_currentQuestionIndex + 1) @Resource.Of @ComprehensionQuestion.SubQuestionsList.Count
+                                    </MudText>
+                                </div>
+                            </MudContainer>
+                        }
+                        else if (Orientation == LayoutOrientation.Horizontal || Orientation == LayoutOrientation.Vertical)
+                        {
+                            @for (var i = 0; i < ComprehensionQuestion.SubQuestionsList.Count; i++)
+                            {
+                                var questionNumber = i + 1;
+                                var question = ComprehensionQuestion.SubQuestionsList[i];
+
+                                <div class="question-watermark-transparent mb-3">
+                                    <MudText HtmlTag="div" Color="Color.Primary" Typo="Typo.h5" Class="mt-0 mb-1 fw-normal w-100">
+                                        @Resource.Question @(questionNumber):
+                                    </MudText>
+
+                                    @if (question.QuestionTypeName != QuestionType.Ordering)
+                                    {
+                                        <MudText Typo="Typo.inherit" Class="mt-1 sun-editor-editable p-0 question-watermark-transparent" data-no-convert>
+                                            @(new MarkupString(ConvertPlaceholdersToHighlight(question.Body, ShowCorrectAnswer)))
+                                        </MudText>
+
+                                        @if (question.HasAttachment)
+                                        {
+                                            <MediaAttachment Url="@(question.AttachmentFileUrl)" />
+                                        }
+                                    }
+
+                                    @if (question.QuestionTypeName == QuestionType.Ordering)
+                                    {
+                                        <OrderingQuestion Model="@(MapToQuestionData(question))"
+                                                          ScreenSize="@ScreenSize"
+                                                          ScreenSizeClass="@ScreenSizeClass"
+                                                          Orientation="@Orientation"
+                                                          ShowCorrectAnswer="@ShowCorrectAnswer" />
+                                    }
+                                    else if (question.Choices?.Count > 0)
+                                    {
+                                        <MudRadioGroup T="string" Class="mt-3 sun-editor-editable question-watermark-transparent" ReadOnly="true" Value="@GetCorrectChoiceText(question)">
+                                            @foreach (var choice in question.Choices)
+                                            {
+                                                <MudItem xs="12">
+                                                    <MudRadio T="string"
+                                                              Color="Color.Primary"
+                                                              Size="Size.Small"
+                                                              Disabled="true"
+                                                              Value="@choice.ChoiceText"
+                                                              Class="d-flex text-editor-style">
+                                                        <MudText Typo="Typo.subtitle1">
+                                                            @(new MarkupString(choice.ChoiceText ?? ""))
+                                                        </MudText>
+                                                    </MudRadio>
+                                                </MudItem>
+                                            }
+                                        </MudRadioGroup>
+                                        @if (ShowCorrectAnswer && !question.Choices.Any(c => c.IsCorrectAnswer))
+                                        {
+                                            <MudText Typo="Typo.h6" Class="text-warning mb-1">@Resource.NoCorrectAnswerProvidedForThisQuestion</MudText>
+                                        }
+                                    }
+                                    else if (!string.IsNullOrWhiteSpace(question.ModelAnswer))
+                                    {
+                                        @if (ShowCorrectAnswer)
+                                        {
+                                            <MudItem xs="12" Class="pa-0 ma-0 mt-3">
+                                                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mt-0 mb-0 p-0">
+                                                    @Resource.CorrectAnswer
+                                                </MudText>
+                                            </MudItem>
+                                            <MudItem xs="12" Class="sun-editor-editable pa-0 ma-0" Style="margin-top: 5px !important;">
+                                                <MudText Typo="Typo.inherit" Class="sun-editor-editable centered-border rounded p-0 mb-0">
+                                                    @(new MarkupString(question.ModelAnswer))
+                                                </MudText>
+                                            </MudItem>
+                                        }
+                                        else
+                                        {
+                                            <MudTextField T="string" ShrinkLabel Label="Your Answer" Variant="Variant.Outlined" ReadOnly="true" Lines="2" Class="mt-3" />
+                                        }
+                                    }
+                                </div>
+                            }
+                        }
+                        else if (Orientation == LayoutOrientation.PDFView)
+                        {
+                            <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="responsive-container question-watermark-transparent mt-3">
+                                <MudGrid>
+                                    @foreach (var question in ComprehensionQuestion.SubQuestionsList)
+                                    {
+                                        <MudItem xs="12" md="6">
+                                            <MudStack Style=" border:solid 3px #e0e0e0; border-radius: 4px; padding: 10px" Spacing="3">
+                                                @if (question.QuestionTypeName != QuestionType.Ordering)
+                                                {
+                                                    <MudText Typo="Typo.h6" Class="fw-bolder" Color="Color.Primary" data-no-convert>
+                                                        @(new MarkupString(ConvertPlaceholdersToHighlight(question.Body, ShowCorrectAnswer)))
+                                                    </MudText>
+
+                                                    @if (question.HasAttachment)
+                                                    {
+                                                        <MediaAttachment Url="@(question.AttachmentFileUrl)" ImageStyle="max-height: 250px; width: auto; border-radius: 4px;" />
+                                                    }
+                                                }
+
+                                                @if (question.QuestionTypeName == QuestionType.Ordering)
+                                                {
+                                                    <OrderingQuestion Model="@(MapToQuestionData(question))"
+                                                                      ScreenSize="@ScreenSize"
+                                                                      ScreenSizeClass="@ScreenSizeClass"
+                                                                      Orientation="@Orientation"
+                                                                      ShowCorrectAnswer="@ShowCorrectAnswer" />
+                                                }
+                                                else if (question.Choices == null || question.Choices.Count == 0)
+                                                {
+                                                    @if (!string.IsNullOrWhiteSpace(question.ModelAnswer))
+                                                    {
+                                                        if (ShowCorrectAnswer)
+                                                        {
+                                                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mt-0 mb-0 p-0">
+                                                                @Resource.CorrectAnswer
+                                                            </MudText>
+                                                            <MudText Typo="Typo.inherit" Class="sun-editor-editable centered-border rounded p-0 mb-0">
+                                                                @(new MarkupString(question.ModelAnswer))
+                                                            </MudText>
+                                                        }
+                                                        else
+                                                        {
+                                                            <MudTextField T="string" ShrinkLabel Label="Your Answer" Variant="Variant.Outlined" ReadOnly=true Lines="2" />
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <MudRadioGroup T="ChoiceDataDto" ReadOnly="true">
+                                                        <MudStack Spacing="1">
+                                                            @foreach (var choice in question.Choices)
+                                                            {
+                                                                <MudRadio T="ChoiceDataDto"
+                                                                          Color="Color.Primary"
+                                                                          Size="Size.Small"
+                                                                          Class="d-flex align-items-start"
+                                                                          Checked="@(ShowCorrectAnswer && choice.IsCorrectAnswer)"
+                                                                          Value="choice">
+                                                                    <MudText Typo="Typo.body1" Class="ms-1">
+                                                                        @(new MarkupString(choice.ChoiceText))
+                                                                    </MudText>
+                                                                </MudRadio>
+                                                            }
+                                                        </MudStack>
+                                                    </MudRadioGroup>
+                                                }
+                                            </MudStack>
+                                        </MudItem>
+                                    }
+                                </MudGrid>
+                            </MudContainer>
+                        }
+                    </div>
+                </div>
+            </MudItem>
+        }
+    </MudGrid>
+</div>

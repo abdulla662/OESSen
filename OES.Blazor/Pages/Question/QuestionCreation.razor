@@ -1,0 +1,109 @@
+@page "/QuestionCreation"
+
+@using Microsoft.AspNetCore.Builder
+@using MudBlazor
+@using MudBlazor.Extensions
+@using MudExtensions
+@using MudExtensions.Utilities
+@using OES.Blazor.Pages.Question.QuestionLanguage
+@using OES.Blazor.Pages.QuestionLayout
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute(nameof(QuestionCreation))]
+
+<PageTitle>@Resource.AddOrUpdate</PageTitle>
+
+<MudItem Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <div class="d-flex justify-content-center align-items-center my-5">
+        <MudIcon Icon="@Icons.Material.Rounded.Quiz" Color="Color.Primary" Size="Size.Large" Class="me-3" Style="vertical-align: middle;" />
+        <MudText Typo="Typo.h4" Align="Align.Center" Color="Color.Primary" Style="line-height: 1;">@Resource.AddOrUpdate</MudText>
+    </div>
+    <MudStepperExtended @ref="_stepper"
+                        Class="mud-width-full"
+                        ContentStyle="min-height: 240px"
+                        Linear="@_linear"
+                        Vertical="@_vertical"
+                        PreventStepChangeAsync="CheckChangeAsync"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        MobileView="@_mobileView"
+                        Loading="@_loading"
+                        LocalizedStrings="GetLocalizedStrings()"
+                        @bind-ShowPreviousButton="_showPreviousButton"
+                        @bind-ShowNextButton="_showNextButton"
+                        ActiveStepChanged="OnActiveStepChanged"
+                        HeaderTextView="HeaderTextView.All">
+        <ChildContent>
+
+            @*Step-One Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Start" Title="@Resource.QuestionMetadata">
+                <ChildContent>
+                    @if (_isQuestionApproved)
+                    {
+                        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="my-4" Spacing="2">
+                            <MudText Align="Align.Center" Typo="Typo.subtitle1" Color="Color.Default">
+                                @Resource.QuestionMetadataLockedBecauseApproved
+                                <MudIcon Icon="@Icons.Material.Filled.KeyboardDoubleArrowRight" Style="font-size: 1.4rem; vertical-align: middle;" Color="Color.Primary" />
+                            </MudText>
+                            <MudIcon Icon="@Icons.Material.Filled.FactCheck" Style="font-size: 2.5rem;" Color="Color.Success" />
+                        </MudStack>
+                    }
+                    else
+                    {
+                        <QuestionMetaData QuestionTypeChanged="OnQuestionTypeChange"
+                                          QuestionTypeIdChanged="OnQuestionTypeIdChange"
+                                          OnQuestionCreation="OnQuestionCreation"
+                                          OnDataLoaded="OnStepOneDataLoaded"
+                                          @ref="QuestionMetadataStepOne" />
+                    }
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Two Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Language" Title="@Resource.CreateMultilingualVersionsOfQuestion">
+                <ChildContent>
+                    <QuestionLanguageList QuestionType="@QuestionType"
+                                          CreatedQuestionMetaDataId="@QuestionMetadataId"
+                                          RootQuestionCode="@QuestionMetadataStepOne.QuestionMetaDataObject.Code"
+                                          SegmentQuestionChanged="@OnSegmentQuestionChanged"
+                                          IsReplaceMode="@_isQuestionApproved"
+                                          @ref="QuestionLanguagesListStepTwo" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Three Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Layers" Title="@Resource.QuestionLayout">
+                <ChildContent>
+                    <QuestionLayoutComponent QuestionType="@QuestionType"
+                                             QuestionTypeId="@QuestionTypeId"
+                                             QuestionMetadataId="@QuestionMetadataId"
+                                             QuestionLayoutId="@QuestionMetadataStepOne.QuestionMetaDataObject.QuestionLayoutId"
+                                             @ref="QuestionLayoutComponentStepThree" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @if (_addResultStep)
+            {
+                <MudStepExtended Icon="@Icons.Material.Filled.Alarm" Title="ResultStep" IsResultStep="true">
+                    <ChildContent>
+                        <div class="d-flex flex-column align-center justify-center">
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Style="font-size: 6rem;" Color="Color.Success" />
+                            <MudText Class="my-5">@Resource.YourQuestionHasBeen @(_processMode == INSERTION_MODE ? Resource.Created : _isQuestionApproved ? Resource.Replaced : Resource.Updated) @Resource.Successfully</MudText>
+                            @if (_processMode == INSERTION_MODE)
+                            {
+                                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="BackToStepOneFilledToAddAnotherQuestion" EndIcon="@Icons.Material.Filled.CheckCircle">@Resource.AddAnotherQuestion</MudButton>
+                                <div class="text-center my-4">@Resource.OR</div>
+                            }
+                            @if (!_isQuestionApproved)
+                            {
+                                <MudButton Href="/QuestionsQualityCheck" Color="Color.Primary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.FactCheck">@Resource.GoToQuestionsQualityCheck</MudButton>
+                            }
+                        </div>
+                    </ChildContent>
+                </MudStepExtended>
+            }
+
+        </ChildContent>
+    </MudStepperExtended>
+</MudItem>

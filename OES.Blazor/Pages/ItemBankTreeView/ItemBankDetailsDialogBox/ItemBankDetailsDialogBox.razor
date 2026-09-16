@@ -1,0 +1,106 @@
+@using OES.Helper.Dtos.OESUserGroups
+@using OES.Blazor.Pages.ItemBankTreeView.ItemBankStatisticsComponent
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-items-center gap-2 px-2 pt-3 pb-1">
+            <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Medium">
+                <MudIcon Icon="@Icons.Material.Outlined.AccountBalance" Size="Size.Small" />
+            </MudAvatar>
+            <div>
+                <MudText Typo="Typo.h5" Color="Color.Primary" Class="fw-semibold lh-sm">
+                    @Resource.ItemBankDetails
+                </MudText>
+            </div>
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        <!-- Basic Info Card -->
+        <div class="border rounded-3 p-4 mb-3">
+            <MudText Typo="Typo.overline" Color="Color.Secondary" Class="d-block mb-3 fw-semibold tracking-wide">
+                @Resource.BasicInformation
+            </MudText>
+            <MudGrid Spacing="3">
+                <MudItem xs="8">
+                    <MudField Label="@Resource.Name" Variant="Variant.Outlined">
+                        @ItemBankDetailsObject.Text
+                    </MudField>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudTextField Value="@ItemBankDetailsObject.Code"
+                                  Label="@Resource.Code"
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="true"
+                                  AutoGrow="true"
+                                  MaxLines="4"
+                                  data-no-convert />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudField Label="@Resource.Description" Variant="Variant.Outlined" Lines="2">
+                        @ItemBankDetailsObject.Description
+                    </MudField>
+                </MudItem>
+                <MudItem xs="12" Class="d-flex justify-content-center gap-4 mt-2">
+                    <MudSwitch Value="ItemBankDetailsObject.Unscored" Disabled="true" Label="@Resource.Unscored" Color="Color.Warning" />
+                    <MudSwitch Value="ItemBankDetailsObject.IsActive" Disabled="true" Label="@Resource.IsActive" Color="Color.Primary" />
+                </MudItem>
+            </MudGrid>
+        </div>
+
+        <!-- Groups Card -->
+        <div class="border rounded-3 p-4 mb-3">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <MudIcon Icon="@Icons.Material.Filled.Groups" Color="Color.Primary" Size="Size.Small" />
+                <MudText Typo="Typo.overline" Color="Color.Secondary" Class="fw-semibold">
+                    @Resource.Groups
+                </MudText>
+            </div>
+            @{
+                var intersectedGroups = GetCurrentItemBankNodeGroups();
+            }
+
+            @if (intersectedGroups.Any())
+            {
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var group in intersectedGroups)
+                    {
+                        <MudChip T="string"
+                                 Color="Color.Primary"
+                                 Variant="Variant.Outlined"
+                                 Size="Size.Small"
+                                 Icon="@Icons.Material.Filled.Group">
+                            @group.Name
+                        </MudChip>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="d-flex align-items-center gap-2">
+                    <MudIcon Icon="@Icons.Material.Outlined.GroupOff" Color="Color.Secondary" Size="Size.Small" />
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        @Resource.NoGroupsAssignedForThisNode
+                    </MudText>
+                </div>
+            }
+        </div>
+
+        <MudDivider Class="my-4" />
+
+        <!-- Statistics -->
+        <ItemBankStatisticsComponent ItemBankId="@ItemBankDetailsObject.Id" />
+    </DialogContent>
+
+    <DialogActions>
+        <div class="w-100 px-4 pb-3">
+            <MudButton OnClick="Close"
+                       Variant="Variant.Outlined"
+                       Color="Color.Secondary"
+                       StartIcon="@Icons.Material.Filled.Close"
+                       Class="fw-semibold">
+                @Resource.Close
+            </MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>

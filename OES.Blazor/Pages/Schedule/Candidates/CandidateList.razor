@@ -1,0 +1,70 @@
+﻿@page "/Candidates"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Services.Interfaces.Candidate
+@using OES.Helper.Dtos.Candidate.Responses
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+
+@attribute [DynamicAuthorizeAttribute(nameof(CandidateList))]
+
+<PageTitle>@Resource.Candidates</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.AccountBox" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.Candidates</MudText>
+        </MudStack>
+
+        <ListItem @key="Key"
+                  T="CandidatesListResponseDto"
+                  Caption="@Resource.Candidate"
+                  CaptionIcon="@Icons.Material.Filled.AccountBox"
+                  EndpointServerice="BlazCandidateService.GetAllCandidatesAsync"
+                  DisplayColumns='["CandidateCode", "UserName", "Name", "Email", "MobileNumber", "NationalId"]'
+                  HideSearchInBody="false"
+                  FirstSearchParameterLabel="@Resource.Code"
+                  SecondSearchParameterLabel="@Resource.Email"
+                  ThirdSearchParameterLabel="@Resource.NationalId">
+            <TopChildContent>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Style="border-radius: 12px;"
+                           Class="mb-4 rounded-lg"
+                           EndIcon="@Icons.Material.Filled.CloudUpload"
+                           OnClick="UploadCandidatesAsync">
+                    @Resource.ImportCandidates
+                </MudButton>
+            </TopChildContent>
+            <ButtonChildContent Context="value">
+                @if (value is CandidatesListResponseDto candidate)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    OnClick="() => ViewCandidateAsync(candidate.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    OnClick="() => NavigateToEditAsync(candidate.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    StartIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    OnClick="() => DeleteCandidateAsync(candidate.Id)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

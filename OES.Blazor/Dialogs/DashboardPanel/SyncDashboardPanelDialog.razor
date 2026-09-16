@@ -1,0 +1,454 @@
+@using SharedHelper.General;
+@using OES.Helper.Dtos.Sync
+@using SharedHelper.Enums
+
+<MudDialog DefaultFocus="DefaultFocus.None">
+    <TitleContent>
+        <div class="d-flex justify-space-between align-center pa-2">
+            <div class="d-flex align-center">
+                <MudIcon Class="mr-3" Icon="@Icons.Material.Filled.CloudSync" Color="Color.Primary" />
+                <MudText Typo="Typo.h6">@Resource.SyncDashboard</MudText>
+            </div>
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Error"
+                       OnClick="MinimizePanel"
+                       Style="min-width: 36px; padding: 0;">
+                <MudIcon Icon="@Icons.Material.Filled.Close" Size="Size.Medium" />
+            </MudButton>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        @if (_isPreparingData)
+        {
+            <!-- Preparation Mode: Show spinner while waiting for SignalR response to complete -->
+            <MudPaper Class="pa-8 mb-4" Elevation="0">
+                <div class="d-flex flex-column align-center gap-4">
+                    <MudProgressCircular Size="Size.Large" Indeterminate="true" Color="Color.Primary" />
+                    <MudText Typo="Typo.h5" Color="Color.Primary">
+                        <strong>@Resource.Preparing</strong>
+                    </MudText>
+                    <MudText Typo="Typo.body1" Color="Color.Secondary">
+                        @Resource.CheckingVenueConnection
+                    </MudText>
+                    @if (!string.IsNullOrEmpty(PreparationScheduleName))
+                    {
+                        <MudChip T="string" Icon="@Icons.Material.Filled.Schedule" Color="Color.Info">
+                            @PreparationScheduleName
+                        </MudChip>
+                    }
+                </div>
+            </MudPaper>
+        }
+        else
+        {
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-2" ActivePanelIndexChanged="OnTabChanged">
+                <MudTabPanel Text="@Resource.CurrentJobs">
+                    <!-- Summary Cards -->
+                    <div class="d-flex gap-3 mb-4">
+                        <MudPaper Elevation="2" Class="pa-3 flex-grow-1">
+                            <div class="d-flex align-center gap-2">
+                                @if (HasPendingJobs)
+                                {
+                                    <MudIcon Icon="@Icons.Material.Filled.HourglassEmpty"
+                                             Class="pulsing-icon"
+                                             Color="Color.Default" />
+                                }
+                                else
+                                {
+                                    <MudIcon Icon="@Icons.Material.Filled.Pending" Color="Color.Default" />
+                                }
+                                <div>
+                                    <MudText Typo="Typo.caption" Color="Color.Default">
+                                        @Resource.Pending
+                                    </MudText>
+                                    <MudText Typo="Typo.h6">
+                                        @PendingCount
+                                    </MudText>
+                                </div>
+                            </div>
+                        </MudPaper>
+
+                        <MudPaper Elevation="2" Class="pa-3 flex-grow-1">
+                            <div class="d-flex align-center gap-2">
+                                @if (SyncJobs.Any(j => j.Status == SyncJobStatus.InProgress))
+                                {
+                                    <MudProgressCircular Size="Size.Small"
+                                                         Indeterminate="true"
+                                                         Color="Color.Primary"
+                                                         Style="width: 24px; height: 24px;" />
+                                }
+                                else
+                                {
+                                    <MudIcon Icon="@Icons.Material.Filled.Sync" Color="Color.Primary" />
+                                }
+                                <div>
+                                    <MudText Typo="Typo.caption" Color="Color.Primary">
+                                        @Resource.InProgress
+                                    </MudText>
+                                    <MudText Typo="Typo.h6">
+                                        @InProgressCount
+                                    </MudText>
+                                </div>
+                            </div>
+                        </MudPaper>
+
+                        <MudPaper Elevation="2" Class="pa-3 flex-grow-1">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                                <div>
+                                    <MudText Typo="Typo.caption" Color="Color.Success">@Resource.Success</MudText>
+                                    <MudText Typo="Typo.h6">@SuccessCount</MudText>
+                                </div>
+                            </div>
+                        </MudPaper>
+
+                        <MudPaper Elevation="2" Class="pa-3 flex-grow-1">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" />
+                                <div>
+                                    <MudText Typo="Typo.caption" Color="Color.Error">@Resource.Failed</MudText>
+                                    <MudText Typo="Typo.h6">@FailedCount</MudText>
+                                </div>
+                            </div>
+                        </MudPaper>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    @if (!IsOperationComplete)
+                    {
+                        <div class="mb-4">
+                            <div class="d-flex justify-space-between mb-1">
+                                <MudText Typo="Typo.body2">@Resource.OverallProgress</MudText>
+                                <MudText Typo="Typo.body2">@CompletedCount / @TotalJobs @Resource.Venues</MudText>
+                            </div>
+                            <MudProgressLinear Value="@ProgressPercentage" Color="Color.Primary" Size="Size.Large" />
+                        </div>
+                    }
+
+                    <div class="d-flex justify-space-between align-center mt-6 mb-2">
+                        <MudText Typo="Typo.h6">@Resource.VenuesStatus</MudText>
+                        @if (FailedJobs.Any())
+                        {
+                            <MudSwitch T="bool"
+                                       @bind-Checked="@_showOnlyFailed"
+                                       ValueChanged="@OnFilterChanged"
+                                       Color="Color.Error">
+                                @Resource.ShowFailedOnly (@FailedJobs.Count())
+                            </MudSwitch>
+                        }
+                    </div>
+
+                    <!-- Jobs Table -->
+                    <MudTable Items="@SortedFilteredJobs"
+                              Dense="true"
+                              Hover="true"
+                              FixedHeader="true"
+                              Elevation="0">
+                        <HeaderContent>
+                            <MudTh>@Resource.Venue</MudTh>
+                            <MudTh>@Resource.ScheduleName</MudTh>
+                            <MudTh>@Resource.Status</MudTh>
+                            <MudTh>@Resource.Details</MudTh>
+                            <MudTh>@Resource.CandidatesCount</MudTh>
+                            <MudTh Style="text-align: right">@Resource.Actions</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="@Resource.Venue">
+                                <div class="d-flex align-center gap-2">
+                                    <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Color="Color.Default" />
+                                    <MudText Typo="Typo.body2"><strong>@context.VenueName</strong></MudText>
+                                </div>
+                            </MudTd>
+                            <MudTd DataLabel="@Resource.ScheduleName">
+                                <div class="d-flex align-center gap-2">
+                                    <MudIcon Icon="@Icons.Material.Filled.Schedule" Size="Size.Small" Color="Color.Default" />
+                                    <MudText Typo="Typo.body2"><strong>@context.ScheduleName</strong></MudText>
+                                </div>
+                            </MudTd>
+                            <MudTd DataLabel="@Resource.Status">
+                                @switch (context.Status)
+                                {
+                                    case SyncJobStatus.Success:
+                                        <MudChip T="string" Size="Size.Small"
+                                                 Icon="@Icons.Material.Filled.CheckCircle"
+                                                 Color="Color.Success"
+                                                 Class="status-chip-success">
+                                            @Resource.Completed
+                                        </MudChip>
+                                        break;
+
+                                    case SyncJobStatus.Failed:
+                                        <MudChip T="string" Size="Size.Small"
+                                                 Icon="@Icons.Material.Filled.Error"
+                                                 Color="Color.Error"
+                                                 Class="status-chip-error">
+                                            @Resource.Failed
+                                        </MudChip>
+                                        break;
+
+                                    case SyncJobStatus.InProgress:
+                                        <div class="d-flex align-center gap-2 status-in-progress">
+                                            <MudProgressCircular Size="Size.Small"
+                                                                 Indeterminate="true"
+                                                                 Color="Color.Primary"
+                                                                 Style="width: 18px; height: 18px;" />
+                                            <MudText Class="pulsing-text" Typo="Typo.body2">
+                                                <strong>@Resource.Syncing...</strong>
+                                            </MudText>
+                                        </div>
+                                        break;
+
+                                    case SyncJobStatus.Pending:
+                                        <div class="d-flex align-center gap-2 status-pending">
+                                            <MudIcon Icon="@Icons.Material.Filled.Schedule"
+                                                     Class="pulsing-icon"
+                                                     Size="Size.Small"
+                                                     Color="Color.Default" />
+                                            <MudText Typo="Typo.body2" Color="Color.Default">
+                                                @Resource.Waiting...
+                                            </MudText>
+                                        </div>
+                                        break;
+                                }
+                            </MudTd>
+                            <MudTd DataLabel="@Resource.Details">
+                                @if (!string.IsNullOrEmpty(context?.ErrorMessage))
+                                {
+                                    <MudButton Size="Size.Small"
+                                               Variant="Variant.Text"
+                                               Color="Color.Error"
+                                               EndIcon="@Icons.Material.Filled.ErrorOutline"
+                                               OnClick="@(() => ShowErrorDetails(context))">
+                                        @Resource.ViewError
+                                    </MudButton>
+                                }
+                                else if (context.CompletedAt.HasValue)
+                                {
+                                    var completedTime = context.CompletedAt?.ToString("hh:mm:ss tt") ?? Resource.NotAvailable;
+
+                                    <div class="d-flex align-center gap-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.AccessTime" Size="Size.Small" Color="Color.Default" />
+                                        <MudText Typo="Typo.caption">
+                                            @completedTime
+                                        </MudText>
+                                    </div>
+                                }
+                                else if (context.Status == SyncJobStatus.InProgress)
+                                {
+                                    <MudText Typo="Typo.caption" Color="Color.Primary">
+                                        @($"{Resource.Processing}…")
+                                    </MudText>
+                                }
+                            </MudTd>
+                            <MudTd DataLabel="@Resource.CandidatesCount">
+                                <div class="d-flex align-center gap-2">
+                                    <MudText Typo="Typo.body2"><strong>@context.CandidateCount</strong></MudText>
+                                </div>
+                            </MudTd>
+                            <MudTd DataLabel="@Resource.Actions" Class="text-right">
+                                @if (context.Status == SyncJobStatus.Failed)
+                                {
+                                    <MudTooltip Text="@Resource.Retrythisvenue" Placement="Placement.Top">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Replay"
+                                                       Color="Color.Warning"
+                                                       Variant="Variant.Filled"
+                                                       Size="Size.Medium"
+                                                       OnClick="() => OnRetrySingleJob.InvokeAsync(context.Id)"
+                                                       Disabled="isRetrying"
+                                                       Class="transition-transform hover:rotate-90 duration-300" />
+                                    </MudTooltip>
+                                }
+                                else if (context.Status == SyncJobStatus.Pending)
+                                {
+                                    <MudTooltip Text="@Resource.Cancel" Placement="Placement.Top">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Cancel"
+                                                       Color="Color.Error"
+                                                       Variant="Variant.Filled"
+                                                       Size="Size.Medium"
+                                                       OnClick="() => CancelPendingJobAsync(context.Id)"
+                                                       Disabled="isRetrying" />
+                                    </MudTooltip>
+                                }
+                            </MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            <MudText>@Resource.Nosyncrecordstodisplay</MudText>
+                        </NoRecordsContent>
+                        <LoadingContent>
+                            <MudText>@Resource.Loading</MudText>
+                        </LoadingContent>
+                        <PagerContent>
+                            <MudTablePager PageSizeOptions="[5, 10, 20, 40, 100]"
+                                           RowsPerPageString="@Resource.RowsPerPage"
+                                           InfoFormat="@Resource.FromToOfFormat">
+                            </MudTablePager>
+                        </PagerContent>
+                    </MudTable>
+                </MudTabPanel>
+
+                <MudTabPanel Text="@Resource.SyncHistory">
+                    @if (IsLoadingHistory)
+                    {
+                        <div class="d-flex justify-center pa-4">
+                            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                        </div>
+                    }
+                    else
+                    {
+                        <MudTable Items="@SyncHistoryJobs" Dense="true" Hover="true" FixedHeader="true" Elevation="0">
+                            <HeaderContent>
+                                <MudTh>@Resource.Venue</MudTh>
+                                <MudTh>@Resource.ScheduleName</MudTh>
+                                <MudTh>@Resource.Status</MudTh>
+                                <MudTh>@Resource.Details</MudTh>
+                                <MudTh>@Resource.CandidatesCount</MudTh>
+                                <MudTh Style="text-align: right">@Resource.Actions</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="@Resource.Venue">
+                                    <MudText Typo="Typo.body2"><strong>@context.VenueName</strong></MudText>
+                                </MudTd>
+                                <MudTd DataLabel="@Resource.ScheduleName">
+                                    <MudText Typo="Typo.body2"><strong>@context.ScheduleName</strong></MudText>
+                                </MudTd>
+                                <MudTd DataLabel="@Resource.Status">
+                                    @switch (context.Status)
+                                    {
+                                        case SyncJobStatus.Success:
+                                            <MudChip T="string" Size="Size.Small"
+                                                     Icon="@Icons.Material.Filled.CheckCircle"
+                                                     Color="Color.Success"
+                                                     Class="status-chip-success">
+                                                @Resource.Completed
+                                            </MudChip>
+                                            break;
+
+                                        case SyncJobStatus.Failed:
+                                            <MudChip T="string" Size="Size.Small"
+                                                     Icon="@Icons.Material.Filled.Error"
+                                                     Color="Color.Error"
+                                                     Class="status-chip-error">
+                                                @Resource.Failed
+                                            </MudChip>
+                                            break;
+
+                                        case SyncJobStatus.InProgress:
+                                            <div class="d-flex align-center gap-2 status-in-progress">
+                                                <MudProgressCircular Size="Size.Small"
+                                                                     Indeterminate="true"
+                                                                     Color="Color.Primary"
+                                                                     Style="width: 18px; height: 18px;" />
+                                                <MudText Class="pulsing-text" Typo="Typo.body2">
+                                                    <strong>@Resource.Syncing...</strong>
+                                                </MudText>
+                                            </div>
+                                            break;
+
+                                        case SyncJobStatus.Pending:
+                                            <div class="d-flex align-center gap-2 status-pending">
+                                                <MudIcon Icon="@Icons.Material.Filled.Schedule"
+                                                         Class="pulsing-icon"
+                                                         Size="Size.Small"
+                                                         Color="Color.Default" />
+                                                <MudText Typo="Typo.body2" Color="Color.Default">
+                                                    @Resource.Waiting...
+                                                </MudText>
+                                            </div>
+                                            break;
+                                    }
+                                </MudTd>
+                                <MudTd DataLabel="@Resource.Details">
+                                    @if (!string.IsNullOrEmpty(context?.ErrorMessage))
+                                    {
+                                        <MudButton Size="Size.Small"
+                                                   Variant="Variant.Text"
+                                                   Color="Color.Error"
+                                                   EndIcon="@Icons.Material.Filled.ErrorOutline"
+                                                   OnClick="@(() => ShowErrorDetails(context))">
+                                            @Resource.ViewError
+                                        </MudButton>
+                                    }
+                                    else if (context.CompletedAt.HasValue)
+                                    {
+                                        var completedTime = context.CompletedAt?.ToString("hh:mm:ss tt") ?? Resource.NotAvailable;
+
+                                        <div class="d-flex align-center gap-2">
+                                            <MudIcon Icon="@Icons.Material.Filled.AccessTime" Size="Size.Small" Color="Color.Default" />
+                                            <MudText Typo="Typo.caption">
+                                                @completedTime
+                                            </MudText>
+                                        </div>
+                                    }
+                                    else if (context.Status == SyncJobStatus.InProgress)
+                                    {
+                                        <MudText Typo="Typo.caption" Color="Color.Primary">
+                                            @($"{Resource.Processing}…")
+                                        </MudText>
+                                    }
+                                </MudTd>
+                                <MudTd DataLabel="@Resource.CandidatesCount">
+                                    <div class="d-flex align-center gap-2">
+                                        <MudText Typo="Typo.body2"><strong>@context.CandidateCount</strong></MudText>
+                                    </div>
+                                </MudTd>
+                                <MudTd DataLabel="@Resource.Actions" Class="text-right">
+                                    @if (context.Status == SyncJobStatus.Pending)
+                                    {
+                                        <MudTooltip Text="@Resource.Cancel" Placement="Placement.Top">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" OnClick="() => CancelPendingJobAsync(context.Id)" />
+                                        </MudTooltip>
+                                    }
+                                    @if (!string.IsNullOrEmpty(context.PayloadFilePath))
+                                    {
+                                        <MudTooltip Text="@Resource.Download" Placement="Placement.Top">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Download" Color="Color.Primary" Size="Size.Small" OnClick="() => DownloadPayloadAsync(context.PayloadFilePath)" />
+                                        </MudTooltip>
+                                    }
+                                </MudTd>
+                            </RowTemplate>
+                            <NoRecordsContent>
+                                <MudText>@Resource.Nosyncrecordstodisplay</MudText>
+                            </NoRecordsContent>
+                            <PagerContent>
+                                <MudTablePager PageSizeOptions="[5, 10, 20, 40, 100]" RowsPerPageString="@Resource.RowsPerPage" InfoFormat="@Resource.FromToOfFormat"></MudTablePager>
+                            </PagerContent>
+                        </MudTable>
+                    }
+                </MudTabPanel>
+            </MudTabs>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <div class="d-flex justify-space-between align-center" style="width: 100%;">
+            <div>
+                @if (IsOperationComplete)
+                {
+                    <MudText Typo="Typo.caption" Color="Color.Default">
+                        @Resource.Operationcompletedat @DateTimeHelper.Now.ToString("hh:mm:ss tt")
+                    </MudText>
+                }
+            </div>
+            <div class="d-flex gap-2">
+                @if (IsOperationComplete && FailedJobs.Any())
+                {
+                    <MudButton OnClick="() => OnRetryFailedJobs.InvokeAsync(FailedJobs.Select(j => j.Id))"
+                               Disabled="isRetrying"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               EndIcon="@Icons.Material.Filled.Replay">
+                        @if (isRetrying)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">@Resource.Retrying...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>@Resource.RetryFailed (@FailedJobs.Count())</MudText>
+                        }
+                    </MudButton>
+                }
+            </div>
+        </div>
+    </DialogActions>
+</MudDialog>

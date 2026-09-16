@@ -1,0 +1,488 @@
+@using MudBlazor
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.ThirdStep.QuestionsSelection
+@using OES.Helper
+@using OES.Helper.Enums
+@using OES.Helper.Dtos.Paper.Responses
+@using OES.Helper.Dtos.FormQuestions
+@using OES.Blazor.Services.Interfaces.Question
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.DifficultyLevel
+@using OES.Helper.Dtos.QyestionType
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.Form;
+@using OES.Helper.General;
+
+<EditForm Model="@model">
+    <MudCard Class="mx-auto w-100 pa-2 shadow-lg">
+        <MudCardContent>
+            <DataAnnotationsValidator />
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="model.Name"
+                                  For="@(() => model.Name)"
+                                  Label="@Resource.FormName"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="model.Description"
+                                  For="@(() => model.Description)"
+                                  Label="@Resource.Description"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudTextField Value="@model.Code"
+                                  ValueChanged="@((string val) => model.Code = ListHelpers.SanitizeCode(val))"
+                                  For="@(() => model.Code)"
+                                  Label="@Resource.Code"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  Margin="Margin.Dense" />
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+
+        <!-- Paginated List for Questions -->
+        <MudExpansionPanels MultiExpansion="true" Class="mt-2">
+            <MudExpansionPanel Expanded="true">
+                <TitleContent>
+                    <MudText Typo="Typo.h6">@Resource.QuestionsSelectionPanel</MudText>
+                </TitleContent>
+                <ChildContent>
+                    <div class="q3-table">
+                        <ListItem @key="_questionsListChangingKey"
+                                  T="FormQuestionDetailedDto"
+                                  Caption="@Resource.QuestionsSelectionPanel"
+                                  CaptionIcon="@Icons.Material.Rounded.Quiz"
+                                  EndpointServerice="GetAllQuestionsPaginatedAsync"
+                                  DisplayColumns="[ nameof(FormQuestionDetailedDto.Code),
+                                                    nameof(FormQuestionDetailedDto.QuestionTypeDisplay),
+                                                    nameof(FormQuestionDetailedDto.SubQuestionsCount),
+                                                    nameof(FormQuestionDetailedDto.ItemBankName),
+                                                    nameof(FormQuestionDetailedDto.DifficultyLevelName),
+                                                    nameof(FormQuestionDetailedDto.UsedInFormsCount) ]"
+                                  NoConvertColumns='[nameof(FormQuestionDetailedDto.Code)]'
+                                  Hide_DescriptionSearch="true"
+                                  HideSearchInBody="false"
+                                  FirstSearchParameterLabel="@Resource.Search"
+                                  SelectedItems="_tableSelectedItems"
+                                  SelectedItemsChanged="OnTableSelectionChanged"
+                                  FilterObject="questionFilterPaginationModel">
+                            <TopChildContent>
+                                <!--Custom Filtration Panel-->
+                                <MudCard Class="mb-2">
+                                    <MudCardContent Class="pa-2">
+                                        <MudGrid Justify="Justify.Center" Spacing="2">
+                                            <MudItem xs="12" sm="6" md="4">
+                                                <MudSelect T="ItemBanksFromItemBankPointResponseDto"
+                                                           Label="@Resource.SelectItemBank"
+                                                           Clearable="true"
+                                                           @bind-Value="SelectedItemBank"
+                                                           Variant="Variant.Outlined"
+                                                           Margin="Margin.Dense"
+                                                           AnchorOrigin="Origin.BottomCenter">
+                                                    @if (_itemBanks != null && _itemBanks.Any())
+                                                    {
+                                                        @foreach (var itembank in _itemBanks)
+                                                        {
+                                                            <MudSelectItem Value="@itembank">@itembank.Name</MudSelectItem>
+                                                        }
+                                                    }
+                                                </MudSelect>
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6" md="4">
+                                                <MudSelect T="QuestionTypeDto"
+                                                           Label="@Resource.SelectType"
+                                                           @bind-Value="SelectedType"
+                                                           Clearable="true"
+                                                           Variant="Variant.Outlined"
+                                                           Margin="Margin.Dense"
+                                                           AnchorOrigin="Origin.BottomCenter">
+                                                    @if (_questionTypes != null && _questionTypes.Any())
+                                                    {
+                                                        @foreach (var type in _questionTypes)
+                                                        {
+                                                            <MudSelectItem Value="@type">@(type.Name.ToLocalizedString<QuestionType>())</MudSelectItem>
+                                                        }
+                                                    }
+                                                </MudSelect>
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6" md="4">
+                                                <MudSelect T="DifficultyLevelDto"
+                                                           Label="@Resource.SelectDiffcultyLevel"
+                                                           @bind-Value="SelectedDifficultyLevel"
+                                                           Clearable="true"
+                                                           Variant="Variant.Outlined"
+                                                           Margin="Margin.Dense"
+                                                           AnchorOrigin="Origin.BottomCenter">
+                                                    @if (_difficultyLevels != null && _difficultyLevels.Any())
+                                                    {
+                                                        @foreach (var level in _difficultyLevels)
+                                                        {
+                                                            <MudSelectItem Value="@level">@level.Name</MudSelectItem>
+                                                        }
+                                                    }
+                                                </MudSelect>
+                                            </MudItem>
+                                            @* <MudButton OnClick="ResetFilters"
+                                                       Color="Color.Error"
+                                                       Variant="Variant.Outlined"
+                                                       Size="Size.Medium"
+                                                       FullWidth="true"
+                                                       StartIcon="@Icons.Material.Filled.FilterAltOff">
+                                                @Resource.ResetFilters
+                                            </MudButton> *@
+                                        </MudGrid>
+                                    </MudCardContent>
+                                </MudCard>
+                            </TopChildContent>
+                            <ButtonChildContent Context="question">
+                                @{
+                                    var q = (FormQuestionDetailedDto)question;
+                                }
+                                <div @onclick:stopPropagation="true"
+                                     style="display: inline-block;">
+                                    <MudBadge Content="@(q.UsedInFormsCount)"
+                                              Overlap="true"
+                                              Class="mx-6 my-4"
+                                              Color="Color.Info"
+                                              Visible="@(q.UsedInFormsCount > 0)">
+                                        <MudTooltip Text="@GetSelectionTooltip(q)">
+                                            <MudFab Color="Color.Success"
+                                                    StartIcon="@Icons.Material.Filled.Add"
+                                                    Size="Size.Small"
+                                                    Class=@($"label-{nameof(Resource.SelectQuestion)}")
+                                                    Disabled="@IsSelectionDisabled(q)"
+                                                    OnClick="@(() => SelectedQuestionsChanged(q))" />
+                                        </MudTooltip>
+                                    </MudBadge>
+                                </div>
+                            </ButtonChildContent>
+                        </ListItem>
+                    </div>
+                </ChildContent>
+            </MudExpansionPanel>
+
+            <MudExpansionPanel Expanded="true" Class="mt-2">
+                <TitleContent>
+                    <div class="d-flex align-center">
+                        <MudText Typo="Typo.h6">@Resource.SelectedQuestions</MudText>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudGrid Class="mb-4">
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="_selectedQuestionsSearchString"
+                                          Label="@Resource.Search"
+                                          Placeholder="@Resource.Search"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Class="rounded-pill"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@Icons.Material.Filled.Search"
+                                          Immediate="true"
+                                          Clearable="true" />
+                        </MudItem>
+                    </MudGrid>
+
+                    @if (TotalUsedSelectedCount > RelatedPaper.QuestionsCount)
+                    {
+                        <MudAlert Severity="Severity.Error" Class="my-1" Dense="true" ContentAlignment="HorizontalAlignment.Start">
+                            @Resource.SelectedQuestions @TotalUsedSelectedCount @Resource.exceedtherequiredcount (@RelatedPaper.QuestionsCount).
+                        </MudAlert>
+                    }
+                    else if (TotalUsedSelectedCount < RelatedPaper.QuestionsCount)
+                    {
+                        <MudAlert Severity="Severity.Warning" Class="my-1" Dense="true" ContentAlignment="HorizontalAlignment.Start">
+                            @Resource.SelectedQuestions @TotalUsedSelectedCount @Resource.arelessthantherequiredcount (@RelatedPaper.QuestionsCount).
+                        </MudAlert>
+                    }
+                    <MudText Typo="Typo.body1" Align="Align.Center" Class="mb-2 font-weight-bold">
+                        @Resource.TotalUsed @Resource.SelectedQuestions @TotalUsedSelectedCount
+                    </MudText>
+                    @if (_selectedQuestions.Any())
+                    {
+                        <MudList T="FormQuestionDetailedDto" Class="selected-questions-list" Dense="true" SelectedValueChanged="SyncUsedQuestionsWithAllQuestions">
+                            @foreach (var q in _selectedQuestions.DistinctBy(x => x.QuestionId).Where(FilterSelectedQuestions))
+                            {
+                                <MudListItem T="FormQuestionDetailedDto" Class="pa-2">
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                        <div class="flex-grow-1" style="min-width: 0;">
+                                            <MudText Typo="Typo.body2" Class="truncate-text" data-no-convert>
+                                                @(q.Code)
+                                            </MudText>
+                                        </div>
+                                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="flex-shrink-0">
+                                            <MudTooltip Text="@Resource.View">
+                                                <MudIconButton Icon="@Icons.Material.Filled.Info"
+                                                               Color="Color.Primary"
+                                                               Size="Size.Small"
+                                                               OnClick="() => ViewQuestionFormsAsync(q)" />
+                                            </MudTooltip>
+
+                                            <MudSelect T="PaperQuestionStatus"
+                                                       Value="@q.PaperQuestionStatus"
+                                                       ValueChanged="(v) => OnQuestionStatusChanged(q, v)"
+                                                       Label="@Resource.Status"
+                                                       Variant="Variant.Outlined"
+                                                       Margin="Margin.Dense"
+                                                       Dense="true"
+                                                       Style="min-width: 140px;"
+                                                       Disabled="@(IsQuestionStatusSelectionDisabled(q))"
+                                                       AnchorOrigin="Origin.BottomCenter">
+                                                @foreach (var status in Enum.GetValues<PaperQuestionStatus>())
+                                                {
+                                                    <MudSelectItem Value="@status">
+                                                        <div class="d-flex align-center">
+                                                            <MudIcon Icon="@GetStatusIcon(status)"
+                                                                     Color="@GetStatusColor(status)"
+                                                                     Size="Size.Small"
+                                                                     Class="mr-1" />
+                                                            @GetStatusDisplayName(status)
+                                                        </div>
+                                                    </MudSelectItem>
+                                                }
+                                            </MudSelect>
+
+                                            <MudTooltip Text="@Resource.ReturnToQuestionsPool">
+                                                <MudIconButton Icon="@Icons.Material.Filled.Undo"
+                                                               Color="Color.Error"
+                                                               Size="Size.Small"
+                                                               Class=@($"label-{nameof(Resource.ReturnToQuestionsPool)}")
+                                                               Disabled="@(_originalQuestionIds.Contains(q.QuestionId) || _pendingHangMapping)"
+                                                               OnClick="() => RemoveQuestion(q)" />
+                                            </MudTooltip>
+                                        </MudStack>
+                                    </MudStack>
+                                </MudListItem>
+                            }
+                        </MudList>
+                        <div class="d-flex justify-end mt-2">
+                            <MudButton Color="Color.Primary"
+                                       Variant="Variant.Outlined"
+                                       Size="Size.Small"
+                                       Disabled="true"
+                                       OnClick="ClearAllQuestions"
+                                       EndIcon="@Icons.Material.Filled.DeleteSweep">
+                                @Resource.ClearAll
+                            </MudButton>
+                        </div>
+                    }
+                    else
+                    {
+                        <MudText Align="Align.Center" Typo="Typo.body2">@Resource.Noquestionsselected</MudText>
+                    }
+                </ChildContent>
+            </MudExpansionPanel>
+
+            <MudExpansionPanel Expanded="false" Class="mt-2">
+                <TitleContent>
+                    <MudText Typo="Typo.h6">@Resource.MarkingScheme</MudText>
+                </TitleContent>
+                <ChildContent>
+                    @if (usedQuestion.Sum(q => q.Score ?? 0) == 0)
+                    {
+                        <MudCard Elevation="2" Class="mb-3">
+                            <MudCardHeader>
+                                <MudAlert Severity="Severity.Info">
+                                    <MudText Typo="Typo.body1" Class="font-weight-bold">@Resource.NoMarkingSchemaSelected</MudText>
+                                </MudAlert>
+                            </MudCardHeader>
+                        </MudCard>
+                    }
+                    else
+                    {
+                        <MudCard Elevation="2" Class="mb-3">
+                            <MudCardHeader Class="pa-2">
+                                @Resource.CurrentMarkingScheme: <strong class="ps-1">@_selectedScheme.ToLocalizedString()</strong>
+                            </MudCardHeader>
+                        </MudCard>
+                        @switch (_selectedScheme)
+                        {
+                            case ScoreSchemaType.EqualDistribution:
+                                <MudCard Elevation="2" Class="mb-3">
+                                    <MudCardHeader Class="pa-2">
+                                        <MudText Typo="Typo.body1" Class="font-weight-bold">@(RelatedPaper.QuestionSelectionType == QuestionSelectionType.Auto ? Resource.AutomaticDistribution : Resource.ManualDistribution)</MudText>
+                                    </MudCardHeader>
+                                    <MudCardContent Class="pa-2">
+                                        @if (RelatedPaper.QuestionSelectionType == QuestionSelectionType.Manual || RelatedPaper.QuestionSelectionType == QuestionSelectionType.Auto)
+                                        {
+                                            <MudTable Items="@usedQuestion" Dense="true" Hover="true" Bordered="true" Striped="true" Context="q">
+                                                <ColGroup>
+                                                    <col style="width: 50%;" />
+                                                </ColGroup>
+                                                <HeaderContent>
+                                                    <MudTh>@Resource.QuestionCode</MudTh>
+                                                    <MudTh>@Resource.MarkPerQuestion</MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate>
+                                                    <MudTd>
+                                                        <MudText Typo="Typo.body2" data-no-convert>@q.Code</MudText>
+                                                    </MudTd>
+                                                    <MudTd>
+                                                        <MudChip T="string" Color="Color.Primary" Size="Size.Large" Variant="Variant.Text">
+                                                            @q.Score
+                                                        </MudChip>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        }
+                                        @if (!_isAutoOrManualValid)
+                                        {
+                                            <MudAlert Severity="Severity.Warning" Class="mt-2" Dense="true">
+                                                @Resource.TotalMarks (@currentTotal) @Resource.DoNotEqualTheFullExamMark (@RelatedPaper.TotalMarks)
+                                            </MudAlert>
+                                        }
+                                        <MudChip T="string" Color="Color.Success" Size="Size.Small" Variant="Variant.Filled" Class="font-weight-bold my-2">
+                                            @Resource.CurrentTotal: @currentTotal @Resource.OutOf @RelatedPaper.TotalMarks
+                                        </MudChip>
+                                        <MudProgressLinear Color="@(_isAutoOrManualValid? Color.Success: Color.Warning)"
+                                                           Value="@((float)currentTotal / RelatedPaper.TotalMarks * 100)" />
+                                    </MudCardContent>
+                                </MudCard>
+                                break;
+
+                            case ScoreSchemaType.DifficultyLevelBasedDistribution:
+                                <MudCard Elevation="2" Class="mb-3">
+                                    <MudCardHeader Class="pa-2">
+                                        <MudText Typo="Typo.body1" Class="font-weight-bold">@Resource.DifficultyLevelBasedDistribution</MudText>
+                                    </MudCardHeader>
+                                    <MudCardContent Class="pa-2">
+                                        <MudTable Items="@difficultyLevels" Dense="true" Bordered="true" Striped="true" Hover="true" Height="300px" Context="dl">
+                                            <ColGroup>
+                                                <col style="width: 50%;" />
+                                            </ColGroup>
+                                            <HeaderContent>
+                                                <MudTh>@Resource.DifficultyLevel</MudTh>
+                                                <MudTh>@Resource.MarkPerQuestion</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd><MudText Typo="Typo.body2">@dl.DifficultyLevelName (@dl.TotalCount @Resource.Questions)</MudText></MudTd>
+                                                <MudTd>
+                                                    <MudChip T="string" Color="Color.Primary" Size="Size.Large" Variant="Variant.Text">
+                                                        @dl.MarkPerQuestion
+                                                    </MudChip>
+                                                </MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                        @if (!_isDifficultyLevelValid)
+                                        {
+                                            <MudAlert Severity="Severity.Warning" Class="mt-2" Dense="true">
+                                                @Resource.TotalMarks (@currentDifficultyLevelTotal) @Resource.DoNotEqualTheFullExamMark (@RelatedPaper.TotalMarks)
+                                            </MudAlert>
+                                        }
+                                        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" Class="font-weight-bold my-2">
+                                            @Resource.CurrentTotal: @currentDifficultyLevelTotal @Resource.OutOf @RelatedPaper.TotalMarks
+                                        </MudChip>
+                                        <MudProgressLinear Color="@(_isDifficultyLevelValid? Color.Success: Color.Warning)"
+                                                           Value="@(currentDifficultyLevelTotal / RelatedPaper.TotalMarks * 100)" />
+                                    </MudCardContent>
+                                </MudCard>
+                                break;
+
+                            case ScoreSchemaType.ItemBankBasedDistribution:
+                                <MudCard Elevation="2" Class="mb-3">
+                                    <MudCardHeader Class="pa-2">
+                                        <MudText Typo="Typo.body1" Class="font-weight-bold">@Resource.ItemBankBasedDistribution</MudText>
+                                    </MudCardHeader>
+                                    <MudCardContent Class="pa-2">
+                                        <MudTable Items="@itemBanks" Dense="true" Bordered="true" Striped="true" Hover="true" Height="300px" Context="ib">
+                                            <ColGroup>
+                                                <col style="width: 50%;" />
+                                            </ColGroup>
+                                            <HeaderContent>
+                                                <MudTh>@Resource.ItemBank</MudTh>
+                                                <MudTh>@Resource.MarkPerItemBank</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd><MudText Typo="Typo.body2">@ib.ItemBankName (@ib.QuestionCount  @Resource.Question)</MudText></MudTd>
+                                                <MudTd>
+                                                    <MudChip T="string" Color="Color.Primary" Size="Size.Large" Variant="Variant.Text">
+                                                        @ib.ItemBankMark
+                                                    </MudChip>
+                                                </MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                        @if (!_isItemBankValid)
+                                        {
+                                            <MudAlert Severity="Severity.Warning" Class="mt-2" Dense="true">
+                                                @Resource.TotalMarks (@currentItemBankTotal) @Resource.DoNotEqualTheFullExamMark (@RelatedPaper.TotalMarks)
+                                            </MudAlert>
+                                        }
+                                        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" Class="font-weight-bold my-2">
+                                            @Resource.CurrentTotal: @currentItemBankTotal @Resource.OutOf @RelatedPaper.TotalMarks
+                                        </MudChip>
+                                        <MudProgressLinear Color="@(_isItemBankValid? Color.Success: Color.Warning)"
+                                                           Value="@(currentItemBankTotal / RelatedPaper.TotalMarks * 100)" />
+                                    </MudCardContent>
+                                </MudCard>
+                                break;
+
+                            case ScoreSchemaType.WeightedExamDistribution:
+                                <MudCard Elevation="2" Class="mb-3">
+                                    <MudCardHeader Class="pa-2">
+                                        <MudText Typo="Typo.body1" Class="font-weight-bold">@Resource.WeightedExamDistribution</MudText>
+                                    </MudCardHeader>
+                                    <MudCardContent Class="pa-2">
+                                        @if (RelatedPaper.QuestionSelectionType == QuestionSelectionType.Manual)
+                                        {
+                                            <MudTable Items="@usedQuestion" Dense="true" Hover="true" Bordered="true" Striped="true" Height="300px" Context="we">
+                                                <ColGroup>
+                                                    <col style="width: 50%;" />
+                                                </ColGroup>
+                                                <HeaderContent>
+                                                    <MudTh>@Resource.QuestionCode</MudTh>
+                                                    <MudTh>@Resource.DeltaValueMustBeBetween (0.0 to 1.0)</MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate>
+                                                    <MudTd>
+                                                        <MudText Typo="Typo.body2" data-no-convert>@we.Code</MudText>
+                                                    </MudTd>
+                                                    <MudTd>
+                                                        <MudChip T="string" Color="Color.Primary" Size="Size.Large" Variant="Variant.Text">
+                                                            @we.Deltavalue
+                                                        </MudChip>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        }
+                                        @if (!_isWeightedExamValid)
+                                        {
+                                            <MudAlert Severity="Severity.Warning" Class="mt-2" Dense="true">
+                                                @Resource.TheWeightDeltaValueMustBeBetween 0.0 @Resource.And 1.0.
+                                            </MudAlert>
+                                        }
+                                    </MudCardContent>
+                                </MudCard>
+                                break;
+                        }
+                    }
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+
+        <MudCardActions Class="justify-content-center mt-2 pa-2">
+            <MudStack Row="true" Spacing="4" Class="w-50">
+                <GeneralLoadingButton Class="flex-grow-1 p-2 rounded-pill"
+                                      Size="Size.Small"
+                                      OnClick="OnValidSubmitAsync"
+                                      ButtonText="@Resource.Update"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit" />
+                <MudButton ButtonType="ButtonType.Button"
+                           Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           OnClick="Close"
+                           StartIcon="@Icons.Material.Filled.Close">
+                    @Resource.Close
+                </MudButton>
+            </MudStack>
+        </MudCardActions>
+    </MudCard>
+</EditForm>

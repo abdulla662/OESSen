@@ -1,0 +1,62 @@
+@using OES.Helper.Dtos.Venue.Responses
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <DialogContent>
+        <MudPaper Elevation="0" Class="pa-2">
+
+            <MudText Typo="Typo.subtitle2" Class="mb-2">@Resource.ExamDate</MudText>
+
+            <MudButtonGroup Class="mb-4" FullWidth="true">
+                <MudButton Variant="@(_selectedExamDate == ExamDateFilter.Today ? Variant.Filled : Variant.Outlined)"
+                           Color="@(_selectedExamDate == ExamDateFilter.Today ? Color.Primary : Color.Default)"
+                           StartIcon="@(_selectedExamDate == ExamDateFilter.Today ? Icons.Material.Filled.Check : null)"
+                           OnClick="() => _selectedExamDate = ExamDateFilter.Today"
+                           FullWidth="true">
+                    @Resource.Today
+                </MudButton>
+
+                <MudButton Variant="@(_selectedExamDate == ExamDateFilter.Tomorrow ? Variant.Filled : Variant.Outlined)"
+                           Color="@(_selectedExamDate == ExamDateFilter.Tomorrow ? Color.Primary : Color.Default)"
+                           StartIcon="@(_selectedExamDate == ExamDateFilter.Tomorrow ? Icons.Material.Filled.Check : null)"
+                           OnClick="() => _selectedExamDate = ExamDateFilter.Tomorrow"
+                           FullWidth="true">
+                    @Resource.Tomorrow
+                </MudButton>
+            </MudButtonGroup>
+
+            <MudSelect T="VenueLookupDto"
+                       Label="@Resource.VenueName"
+                       MultiSelection="true"
+                       @bind-SelectedValues="_selectedVenues"
+                       Variant="Variant.Outlined"
+                       AnchorOrigin="Origin.BottomCenter"
+                       ToStringFunc="@(v => v.DisplayName)"
+                       SelectAll="true"
+                       SelectAllText="@Resource.SelectAll"
+                       Class="mb-4">
+                @foreach (var venue in _venues)
+                {
+                    <MudSelectItem Value="venue">@venue.DisplayName</MudSelectItem>
+                }
+            </MudSelect>
+
+        </MudPaper>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Cancel"
+                   Variant="Variant.Text"
+                   Color="Color.Default">
+            @Resource.Cancel
+        </MudButton>
+        <MudButton OnClick="ExportAsync"
+                   Variant="Variant.Filled"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.FileDownload"
+                   Disabled="_isExporting">
+            @(_isExporting? Resource.Exporting: Resource.ExportExcel)
+        </MudButton>
+    </DialogActions>
+</MudDialog>

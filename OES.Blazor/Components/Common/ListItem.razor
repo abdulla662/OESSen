@@ -1,0 +1,389 @@
+@using System.Reflection
+@using System.ComponentModel
+@using System.ComponentModel.DataAnnotations
+@using MudBlazor
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.General
+@using OES.Helper.Enums
+@using SharedHelper.Common
+@using System.Text.RegularExpressions
+@typeparam T
+
+<style>
+    audio, img, video { max-width: 200px !important; max-height: 200px !important; object-fit: contain !important; display: inline-block !important; margin: 4px 0 !important; }
+    figure { max-width: 200px !important; max-height: 200px !important; padding: 0 !important; margin: 4px 0 !important; display: inline-block !important; overflow: hidden !important; }
+        figure video { width: 100% !important; height: 100% !important; max-width: 200px !important; max-height: 200px !important; object-fit: contain !important; }
+</style>
+
+@if (typeof(T) == null)
+{
+    <p>@Resource.Loading</p>
+}
+
+@if (SearchPanelVisible)
+{
+    <MudExpansionPanels Outlined="true" Elevation="2" Style="border: 1px groove var(--mud-palette-primary); border-radius: 8px; margin-bottom: 15px; overflow:hidden">
+        <MudExpansionPanel>
+            <TitleContent>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Search" class="mx-3"></MudIcon>
+                    <MudText Typo="Typo.h5">@Resource.SearchFilter</MudText>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudGrid Justify="Justify.Center" Style="align-items: center;">
+                    <MudItem xs="12" sm="12" md="@(HideCodeSearch && HideSearchInBody && Hide_DescriptionSearch ? 4 : 2)" lg="@(HideCodeSearch && HideSearchInBody && Hide_DescriptionSearch ? 4 : 2)">
+                        <MudTextField @bind-Value="SearchKey"
+                                      Label="@Resource.Keyword"
+                                      Variant="Variant.Outlined"
+                                      Adornment="Adornment.End"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      TextChanged="@CheckTextCleared" />
+                    </MudItem>
+
+                    @if (!HideCodeSearch || !HideSearchInBody || !Hide_DescriptionSearch)
+                    {
+                        <MudItem xs="12" sm="12" md="3" lg="4">
+                            <MudGrid Spacing="0">
+                                @if (!HideCodeSearch)
+                                {
+                                    <MudItem xs="12" sm="6" md="12" lg="6">
+                                        <MudCheckBox @bind-Value="@SearchInName"
+                                                     Color="Color.Primary"
+                                                     UncheckedColor="Color.Default"
+                                                     Label="@(FirstSearchParameterLabel ?? Resource.Code)"
+                                                     Class="pa-0 ma-0" />
+                                    </MudItem>
+                                }
+
+                                @if (!HideSearchInBody)
+                                {
+                                    <MudItem xs="12" sm="6" md="12" lg="6">
+                                        <MudCheckBox @bind-Value="@SearchInBody"
+                                                     Color="Color.Primary"
+                                                     UncheckedColor="Color.Default"
+                                                     Label="@(ThirdSearchParameterLabel ?? Resource.Description)"
+                                                     Class="pa-0 ma-0" />
+                                    </MudItem>
+                                }
+
+                                @if (!Hide_DescriptionSearch)
+                                {
+                                    <MudItem xs="12" sm="6" md="12" lg="6">
+                                        <MudCheckBox @bind-Value="@SearchInDescription"
+                                                     Color="Color.Primary"
+                                                     UncheckedColor="Color.Default"
+                                                     Label="@(SecondSearchParameterLabel ?? Resource.Description)"
+                                                     Class="pa-0 ma-0" />
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        </MudItem>
+                    }
+
+                    @if (!HideDateRangeFilter)
+                    {
+                        <MudItem xs="12" sm="12" md="@(HideCodeSearch && HideSearchInBody && Hide_DescriptionSearch ? 4 : 3)" lg="@(HideCodeSearch && HideSearchInBody && Hide_DescriptionSearch ? 4 : 2)">
+                            <MudDateRangePicker Label="@Resource.Daterange"
+                                                Editable="true"
+                                                @bind-DateRange="DateRange"
+                                                Variant="Variant.Outlined"
+                                                Class="w-100" />
+                        </MudItem>
+                    }
+
+                    @if (!HideOrderByFilter)
+                    {
+                        <MudItem xs="12" sm="6" md="2" lg="2">
+                            <MudRadioGroup T="string"
+                                           @bind-Value="OrderBy">
+                                <MudRadio Value="@SearchInKey.ASC"
+                                          Color="Color.Primary">@Resource.Ascending</MudRadio>
+                                <MudRadio Value="@SearchInKey.DESC"
+                                          Color="Color.Primary">@Resource.Descending</MudRadio>
+                            </MudRadioGroup>
+                        </MudItem>
+                    }
+
+                    <MudItem xs="12" sm="12" md="2" lg="2" Class="d-flex align-center justify-center">
+                        <div class="search-btn-group">
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Medium"
+                                       EndIcon="@Icons.Material.Filled.Search"
+                                       Class="search-btn"
+                                       OnClick="@OnTableSearch">@Resource.Search</MudButton>
+                            <MudTooltip Text="@Resource.Reset" Placement="Placement.Bottom" Arrow="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.RestartAlt"
+                                               Size="Size.Medium"
+                                               Class=@($"reset-btn label-{nameof(Resource.Reset)}")
+                                               OnClick="@OnResetSearch" />
+                            </MudTooltip>
+                        </div>
+                    </MudItem>
+                </MudGrid>
+            </ChildContent>
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+}
+
+@if (TopChildContent is not null)
+{
+    @TopChildContent
+}
+
+<MudStack Row Spacing="2">
+    @if (CustomTopButton is not null)
+    {
+        @CustomTopButton
+    }
+
+    @if (Create_Btn == true &&
+        (
+            IsCurrentUserSuperAdminOrEntityAdmin ||
+            (
+                !CreateClick_fun_OesRolesList.Any() ||
+                ListHelpers.HaveCommonValues(
+                    GlobalUserContext.OesUserRoles.Select(n => n.Name).ToList(),
+                    CreateClick_fun_OesRolesList
+                )
+            )
+        )
+    )
+    {
+        <MudButton Size="Size.Large"
+                   Variant="Variant.Filled"
+                   Class="mb-4 rounded-lg"
+                   Style="border-radius: 12px;"
+                   EndIcon="@Icons.Material.Filled.Add"
+                   Color="Color.Primary"
+                   @onclick='() => PerformCreateBtnClick()'>
+            @Resource.Create @Caption
+        </MudButton>
+    }
+
+    @if (AddNew_URL is not null && (IsCurrentUserSuperAdminOrEntityAdmin || (!AddNew_URL_OesRolesList.Any() || ListHelpers.HaveCommonValues(GlobalUserContext.OesUserRoles.Select(n => n.Name).ToList(), AddNew_URL_OesRolesList))))
+    {
+        <MudButton Size="Size.Large" Variant="Variant.Filled" Class="mb-4 rounded-lg" Style="border-radius: 12px;" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" @onclick='() => PerformAddBtnClick()'>@Resource.Create @Caption</MudButton>
+    }
+</MudStack>
+
+<MudPaper Elevation="3" Class="pa-4" Style="border-radius: 16px;">
+    <MudTable ServerData="GetDataService"
+              @bind-RowsPerPage="rowsPerPage"
+              @ref="table"
+              T="T"
+              Elevation="0"
+              Striped="true"
+              Style="border-radius: 12px; overflow: hidden;"
+              Dense="false"
+              Hover="true"
+              MultiSelection="@MultiSelection"
+              SelectedItem="@SelectedItem"
+              SelectedItems="@SelectedItems"
+              SelectedItemChanged="@SelectedItemChangedAsync"
+              SelectedItemsChanged="@SelectedItemsChangedAsync"
+              RowClassFunc="@GetRowClassFunc"
+              Breakpoint="Breakpoint.Sm"
+              Height=@TableHeight
+              Class="@(ShowSelectAllInActionsColumn && MultiSelection ? "hide-select-all-header" : "")">
+        <HeaderContent>
+            @if (ShowCheckBox)
+            {
+                <MudTh Class="text-center" Style="width:50px;">
+                    <MudCheckBox T="bool"
+                                 Checked="@(table?.Items != null && SelectedItems?.Count == table.Items.Count())"
+                                 CheckedChanged="@(async (bool value) => await ToggleSelectAllAsync(value))" />
+                </MudTh>
+            }
+            @foreach (var property in Properties)
+            {
+                var displayName = @GetDisplayName(property);
+
+                <MudTh Class="text-center fw-bold">@Resource.PropertyLocalization(displayName)</MudTh>
+            }
+            @if (CRUD_Add_Btn || CRUD_Edit_Btn || CRUD_Info_Btn || CRUD_View_Btn || CRUD_Delete_Btn || ButtonChildContent != null || ShowActionsColumn)
+            {
+                <MudTh Class="text-center fw-bold">
+                    @if (ShowSelectAllInActionsColumn && MultiSelection)
+                    {
+                        @if (AreAllCurrentPageItemsSelected())
+                        {
+                            <MudChip T="string"
+                                     Color="Color.Error"
+                                     Size="Size.Small"
+                                     Icon="@Icons.Material.Filled.RemoveDone"
+                                     OnClick="@DeselectAllCurrentPageItems"
+                                     Style="cursor: pointer;">
+                                @Resource.DeselectAll
+                            </MudChip>
+                        }
+                        else
+                        {
+                            <MudChip T="string"
+                                     Color="Color.Primary"
+                                     Size="Size.Small"
+                                     Icon="@Icons.Material.Filled.DoneAll"
+                                     OnClick="@SelectAllCurrentPageItems"
+                                     Style="cursor: pointer;">
+                                @Resource.SelectAll
+                            </MudChip>
+                        }
+                    }
+                    else
+                    {
+                        @Resource.Actions
+                    }
+                </MudTh>
+            }
+        </HeaderContent>
+
+        <RowTemplate Context="context">
+            @if (ShowCheckBox)
+            {
+                <MudTd Class="text-center" Style="width:50px;">
+                    <MudCheckBox T="bool"
+                                 Checked="@SelectedItems.Contains(context)"
+                                 CheckedChanged="@(async (bool value) => await ToggleSelectionAsync(context, value))" />
+                </MudTd>
+            }
+            @{
+                List<string> sunEditorEditableProps = ["Body"];
+            }
+            @foreach (var property in Properties)
+            {
+                var isSunEditorProperty = sunEditorEditableProps.Any(p => property.Name.Contains(p, StringComparison.OrdinalIgnoreCase));
+                var rawValue = property.GetValue(context);
+                bool isMediaOnly = false;
+                bool containsMedia = false;
+
+                if (isSunEditorProperty && rawValue != null)
+                {
+                    var valueStr = rawValue.ToString();
+                    if (!string.IsNullOrWhiteSpace(valueStr))
+                    {
+                        containsMedia = _mediaTagsRegex.IsMatch(valueStr);
+                        bool hasText = !string.IsNullOrWhiteSpace(HtmlTagsCleaner.Clean(valueStr));
+                        isMediaOnly = containsMedia && !hasText;
+                    }
+                }
+
+                <MudTd Class="@($"text-center auto-width-cell {(isSunEditorProperty ? "sun-editor-editable" : "")}")" DataLabel="@GetDisplayName(property)">
+                    <div class="@(isMediaOnly || containsMedia ? "" : "clamp-2-lines")">
+                        @if (!string.IsNullOrEmpty(LockedItemIcon) && LockedItems.Contains(context) && property == Properties[0])
+                        {
+                            <MudIcon Icon="@LockedItemIcon" Color="Color.Primary" Size="Size.Small" Class="locked-item-icon" />
+                        }
+                        @if (property.Name.Equals("IsActive", StringComparison.OrdinalIgnoreCase) && property.PropertyType == typeof(bool))
+                        {
+                            bool activeValue = (bool)rawValue;
+
+                            if (activeValue)
+                            {
+                                <MudChip T="string" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.VerifiedUser" Color="Color.Success">@Resource.Active</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip T="string" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.RemoveCircle" Color="Color.Secondary">@Resource.Inactive</MudChip>
+                            }
+                        }
+                        else if (property.PropertyType == typeof(bool) || property.PropertyType == typeof(bool?))
+                        {
+                            var boolValue = rawValue as bool?;
+
+                            if (boolValue.HasValue)
+                            {
+                                <MudText>@(boolValue.Value ? Resource.Yes : Resource.No)</MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">-</MudText>
+                            }
+                        }
+                        else
+                        {
+                            var valueBeforeProcessing = rawValue?.ToString();
+
+                            if (!string.IsNullOrWhiteSpace(valueBeforeProcessing))
+                            {
+                                @if (isMediaOnly)
+                                {
+                                    @(new MarkupString(ProcessMediaTags(valueBeforeProcessing)))
+                                }
+                                else
+                                {
+                                    var cleanedValue = valueBeforeProcessing;
+
+                                    <MudTooltip Text="@HtmlTagsCleaner.Clean(cleanedValue)" Placement="Placement.Bottom">
+                                        @{
+                                            bool isNoConvert = NoConvertColumns?.Contains(property.Name, StringComparer.OrdinalIgnoreCase) == true;
+                                            var markupCleanedValue = new MarkupString(cleanedValue);
+                                        }
+                                        @if (isNoConvert)
+                                        {
+                                            <span data-no-convert>@markupCleanedValue</span>
+                                        }
+                                        else
+                                        {
+                                            @markupCleanedValue
+                                        }
+                                    </MudTooltip>
+                                }
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">-</MudText>
+                            }
+                        }
+                    </div>
+                </MudTd>
+            }
+
+            @if (CRUD_Add_Btn || CRUD_Edit_Btn || CRUD_Info_Btn || CRUD_View_Btn || CRUD_Delete_Btn || ButtonChildContent is not null || ShowActionsColumn)
+            {
+                <CascadingValue Value="CRUD_Add_Btn">
+                    <MudTd Class="text-center justify-content-center pb-3">
+                        <NormalBtnCRUD T="T" ObjectId="context.GetKeyValue()" AddNew_URL="@AddNew_URL"
+                                       CRUD_Add_Btn="@CRUD_Add_Btn"
+                                       Add_URL="@Add_URL"
+                                       AddClick_fun="@AddClick_fun"
+                                       CRUD_Edit_Btn="@CRUD_Edit_Btn"
+                                       CRUD_Edit_Disabled="@IsEditDisabled(context)"
+                                       EditClick_fun="@EditClick_fun"
+                                       Edit_URL="@Edit_URL"
+                                       CRUD_View_Btn="@CRUD_View_Btn"
+                                       ViewClick_fun="@ViewClick_fun"
+                                       View_URL="@View_URL"
+                                       CRUD_Info_Btn="@CRUD_Info_Btn"
+                                       InfoClick_fun="@InfoClick_fun"
+                                       Info_URL="@Info_URL"
+                                       CRUD_Delete_Btn="@CRUD_Delete_Btn"
+                                       CRUD_Delete_Disabled="@IsDeleteDisabled(context)"
+                                       Delete_URL="@Delete_URL"
+                                       DeleteClick_fun="@DeleteClick_fun"
+                                       OnRowSelected="@HandleRowSelected"
+                                       Item="@context"
+                                       ButtonChildContent="@ButtonChildContent" />
+                    </MudTd>
+                </CascadingValue>
+            }
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>@Resource.Nomatchingrecordsfound</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>@Resource.Loading</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="[5, 10, 20, 40, 100]"
+                           RowsPerPageString="@Resource.RowsPerPage"
+                           InfoFormat="@Resource.FromToOfFormat">
+            </MudTablePager>
+        </PagerContent>
+    </MudTable>
+</MudPaper>
+
+@if (BottomChildContent is not null)
+{
+    @BottomChildContent
+}

@@ -1,0 +1,24 @@
+﻿@using OES.Blazor.Components.Common.MCQComponents
+@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.QuestionChoices
+@using OES.Helper.Enums
+
+
+<MCQQuestion QuestionBody="@(new MarkupString(Model.Body))"
+             QuestionInstructions="@(new MarkupString(Model.Instructions))"
+             HasAttachment="@Model.HasAttachment"
+             AttachmentFileUrl="@Model.AttachmentFileUrl"
+             Options="@Model.Choices"
+             Orientation="Orientation"
+             ScreenSize="ScreenSize"
+             ScreenSizeClass="@ScreenSizeClass"
+             ShowCorrectAnswer="@ShowCorrectAnswer" />
+
+@code {
+    [Parameter] public Breakpoint ScreenSize { get; set; }
+    [Parameter] public string ScreenSizeClass { get; set; }
+    [Parameter] public LayoutOrientation Orientation { get; set; }
+    [Parameter] public QuestionDataDto Model { get; set; }
+    [Parameter] public bool ShowCorrectAnswer { get; set; } = true;
+}

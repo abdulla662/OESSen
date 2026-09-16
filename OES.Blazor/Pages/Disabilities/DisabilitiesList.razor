@@ -1,0 +1,32 @@
+﻿@page "/Disabilities"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.Disabilities
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("DisabilitiesList")]
+
+<PageTitle>@Resource.Disabilities</PageTitle>
+
+<MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+    <MudIcon Icon="@Icons.Material.Rounded.MedicalInformation" Color="Color.Primary" Class="me-2" />
+    <MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Start">@Resource.Disabilities</MudText>
+</MudStack>
+
+<ListItem T="AddOrUpdateDisabilityDto"
+          @key="key"
+          Caption="@Resource.Disability"
+          CaptionIcon="@Icons.Material.Rounded.FilePresent"
+          EndpointServerice="DisabilityService.GetAllDisabilitiesForPagination"
+          DisplayColumns='[nameof(AddOrUpdateDisabilityDto.Name), nameof(AddOrUpdateDisabilityDto.Description), nameof(AddOrUpdateDisabilityDto.ExtraTimePercentage)]'
+          AddNew_URL="/AddDisability"
+          AddNew_URL_OesRolesList="[OesTemplateRoleConstants.SpecialCasesForAddingExtraTimeCreator]"
+          CRUD_Edit_Btn="true"
+          CRUD_Delete_Btn="true"
+          HideCodeSearch="false"
+          FirstSearchParameterLabel="@Resource.Name"
+          Hide_DescriptionSearch="false"
+          SecondSearchParameterLabel="@Resource.Description"
+          HideSearchInBody="true"
+          EditClick_fun="EditDisabilityAsync"
+          DeleteClick_fun="DeleteDisabilityAsync" />

@@ -1,0 +1,32 @@
+﻿@using OES.Helper.General.GlobalUserContext
+@using SharedHelper.RolesNames
+@inject GlobalUserContext GlobalUserContext
+@inject NavigationManager NavigationManager
+
+@ChildContent
+
+@code {
+    [Parameter] public RouteData RouteData { get; set; } = default!;
+    [Parameter] public RenderFragment ChildContent { get; set; } = default!;
+
+    protected override void OnParametersSet()
+    {
+        if (GlobalUserContext.SsoUserRoles.Any(r => r.Name == AdminRoles.SuperAdmin || r.Name == AdminRoles.Entity_Admin))
+            return;
+
+        var pageName = RouteData.PageType.Name;
+
+        var page = GlobalUserContext
+            .UserAccessiblePages
+            .FirstOrDefault(p => p.PageName == pageName);
+
+        if (page == null || page.Roles.Count == 0) return;
+
+        var userRoles = GlobalUserContext
+            .OesUserRoles
+            .Select(r => r.Name).ToHashSet();
+
+        if (!page.Roles.Any(userRoles.Contains))
+            NavigationManager.NavigateTo("/ForbiddenPage", replace: true);
+    }
+}

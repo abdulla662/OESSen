@@ -1,0 +1,90 @@
+@page "/reports/item-analysis"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper
+@using OES.Helper.Dtos.Reports
+@using OES.Helper.Dtos.Reports.Analytical
+
+@attribute [DynamicAuthorizeAttribute("ItemAnalysisReport")]
+
+<PageTitle>@Resource.RptTitleItemAnalysis</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-5 mt-3">
+    <MudIcon Icon="@Icons.Material.Filled.BarChart" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+    <MudText Typo="Typo.h5" Color="Color.Primary">@Resource.RptTitleItemAnalysis</MudText>
+    <ReportInfoButton Title="@Resource.RptTitleItemAnalysis" Overview="@_infoOverview" Sections="@_infoSections" />
+</div>
+
+@if (!string.IsNullOrEmpty(_noDataMessage))
+{
+    <MudAlert Severity="Severity.Info" Class="mb-4" ContentAlignment="HorizontalAlignment.Start" ShowCloseIcon="true" CloseIconClicked="() => _noDataMessage = null">
+        @_noDataMessage
+    </MudAlert>
+}
+else if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error" Class="mb-4" ContentAlignment="HorizontalAlignment.Start" ShowCloseIcon="true" CloseIconClicked="() => _errorMessage = null">
+        @_errorMessage
+    </MudAlert>
+}
+
+<MudPaper Class="pa-4" Elevation="3">
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudAutocomplete T="PaperLookupDto"
+                             Label="@Resource.RptPaperLabel"
+                             Value="_selectedPaper"
+                             ValueChanged="OnPaperChangedAsync"
+                             Variant="Variant.Outlined"
+                             ShowProgressIndicator="true"
+                             ToStringFunc="PaperToString"
+                             SearchFunc="SearchPapersAsync"
+                             Clearable="true"
+                             Required />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudSelect T="FormLookupDto"
+                       Label="Form"
+                       MultiSelection="true"
+                       SelectAll="true"
+                       SelectAllText="@Resource.RptFilterSelectAll"
+                       SelectedValues="_selectedForms"
+                       SelectedValuesChanged="OnFormsChangedAsync"
+                       Variant="Variant.Outlined"
+                       Disabled="_selectedPaper == null"
+                       ToStringFunc="FormToString">
+                @foreach (var form in _forms)
+                {
+                    <MudSelectItem Value="@form">@form.Code - @form.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudDatePicker Label="@Resource.RptDateFrom"
+                           @bind-Date="_startDate"
+                           Variant="Variant.Outlined"
+                           Clearable="true"
+                           Editable="true" />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudDatePicker Label="@Resource.RptDateTo"
+                           @bind-Date="_endDate"
+                           Variant="Variant.Outlined"
+                           Clearable="true"
+                           Editable="true" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex align-items-center">
+            <MudSwitch @bind-Value="_splitByGender" Color="Color.Primary" Label="@Resource.RptSplitByGender" />
+        </MudItem>
+        <MudItem xs="12">
+            <GeneralLoadingButton Disabled="_isGenerating"
+                                  OnClick="GenerateReportAsync"
+                                  EndIcon="@Icons.Material.Filled.Download"
+                                  Variant="Variant.Filled"
+                                  ButtonColor="Color.Primary"
+                                  ButtonText="@Resource.RptGenerateReport"
+                                  FullWidth />
+        </MudItem>
+    </MudGrid>
+</MudPaper>

@@ -1,0 +1,217 @@
+@using System.ComponentModel.DataAnnotations
+@using OES.Helper.Dtos.Questionlanguage
+@using OES.Helper.Enums
+@using OES.Helper.Dtos.Venue.Responses
+@using OES.Helper
+@using OES.Helper.General
+
+<MudGrid>
+    <MudItem xs="12" md="12" Class="pa-8">
+        <EditForm Model="@ScheduleModel" OnSubmit="OnFirstStepScheduleMetadataSubmitAsync">
+            <DataAnnotationsValidator />
+            <MudStack Row="true"
+                      Justify="Justify.SpaceBetween"
+                      AlignItems="AlignItems.Center"
+                      Class="mb-5">
+                <GeneralLoadingButton StartIcon="@Icons.Material.Filled.Schedule"
+                                      OnClick="ShowScheduleTemplateAsync"
+                                      ButtonColor="Color.Surface"
+                                      ButtonText="@Resource.ScheduleTemplate"
+                                      Disabled="@(_thisComponentCurrentOperationalMode == StepperOperationalMode.UpdateMode)"
+                                      Type="ButtonType.Button" />
+                <MudIconButton Icon="@Icons.Material.Filled.GroupAdd"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               Class=@($"label-{nameof(Resource.ManageGroups)}")
+                               OnClick="OpenGroupDialog" />
+            </MudStack>
+            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-3">@Resource.BasicInformation</MudText>
+
+            <MudGrid Spacing="2" Class="px-4">
+                <MudItem xs="12" sm="6">
+                    <MudTextField Value="ScheduleModel.Name"
+                                  Label="@Resource.ScheduleName"
+                                  T="string"
+                                  ValueChanged="OnScheduleNameChanged"
+                                  Variant="Variant.Outlined"
+                                  Immediate
+                                  Required
+                                  Clearable
+                                  HelperTextOnFocus="true"
+                                  HelperText="@Resource.EnterTheNameOfTheSchedule"
+                                  Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(ScheduleModel.Name))"
+                                  ErrorText="@Resource.NameIsRequired" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField Value="@ScheduleModel.Code"
+                                  ValueChanged="@((string val) => ScheduleModel.Code = ListHelpers.SanitizeCode(val))"
+                                  Label="@Resource.ScheduleCode"
+                                  Variant="Variant.Outlined"
+                                  Immediate
+                                  Required
+                                  Clearable
+                                  HelperTextOnFocus="true"
+                                  HelperText="@Resource.EnterTheCodeOfTheSchedule"
+                                  Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(ScheduleModel.Code))"
+                                  ErrorText="@Resource.CodeIsRequired" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="ScheduleModel.Description"
+                                  Label="@Resource.Description"
+                                  Lines="3"
+                                  Variant="Variant.Outlined"
+                                  Immediate
+                                  Required
+                                  Clearable
+                                  HelperTextOnFocus="true"
+                                  HelperText="@Resource.EnterTheDescriptionOfTheSchedule"
+                                  Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(ScheduleModel.Description))"
+                                  ErrorText="@Resource.DescriptionIsRequired" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="LanguageDto"
+                               Label="@Resource.Language"
+                               @bind-SelectedValues="_selectedLanguages"
+                               Variant="Variant.Outlined"
+                               Required
+                               MultiSelection="true"
+                               SelectAll="!_persistedLanguagesCheckboxesDisabled"
+                               Clearable="!_persistedLanguagesCheckboxesDisabled"
+                               Immediate
+                               HelperText="@Resource.SelectOneOrMoreLanguagesForTheSchedule"
+                               Error="@(_isSubmitButtonHit && (_selectedLanguages == null || !_selectedLanguages.Any()))"
+                               ErrorText="@Resource.Atleastonelanguageisrequired"
+                               SelectAllText="@Resource.SelectAll"
+                               ToStringFunc="@(l => l.Name)"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var language in Languages)
+                        {
+                            <MudSelectItem Value="@language"
+                                           Disabled="_persistedLanguagesCheckboxesDisabled && ScheduleModel != null && (GetScheduleMetadataResponseDto.LanguagesIds.Contains(language.Id) || ScheduleModel.LanguageIds.Contains(language.Id))">
+                                @language.Name
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="GetVenueResponseDto"
+                               Label="@Resource.Venues"
+                               @bind-SelectedValues="_selectedVenues"
+                               Variant="Variant.Outlined"
+                               Required
+                               MultiSelection="true"
+                               SelectAll="!_persistedVenuesCheckboxesDisabled"
+                               Clearable="!_persistedVenuesCheckboxesDisabled"
+                               Immediate
+                               HelperText="@Resource.SelectOneOrMoreVenuesForTheSchedule"
+                               Error="@(_isSubmitButtonHit && (_selectedVenues == null || !_selectedVenues.Any()))"
+                               ErrorText="@Resource.AtleastoneVenueisrequired"
+                               SelectAllText="@Resource.SelectAll"
+                               ToStringFunc="@(l => l.Name)"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var venue in Venues)
+                        {
+                            <MudSelectItem Value="@venue"
+                                           Disabled="_persistedVenuesCheckboxesDisabled && ScheduleModel != null && (GetScheduleMetadataResponseDto.VenuesIds.Contains(venue.Id) || ScheduleModel.ExamVenueIds.Contains(venue.Id))">
+                                @venue.Name
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+
+            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mt-5 mb-3">@Resource.DateInformation</MudText>
+
+            <MudGrid Spacing="2" Class="px-4">
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker @bind-Date="ScheduleModel.StartDate"
+                                   Label="@Resource.StartDate"
+                                   Variant="Variant.Outlined"
+                                   PickerVariant="PickerVariant.Dialog"
+                                   Clearable
+                                   HelperText="@Resource.SelectTheStartDateOfTheSchedule"
+                                   HelperTextOnFocus="true"
+                                   Error="@(_isSubmitButtonHit && (ScheduleModel.StartDate == null))"
+                                   ErrorText="@Resource.StartDateIsRequired"
+                                   Required="true" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTimePicker @bind-Time="ScheduleModel.StartTime"
+                                   Label="@Resource.StartTime"
+                                   Variant="Variant.Outlined"
+                                   PickerVariant="PickerVariant.Dialog"
+                                   Clearable
+                                   HelperText="@Resource.SelectTheStartTimeOfTheSchedule"
+                                   HelperTextOnFocus="true"
+                                   Error="@(_isSubmitButtonHit && (ScheduleModel.StartTime == null))"
+                                   ErrorText="@Resource.StartTimeIsRequired"
+                                   Required="true"
+                                   AmPm="true" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker @bind-Date="ScheduleModel.EndDate"
+                                   Label="@Resource.EndDate"
+                                   Variant="Variant.Outlined"
+                                   PickerVariant="PickerVariant.Dialog"
+                                   Clearable
+                                   HelperText="@Resource.SelectTheEndDateOfTheSchedule"
+                                   HelperTextOnFocus="true"
+                                   Error="@(_isSubmitButtonHit && (ScheduleModel.EndDate == null))"
+                                   ErrorText="@Resource.EndDateIsRequired"
+                                   Required="true"
+                                   MinDate="ScheduleModel.StartDate" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTimePicker @bind-Time="ScheduleModel.EndTime"
+                                   Label="@Resource.EndTime"
+                                   Variant="Variant.Outlined"
+                                   PickerVariant="PickerVariant.Dialog"
+                                   Clearable
+                                   HelperText="@Resource.SelectTheEndTimeOfTheSchedule"
+                                   HelperTextOnFocus="true"
+                                   Error="@(_isSubmitButtonHit && (ScheduleModel.EndTime == null))"
+                                   ErrorText="@Resource.EndTimeIsRequired"
+                                   Required="true"
+                                   AmPm="true" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    @* <MudSelect T="ScheduleLocation?"
+                               Label="@Resource.ScheduleLocation"
+                               @bind-Value="ScheduleModel.ScheduleLocation"
+                               Variant="Variant.Outlined"
+                               Required
+                               Immediate
+                               Clearable
+                               HelperTextOnFocus="true"
+                               HelperText="@Resource.SelectTheLocationOfTheSchedule"
+                               Error="@(_isSubmitButtonHit && (ScheduleModel.ScheduleLocation == null))"
+                               ErrorText="@Resource.ScheduleLocationIsRequired"
+                               ToStringFunc="@(location => location?.ToString())"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (ScheduleLocation location in Enum.GetValues<ScheduleLocation>())
+                        {
+                            <MudSelectItem T="ScheduleLocation?" Value="@location">@location.ToLocalizedString()</MudSelectItem>
+                        }
+                    </MudSelect> *@
+
+                    <GeneralLoadingButton Disabled="IsSaveTemplateDisabled"
+                                          Class="flex-fill mt-5"
+                                          OnClick="OpenScheduleTemplateNameDialog"
+                                          EndIcon="@Icons.Material.Filled.CheckCircle"
+                                          ButtonColor="Color.Secondary"
+                                          ButtonText="@Resource.SaveAsScheduleTemplate"
+                                          Type="ButtonType.Button" />
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudItem>
+</MudGrid>

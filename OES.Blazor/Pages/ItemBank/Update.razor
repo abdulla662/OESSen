@@ -1,0 +1,90 @@
+@page "/Update"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.OESUserGroups
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("Update")]
+
+<PageTitle>@Resource.UpdatetheItemBank</PageTitle>
+
+<EditForm Model="@Model">
+    <MudCard Class="mx-auto w-80 mt-5 p-4 shadow-lg justify-content-center">
+        <MudCardContent>
+            <div class="d-flex justify-content-center align-items-center position-relative mt-4 mb-6">
+                <MudIcon Icon="@Icons.Material.Outlined.AccountBalance" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h4" Style="line-height: 1;">@Resource.UpdatetheItemBank</MudText>
+            </div>
+
+            <MudText Typo="Typo.h5"
+                     Color="Color.Primary"
+                     Class="position-absolute top-0 start-50 translate-middle-x mb-5 p-2">
+                @Resource.UpdatetheItemBank
+            </MudText>
+
+            <div class="d-flex justify-content-end">
+                <MudIconButton Icon="@Icons.Material.Filled.GroupAdd"
+                               Color="Color.Primary"
+                               Variant="Variant.Filled"
+                               Size="Size.Medium"
+                               Class=@($"label-{nameof(Resource.ManageGroups)}")
+                               OnClick="OpenGroupDialog" />
+            </div>
+
+            <div class="form-group">
+                <MudTextField Immediate
+                              Label="@Resource.Name"
+                              Clearable
+                              Variant="Variant.Outlined"
+                              T="string"
+                              Value="@Model.Name"
+                              ValueChanged="OnItemBankNameChanged" />
+            </div>
+
+            <div class="form-group">
+                <MudTextField Label="@Resource.Code"
+                              Variant="Variant.Outlined"
+                              Immediate
+                              Clearable
+                              Value="@Model.Code"
+                              ValueChanged="@((string val) => Model.Code = ListHelpers.SanitizeCode(val))" />
+            </div>
+
+            <div class="form-group mt-5">
+                <MudTextField @bind-Value="Model.Description"
+                              Immediate
+                              Label="@Resource.Description"
+                              Variant="Variant.Outlined" />
+            </div>
+
+            <div class="form-group d-flex justify-content-center gap-4 mt-5">
+                <MudSwitch @bind-Value="Model.Unscored" Label="@Resource.Unscored" Color="Color.Warning" />
+                <MudSwitch For="@(() => Model.IsActive)" @bind-Value="Model.IsActive" Label="@Resource.Active" Color="Color.Primary" />
+            </div>
+
+            @* NOTE: Hours field is disabled for now *@
+            @* <div class="form-group mt-5">
+                @if (Response != null && Response.CustomCodeStatus == Helper.Enums.CustomCodeStatus.HoursExceeded)
+                {
+                    <h6 class="text-danger"> @Response.Message </h6>
+                }
+                <MudTextField @bind-Value="Model.Hours"
+                              Immediate
+                              Label="@Resource.Hours"
+                              Variant="Variant.Outlined" />
+            </div> *@
+        </MudCardContent>
+        <MudCardActions Class="d-flex justify-content-center align-content-center gap-2">
+            <GeneralLoadingButton Disabled="IsSubmitButtonDisabled"
+                                  Class="flex-fill"
+                                  OnClick="OnValidSubmitAsync"
+                                  ButtonText="@Resource.Update"
+                                  EndIcon="@Icons.Material.Filled.CheckCircle"
+                                  Type="ButtonType.Submit" />
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel" Class="flex-fill" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>
+

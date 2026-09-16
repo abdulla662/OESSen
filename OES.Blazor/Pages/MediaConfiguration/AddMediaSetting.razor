@@ -1,0 +1,60 @@
+﻿@page "/AddMediaSetting"
+
+@using OES.Helper.Dtos.MediaSetting.Requests
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using System.Globalization
+@using OES.Helper.Enums
+@using SharedHelper.General
+
+@attribute [DynamicAuthorizeAttribute("AddMediaSetting")]
+
+<PageTitle>@Resource.Add</PageTitle>
+
+<EditForm Model="@Model">
+    <DataAnnotationsValidator />
+
+    <MudCard Class="mx-auto mt-5 w-80 p-4 shadow-lg justify-content-center">
+        <MudCardContent>
+
+            <div class="form-group d-flex justify-content-center align-items-center mb-6">
+                <MudIcon Icon="@Icons.Material.Rounded.PermMedia" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h5" Style="line-height: 1;">
+                    @Resource.Add
+                </MudText>
+            </div>
+
+            <div class="form-group">
+                <MudSelect T="MediaCategory" Label="@Resource.MediaCategory" Required="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" @bind-Value="Model.MediaCategory">
+                    @foreach (MediaCategory item in Enum.GetValues(typeof(MediaCategory)))
+                    {
+                        <MudSelectItem Value="@item">@Resource.PropertyLocalization(item.ToString())</MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+
+            <div class="form-group">
+                <MudNumericField T="int"
+                                 Label="@Resource.MaxSizeInKB"
+                                 Immediate="true"
+                                 Required="true"
+                                 @bind-Value="Model.MaxSizeInKB"
+                                 For="@(() => Model.MaxSizeInKB)"
+                                 Class="mb-3"
+                                 Variant="Variant.Outlined"
+                                 Culture="@(CultureInfo.CurrentCulture)" />
+            </div>
+
+            <MudCardActions Class="justify-content-center w-100">
+                <GeneralLoadingButton Disabled="@(IsSubmitButtonDisabled)"
+                                      Class="w-100 m-3"
+                                      OnClick="OnSubmitAsync"
+                                      ButtonText="@Resource.Add"
+                                      Type="ButtonType.Submit"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle" />
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="w-100 m-3" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+            </MudCardActions>
+
+        </MudCardContent>
+    </MudCard>
+</EditForm>

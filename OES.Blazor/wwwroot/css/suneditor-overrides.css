@@ -1,0 +1,480 @@
+/* CSS Variables for SunEditor overrides */
+
+:root {
+    --hr-color: var(--mud-palette-text-primary, #333);
+}
+
+html body .sun-editor .se-toolbar,
+html body .sun-editor .se-btn-tray {
+    background-color: var(--mud-palette-surface, #1e1e28) !important;
+    color: var(--mud-palette-text-primary) !important;
+    border-color: var(--mud-palette-divider, #2b2b36) !important;
+}
+
+html body .sun-editor .se-btn,
+html body .sun-editor .se-btn-select,
+html body .sun-editor .se-menu-list li button {
+    color: var(--mud-palette-text-primary) !important;
+    background: transparent !important;
+}
+
+html body .sun-editor .se-btn:enabled:hover,
+html body .sun-editor .se-btn:enabled:focus {
+    background: rgba(255, 255, 255, .08) !important;
+}
+
+/* Target content in OES Exam area and OES Text Editor explicitly */
+.exam-question-area .sun-editor-editable,
+.text-editor-container .sun-editor-editable,
+.question-font-container .sun-editor-editable,
+#paper-details-content .sun-editor-editable,
+.question-details-content .sun-editor-editable,
+.mud-table-cell.sun-editor-editable,
+.device-layout-showcasing .sun-editor-editable,
+.exam-question-area .se-wrapper .se-wrapper-inner,
+.text-editor-container .se-wrapper .se-wrapper-inner,
+.question-font-container .se-wrapper .se-wrapper-inner,
+#paper-details-content .se-wrapper .se-wrapper-inner,
+.question-details-content .se-wrapper .se-wrapper-inner,
+.device-layout-showcasing .se-wrapper .se-wrapper-inner {
+    background-color: transparent !important;
+}
+
+.text-editor-container .sun-editor-editable,
+.text-editor-container .se-wrapper .se-wrapper-inner,
+#paper-details-content .sun-editor-editable,
+#paper-details-content .se-wrapper .se-wrapper-inner,
+.question-details-content .sun-editor-editable,
+.question-details-content .se-wrapper .se-wrapper-inner,
+.mud-table-cell.sun-editor-editable,
+.device-layout-showcasing .sun-editor-editable,
+.device-layout-showcasing .se-wrapper .se-wrapper-inner {
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.exam-question-area .sun-editor-editable *,
+.text-editor-container .sun-editor-editable *,
+.question-font-container .sun-editor-editable *,
+.question-details-content .sun-editor-editable * {
+    background-color: transparent !important;
+}
+
+/* Force light text in dark mode for all nested elements inside the question body */
+html.dark-theme .exam-question-area .sun-editor-editable *,
+html.dark-theme .text-editor-container .sun-editor-editable *,
+html.dark-theme #paper-details-content .sun-editor-editable *,
+html.dark-theme .question-details-content .sun-editor-editable *,
+html.dark-theme .device-layout-showcasing .sun-editor-editable * {
+    color: #ffffff !important;
+}
+
+/* Also ensure typography inside these areas is black */
+.mud-table-cell.sun-editor-editable .mud-typography,
+#paper-details-content .sun-editor-editable .mud-typography,
+.question-details-content .sun-editor-editable .mud-typography,
+#paper-details-content .mud-radio-content .mud-typography,
+.question-details-content .mud-radio-content .mud-typography,
+#paper-details-content .mud-checkbox-content .mud-typography,
+.question-details-content .mud-checkbox-content .mud-typography,
+#paper-details-content .mud-list-item-text .mud-typography,
+.question-details-content .mud-list-item-text .mud-typography,
+.device {
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.question-font-container,
+.question-font-container *,
+.question-font-container .sun-editor-editable *,
+.question-font-container .question-body-content,
+.question-font-container .question-body-content *,
+.question-font-container .mud-typography[class*="mud-typography-"] {
+    font-family: Calibri, sans-serif !important;
+    font-size: 18pt !important;
+}
+
+/* Force all text elements inside choice content to be black, resolving any blue hyperlinks or inline spans */
+.device-layout-showcasing .mud-radio-content *,
+.device-layout-showcasing .mud-checkbox-content *,
+#paper-details-content .mud-radio-content *,
+.question-details-content .mud-radio-content *,
+#paper-details-content .mud-checkbox-content *,
+.question-details-content .mud-checkbox-content * {
+    color: var(--mud-palette-text-primary) !important;
+    background-color: transparent !important;
+}
+
+html.dark-theme .device-layout-showcasing .mud-radio-content *,
+html.dark-theme .device-layout-showcasing .mud-checkbox-content *,
+html.dark-theme #paper-details-content .mud-radio-content *,
+html.dark-theme .question-details-content .mud-radio-content *,
+html.dark-theme #paper-details-content .mud-checkbox-content *,
+html.dark-theme .question-details-content .mud-checkbox-content * {
+    color: #ffffff !important;
+}
+
+html body .sun-editor .se-list-layer,
+html body .sun-editor .se-select-list,
+html body .sun-editor .se-dialog .se-dialog-inner .se-dialog-content {
+    background-color: var(--mud-palette-surface, #1e1e28) !important;
+    color: var(--mud-palette-text-primary) !important;
+    border-color: var(--mud-palette-divider, #2b2b36) !important;
+}
+
+html body .sun-editor .se-toolbar,
+html body .sun-editor .se-resizing-bar {
+    outline-color: var(--mud-palette-divider, #2b2b36) !important;
+}
+
+html body .sun-editor .se-resizing-bar {
+    background-color: var(--mud-palette-surface, #1e1e28) !important;
+    border-top: 1px solid var(--mud-palette-divider, #2b2b36) !important;
+}
+
+html body .sun-editor .se-resizing-bar .se-char-counter-wrapper,
+html body .sun-editor .se-resizing-bar .se-navigation {
+    color: var(--mud-palette-text-secondary, #b4b7c1) !important;
+}
+
+html body .sun-editor .se-resizing-bar .se-navigation {
+    display: none !important;
+}
+
+.math-panel-bg {
+    background-color: var(--mud-palette-surface);
+    color: var(--mud-palette-text-primary);
+    border: 1px solid var(--mud-palette-divider);
+}
+
+.math-panel-bg input,
+.math-panel-bg select,
+.math-panel-bg textarea {
+    background-color: var(--mud-palette-background-grey);
+    color: var(--mud-palette-text-primary);
+    border: 1px solid var(--mud-palette-divider);
+}
+
+/* Dark mode specific styling for select dropdown */
+html.dark-theme .math-panel-bg select {
+    background-color: var(--mud-palette-surface, #1e293b);
+    color: var(--mud-palette-text-primary, #f1f5f9);
+}
+
+html.dark-theme .math-panel-bg select option {
+    background-color: var(--mud-palette-surface, #1e293b);
+    color: var(--mud-palette-text-primary, #f1f5f9);
+}
+
+html.dark-theme .math-panel-bg select option:hover,
+html.dark-theme .math-panel-bg select option:checked {
+    background-color: var(--mud-palette-background-grey, #334155);
+}
+
+.math-panel-bg input::placeholder,
+.math-panel-bg textarea::placeholder {
+    color: var(--mud-palette-text-secondary);
+}
+
+.math-panel-bg .btn,
+.math-panel-bg button {
+    background-color: var(--mud-palette-background-grey);
+    color: var(--mud-palette-text-primary);
+    border: 1px solid var(--mud-palette-divider);
+}
+
+.math-panel-bg .btn:hover,
+.math-panel-bg button:hover {
+    background-color: var(--mud-palette-surface);
+}
+
+.math-panel-bg .math-render {
+    background: transparent;
+    color: var(--mud-palette-text-primary);
+    padding: .5rem .75rem;
+    border: 1px dashed var(--mud-palette-divider);
+    min-height: 48px;
+}
+
+.math-panel-bg .MathJax_SVG svg g {
+    fill: var(--mud-palette-text-primary) !important;
+    stroke: none !important;
+}
+
+.math-panel-bg math-field {
+    background: var(--mud-palette-background-grey) !important;
+    color: var(--mud-palette-text-primary) !important;
+    border: 1px solid var(--mud-palette-divider) !important;
+    border-radius: 4px;
+    padding: .4rem .6rem;
+}
+
+.math-panel-bg math-field::part(container) {
+    background: var(--mud-palette-background-grey) !important;
+    color: var(--mud-palette-text-primary) !important;
+    border: none !important;
+}
+
+/* Dark mode specific for math-field */
+html.dark-theme .math-panel-bg math-field {
+    background: var(--mud-palette-surface, #1e293b) !important;
+    color: var(--mud-palette-text-primary, #f1f5f9) !important;
+    caret-color: var(--mud-palette-primary, #3b82f6) !important;
+}
+
+html.dark-theme .math-panel-bg math-field::part(container),
+html.dark-theme .math-panel-bg math-field::part(content),
+html.dark-theme .math-panel-bg math-field * {
+    background: var(--mud-palette-surface, #1e293b) !important;
+    color: var(--mud-palette-text-primary, #f1f5f9) !important;
+}
+
+.sun-editor .se-wrapper .se-wrapper-inner .equation-caption,
+.sun-editor-editable figure.equation-block figcaption.equation-caption {
+    background-color: transparent !important;
+    color: inherit !important;
+    font-size: 0.9rem !important;
+    font-style: italic;
+    text-align: center !important;
+    display: block;
+    margin-top: 0.5rem;
+}
+
+.math-chem-fields,
+.rendering-areas,
+math-field::part(container) {
+    direction: ltr !important;
+    text-align: left !important;
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.sun-editor .se-controller .se-btn-group button {
+    background-color: var(--mud-palette-surface, #1e1e28) !important;
+    color: var(--mud-palette-text-primary, #e0e0e0) !important;
+    border: 1px solid var(--mud-palette-divider, #2b2b36) !important;
+}
+
+.sun-editor .se-controller .se-btn-group button:hover:enabled,
+.sun-editor .se-controller .se-btn-group button:focus:enabled {
+    background-color: var(--mud-palette-surface, #1e1e28) !important;
+    color: var(--mud-palette-text-primary, #e0e0e0) !important;
+    border-color: var(--mud-palette-divider, #2b2b36) !important;
+}
+
+.sun-editor .se-controller .se-btn-group button:active:enabled {
+    background-color: var(--mud-palette-primary, #3f9dff) !important;
+    color: #fff !important;
+    border-color: var(--mud-palette-primary-dark, #2a6fb0) !important;
+    box-shadow: inset 0 3px 5px rgba(0,0,0,0.3) !important;
+}
+
+.rendering-areas .MathJax,
+.rendering-areas math-field,
+.math-chem-fields math-field,
+.MathJax {
+    color: var(--mud-palette-text-primary) !important;
+    background: transparent !important;
+}
+
+.MathJax .mo,
+mjx-mtext,
+mjx-mi,
+mjx-mo {
+    font-family: "Courier New", monospace !important;
+    font-weight: bold !important;
+    color: var(--mud-palette-text-primary) !important;
+}
+
+/* Scrollable drop-downs for SunEditor */
+
+.sun-editor {
+    overflow: visible !important;
+    z-index: 1050 !important;
+}
+
+.sun-editor .se-list-layer {
+    max-height: 100px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    z-index: 3000 !important;
+    background-color: var(--mud-palette-surface, #fff) !important;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.sun-editor .se-list-layer button {
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.sun-editor .se-btn-list {
+    background-color: var(--mud-palette-surface, #fff) !important;
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.sun-editor .se-list-inner .se-list-basic li button {
+    color: var(--mud-palette-text-primary) !important;
+}
+
+/* Table Selector */
+.sun-editor .se-selector-table {
+    background-color: var(--mud-palette-surface) !important;
+}
+
+.sun-editor .se-selector-table .se-table-size-display {
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.sun-editor .se-list-layer::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sun-editor .se-list-layer::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.sun-editor .se-list-layer::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.sun-editor .se-tooltip,
+.sun-editor .se-dialog {
+    z-index: 3000 !important;
+}
+
+/* Numbered List */
+
+.sun-editor .se-wrapper-inner ol,
+.sun-editor-editable ol {
+    list-style-type: decimal !important;
+    padding-inline-start: var(--list-indent, 2.5em) !important;
+    margin: 0 !important;
+}
+
+.sun-editor .se-wrapper-inner ul,
+.sun-editor-editable ul {
+    list-style-type: disc !important;
+    padding-inline-start: var(--list-indent, 2.5em) !important;
+    margin: 0 !important;
+}
+
+.sun-editor .se-wrapper-inner ol li,
+.sun-editor-editable ol li {
+    display: list-item !important;
+    list-style-type: decimal !important;
+}
+
+.sun-editor .se-wrapper-inner ul li,
+.sun-editor-editable ul li {
+    display: list-item !important;
+    list-style-type: disc !important;
+}
+
+/* Horizontal Rule Dropdown */
+
+.sun-editor .se-list-layer.se-list-line li > button {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    min-width: 140px !important;
+    padding: 10px 16px !important;
+    gap: 8px !important;
+}
+
+.sun-editor .se-list-layer.se-list-line li > button::after {
+    content: '';
+    display: block;
+    width: 100%;
+}
+
+/* Solid line style (1st item) */
+
+.sun-editor .se-list-layer.se-list-line li:nth-child(1) > button::after {
+    height: 3px;
+    background: var(--hr-color);
+}
+
+/* Dotted line style (2nd item) */
+
+.sun-editor .se-list-layer.se-list-line li:nth-child(2) > button::after {
+    border-bottom: 3px dotted var(--hr-color);
+}
+
+/* Dashed line style (3rd item) */
+
+.sun-editor .se-list-layer.se-list-line li:nth-child(3) > button::after {
+    border-bottom: 3px dashed var(--hr-color);
+}
+
+/* Dialog Forms (Link, Image, Video, etc.) */
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-header {
+    border-bottom: 1px solid var(--mud-palette-divider) !important;
+}
+
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-header .se-modal-title {
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-header .se-btn-close {
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-content label {
+    color: var(--mud-palette-text-primary) !important;
+}
+
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-content input,
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-content select,
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-content textarea {
+    background-color: var(--mud-palette-background-grey) !important;
+    color: var(--mud-palette-text-primary) !important;
+    border: 1px solid var(--mud-palette-divider) !important;
+}
+
+.sun-editor .se-dialog .se-dialog-tabs {
+    background-color: var(--mud-palette-background-grey) !important;
+    border-bottom: 1px solid var(--mud-palette-divider) !important;
+}
+
+.sun-editor .se-dialog .se-dialog-tabs button {
+    background-color: transparent !important;
+    color: var(--mud-palette-text-secondary) !important;
+    border: 1px solid transparent !important;
+    border-bottom: none !important;
+}
+
+.sun-editor .se-dialog .se-dialog-tabs button.active {
+    background-color: var(--mud-palette-surface) !important;
+    color: var(--mud-palette-primary) !important;
+    border: 1px solid var(--mud-palette-divider) !important;
+    border-bottom: 1px solid var(--mud-palette-surface) !important;
+    margin-bottom: -1px !important;
+}
+
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-content input:focus,
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-content select:focus,
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-content textarea:focus {
+    border-color: var(--mud-palette-primary) !important;
+    outline: none !important;
+}
+
+.sun-editor .se-dialog .se-dialog-footer .se-btn-primary {
+    background-color: var(--mud-palette-primary) !important;
+    color: var(--mud-palette-primary-text) !important;
+    border: none !important;
+}
+
+.sun-editor .se-dialog .se-dialog-footer .se-btn-secondary {
+    background-color: var(--mud-palette-surface) !important;
+    color: var(--mud-palette-text-primary) !important;
+    border: 1px solid var(--mud-palette-divider) !important;
+}
+
+html.dark-theme .sun-editor {
+    background-color: var(--mud-palette-surface) !important;
+    color: var(--mud-palette-text-primary) !important;
+}
+
+html.dark-theme .sun-editor-editable {
+    background-color: transparent !important;
+    color: var(--mud-palette-text-primary) !important;
+}

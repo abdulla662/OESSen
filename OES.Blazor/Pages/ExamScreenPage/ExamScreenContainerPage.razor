@@ -1,0 +1,10 @@
+﻿@page "/StaticExam"
+
+@attribute [DynamicAuthorizeAttribute("ExamScreenContainer")]
+
+@using OES.Blazor.Components.TakeExam.ExamPanel
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@layout ExamViewLayout
+
+<ExamScreenContainer />

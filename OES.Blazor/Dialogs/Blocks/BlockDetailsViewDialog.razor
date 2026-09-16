@@ -1,0 +1,66 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.Pages.DeltaType
+@using OES.Helper.Dtos.DifficultyProfile
+@using System.Globalization
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.BorderAll" Class="mr-1" /> @Resource.BlockDetails
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudCard Elevation="0">
+            <MudCardContent>
+                <MudGrid Spacing="3">
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Color="Color.Secondary" Typo="Typo.subtitle1">📌 @Resource.BlockName </MudText>
+                            <MudText Class="font-weight-bold ml-3">@block.Name</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Color="Color.Secondary" Typo="Typo.subtitle1">📝 @Resource.Description </MudText>
+                            <MudText Class="ml-3">@block.Description</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Color="Color.Secondary" Typo="Typo.subtitle1">📦 @Resource.BlockCategory </MudText>
+                            <MudText Class="font-weight-bold ml-3">@block.BlockTypeName</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Color="Color.Secondary" Typo="Typo.subtitle1">⚙️ @Resource.DeltaType </MudText>
+                            <MudText Class="font-weight-bold ml-3">@block.DeltaTypeName</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Class="p-3 shadow-sm d-flex align-items-center">
+                            <MudText Color="Color.Secondary" Typo="Typo.subtitle1">📊 @Resource.DifficultyLevel </MudText>
+                            <MudText Class="font-weight-bold ml-3">@block.DifficultyLevelName</MudText>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+                <MudDivider Class="mt-4 mb-4" />
+                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-4">@Resource.AssociatedQuestions</MudText>
+                @if (isBlockLoaded)
+                {
+                    <ListItem T="BlockQuestionsDetailsPaginationDto"
+                              Caption="@Resource.AssociatedQuestions"
+                              CaptionIcon="@Icons.Material.Filled.BorderAll"
+                              EndpointServerice="GetAllQuestions"
+                              DisplayColumns='["Code", "Type", "ItemBank", "Language", "Subject", "Category", "DifficultyProfile", "DifficultyLevel"]'
+                              Hide_DescriptionSearch="true"
+                              SearchPanelVisible="false"
+                              MultiSelection="false">
+                    </ListItem>
+                }
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+</MudDialog>

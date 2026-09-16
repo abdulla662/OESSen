@@ -1,0 +1,313 @@
+﻿@using MudBlazor
+@using OES.Blazor.Shared
+@using OES.Helper.Dtos.CreateTemplate
+@using OES.Helper.Enums
+@using OES.Helper.General
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Large" />
+            <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.EditTemplate</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        @if (isLoading)
+        {
+            <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="pa-8">
+                <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-2">@Resource.Loading</MudText>
+            </MudStack>
+        }
+        else
+        {
+            <EditForm Model="@model" OnValidSubmit="OnValidSubmitAsync">
+                <DataAnnotationsValidator />
+                <MudStack Spacing="3">
+
+                    <!-- Basic Information Section -->
+                    <MudPaper Elevation="0" Class="pa-4 rounded-lg bg-grey">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="fw-600">
+                                @Resource.BasicInformation
+                            </MudText>
+                        </MudStack>
+                        <MudGrid Spacing="2">
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="model.Name"
+                                              Label="@Resource.TemplateName"
+                                              Variant="Variant.Outlined"
+                                              Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.Label"
+                                              AdornmentColor="Color.Primary" />
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="model.Description"
+                                              Label="@Resource.Description"
+                                              Variant="Variant.Outlined"
+                                              Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.Description"
+                                              AdornmentColor="Color.Primary" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+
+                    <!-- Resources & Roles Section -->
+                    <MudPaper Elevation="0" Class="pa-4 rounded-lg bg-grey">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+                            <MudIcon Icon="@Icons.Material.Filled.Security" Color="Color.Primary" Size="Size.Small" />
+                            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="fw-600">
+                                @Resource.ResourcesAndRoles
+                            </MudText>
+                        </MudStack>
+
+                        <!-- Resource Dropdown -->
+                        <MudSelect T="ResourceType"
+                                   Label="@Resource.LinkedResources"
+                                   Variant="Variant.Outlined"
+                                   MultiSelection="true"
+                                   SelectedValues="@selectedResources"
+                                   SelectedValuesChanged="@(values => OnResourcesChanged(values.ToHashSet()))"
+                                   Adornment="Adornment.Start"
+                                   AdornmentIcon="@Icons.Material.Filled.Category"
+                                   AdornmentColor="Color.Primary"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   Class="mb-4">
+                            @foreach (var res in Enum.GetValues<ResourceType>()
+                                                     .Where(r => r != ResourceType.All && PageRoleMap.Map.ContainsKey(r))
+                                                     .Where(r => ResourceType == ResourceType.All || r == ResourceType))
+                            {
+                                <MudSelectItem Value="@res">@res</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <!-- 3-Level Tree -->
+                        @if (selectedResources.Any())
+                        {
+                            <MudPaper Outlined="true" Class="pa-3 rounded-lg">
+                                @foreach (var resource in selectedResources)
+                                {
+                                    @if (PageRoleMap.Map.TryGetValue(resource, out var pages))
+                                    {
+                                        @* ── Resource Row ── *@
+                                        <MudStack Row
+                                                  AlignItems="AlignItems.Center"
+                                                  Justify="Justify.SpaceBetween"
+                                                  Class="resource-row pa-3 mb-2"
+                                                  @onclick="() => ToggleResource(resource)">
+
+                                            <!-- LEFT SIDE -->
+                                            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+
+                                                <MudPaper Elevation="0"
+                                                          Class="resource-icon-box">
+
+                                                    <MudIcon Icon="@(expandedResources.Contains(resource) ? Icons.Material.Filled.FolderOpen : Icons.Material.Filled.Folder)"
+                                                             Color="Color.Primary"
+                                                             Size="Size.Medium" />
+
+                                                </MudPaper>
+
+                                                <MudStack Spacing="0">
+
+                                                    <MudText Typo="Typo.subtitle2"
+                                                             Class="fw-700 resource-title">
+                                                        @resource
+                                                    </MudText>
+
+                                                    <MudText Typo="Typo.caption"
+                                                             Color="Color.Secondary">
+                                                        Manage resource permissions
+                                                    </MudText>
+
+                                                </MudStack>
+
+                                                @if (pages.SelectMany(p => p.Roles).Count(r => selectedRoles.Contains(r)) > 0)
+                                                {
+                                                    <MudChip T="string"
+                                                             Size="Size.Small"
+                                                             Variant="Variant.Filled"
+                                                             Color="Color.Success"
+                                                             Icon="@Icons.Material.Filled.CheckCircle">
+
+                                                        @pages.SelectMany(p => p.Roles).Count(r => selectedRoles.Contains(r)) / @pages.SelectMany(p => p.Roles).Count()
+
+                                                    </MudChip>
+                                                }
+
+                                            </MudStack>
+
+                                            <!-- RIGHT SIDE -->
+                                            <MudStack Row
+                                                      AlignItems="AlignItems.Center"
+                                                      Spacing="1">
+
+                                                <MudDivider Vertical="true"
+                                                            FlexItem="true"
+                                                            Class="mx-1" />
+
+                                                <MudTooltip Text="@Resource.SelectAll">
+                                                    <MudIconButton Icon="@Icons.Material.Filled.DoneAll"
+                                                                   Size="Size.Small"
+                                                                   Class=@($"resource-action-btn label-{nameof(Resource.SelectAll)}")
+                                                                   Color="Color.Primary"
+                                                                   OnClick="@(() => SelectAllRolesForResource(resource, pages))" />
+                                                </MudTooltip>
+
+                                                <MudTooltip Text="@Resource.ClearAll">
+                                                    <MudIconButton Icon="@Icons.Material.Filled.ClearAll"
+                                                                   Size="Size.Small"
+                                                                   Class=@($"resource-action-btn label-{nameof(Resource.ClearAll)}")
+                                                                   Color="Color.Error"
+                                                                   OnClick="@(() => ClearAllRolesForResource(resource, pages))" />
+                                                </MudTooltip>
+
+                                                <MudIcon Icon="@(expandedResources.Contains(resource) ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                                         Size="Size.Small"
+                                                         Class="expand-icon" />
+
+                                            </MudStack>
+
+                                        </MudStack>
+                                        @* ── Pages under Resource ── *@
+                                        @if (expandedResources.Contains(resource))
+                                        {
+                                            @foreach (var PageItem in pages)
+                                            {
+                                                @* ── Page Row ── *@
+                                                <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween"
+                                                          Class="pa-2 rounded ms-4 mb-1"
+                                                          Style="background:var(--mud-palette-background-grey); cursor:pointer;"
+                                                          @onclick="() => TogglePage(PageItem.PageName)">
+                                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                                        <MudIcon Icon="@(expandedPages.Contains(PageItem.PageName) ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                                                 Size="Size.Small" Color="Color.Secondary" />
+                                                        <MudIcon Icon="@Icons.Material.Filled.WebAsset" Size="Size.Small" Color="Color.Secondary" />
+                                                        <MudText Typo="Typo.body2">@PageItem.PageName</MudText>
+                                                        @if (PageItem.Roles.Count(r => selectedRoles.Contains(r)) > 0)
+                                                        {
+                                                            <MudChip T="string" Size="Size.Small" Color="Color.Success">
+                                                                @PageItem.Roles.Count(r => selectedRoles.Contains(r)) / @PageItem.Roles.Length
+                                                            </MudChip>
+                                                        }
+                                                    </MudStack>
+                                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="0">
+                                                        <MudTooltip Text="@Resource.SelectAll">
+                                                            <MudIconButton Icon="@Icons.Material.Filled.DoneAll"
+                                                                           Class=@($"label-{nameof(Resource.SelectAll)}")
+                                                                           Size="Size.Small" Color="Color.Success"
+                                                                           OnClick="@(() => SelectAllRolesForPage(PageItem))" />
+                                                        </MudTooltip>
+                                                        <MudTooltip Text="@Resource.ClearAll">
+                                                            <MudIconButton Icon="@Icons.Material.Filled.Clear"
+                                                                           Size="Size.Small" Color="Color.Error"
+                                                                           Class=@($"label-{nameof(Resource.ClearAll)}")
+                                                                           OnClick="@(() => ClearAllRolesForPage(PageItem))" />
+                                                        </MudTooltip>
+                                                    </MudStack>
+                                                </MudStack>
+
+                                                @* ── Roles under Page ── *@
+                                                @if (expandedPages.Contains(PageItem.PageName))
+                                                {
+                                                    <MudStack Class="ms-8 mb-1" Spacing="0">
+                                                        @foreach (var role in PageItem.Roles)
+                                                        {
+                                                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="py-1">
+                                                                <MudCheckBox T="bool"
+                                                                             Value="@selectedRoles.Contains(role)"
+                                                                             ValueChanged="@(isChecked => OnRoleChecked(role, isChecked))"
+                                                                             Color="Color.Primary" Size="Size.Small" />
+                                                                <MudIcon Icon="@Icons.Material.Filled.VpnKey" Size="Size.Small" Color="Color.Tertiary" />
+                                                                <MudText Typo="Typo.body2">@role</MudText>
+                                                            </MudStack>
+                                                        }
+                                                    </MudStack>
+                                                }
+                                            }
+                                        }
+
+                                        <MudDivider Class="my-2" />
+                                    }
+                                }
+                            </MudPaper>
+                        }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Info" Dense="true">@Resource.SelectResourceFirst</MudAlert>
+                        }
+                    </MudPaper>
+
+                    <!-- Users Assignment Section -->
+                    <MudPaper Elevation="0" Class="pa-4 rounded-lg border-dashed-primary">
+                        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                                <MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="fw-600">
+                                    @Resource.AssignUsers
+                                </MudText>
+                                @if (SelectedUsers.Any())
+                                {
+                                    <MudChip T="string" Color="Color.Primary" Size="Size.Small">
+                                        @string.Format(Resource.UsersSelectedCount, SelectedUsers.Count)
+                                    </MudChip>
+                                }
+                            </MudStack>
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       StartIcon="@Icons.Material.Filled.PersonAdd"
+                                       OnClick="@OpenUserSelectionDialog">
+                                @Resource.SelectUsers
+                            </MudButton>
+                        </MudStack>
+
+                        @if (SelectedUsers.Any())
+                        {
+                            <MudStack Row Wrap="Wrap.Wrap" Spacing="1">
+                                @foreach (var user in SelectedUsers)
+                                {
+                                    <MudChip T="string"
+                                             Color="Color.Primary"
+                                             Variant="Variant.Outlined"
+                                             Size="Size.Small"
+                                             Icon="@Icons.Material.Filled.Person"
+                                             OnClose="@(() => RemoveUser(user))">
+                                        @user.Name
+                                    </MudChip>
+                                }
+                            </MudStack>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-1">
+                                @Resource.NoUsersSelected
+                            </MudText>
+                        }
+                    </MudPaper>
+
+                </MudStack>
+            </EditForm>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   OnClick="@OnValidSubmitAsync"
+                   Disabled="@isSubmitting">
+            @Resource.Update
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Secondary"
+                   StartIcon="@Icons.Material.Filled.Close"
+                   OnClick="@Cancel"
+                   Disabled="@isSubmitting">
+            @Resource.Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,31 @@
+﻿@using OES.Blazor.Components.GenericComponents.TreeViewTemplates.GrpcTreeViewTemplate
+@using OES.Helper.Enums
+
+<MudDialog>
+    <TitleContent>
+        <h4>@Resource.SelectHostItemBankNode</h4>
+    </TitleContent>
+    <DialogContent>
+        <GrpcTreeViewTemplate @key="_treeViewKey"
+                              Items="@Items"
+                              IsSingleSelectionTree="true"
+                              GetSelectedTreeItem="GetSelectedTreeItem" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="@(() => SubmitAsync(ItemBankQuestionsTransferType.WithoutChilds))"
+                   Disabled="@(_selectedItemBankNode == null || _selectedItemBankNode.Id == 0 || _waitingResponse)"
+                   EndIcon="@Icons.Material.Filled.CheckCircle">
+            @Resource.TransferSelectedNodeOnly
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="@(() => SubmitAsync(ItemBankQuestionsTransferType.WithChilds))"
+                   Disabled="@(_selectedItemBankNode == null || _selectedItemBankNode.Id == 0 || _waitingResponse)"
+                   EndIcon="@Icons.Material.Filled.Checklist">
+            @Resource.TransferNodeWithChilds
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,64 @@
+@using OES.Blazor.Components.GenericComponents.TextEditor
+
+<EditForm OnSubmit="OnSubmitAsync" Model="@Model">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="BodyEditorParams"
+                        @ref="@BodyEditorParams.TextEditor" />
+        </MudItem>
+
+        <MudItem xs="12" class="mt-3">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="MarkSelectedTextAsAnswer">
+                <MudIcon Icon="@Icons.Material.Filled.Check" Class="me-2" />
+                @Resource.MarkBlank
+            </MudButton>
+        </MudItem>
+
+        <MudItem xs="12" class="mt-3">
+            <MudText Typo="Typo.h6" Class="d-flex align-items-center flex-wrap">
+                <strong>Answers:</strong>
+                <span class="selected-answers">
+                    @string.Join(", ", SelectedAnswers)
+                </span>
+            </MudText>
+        </MudItem>
+
+        <MudItem xs="12" class="mt-3 d-flex align-items-center">
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Error"
+                       Disabled="@(SelectedAnswers.Count == 0)"
+                       OnClick="ClearAnswers">
+                <MudIcon Icon="@Icons.Material.Filled.Clear" Class="me-2" />
+                @Resource.Clear
+            </MudButton>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="InstructionsEditorParams"
+                        @ref="@InstructionsEditorParams.TextEditor" />
+        </MudItem>
+
+        <MudItem xs="12" Class="d-flex justify-content-center mt-2">
+            <MudStack Row="true" Spacing="4" Class="w-50">
+                <GeneralLoadingButton Class="flex-grow-1 p-2 rounded-pill"
+                                      Size="Size.Small"
+                                      ButtonText="@Resource.Save"
+                                      IsLoading="@_processing"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit" />
+
+                <MudButton Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           Color="Color.Secondary"
+                           OnClick="CancelDialogAsync"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</EditForm>

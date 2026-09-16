@@ -1,0 +1,154 @@
+@page "/reports/paper-blueprint"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("PaperBlueprintReport")]
+
+<PageTitle>
+    @Resource.RptTitlePaperBlueprint
+</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-4 mt-3 ar-no-print">
+    <MudIcon Icon="@Icons.Material.Filled.MenuBook"
+             Color="Color.Primary"
+             Size="Size.Large"
+             Class="me-2" />
+    <MudText Typo="Typo.h5"
+             Color="Color.Primary">
+        @Resource.RptTitlePaperBlueprint
+    </MudText>
+    <ReportInfoButton Title="@Resource.RptTitlePaperBlueprint"
+                      Overview="@_infoOverview"
+                      Sections="@_infoSections" />
+</div>
+
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error"
+              Class="mb-4 ar-no-print"
+              ShowCloseIcon="true"
+              CloseIconClicked="ClearError">
+        @_errorMessage
+    </MudAlert>
+}
+
+<AnalyticalReportFilter ShowVenue="false"
+                        ShowPaper="true"
+                        ShowForm="true"
+                        ShowItemBank="false"
+                        FilterChanged="OnFilterChangedAsync"
+                        OnGenerateClicked="GenerateAsync" />
+
+<div class="d-flex justify-content-end gap-2 mb-3 ar-no-print">
+    @if (HasReport)
+    {
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.TableChart"
+                   Color="Color.Success"
+                   OnClick="ExportAsync"
+                   Disabled="_isExporting">
+            @(_isExporting
+                ? Resource.RptExporting
+                : Resource.RptExportExcel)
+        </MudButton>
+    }
+
+    <MudButton Variant="Variant.Outlined"
+               StartIcon="@Icons.Material.Filled.Print"
+               OnClick="PrintAsync">
+        @Resource.RptPrintSaveAsPdf
+    </MudButton>
+</div>
+
+@if (_isLoading)
+{
+    <MudProgressCircular Indeterminate="true"
+                         Color="Color.Primary"
+                         Class="d-block mx-auto my-8" />
+}
+else if (HasReport)
+{
+    var report = _report!;
+
+    <div class="ar-header-info">
+        <span>
+            <strong>
+                @Resource.Schedule
+            </strong>
+            @report.Schedule
+        </span>
+        <span>
+            <strong>
+                @Resource.PaperCode
+            </strong>
+            @report.PaperCode
+        </span>
+    </div>
+    @if (!HasRows)
+    {
+        <MudAlert Severity="Severity.Info">
+            @Resource.RptNoQuestionsForFilter
+        </MudAlert>
+    }
+    else
+    {
+        <div class="ar-section-title">
+            @Resource.RptItemTypeDistribution
+        </div>
+        <div class="ar-hbar-container mb-4">
+            @foreach (var itemType in report.ItemTypes
+                            .OrderByDescending(GetTypeTotal))
+            {
+                <div class="ar-hbar-row">
+                    <span class="ar-hbar-label">
+                        @itemType
+                    </span>
+                    <div class="ar-hbar-track">
+                        <div class="ar-hbar-fill"
+                             style="@BuildBarWidthStyle(itemType)">
+                        </div>
+                    </div>
+                    <span class="ar-hbar-count">
+                        @GetTypeTotal(itemType)
+                    </span>
+                </div>
+            }
+        </div>
+        <MudPaper Elevation="2"
+                  Class="pa-0 overflow-auto">
+            <table class="ar-table">
+                <thead>
+                    <tr>
+                        <th class="text-start">
+                            @Resource.RptItemBankLabel
+                        </th>
+                        @foreach (var itemType in report.ItemTypes)
+                        {
+                            <th>
+                                @itemType
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in report.Rows)
+                    {
+                        <tr>
+                            <td class="text-start">
+                                @row.ItemBankName
+                            </td>
+                            @foreach (var itemType in report.ItemTypes)
+                            {
+                                <td>
+                                    @GetTypeCount(
+                                        row,
+                                        itemType)
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </MudPaper>
+    }
+}

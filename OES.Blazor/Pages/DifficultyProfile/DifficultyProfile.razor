@@ -1,0 +1,63 @@
+﻿@page "/DifficultyProfile"
+
+@using OES.Helper.Dtos.DifficultyProfile
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.General
+@using OES.Helper.General.ProtectedEntityHelper
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+
+@attribute [DynamicAuthorizeAttribute("DifficultyProfile")]
+
+<PageTitle>@Resource.DifficultyProfile</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.DriveFileRenameOutline" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.DifficultyProfiles</MudText>
+        </MudStack>
+
+        <ListItem T="DifficultyProfileDto"
+                  Caption="@Resource.DifficultyProfile"
+                  CaptionIcon="@Icons.Material.Rounded.DriveFileRenameOutline"
+                  @key="profilesListKey"
+                  EndpointServerice="BlazDifficultyProfileService.GetAllDifficultyProfile"
+                  DisplayColumns='[nameof(DifficultyProfileDto.Name)]'
+                  AddNew_URL="/AddDifficultyProfile"
+                  AddNew_URL_OesRolesList=[OesTemplateRoleConstants.DifficultyProfileCreator]
+                  HideCodeSearch="true"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <ButtonChildContent Context="value">
+                @if (value is DifficultyProfileDto profile)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    OnClick="() => ViewDifficultyProfileDetailsAsync(profile.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    Disabled="@IsEditDisabled(profile)"
+                                    OnClick="() => UpdateDifficultyProfileAsync(profile.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    StartIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    Disabled="@IsDeleteDisabled(profile)"
+                                    OnClick="() => DeleteProfileAsync(profile.Id)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

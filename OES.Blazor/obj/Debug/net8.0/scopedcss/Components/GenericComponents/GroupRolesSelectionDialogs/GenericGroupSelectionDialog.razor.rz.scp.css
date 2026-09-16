@@ -1,0 +1,20 @@
+[b-awbu46oka3] .content-container {
+    background-color: var(--mud-palette-background-grey);
+    min-height: 400px;
+}
+
+/* Search Panel */
+
+.dialog-search-wrapper[b-awbu46oka3]  .mud-grid {
+    align-items: center !important;
+}
+
+.dialog-search-wrapper[b-awbu46oka3]  .mud-grid > .mud-grid-item:nth-child(1) {
+    flex-basis: 80% !important;
+    max-width: 80% !important;
+}
+
+.dialog-search-wrapper[b-awbu46oka3]  .mud-grid > .mud-grid-item:last-child {
+    flex-basis: 20% !important;
+    max-width: 20% !important;
+ }

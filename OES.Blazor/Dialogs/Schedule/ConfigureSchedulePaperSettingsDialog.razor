@@ -1,0 +1,500 @@
+﻿@using OES.Helper.Enums
+@using OES.Helper.Dtos.Template.Response;
+@using OES.Helper;
+
+<MudDialog>
+    <DialogContent>
+        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.SettingsApplications"
+                              Class="mr-5 mb-4 mud-elevation-2"
+                              OnClick="ShowTemplatesAsync"
+                              ButtonColor="Color.Surface"
+                              ButtonText="@Resource.PaperSettingsTemplates"
+                              Type="ButtonType.Button"
+                              Variant="Variant.Filled"
+                              Size="Size.Medium" />
+        <div class="pa-4">
+            <MudExpansionPanels MultiExpansion="true">
+                <MudTooltip Text="@Resource.AdvancedSettings">
+                    <MudSwitch T="bool"
+                               Label="@Resource.AdvancedSettings"
+                               @bind-Value="_additionalSettingsVisible"
+                               Color="Color.Primary"
+                               Class="ml-3" />
+                </MudTooltip>
+
+                <!-- General Settings -->
+                <MudExpansionPanel Text="@Resource.GeneralSettings" Icon="@Icons.Material.Filled.Settings">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12" sm="6">
+                            <MudAutocomplete T="QuestionsDisplayMode"
+                                             Label="@Resource.QuestionsSequence"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="Model.QuestionsSequence"
+                                             AnchorOrigin="Origin.BottomCenter"
+                                             SearchFunc="SearchQuestionsSequencesAsync"
+                                             ToStringFunc="s => s.ToLocalizedString()"
+                                             Clearable="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudAutocomplete T="QuestionsDisplayMode"
+                                             Label="@Resource.QuestionsOptionsSequence"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="Model.QuestionsOptionsSequence"
+                                             AnchorOrigin="Origin.BottomCenter"
+                                             SearchFunc="SearchQuestionsSequencesAsync"
+                                             ToStringFunc="s => s.ToLocalizedString()"
+                                             Clearable="true" />
+                        </MudItem>
+                        @* <MudItem xs="12" sm="6">
+                            <MudNumericField T="int"
+                                             Label="@Resource.TrialsCount"
+                                             Min="1"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="Model.TrialsCount" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudNumericField T="int"
+                                             Label="@Resource.LoginToleranceTime"
+                                             Min="1"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="Model.LoginToleranceTime" />
+                        </MudItem> *@
+                    </MudGrid>
+                </MudExpansionPanel>
+
+                <!-- Answer Behavior -->
+                <MudExpansionPanel Text="@Resource.AnswerBehavior" Icon="@Icons.Material.Filled.Quiz">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.AnswerOptionCanBeChangedAfterAttempt"
+                                       @bind-Value="Model.AnswerOptionCanBeChangedAfterAttempt"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.MarkForReviewQuestion"
+                                       @bind-Value="Model.MarkForReviewQuestion"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        @* <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowResetAnswerOption"
+                                       @bind-Value="Model.ShowResetAnswerOption"
+                                       Color="Color.Primary" />
+                        </MudItem> *@
+                        @* <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ReplaceNotAttemptedQuestion"
+                                       @bind-Value="Model.ReplaceNotAttemptedQuestion"
+                                       Color="Color.Primary" />
+                        </MudItem> *@
+                    </MudGrid>
+                </MudExpansionPanel>
+
+                <!-- Auto Save Options -->
+                <MudExpansionPanel Text="@Resource.AutoSaveOptions" Icon="@Icons.Material.Filled.Save">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.AutoSaveOnTimeUp"
+                                       @bind-Value="Model.AutoSaveOnTimeUp"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.AutoSaveOnClosing"
+                                       @bind-Value="Model.AutoSaveOnClosing"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                    </MudGrid>
+                </MudExpansionPanel>
+
+                <!-- UI Features -->
+                <MudExpansionPanel Text="@Resource.UIFeatures" Icon="@Icons.Material.Filled.Palette">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowProfile"
+                                       @bind-Value="Model.ShowProfile"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        @* <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowInstructions"
+                                       @bind-Value="Model.ShowInstructions"
+                                       Color="Color.Primary" />
+                        </MudItem> *@
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.DisablePalletNavigation"
+                                       Value="Model.DisablePalletNavigation"
+                                       ValueChanged="OnDisablePalletNavigationChanged"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowScientificCalculator"
+                                       @bind-Value="Model.ShowScientificCalculator"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem xs="12" sm="12">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowPreviousButton"
+                                       @bind-Value="Model.ShowPrevious"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem xs="12" sm="12">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowNextButton"
+                                       @bind-Value="Model.ShowNext"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowWatermark"
+                                       Value="Model.ShowWatermark"
+                                       ValueChanged="OnShowWatermarkChanged"
+                                       Color="Color.Primary" />
+                        </MudItem>
+
+                        @if (Model.ShowWatermark)
+                        {
+                            <MudItem xs="12" sm="6">
+                                <MudAutocomplete T="WaterMarkOption"
+                                                 Label="@Resource.WatermarkOption"
+                                                 Variant="Variant.Outlined"
+                                                 Value="_selectedWatermarkOption"
+                                                 ValueChanged="WatermarkOptionChanged"
+                                                 AnchorOrigin="Origin.BottomCenter"
+                                                 SearchFunc="SearchWatermarkOptionsAsync"
+                                                 ToStringFunc="w => w.ToString()"
+                                                 Clearable="true" />
+                            </MudItem>
+
+                            @if (_selectedWatermarkOption == WaterMarkOption.Other)
+                            {
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField T="string"
+                                                  Label="@Resource.CustomWatermarkText"
+                                                  Variant="Variant.Outlined"
+                                                  Required
+                                                  RequiredError="@Resource.ThisFieldIsRequired"
+                                                  @bind-Value="Model.WaterMark" />
+                                </MudItem>
+                            }
+                        }
+
+                    </MudGrid>
+                </MudExpansionPanel>
+
+                <!-- Exam Security -->
+                <MudExpansionPanel Text="@Resource.ExamSecurity" Icon="@Icons.Material.Filled.Security">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.SupervisorPasswordToStartExam"
+                                       @bind-Value="Model.SupervisorPasswordToStartExam"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.SupervisorPasswordToEndExam"
+                                       @bind-Value="Model.SupervisorPasswordToEndExam"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.AskForCandidatePasswordAtTheEndOfTest"
+                                       @bind-Value="Model.AskForCandidatePasswordAtTheEndOfTest"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.RunThisExamOnSecureExamOnly"
+                                       @bind-Value="Model.RunThisExamOnSecureBrowserOnly"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                    </MudGrid>
+                </MudExpansionPanel>
+
+                <!-- Result Settings -->
+                <MudExpansionPanel Text="@Resource.ResultSettings" Icon="@Icons.Material.Filled.Assessment">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.PassingConcept"
+                                       @bind-Value="Model.PassingConcept"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        @if (Model.PassingConcept)
+                        {
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField T="long"
+                                                 Label="@Resource.MinimumPassingMarks"
+                                                 Variant="Variant.Outlined"
+                                                 Min="1"
+                                                 @bind-Value="Model.MinimumPassingMarks" />
+                            </MudItem>
+                        }
+                        <MudItem xs="12">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.NegativeMarking"
+                                       @bind-Value="Model.NegativeMarking"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                        @if (Model.NegativeMarking)
+                        {
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField T="float"
+                                                 Label="@Resource.NegativeMarkPercent"
+                                                 Variant="Variant.Outlined"
+                                                 Min="1"
+                                                 @bind-Value="Model.NegativeMarkPercent" />
+                            </MudItem>
+                        }
+                        <MudItem xs="12">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowAnalysisAfterExam"
+                                       @bind-Value="Model.ShowAnalysis"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                    </MudGrid>
+                </MudExpansionPanel>
+
+                <!-- Paper Templates -->
+                <MudExpansionPanel Text="@Resource.ExaminationTemplates" Icon="@Icons.Material.Filled.Article">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12" sm="6">
+                            <MudAutocomplete T="GetListedTemplateResponseDto"
+                                             Label="@Resource.ResultTemplate"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="_selectedResultTemplate"
+                                             SearchFunc="SearchResultTemplatesAsync"
+                                             ToStringFunc="template => template?.Name"
+                                             Clearable="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudAutocomplete T="GetListedTemplateResponseDto"
+                                             Label="@Resource.CertificateTemplate"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="_selectedCertificateTemplate"
+                                             SearchFunc="SearchCertificateTemplatesAsync"
+                                             ToStringFunc="template => template?.Name"
+                                             Clearable="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudAutocomplete T="GetListedTemplateResponseDto"
+                                             Label="@Resource.InstructionsTemplate"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="_selectedInstructionTemplate"
+                                             SearchFunc="SearchInstructionTemplatesAsync"
+                                             ToStringFunc="template => template?.Name"
+                                             Clearable="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudAutocomplete T="GetListedTemplateResponseDto"
+                                             Label="@Resource.OtherInstructionTemplate"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="_selectedOtherInstructionTemplate"
+                                             SearchFunc="SearchOtherInstructionTemplatesAsync"
+                                             ToStringFunc="template => template?.Name"
+                                             Clearable="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudAutocomplete T="GetListedTemplateResponseDto"
+                                             Label="@Resource.DisclaimerTemplate"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="_selectedDisclaimerTemplate"
+                                             SearchFunc="SearchDisclaimerTemplatesAsync"
+                                             ToStringFunc="template => template?.Name"
+                                             Clearable="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudAutocomplete T="GetListedTemplateResponseDto"
+                                             Label="@Resource.Rules"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="_selectedRuleTemplate"
+                                             SearchFunc="SearchRuleTemplatesAsync"
+                                             ToStringFunc="template => template?.Name ?? string.Empty"
+                                             Clearable="true"
+                                             CoerceValue="true"
+                                             ResetValueOnEmptyText="true" />
+                        </MudItem>
+                    </MudGrid>
+                </MudExpansionPanel>
+
+                @if (_additionalSettingsVisible)
+                {
+                    <!-- Additional Settings -->
+                    <MudExpansionPanel Text="@Resource.AdvancedSettings" Icon="@Icons.Material.Filled.Tune">
+                        <MudGrid Spacing="2">
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">
+                                    <MudIcon Icon="@Icons.Material.Filled.Settings" Class="mr-2" />@Resource.ExamConfiguration
+                                </MudText>
+                            </MudItem>
+
+                            @* <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.IdenticalQuestionPaperToAllCandidates"
+                                           @bind-Value="Model.AdditionalPaperSettings.IdenticalQuestionPaperToAllCandidate"
+                                           Color="Color.Primary" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.IdenticalItemSequenceToAllCandidates"
+                                           @bind-Value="Model.AdditionalPaperSettings.IdenticalItemSequenceToAllCandidate"
+                                           Color="Color.Primary" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.OptionRandomization"
+                                           @bind-Value="Model.AdditionalPaperSettings.OptionRandomization"
+                                           Color="Color.Primary" />
+                            </MudItem> *@
+
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField T="long"
+                                                 Label="@Resource.EnableEndTestButtonAfterTimeSpentMins"
+                                                 Variant="Variant.Outlined"
+                                                 Min="0"
+                                                 Max="PaperDurationResponseDto.Duration"
+                                                 Adornment="Adornment.End"
+                                                 AdornmentText="@($" / {PaperDurationResponseDto.Duration} {Resource.MinutesShort}")"
+                                                 @bind-Value="Model.AdditionalPaperSettings.EnableEndTestButtonAfterTimeSpent"
+                                                 HelperText="@string.Format(Resource.EnableEndTestButtonAfterTimeSpentHelper, PaperDurationResponseDto.Duration)" />
+                            </MudItem>
+
+                            <MudItem xs="12" Class="mt-4">
+                                <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">
+                                    <MudIcon Icon="@Icons.Material.Filled.DesktopWindows" Class="mr-2" />@Resource.ExamInterface
+                                </MudText>
+                            </MudItem>
+
+                            @* <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.ShowQuestionPaper"
+                                           @bind-Value="Model.AdditionalPaperSettings.ShowQuestionPaper"
+                                           Color="Color.Primary" />
+                            </MudItem> *@
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.SkipQuestion"
+                                           @bind-Value="Model.AdditionalPaperSettings.SkipQuestion"
+                                           Color="Color.Primary" />
+                            </MudItem>
+
+                            @* <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.AnsweredQuestionCanBeChanged"
+                                           @bind-Value="Model.AdditionalPaperSettings.AnsweredQuestionCanBeChanged"
+                                           Color="Color.Primary" />
+                            </MudItem> *@
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.ShowResetQuestion"
+                                           @bind-Value="Model.AdditionalPaperSettings.ShowResetQuestion"
+                                           Color="Color.Primary" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.ShowNotepad"
+                                           @bind-Value="Model.AdditionalPaperSettings.ShowNotePad"
+                                           Color="Color.Primary" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.RequireAnswerBeforeProceeding"
+                                           @bind-Value="Model.AdditionalPaperSettings.RequireAnswerBeforeProceeding"
+                                           Color="Color.Primary" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.ApplyTimerAlert"
+                                           Color="Color.Primary"
+                                           @bind-Value="@Model.AdditionalPaperSettings.ApplyTimerAlert" />
+
+                                <MudNumericField T="int"
+                                                 Variant="Variant.Outlined"
+                                                 Class=@($"mt-2 {(Model.AdditionalPaperSettings.ApplyTimerAlert ? "" : "invisible")}")
+                                                 Label="@Resource.Minutes"
+                                                 @bind-Value="Model.AdditionalPaperSettings.TimerAlertMinutes"
+                                                 Min="1"
+                                                 Max="20" />
+                            </MudItem>
+
+                            <MudItem xs="12" Class="mt-4">
+                                <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">
+                                    <MudIcon Icon="@Icons.Material.Filled.PlayCircle" Class="mr-2" />@Resource.MediaPlayback
+                                </MudText>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudGrid Justify="Justify.FlexStart">
+                                    <MudItem xs="12" sm="6">
+                                        <MudNumericField T="int"
+                                                         Label="@Resource.MediaPlayingCount"
+                                                         @bind-Value="Model.AdditionalPaperSettings.MediaPlayingCount"
+                                                         Variant="Variant.Outlined"
+                                                         Min="1"
+                                                         Immediate="true" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.AskSupervisorForMediaReplay"
+                                           @bind-Value="Model.AdditionalPaperSettings.AskSupervisorForPlayMediaAgain"
+                                           Color="Color.Primary" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.AutoPlayMedia"
+                                           @bind-Value="Model.AdditionalPaperSettings.AutoStartEnabled"
+                                           Color="Color.Primary" />
+                            </MudItem>
+
+                            <MudItem xs="12" Class="mt-4">
+                                <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">
+                                    <MudIcon Icon="@Icons.Material.Filled.MoreHoriz" Class="mr-2" />@Resource.OtherSettings
+                                </MudText>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch T="bool"
+                                           Label="@Resource.IsCertificateRequired"
+                                           @bind-Value="Model.AdditionalPaperSettings.IsCertificateRequired"
+                                           Color="Color.Primary" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudExpansionPanel>
+                }
+            </MudExpansionPanels>
+            <GeneralLoadingButton Class="mr-5 mt-4"
+                                  OnClick="OpenTemplateNameDialog"
+                                  ButtonColor="Color.Secondary"
+                                  ButtonText="@Resource.SavePaperSettingsAsTemplate"
+                                  EndIcon="@Icons.Material.Filled.CheckCircle"
+                                  Type="ButtonType.Button"
+                                  Variant="Variant.Filled"
+                                  FullWidth="false"
+                                  Size="Size.Medium" />
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudStack Row="true" Spacing="2" Class="w-100" Justify="Justify.Center" AlignItems="AlignItems.Center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnSubmitButtonHitAsync" Class="flex-fill" EndIcon="@Icons.Material.Filled.CheckCircle">@(_isInsertionMode? Resource.Add: Resource.Update)</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="OnCloseButtonHit" Class="flex-fill" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

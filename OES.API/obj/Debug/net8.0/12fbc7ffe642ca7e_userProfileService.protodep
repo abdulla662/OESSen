@@ -1,0 +1,4 @@
+obj\Debug\net8.0\Protos/UserProfileService.cs \
+obj\Debug\net8.0\Protos/UserProfileServiceGrpc.cs: C:/Users/PC-7/.nuget/packages/grpc.tools/2.65.0/build/native/include/google/protobuf/timestamp.proto\
+ Protos/models.proto\
+ Protos/userProfileService.proto

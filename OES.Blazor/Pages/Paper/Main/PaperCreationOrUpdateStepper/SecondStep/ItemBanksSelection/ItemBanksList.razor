@@ -1,0 +1,52 @@
+@using OES.Helper.Dtos.ItemBank.API;
+@using OES.Helper.Dtos.TreeItem;
+
+<ListItem T="NewItemBankDTO"
+          EndpointServerice="BlazItemBankService.GetAllItemBankRootsForPaperAsync"
+          DisplayColumns='[ nameof(NewItemBankDTO.Name),
+                            nameof(NewItemBankDTO.Code),
+                            nameof(NewItemBankDTO.TotalQuestions) ]'
+          FilterObject="ItemBankFilterDto"
+          CRUD_View_Btn="!ItemBankSelectionDisabledForAutoMode"
+          ViewClick_fun="OpenPaperItemBankTreeViewDialogAsync" />
+
+<div class="text-divider mb-5">@Resource.SelectedItemBanks</div>
+
+@if (_selectedNodes.Count > 0)
+{
+    <div class="d-flex flex-wrap justify-content-center align-content-center gap-2">
+        @foreach (var item in _selectedNodes.Values)
+        {
+            @if (_oldSelectedItembanks.Contains(item.Id) || PaperMetadataResultedParamsDto.UsesExcelQuestionsImport)
+            {
+
+                <MudChip T="string"
+                         @key="item.Id"
+                         Class="ma-1"
+                         Variant="Variant.Outlined"
+                         Size="Size.Large"
+                         Color="Color.Primary"
+                         Icon="@Icons.Material.Filled.Lock">
+                    @item.Text
+                </MudChip>
+            }
+            else
+            {
+                <MudChip T="string"
+                         @key="item.Id"
+                         Class="ma-1"
+                         Variant="Variant.Filled"
+                         Size="Size.Large"
+                         Color="Color.Primary"
+                         CloseIcon="@Icons.Material.Filled.Close"
+                         OnClose="() => RemoveSelectedItem(item)">
+                    @item.Text
+                </MudChip>
+            }
+        }
+    </div>
+}
+else
+{
+    <MudText Typo="Typo.h6" Align="Align.Center">@Resource.NoItemBanksSelected</MudText>
+}

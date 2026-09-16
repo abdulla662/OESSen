@@ -1,0 +1,80 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.Components.GenericComponents.TreeViewTemplates.GrpcTreeViewTemplate
+@using OES.Helper.Dtos
+@using OES.Helper.Dtos.TreeItem
+@using OES.Blazor.CustomAuthorizationAttribute
+@using SharedHelper.Common
+
+<MudDialog Class="overflow-hidden">
+    <DialogContent>
+        @* @if (UserItemBankDtos.Count() > 0)
+        {
+            <MudIconButton Variant="Variant.Filled"
+                           Class="bookmark"
+                           Icon="@Icons.Material.Filled.Bookmark"
+                           OnClick="ToggleDrawer"
+                           Color="Color.Primary" />
+
+            <MudDrawer @bind-Open="@_drawerOpen"
+                       Anchor="Anchor.Right"
+                       Elevation="10"
+                       Width="25%"
+                       Variant="DrawerVariant.Temporary">
+
+                <MudDrawerHeader Class="d-flex justify-content-center mb-3">
+                    <MudChip T="string"
+                             Icon="@Icons.Material.Filled.Bookmarks"
+                             Variant="Variant.Outlined"
+                             Color="Color.Primary"
+                             Size="Size.Large"
+                             Style="font-size: 17pt">Own Item Banks</MudChip>
+                </MudDrawerHeader>
+
+                <MudNavMenu Class="ms-3">
+                    @foreach (var userItemBank in UserItemBankDtos)
+                    {
+                        <MudFab Color="Color.Secondary"
+                                Class="mb-4"
+                                IconSize="Size.Medium"
+                                IconColor="Color.Warning"
+                                OnClick="() => ScrollToItem(userItemBank.Id)"
+                                EndIcon="@Icons.Material.Filled.Bookmark"
+                                Label="@userItemBank.Name.TruncateToNumberOfChars(28)" />
+                    }
+                </MudNavMenu>
+            </MudDrawer>
+        } *@
+
+        @if (IsComponentInitialized)
+        {
+            <GrpcTreeViewTemplate @ref="_treeViewRef"
+                                  Items="@Items"
+                                  SelectedItems="_currentSelectedItemBankNodes"
+                                  OldSelectedItems="@_oldSelectedItemBankNodes"
+                                  OldSelectedItemsDisabled="@OldSelectedItemBankNodesDisabled"
+                                  IsMultipleSelectionTree="true"
+                                  TreeCrudButtonsRolesPlaceholders="TreeCrudButtonsRolesPlaceholders"
+                                  GetSelectedTreeItems="GetSelectedTreeItems" />
+        }
+    </DialogContent>
+
+     <DialogActions>
+        <div class="dialog-actions-container">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="Submit"
+                       EndIcon="@Icons.Material.Filled.CheckCircle"
+                       Disabled="@(!_currentSelectedItemBankNodes.Any())">
+                @Resource.Select
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       OnClick="Cancel"
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Cancel
+            </MudButton>
+        </div>
+     </DialogActions>
+</MudDialog>
+
+

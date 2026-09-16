@@ -1,0 +1,194 @@
+@using OES.Blazor.Pages.QuestionLayout.EssayLayout
+@using OES.Blazor.Pages.QuestionLayout.McqLayouts
+@using OES.Blazor.Pages.QuestionLayout.TrueAndFalseLayout
+@using OES.Helper
+@using OES.Helper.Dtos.AIQuestionGenerator.Response
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.QuestionChoices
+@using OES.Helper.Enums
+@using OES.Helper.General
+@using OES.Helper.ResourceFiles
+@using System.Globalization
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center justify-start" dir="@(RightToLeft ? "rtl" : "ltr")">
+            <MudIcon Icon="@Icons.Material.Filled.ViewTimeline" Class="mr-2" Color="Color.Primary" Size="Size.Small" />
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="font-weight-bold">@Resource.QuestionDetails</MudText>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        @if (Question != null)
+        {
+            var detail = Question.Details.FirstOrDefault();
+
+            <MudGrid Spacing="2" Class="animate__animated animate__fadeIn">
+                <MudItem xs="12">
+                    <MudPaper Class="pa-3" Elevation="1">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-2 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" Class="mr-1" />
+                            @Resource.BasicInformation
+                        </MudText>
+
+                        <MudGrid Spacing="1">
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Numbers" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Code:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2" data-no-convert>@Question.Code</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Attribution" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Author:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Question.Author</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.MenuBook" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Subject:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Question.SubjectName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.ContactSupport" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Type:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        @(Question.QuestionTypeName.ToLocalizedString<QuestionType>())
+                                    </MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Category" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.Category:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Question.CategoryName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Stairs" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.DifficultyLevel:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@Question.DifficultyLevelName</MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                    <MudIcon Icon="@Icons.Material.Filled.ChangeHistory" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.DeltaValue:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">@FormatDeltaValue(Question.Delta)</MudText>
+                                </MudStack>
+                            </MudItem>
+                            @if (Question.IloId.HasValue && !string.IsNullOrWhiteSpace(Question.IloName))
+                            {
+                                <MudItem xs="12" sm="6" md="6">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                        <MudIcon Icon="@Icons.Material.Filled.Pageview" Color="Color.Primary" />
+                                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                            <strong>@Resource.ILO:</strong>
+                                        </MudText>
+                                        <MudText Typo="Typo.body2">@Question.IloName</MudText>
+                                    </MudStack>
+                                </MudItem>
+                            }
+                            <MudItem xs="12" sm="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.AccountBalance" Color="Color.Primary" Size="Size.Small" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                                        <strong>@Resource.ItemBank:</strong>
+                                    </MudText>
+                                    <MudChip T="string"
+                                             Color="Color.Primary"
+                                             Variant="Variant.Outlined"
+                                             Size="Size.Small"
+                                             Icon="@Icons.Material.Filled.AccountTree">
+                                        @Question.ItemBankName
+                                    </MudChip>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                    <MudIcon Icon="@Icons.Material.Filled.QuestionMark" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.QuestionExhaustionCount:</strong>
+                                    </MudText>
+                                    <MudText Class="ml-2">
+                                        @(Question.QuestionsExhaustionCount == MiscConstants.CommonQuestionExhaustionCount ? string.Empty : (Question.QuestionsExhaustionCount > 0 ? Question.QuestionsExhaustionCount.ToString() : Resource.NotAvailable))
+                                    </MudText>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="6">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Language" Color="Color.Primary" />
+                                    <MudText Color="Color.Secondary" Typo="Typo.subtitle1">
+                                        <strong>@Resource.LanguagesNames:</strong>
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">@(detail?.LanguageName ?? Resource.NotAvailable)</MudText>
+                                </MudStack>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudPaper Class="pa-3 question-details-content" Elevation="1" Style="min-height:200px;">
+                        <MudText Typo="Typo.body2" Color="Color.Primary" Class="mb-2 font-weight-bold">
+                            <MudIcon Icon="@Icons.Material.Filled.SpaceDashboard" Size="Size.Small" Class="mr-1" />
+                            @Resource.QuestionLayout
+                        </MudText>
+
+                        @if (Question.Details is { Count: > 0 })
+                        {
+                            <MudGrid Spacing="2">
+                                @foreach (var qd in Question.Details)
+                                {
+                                    var dto = MapToQuestionDataDto(qd);
+
+                                    <MudItem xs="12" Class="mt-2">
+                                        @if (QuestionTypeName == nameof(QuestionType.Essay))
+                                        {
+                                            <EssayLayout ShowCorrectAnswer="true" ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                        else if (QuestionTypeName == nameof(QuestionType.TrueAndFalse))
+                                        {
+                                            <TrueAndFalseLayout ShowCorrectAnswer="true" ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" />
+                                        }
+                                        else if (QuestionTypeName == nameof(QuestionType.MCQ))
+                                        {
+                                            <Mcqlayout ShowCorrectAnswer="true" ScreenSize="@SelectedScreenSize" Model="dto" ScreenSizeClass="@SelectScreenSizeClass" Orientation="@Orientation" />
+                                        }
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        }
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Secondary"
+                   OnClick="Close"
+                   StartIcon="@Icons.Material.Filled.Close">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

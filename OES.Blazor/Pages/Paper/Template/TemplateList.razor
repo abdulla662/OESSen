@@ -1,0 +1,81 @@
+﻿@page "/ExaminationTemplates"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.Dtos.Paper
+@using OES.Helper.Dtos.Template.Response
+@using OES.Helper.General
+@using OES.Helper.Dtos.Template.Request
+
+@attribute [DynamicAuthorizeAttribute("ExaminationTemplates")]
+
+<PageTitle>@Resource.ExaminationTemplates</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.CopyAll" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary">@Resource.ExaminationTemplates</MudText>
+        </MudStack>
+
+        <ListItem @key=_templateKey
+                  T="TemplateDataDto"
+                  EndpointServerice="BlazTemplateService.GetAllTemplates"
+                  Caption="@Resource.Templates"
+                  CaptionIcon="@Icons.Material.Filled.CopyAll"
+                  DisplayColumns='["Name", "TemplateTypeDisplay", "Content"]'
+                  Create_Btn="true"
+                  CreateClick_fun="OpenAddTemplateDialogAsync"
+                  FilterObject="TemplateFilterPaginationModel"
+                  HideCodeSearch="true"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <TopChildContent>
+                <MudCard Class="mb-3">
+                    <MudCardContent>
+                        <MudGrid Justify="Justify.Center" GutterSize="GutterSize.Small">
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudSelect T="TemplateTypeDto"
+                                           Label="@Resource.SelectTemplateType"
+                                           Clearable="true"
+                                           @bind-Value="SelectedTemplateType"
+                                           Variant="Variant.Outlined"
+                                           AnchorOrigin="Origin.BottomCenter">
+                                    @if (_templateTypes != null && _templateTypes.Any())
+                                    {
+                                        @foreach (var templatetype in _templateTypes)
+                                        {
+                                            <MudSelectItem Value="@templatetype">@templatetype.Name</MudSelectItem>
+                                        }
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </TopChildContent>
+            <ButtonChildContent Context="value">
+                @if (value is TemplateDataDto template)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    OnClick='async () => await OpenEditTemplateDialogAsync(template.Id)' />
+                        </MudTooltip>
+
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    StartIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    OnClick='async () => await DeleteTemplateAsync(template.Id)' />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

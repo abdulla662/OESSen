@@ -1,0 +1,40 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Custom.FileFormats.FileDocument" Class="mr-3" /> @Resource.UpdateName
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudStack Style="width: 100%">
+            <MudTextField T="string"
+                          Variant="Variant.Outlined"
+                          Immediate="true"
+                          @bind-Value="_newName"
+                          Placeholder="New Name"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Custom.FileFormats.FileDocument"
+                          Clearable="true"
+                          Error="string.IsNullOrWhiteSpace(_newName)"
+                          ErrorText=@Resource.NameCannotBeEmpty />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudToolBar Gutters="@false" Class="relative d-flex justify-end gap-4">
+            <MudButton Color="Color.Primary"
+                       Disabled="string.IsNullOrWhiteSpace(_newName) || _newName == CurrentItemName"
+                       OnClick="UpdateFolderName"
+                       Variant="Variant.Filled"
+                       EndIcon="@Icons.Material.Filled.Edit">
+                @Resource.Edit
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       OnClick="Close"
+                       Class="px-10"
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Close
+            </MudButton>
+        </MudToolBar>
+    </DialogActions>
+</MudDialog>
+

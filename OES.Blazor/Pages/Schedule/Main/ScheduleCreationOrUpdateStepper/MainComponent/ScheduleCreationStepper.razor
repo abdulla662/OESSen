@@ -1,0 +1,82 @@
+﻿@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Pages.Schedule.Main.ScheduleCreationOrUpdateStepper.FirstStep
+@using OES.Blazor.Pages.Schedule.Main.ScheduleCreationOrUpdateStepper.FourthStep
+@using OES.Blazor.Pages.Schedule.Main.ScheduleCreationOrUpdateStepper.SecondStep
+@using OES.Blazor.Pages.Schedule.Main.ScheduleCreationOrUpdateStepper.ThirdStep
+@using OES.Helper.Enums
+
+@page "/CreateOrUpdateSchedule"
+
+@attribute [DynamicAuthorizeAttribute(nameof(ScheduleCreationStepper))]
+
+<PageTitle> @string.Format((_processMode == StepperOperationalMode.InsertionMode ? Resource.Create : Resource.Update)) @Resource.Schedule</PageTitle>
+
+<MudItem Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudStepperExtended @ref="_stepper"
+                        Class="mud-width-full"
+                        ContentStyle="min-height: 240px"
+                        Linear="@_linear"
+                        Vertical="@_vertical"
+                        PreventStepChangeAsync="CheckChangeAsync"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        MobileView="@_mobileView"
+                        Loading="@_loading"
+                        LocalizedStrings="GetLocalizedStrings()"
+                        @bind-ShowPreviousButton="_showPreviousButton"
+                        @bind-ShowNextButton="_showNextButton"
+                        HeaderTextView="HeaderTextView.All">
+        <ChildContent>
+            @*Step-One Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Start" Title="@Resource.ScheduleInformation">
+                <ChildContent>
+                    <ScheduleMetadata @ref="ScheduleMetadataFirstStepComponent" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Two Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Settings" Title="@Resource.ScheduleConfigurations">
+                <ChildContent>
+                    <AddSecurityConfigurations @ref="AddSecurityConfigurationSecondStepComponent"
+                                               @key="_secondStepChangingKey"
+                                               ScheduleId="ScheduleMetadataResultedParamsDto.ScheduleMetadataId" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Three Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Schedule" Title="@Resource.SchedulePapers">
+                <ChildContent>
+                    <SchedulePapersList @ref="SchedulePaperListThirdStepComponent"
+                                        @key="_thirdStepChangingKey"
+                                        ScheduleMetadataResultedParamsDto="ScheduleMetadataResultedParamsDto" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @*Step-Four Component*@
+            <MudStepExtended Icon="@Icons.Material.Filled.Summarize" Title="@Resource.ScheduleSummary">
+                <ChildContent>
+                    <ScheduleSummary @ref="ScheduleSummaryFourthStepComponent"
+                                     @key="_fourthStepChangingKey"
+                                     ScheduleId="ScheduleMetadataResultedParamsDto.ScheduleMetadataId" />
+                </ChildContent>
+            </MudStepExtended>
+
+            @if (_addResultStep)
+            {
+                <MudStepExtended Icon="@Icons.Material.Filled.Alarm" Title="@Resource.ResultStep" IsResultStep="true">
+                    <ChildContent>
+                        <div class="d-flex flex-column align-center justify-center">
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Style="font-size: 6rem;" Color="Color.Success" />
+                            <MudText Class="my-5">
+                                @string.Format(Resource.ScheduleOperationSuccess, (_processMode == StepperOperationalMode.InsertionMode ? Resource.Created : Resource.Updated))
+                            </MudText>
+                            <MudButton Href="/Schedules" Color="Color.Primary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.ArrowBack">
+                                @Resource.BackToSchedulesList
+                            </MudButton>
+                        </div>
+                    </ChildContent>
+                </MudStepExtended>
+            }
+        </ChildContent>
+    </MudStepperExtended>
+</MudItem>

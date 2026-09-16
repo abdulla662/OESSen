@@ -1,0 +1,182 @@
+@page "/QuestionsAdvancedFilter"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Services.Interfaces.Question
+@using OES.Blazor.Services.Interfaces.QuestionCataegory
+@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.Dtos.QyestionType
+@using OES.Helper.General
+@using OES.Helper
+
+@attribute [DynamicAuthorizeAttribute("QuestionsAdvancedFilter")]
+
+<PageTitle>@Resource.QuestionFilter</PageTitle>
+
+<MudCard Class="ma-4" Elevation="3">
+    <MudCardContent Class="pa-6">
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-5">
+            <MudIcon Icon="@Icons.Material.Rounded.ManageSearch" Color="Color.Primary" Size="Size.Large" />
+            <MudText Typo="Typo.h5" Color="Color.Primary" Class="ms-2">@Resource.QuestionFilter</MudText>
+        </MudStack>
+
+        <ListItem @key="_listChangingKey"
+                  T="FilteredQuestionsDto"
+                  Caption="@Resource.QuestionFilter"
+                  CaptionIcon="@Icons.Material.Rounded.ManageSearch"
+                  EndpointServerice="BlazQuestionService.GetFilteredQuestionsAsync"
+                  DisplayColumns="[ nameof(FilteredQuestionsDto.Code),
+                                    nameof(FilteredQuestionsDto.Category),
+                                    nameof(FilteredQuestionsDto.QuestionTypeName),
+                                    nameof(FilteredQuestionsDto.CreatedDateDisplay),
+                                    nameof(FilteredQuestionsDto.CreatedBy),
+                                    nameof(FilteredQuestionsDto.ModifiedDateDisplay),
+                                    nameof(FilteredQuestionsDto.ModifiedBy) ]"
+                  FilterObject="_filterObject"
+                  SearchPanelVisible="false"
+                  HideSearchInBody="true">
+            <TopChildContent>
+                <MudCard Elevation="0" Class="mb-4" Style="border: 1px solid var(--mud-palette-lines-default); border-radius: 12px;">
+                    <MudCardContent>
+                        <MudGrid Spacing="3">
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudTextField @bind-Value="_questionCode"
+                                              Label="@Resource.QuestionCode"
+                                              Variant="Variant.Outlined"
+                                              Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.Code"
+                                              Clearable="true"
+                                              Immediate="false" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudSelect T="QuestionCategoryDto"
+                                           @bind-Value="_selectedCategory"
+                                           Label="@Resource.SelectCategory"
+                                           Variant="Variant.Outlined"
+                                           Adornment="Adornment.Start"
+                                           AdornmentIcon="@Icons.Material.Filled.Category"
+                                           Clearable="true"
+                                           ToStringFunc="@((QuestionCategoryDto x) => x?.Name)"
+                                           AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var cat in _categories)
+                                    {
+                                        <MudSelectItem Value="@cat">@cat.Name</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudSelect T="QuestionTypeDto"
+                                           @bind-Value="_selectedType"
+                                           Label="@Resource.SelectType"
+                                           Variant="Variant.Outlined"
+                                           Adornment="Adornment.Start"
+                                           AdornmentIcon="@Icons.Material.Filled.QuestionAnswer"
+                                           Clearable="true"
+                                           ToStringFunc="@((QuestionTypeDto x) => x?.DisplayName)"
+                                           AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var type in _questionTypes)
+                                    {
+                                        <MudSelectItem Value="@type">@type.DisplayName</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudAutocomplete T="string"
+                                                 Label="@Resource.CreationUser"
+                                                 @bind-Value="_selectedCreatedBy"
+                                                 Variant="Variant.Outlined"
+                                                 Adornment="Adornment.Start"
+                                                 AdornmentIcon="@Icons.Material.Filled.PersonSearch"
+                                                 SearchFunc="SearchAuthors"
+                                                 Clearable="true"
+                                                 CoerceValue="true"
+                                                 ResetValueOnEmptyText="true"
+                                                 AnchorOrigin="Origin.BottomCenter" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudDatePicker @bind-Date="_createdFromDate"
+                                               Label="@Resource.StartDate"
+                                               Variant="Variant.Outlined"
+                                               AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                                               Editable="true"
+                                               Clearable="true" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudDatePicker @bind-Date="_createdToDate"
+                                               Label="@Resource.EndDate"
+                                               Variant="Variant.Outlined"
+                                               AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                                               Editable="true"
+                                               Clearable="true" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudAutocomplete T="string"
+                                                 Label="@Resource.ModificationUser"
+                                                 @bind-Value="_selectedModifiedBy"
+                                                 Variant="Variant.Outlined"
+                                                 Adornment="Adornment.Start"
+                                                 AdornmentIcon="@Icons.Material.Filled.PersonSearch"
+                                                 SearchFunc="SearchAuthors"
+                                                 Clearable="true"
+                                                 CoerceValue="true"
+                                                 ResetValueOnEmptyText="true"
+                                                 AnchorOrigin="Origin.BottomCenter" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudDatePicker @bind-Date="_modifiedFromDate"
+                                               Label="@($"{Resource.ModificationDate} - {Resource.StartDate}")"
+                                               Variant="Variant.Outlined"
+                                               AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                                               Editable="true"
+                                               Clearable="true" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudDatePicker @bind-Date="_modifiedToDate"
+                                               Label="@($"{Resource.ModificationDate} - {Resource.EndDate}")"
+                                               Variant="Variant.Outlined"
+                                               AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                                               Editable="true"
+                                               Clearable="true" />
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Secondary"
+                                               StartIcon="@Icons.Material.Filled.FilterAltOff"
+                                               OnClick="ResetFilters">
+                                        @Resource.ResetFilters
+                                    </MudButton>
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Success"
+                                               StartIcon="@Icons.Material.Filled.FileDownload"
+                                               OnClick="ExportToExcelAsync"
+                                               Disabled="_isExporting">
+                                        @(_isExporting? Resource.Exporting: Resource.ExportExcel)
+                                    </MudButton>
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               StartIcon="@Icons.Material.Filled.Search"
+                                               OnClick="ApplyFilters">
+                                        @Resource.Search
+                                    </MudButton>
+                                </MudStack>
+                            </MudItem>
+
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </TopChildContent>
+        </ListItem>
+
+    </MudCardContent>
+</MudCard>

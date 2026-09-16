@@ -1,0 +1,158 @@
+﻿@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+            @Resource.ExamSessionDetails
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <!-- Session Information -->
+        <MudPaper Class="pa-4 mb-4" Elevation="1">
+            <MudText Typo="Typo.h6" Class="mb-3">@Resource.SessionInformation</MudText>
+            <MudSimpleTable Dense="true" Hover="true" Striped="true">
+                <tbody>
+                    <tr>
+                        <td><strong>@Resource.RegistrationId:</strong></td>
+                        <td>@Session.RegistrationId</td>
+                        <td><strong>@Resource.NationalId:</strong></td>
+                        <td>@Session.NationalId</td>
+                    </tr>
+                    <tr>
+                        <td><strong>@Resource.CandidateName:</strong></td>
+                        <td>@Session.CandidateName</td>
+                        <td><strong>@Resource.ExamSeries:</strong></td>
+                        <td>@Session.ExamSeries</td>
+                    </tr>
+                    <tr>
+                        <td><strong>@Resource.TotalFinalScore:</strong></td>
+                        <td><strong style="color: var(--mud-palette-primary);">@Session.TotalFinalScore.ToString("F2")</strong></td>
+                        <td><strong>@Resource.AttendantStatus:</strong></td>
+                        <td>
+                            @if (Session.AttendantStatus == AttendantsStatus.Attended)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Success">@Resource.Attended</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Error">@Resource.Absent</MudChip>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>@Resource.Grade:</strong></td>
+                        <td>
+                            @if (Session.AttendantStatus == AttendantsStatus.Absent)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Error">@Resource.Absent</MudChip>
+                            }
+                            else if (Session.Grade == GradeStatus.Taken)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Success">@Resource.Taken</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Warning">@Resource.Unfinished</MudChip>
+                            }
+                        </td>
+                        <td><strong>@Resource.ReviewedFlag:</strong></td>
+                        <td>
+                            @if (Session.ReviewStatus == ReviewStatus.Accepted)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                                <span>@Resource.Yes</span>
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+                                <span>@Resource.No</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>@Resource.ReviewedDate:</strong></td>
+                        <td>@(Session.ReviewedDate?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                        <td><strong>@Resource.ReviewerAccount:</strong></td>
+                        <td>@(Session.ReviewerAccount ?? "-")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>@Resource.SentToCTRFlag:</strong></td>
+                        <td>
+                            @if (Session.SentToCTRFlag)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                                <span>@Resource.Yes</span>
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+                                <span>@Resource.No</span>
+                            }
+                        </td>
+                        <td><strong>@Resource.SentToCTRDateTime:</strong></td>
+                        <td>@(Session.SentToCTRDateTime?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>@Resource.Venue:</strong></td>
+                        <td colspan="3">@Session.Venue</td>
+                    </tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudPaper>
+
+        <!-- Exam Equation Section -->
+        <MudPaper Class="pa-4" Elevation="1">
+            <MudText Typo="Typo.h6" Class="mb-3">@Resource.ExamEquation</MudText>
+            <MudText Typo="Typo.subtitle2" Class="mb-2">
+                <strong>@Resource.PaperFormCode:</strong> @Session.PaperFormCode
+            </MudText>
+            <MudText Typo="Typo.subtitle2" Class="mb-4">
+                <strong>@Resource.TotalEquation:</strong> @Session.TotalEquation
+            </MudText>
+
+            <MudTable Items="@Session.EquationCategories.Where(x => !x.Category.Contains("FinalScore", StringComparison.OrdinalIgnoreCase))" Dense="true" Striped="true" Hover="true">
+                <HeaderContent>
+                    <MudTh>@Resource.Category</MudTh>
+                    @* <MudTh>@Resource.CategoryEquation</MudTh>
+                    <MudTh>@Resource.RawScore</MudTh> *@
+                    <MudTh>@Resource.CalculatedValue</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="@Resource.Category"><strong>@context.Category</strong></MudTd>
+                    @* <MudTd DataLabel="@Resource.CategoryEquation">@context.CategoryEquation</MudTd>
+                    <MudTd DataLabel="@Resource.RawScore">
+                        <MudText Color="Color.Info">@context.RawScore.ToString("F2")</MudText>
+                    </MudTd> *@
+                    <MudTd DataLabel="@Resource.CalculatedValue">
+                        <MudText Color="Color.Success"><strong>@context.CalculatedValue.ToString("F2")</strong></MudText>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+
+            <MudDivider Class="my-4" />
+
+            <MudPaper Class="pa-3 candidate-results-header" Elevation="0">
+                <MudText Typo="Typo.subtitle1"><strong>@Resource.TotalFinalScore:</strong></MudText>
+                <MudText Typo="Typo.h4" Color="Color.Primary">@Session.TotalFinalScore.ToString("F2")</MudText>
+            </MudPaper>
+        </MudPaper>
+    </DialogContent>
+
+    <DialogActions>
+        @* <MudButton Variant="Variant.Filled"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.Download"
+                   OnClick="OnDownloadClicked">
+            @Resource.DownloadExamResultsFiles
+        </MudButton> *@
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Default"
+                   StartIcon="@Icons.Material.Filled.Close"
+                   OnClick="Close">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

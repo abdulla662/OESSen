@@ -1,0 +1,186 @@
+@page "/reports/question-usage"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("QuestionUsageReport")]
+
+<PageTitle>
+    @Resource.RptTitleQuestionUsage
+</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-4 mt-3 ar-no-print">
+    <MudIcon Icon="@Icons.Material.Filled.Analytics"
+             Color="Color.Primary"
+             Size="Size.Large"
+             Class="me-2" />
+    <MudText Typo="Typo.h5"
+             Color="Color.Primary">
+        @Resource.RptTitleQuestionUsage
+    </MudText>
+    <ReportInfoButton Title="@Resource.RptTitleQuestionUsage"
+                      Overview="@_infoOverview"
+                      Sections="@_infoSections" />
+</div>
+
+@if (HasError)
+{
+    <MudAlert Severity="Severity.Error"
+              Class="mb-4 ar-no-print"
+              ShowCloseIcon="true"
+              CloseIconClicked="ClearError">
+        @_errorMessage
+    </MudAlert>
+}
+
+<AnalyticalReportFilter ShowVenue="true"
+                        ShowPaper="true"
+                        ShowItemBank="false"
+                        FilterChanged="OnFilterChangedAsync"
+                        OnGenerateClicked="GenerateAsync" />
+
+<div class="d-flex justify-content-end gap-2 mb-3 ar-no-print">
+    @if (HasReport)
+    {
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.TableChart"
+                   Color="Color.Success"
+                   OnClick="ExportAsync"
+                   Disabled="_isExporting">
+            @(_isExporting
+                ? Resource.RptExporting
+                : Resource.RptExportExcel)
+        </MudButton>
+    }
+
+    <MudButton Variant="Variant.Outlined"
+               StartIcon="@Icons.Material.Filled.Print"
+               OnClick="PrintAsync">
+        @Resource.RptPrintSaveAsPdf
+    </MudButton>
+</div>
+
+@if (_isLoading)
+{
+    <MudProgressCircular Indeterminate="true"
+                         Color="Color.Primary"
+                         Class="d-block mx-auto my-8" />
+}
+else if (HasReport)
+{
+    var report = _report!;
+
+    <div class="ar-header-info">
+        <span>
+            <strong>
+                @Resource.RptScheduleLabel
+            </strong>
+            @report.Schedule
+        </span>
+        <span class="ms-4">
+            <strong>
+                @Resource.RptVenueLabel
+            </strong>
+            @report.Venue
+        </span>
+        <span class="ms-4">
+            <strong>
+                @Resource.RptPaperLabel
+            </strong>
+            @report.Paper
+        </span>
+    </div>
+    @if (!HasItems)
+    {
+        <MudAlert Severity="Severity.Info">
+            @Resource.RptNoCompletedSessions
+        </MudAlert>
+    }
+    else
+    {
+        <MudPaper Elevation="2"
+                  Class="pa-0 overflow-auto">
+            <table class="ar-table">
+                <thead>
+                    <tr>
+                        <th class="text-start">
+                            @Resource.RptQuestionCode
+                        </th>
+                        <th>
+                            @Resource.RptNoOfStudents
+                        </th>
+                        <th>
+                            @Resource.RptAnsweredCorrect
+                        </th>
+                        <th>
+                            @Resource.RptAnsweredIncorrect
+                        </th>
+                        <th>
+                            @Resource.RptNotAttempted
+                        </th>
+                        <th>
+                            @Resource.RptCorrectPct
+                        </th>
+                        <th>
+                            @Resource.RptIncorrectPct
+                        </th>
+                        <th>
+                            @Resource.RptDifficultyLevel
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in CurrentPageItems)
+                    {
+                        <tr>
+                            <td class="text-start">
+                                @item.QuestionCode
+                            </td>
+                            <td>
+                                @item.NoOfStudents
+                            </td>
+                            <td>
+                                @item.AnsweredCorrect
+                            </td>
+                            <td>
+                                @item.AnsweredIncorrect
+                            </td>
+                            <td>
+                                @item.NotAttempted
+                            </td>
+                            <td>
+                                @item.CorrectResponsePct.ToString("F2")
+                            </td>
+                            <td>
+                                @item.IncorrectResponsePct.ToString("F2")
+                            </td>
+                            <td>
+                                @item.DifficultyLevel
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </MudPaper>
+        @if (TotalPages > 1)
+        {
+            <div class="d-flex justify-content-between align-items-center mt-2 ar-no-print">
+                <MudText Typo="Typo.caption">
+                    @report.Items.Count
+                    @Resource.RptItemsCount
+
+                    â€”
+                    
+                    @Resource.RptPage
+                    @_itemsPage
+
+                    @Resource.RptOf
+                    @TotalPages
+                </MudText>
+                <MudPagination Count="TotalPages"
+                               @bind-Selected="_itemsPage"
+                               ShowFirstButton="true"
+                               ShowLastButton="true" />
+            </div>
+        }
+    }
+}

@@ -1,0 +1,105 @@
+@using MudBlazor
+@using OES.Helper
+@using OES.Helper.Dtos.AIQuestionGenerator.Response
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+@if (HasQuestions)
+{
+    <MudPaper Class="pa-4" Elevation="0">
+        <div class="d-flex align-center gap-3 py-3 px-4 mb-4" style="border: 1px solid #ffe0b2; border-inline-start: 5px solid #ff9800; background-color: #ffffff; border-radius: 4px;">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Style="color: #ff9800; flex-shrink: 0;" Size="Size.Medium" />
+            <MudText Typo="Typo.body2" Style="color: #e65100; font-weight: 500;">
+                @Resource.ReviewStepWarning
+            </MudText>
+        </div>
+
+        <div class="d-flex align-center justify-space-between mb-4">
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Quiz" Color="Color.Primary" Size="Size.Medium" />
+                <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.GeneratedQuestions</MudText>
+                <MudChip T="string" Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary">
+                    @GeneratedQuestions!.Questions.Count
+                </MudChip>
+            </MudStack>
+        </div>
+
+        <MudPaper Elevation="1" Class="pa-0" Style="max-height: 450px; overflow-y: auto; border-radius: 8px;">
+            @foreach (var question in GeneratedQuestions!.Questions)
+            {
+                var detail = question.Details.FirstOrDefault();
+
+                <MudPaper Class="ma-2 pa-3" Elevation="0" Style="border: 1px solid var(--mud-palette-lines-default); border-radius: 8px;">
+                    <div class="d-flex align-center justify-space-between">
+                        <div class="d-flex align-center gap-3" style="flex: 1; min-width: 0;">
+                            <MudChip T="string" Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" Class="px-2">
+                                @question.Code
+                            </MudChip>
+                            <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Secondary">
+                                @(question.QuestionTypeName.ToLocalizedString<OES.Helper.Enums.QuestionType>())
+                            </MudChip>
+                            <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Warning">
+                                @question.DifficultyLevelName
+                            </MudChip>
+                            <MudText Typo="Typo.body2" Class="text-truncate mud-text-secondary" Style="flex: 1;">
+                                @((MarkupString)GetTruncatedBody(detail?.Body, 60))
+                            </MudText>
+                        </div>
+                        <div class="d-flex align-center gap-1 flex-shrink-0 ms-2">
+                            <MudTooltip Text="@Resource.View">
+                                <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                               Color="Color.Info"
+                                               Size="Size.Small"
+                                               OnClick="@(() => ViewQuestionAsync(question))" />
+                            </MudTooltip>
+                            <MudTooltip Text="@Resource.Edit">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                               Color="Color.Warning"
+                                               Size="Size.Small"
+                                               Disabled="@(_isSaving || IsConfigurationLocked)"
+                                               OnClick="@(() => EditQuestionAsync(question))" />
+                            </MudTooltip>
+                            <MudTooltip Text="@Resource.QuestionMetadata">
+                                <MudIconButton Icon="@Icons.Material.Filled.Tune"
+                                               Color="Color.Secondary"
+                                               Size="Size.Small"
+                                               Disabled="@(_isSaving || IsConfigurationLocked)"
+                                               OnClick="@(() => EditQuestionMetaDataAsync(question))" />
+                            </MudTooltip>
+                            <MudTooltip Text="@Resource.Delete">
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                               Color="Color.Error"
+                                               Size="Size.Small"
+                                               Disabled="@(_isSaving || IsConfigurationLocked)"
+                                               OnClick="@(() => OnDeleteQuestionAsync(question))" />
+                            </MudTooltip>
+                        </div>
+                    </div>
+                </MudPaper>
+            }
+        </MudPaper>
+
+        <div class="d-flex justify-center mt-6">
+            <MudButton Variant="Variant.Filled"
+                       Color="@(IsConfigurationLocked ? Color.Default : Color.Success)"
+                       Size="Size.Large"
+                       Style="min-width: 250px; border-radius: 8px;"
+                       StartIcon="@(_isSaving ? null : (IsConfigurationLocked ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Save))"
+                       OnClick="@SaveQuestionsAsync"
+                       Disabled="@(_isSaving || IsConfigurationLocked)">
+                @if (_isSaving)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="me-2" />
+                }
+                @(IsConfigurationLocked? Resource.QuestionsSavedSuccessfully: Resource.SaveQuestions)
+            </MudButton>
+        </div>
+    </MudPaper>
+}
+else
+{
+    <MudPaper Class="pa-6 d-flex flex-column align-center justify-center" Elevation="0" Style="min-height: 200px;">
+        <MudIcon Icon="@Icons.Material.Filled.SearchOff" Size="Size.Large" Color="Color.Secondary" Class="mb-3" />
+        <MudText Typo="Typo.h6" Color="Color.Secondary">@Resource.NoQuestionsFound</MudText>
+    </MudPaper>
+}

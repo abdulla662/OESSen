@@ -1,0 +1,216 @@
+﻿@page "/EditSchedulePaperCandidate"
+
+@using OES.Helper.Dtos.Venue.Responses
+@using OES.Helper.ResourceFiles
+
+<PageTitle>@Resource.CandidateExamDetails</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.PendingActions" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.CandidateExamDetails</MudText>
+        </MudStack>
+
+        @* Search — same line *@
+        <MudGrid Class="mb-4">
+            <MudItem xs="10">
+                <MudTextField @bind-Value="_registrationNumber"
+                              Label="@Resource.SearchByRegistrationId"
+                              Placeholder="e.g. 100001"
+                              Variant="Variant.Outlined"
+                              FullWidth="true" />
+            </MudItem>
+            <MudItem xs="2" Class="d-flex align-items-center">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           class="pa-3"
+                           FullWidth="true"
+                           OnClick="SearchAsync">
+                    @Resource.Search
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+
+        @if (_isLoading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+        }
+
+        @if (_notFound)
+        {
+            <MudAlert Severity="Severity.Warning" Class="mb-4">
+                @Resource.NoRecordFoundForThisRegistrationId
+            </MudAlert>
+        }
+
+        @if (_candidate != null)
+        {
+            <MudGrid Class="mb-4">
+
+                @* Candidate Information *@
+                <MudItem xs="12" md="6">
+                    <MudPaper Class="pa-0" Outlined="true"
+                              Style="border-radius:8px; overflow:hidden; height:100%;">
+
+                        <MudText Typo="Typo.subtitle1"
+                                 Class="px-4 py-2 d-block"
+                                 Style="background-color:#1565C0; color:white; font-weight:600;">
+                            @Resource.CandidateInformation
+                        </MudText>
+
+                        <div class="px-4 pb-4 pt-3">
+                            <MudGrid>
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.Name</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.CandidateName</MudText></MudItem>
+
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.NationalId</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.NationalId</MudText></MudItem>
+
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.RegistrationId</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.RegistrationNumber</MudText></MudItem>
+
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.Paper</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.PaperName</MudText></MudItem>
+
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.Status</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.Status</MudText></MudItem>
+                            </MudGrid>
+                        </div>
+
+                    </MudPaper>
+                </MudItem>
+
+                @* Current Exam Details *@
+                <MudItem xs="12" md="6">
+                    <MudPaper Class="pa-0" Outlined="true"
+                              Style="border-radius:8px; overflow:hidden; height:100%;">
+
+                        <MudText Typo="Typo.subtitle1"
+                                 Class="px-4 py-2 d-block"
+                                 Style="background-color:#1565C0; color:white; font-weight:600;">
+                            @Resource.CurrentExamDetails
+                        </MudText>
+
+                        <div class="px-4 pb-4 pt-3">
+                            <MudGrid>
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.ScheduleName</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.ScheduleName</MudText></MudItem>
+
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.ExamDate</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.CandidateExamDate?.ToString("dd MMM yyyy HH:mm")</MudText></MudItem>
+
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.Venue</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.VenueName</MudText></MudItem>
+
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.VenueCode</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.VenueCode</MudText></MudItem>
+
+                                <MudItem xs="5"><MudText Style="font-weight:500;">@Resource.TCId</MudText></MudItem>
+                                <MudItem xs="7"><MudText>@_candidate.CenterCode</MudText></MudItem>
+                            </MudGrid>
+                        </div>
+
+                    </MudPaper>
+                </MudItem>
+
+            </MudGrid>
+
+            @if (_candidate.HasAnswers)
+            {
+                <MudAlert Severity="Severity.Error">
+                    @Resource.ThisCandidateHasAlreadyBeenExaminedNoChangesAllowed.
+                </MudAlert>
+            }
+            else
+            {
+                <MudPaper Class="pa-0 mb-4" Outlined="true"
+                          Style="border-radius:8px; overflow:hidden;">
+
+                    <MudText Typo="Typo.subtitle1"
+                             Class="px-4 py-2 d-block"
+                             Style="background-color:#1565C0; color:white; font-weight:600;">
+                        @Resource.RescheduleCandidateExam
+                    </MudText>
+
+                    <div class="px-4 pb-4 pt-3">
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                <MudDatePicker @bind-Date="_selectedExamDate"
+                                               Label="@Resource.NewExamDate"
+                                               DateFormat="dd/MM/yyyy"
+                                               Variant="Variant.Outlined"
+                                               PickerVariant="PickerVariant.Dialog"
+                                               Error="@(_isSubmitButtonHit && _selectedExamDate == null)"
+                                               ErrorText="@Resource.NewExamDateIsRequired"
+                                               Clearable
+                                               Required="true" />
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTimePicker @bind-Time="_selectedExamTime"
+                                               Label="@Resource.NewExamTime"
+                                               Variant="Variant.Outlined"
+                                               PickerVariant="PickerVariant.Dialog"
+                                               Error="@(_isSubmitButtonHit && _selectedExamTime == null)"
+                                               ErrorText="@Resource.NewExamTimeIsRequired"
+                                               Clearable
+                                               AmPm="true"
+                                               Required="true" />
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudAutocomplete T="GetVenueResponseDto"
+                                                 Value="_selectedVenue"
+                                                 ValueChanged="OnVenueChanged"
+                                                 Label="@Resource.NewVenue"
+                                                 SearchFunc="SearchVenuesAsync"
+                                                 ToStringFunc="@(v => v?.Name)"
+                                                 Variant="Variant.Outlined"
+                                                 Error="@(_isSubmitButtonHit && _selectedVenue == null)"
+                                                 ErrorText="@Resource.NewCenterCodeIsRequired"
+                                                 Clearable
+                                                 Required="true" />
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudSelect T="string"
+                                           @bind-Value="_newCenterCode"
+                                           Label="@Resource.NewCenterCode"
+                                           Variant="Variant.Outlined"
+                                           Disabled="_selectedVenue == null"
+                                           Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_newCenterCode))"
+                                           ErrorText="@Resource.NewCenterCodeIsRequired"
+                                           Clearable
+                                           Required="true">
+                                    @foreach (var centerCode in CenterCodes)
+                                    {
+                                        <MudSelectItem T="string" Value="@centerCode">@centerCode</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+
+                        <MudAlert Severity="Severity.Info" Class="mt-3">
+                            @Resource.NotifyAllAboutTheRescheduling
+                        </MudAlert>
+
+                        <MudStack Row="true" Justify="Justify.FlexEnd" Class="mt-4" Spacing="2">
+                            <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick="Cancel">
+                                @Resource.Cancel
+                            </MudButton>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Disabled="_isSaving"
+                                       OnClick="SaveChangesAsync">
+                                @if (_isSaving)
+                                {
+                                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="me-2" />
+                                }
+                                @Resource.Save
+                            </MudButton>
+                        </MudStack>
+                    </div>
+
+                </MudPaper>
+            }
+        }
+    </MudCardContent>
+</MudCard>

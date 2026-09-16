@@ -1,0 +1,265 @@
+﻿@using OES.Blazor.Services.Interfaces.AppUser
+@using OES.Helper.Dtos.OesResources
+@using OES.Helper.Enums
+@using OES.Helper.Dtos.AppUserProfileDtos
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">@Resource.UserAccessManagement</MudText>
+    </TitleContent>
+    <DialogContent>
+        <div class="uad-root">
+            @if (_isLoading)
+            {
+                <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+            }
+            else
+            {
+                <MudExpansionPanels Outlined="true" Elevation="2" Style="border: 1px groove var(--mud-palette-primary); border-radius: 8px; margin-bottom: 15px; overflow:hidden">
+                    <MudExpansionPanel>
+                        <TitleContent>
+                            <div class="d-flex">
+                                <MudIcon Icon="@Icons.Material.Filled.Search" class="mx-3"></MudIcon>
+                                <MudText Typo="Typo.h5">@Resource.SearchFilter</MudText>
+                            </div>
+                        </TitleContent>
+                        <ChildContent>
+                            <MudGrid Justify="Justify.Center" Class="uad-search-grid">
+                                <MudItem xs="12" sm="12" md="8" lg="8">
+                                    <MudTextField @bind-Value="_searchKey"
+                                                  Label="@Resource.Keyword"
+                                                  Variant="Variant.Outlined"
+                                                  Adornment="Adornment.End"
+                                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                                  TextChanged="@OnSearchChanged" />
+                                </MudItem>
+                                <MudItem xs="12" sm="12" md="2" lg="2" Class="d-flex align-center justify-center">
+                                    <div class="search-btn-group">
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="Color.Primary"
+                                                   Size="Size.Medium"
+                                                   EndIcon="@Icons.Material.Filled.Search"
+                                                   Class="search-btn"
+                                                   OnClick="@OnSearch">@Resource.Search</MudButton>
+                                        <MudTooltip Text="@Resource.Reset" Placement="Placement.Bottom" Arrow="true">
+                                            <MudIconButton Icon="@Icons.Material.Filled.RestartAlt"
+                                                           Size="Size.Medium"
+                                                           Class="reset-btn"
+                                                           OnClick="@OnResetSearch" />
+                                        </MudTooltip>
+                                    </div>
+                                </MudItem>
+                            </MudGrid>
+                        </ChildContent>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+
+                <MudTabs Elevation="0"
+                         Rounded="true"
+                         ApplyEffectsToContainer="true"
+                         PanelClass="pa-4"
+                         Centered="false"
+                         AlwaysShowScrollButtons="false"
+                         Class="uad-tabs">
+
+                    <MudTabPanel Icon="@Icons.Material.Filled.QuestionAnswer">
+                        <TabContent><MudText>@Resource.Questions</MudText></TabContent>
+                        <ChildContent>@RenderAccessContent(ResourceType.Questions)</ChildContent>
+                    </MudTabPanel>
+
+                    <MudTabPanel Icon="@Icons.Material.Filled.Inventory">
+                        <TabContent><MudText>@Resource.ItemBank</MudText></TabContent>
+                        <ChildContent>@RenderAccessContent(ResourceType.ItemBank)</ChildContent>
+                    </MudTabPanel>
+
+                    <MudTabPanel Icon="@Icons.Material.Filled.School">
+                        <TabContent><MudText>@Resource.ILO</MudText></TabContent>
+                        <ChildContent>@RenderAccessContent(ResourceType.Ilo)</ChildContent>
+                    </MudTabPanel>
+
+                    <MudTabPanel Icon="@Icons.Material.Filled.Description">
+                        <TabContent><MudText>@Resource.Paper</MudText></TabContent>
+                        <ChildContent>@RenderAccessContent(ResourceType.Papers)</ChildContent>
+                    </MudTabPanel>
+
+                    <MudTabPanel Icon="@Icons.Material.Filled.CalendarMonth">
+                        <TabContent><MudText>@Resource.Schedule</MudText></TabContent>
+                        <ChildContent>@RenderAccessContent(ResourceType.Schedule)</ChildContent>
+                    </MudTabPanel>
+
+                    <MudTabPanel Icon="@Icons.Material.Filled.ViewModule">
+                        <TabContent><MudText>@Resource.Block</MudText></TabContent>
+                        <ChildContent>@RenderAccessContent(ResourceType.Block)</ChildContent>
+                    </MudTabPanel>
+                </MudTabs>
+            }
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Text" OnClick="Close">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private RenderFragment RenderAccessContent(ResourceType type)
+    {
+        return @<text>
+        @if (!_accessData.TryGetValue(type, out var groups) || groups.Count == 0)
+        {
+            <MudAlert Severity="Severity.Info"
+                        Variant="Variant.Text"
+                        Dense="true"
+                        ContentAlignment="HorizontalAlignment.Start">
+                @Resource.NoAccessDataForResource
+            </MudAlert>
+        }
+        else
+        {
+            var filteredGroups = string.IsNullOrWhiteSpace(_searchKey)
+                ? groups
+                : groups.Select(g => new UserAccessByResourceDto
+                {
+                    GroupName = g.GroupName,
+                    IsOwner = g.IsOwner,
+                    Resources = g.GroupName.Contains(_searchKey, StringComparison.OrdinalIgnoreCase)
+                        ? g.Resources
+                        : g.Resources?.Where(r => r.ResourceName.Contains(_searchKey, StringComparison.OrdinalIgnoreCase) || (r.Roles != null && r.Roles.Any(role => role.Contains(_searchKey, StringComparison.OrdinalIgnoreCase))))
+                        .ToList() ?? []
+                })
+                .Where(g => g.Resources != null && g.Resources.Count > 0)
+                .ToList();
+
+            @if (filteredGroups.Count == 0)
+            {
+                <MudAlert Severity="Severity.Info"
+                          Variant="Variant.Text"
+                          Dense="true"
+                          ContentAlignment="HorizontalAlignment.Start">
+                    @Resource.NoAccessDataForResource
+                </MudAlert>
+            }
+            else
+            {
+                <MudExpansionPanels MultiExpansion="true" Elevation="0" Class="uad-groups">
+                    @for (int gi = 0; gi < filteredGroups.Count; gi++)
+                    {
+                        var group = filteredGroups[gi];
+                        var groupKey = $"{type}_g{gi}";
+
+                        <MudExpansionPanel Expanded="true" @key="@groupKey" Class="uad-group">
+                            <TitleContent>
+                                <div class="@FlexCenterClass">
+                                    <MudText Typo="Typo.body1">@group.GroupName</MudText>
+                                    @if (group.IsOwner)
+                                    {
+                                        <MudChip T="string"
+                                                    Size="Size.Small"
+                                                    Color="Color.Warning"
+                                                    Icon="@Icons.Material.Filled.Star">
+                                            @Resource.Creator
+                                        </MudChip>
+                                    }
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                @if (group.Resources != null && group.Resources.Count > 0)
+                                {
+                                    var distinctResources = group.Resources
+                                    .GroupBy(r => r.ResourceId)
+                                    .Select(g => new ResourceAccessDto
+                                    {
+                                        ResourceId = g.Key,
+                                        ResourceName = g.First().ResourceName,
+                                        ParentId = g.First().ParentId,
+                                        ParentName = g.First().ParentName,
+                                        Roles = g.SelectMany(r => r.Roles ?? [])
+                                    .Distinct()
+                                    .ToList()
+                                    }).ToList();
+
+                                    <MudExpansionPanels MultiExpansion="true" Elevation="0" Class="uad-resources">
+                                        @for (int ri = 0; ri < distinctResources.Count; ri++)
+                                        {
+                                            var resource = distinctResources[ri];
+                                            var resourceKey = $"{type}_g{gi}_r{ri}";
+                                            var capturedGroup = group;
+                                            var capturedResource = resource;
+
+                                            var isHighlighted = _highlightedResourceId == capturedResource.ResourceId && _highlightedType == type;
+
+                                            var panelStyle = isHighlighted
+                                                    ? "background-color: color-mix(in srgb, var(--mud-palette-primary) 20%, transparent); border-radius:8px; transition: background-color 0.3s ease;"
+                                                : "";
+
+                                            <div id="@($"resource_{type}_{capturedResource.ResourceId}")">
+                                                <MudExpansionPanel Expanded="true"
+                                                                    @key="@resourceKey"
+                                                                    Style="@panelStyle"
+                                                                    Class="uad-resource">
+                                                    <TitleContent>
+                                                        <div class="@FlexCenterClass">
+                                                            <MudText Typo="Typo.body2">
+                                                                @capturedResource.ResourceName
+                                                            </MudText>
+                                                            @if (capturedResource.ParentId != null &&
+                                                                                                (type == ResourceType.ItemBank || type == ResourceType.Ilo))
+                                                            {
+                                                                @if (!string.IsNullOrEmpty(capturedResource.ParentName))
+                                                                {
+                                                                    <MudTooltip Text="@(Resource.GoToParent + ": " + capturedResource.ParentName)">
+                                                                        <MudChip T="string"
+                                                                                    Size="Size.Small"
+                                                                                    Color="Color.Info"
+                                                                                    Icon="@Icons.Material.Filled.ArrowForward"
+                                                                                    OnClick="@(() => NavigateToParentAsync(capturedGroup, capturedResource, type))"
+                                                                                    Class="uad-parent-chip">
+                                                                            @capturedResource.ParentName
+                                                                        </MudChip>
+                                                                    </MudTooltip>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <MudTooltip Text="@Resource.ParentNotAccessible">
+                                                                        <MudChip T="string"
+                                                                                    Size="Size.Small"
+                                                                                    Color="Color.Default"
+                                                                                    Icon="@Icons.Material.Filled.Block"
+                                                                                    Disabled="true"
+                                                                                    Class="uad-disabled-chip">
+                                                                            @Resource.ParentNotAccessible
+                                                                        </MudChip>
+                                                                    </MudTooltip>
+                                                                }
+                                                            }
+                                                        </div>
+                                                    </TitleContent>
+                                                    <ChildContent>
+                                                        @if (capturedResource.Roles != null && capturedResource.Roles.Count > 0)
+                                                        {
+                                                            <div class="@FlexWrapClass">
+                                                                @foreach (var role in capturedResource.Roles)
+                                                                {
+                                                                    <MudChip T="string"
+                                                                                Color="Color.Primary"
+                                                                                Size="Size.Small"
+                                                                                Variant="Variant.Filled">
+                                                                        @role
+                                                                    </MudChip>
+                                                                }
+                                                            </div>
+                                                        }
+                                                    </ChildContent>
+                                                </MudExpansionPanel>
+                                            </div>
+                                        }
+                                    </MudExpansionPanels>
+                                }
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels>
+            }
+        }
+        </text>;
+    }
+}

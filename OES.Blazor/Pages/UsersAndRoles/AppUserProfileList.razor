@@ -1,0 +1,39 @@
+﻿@page "/AppUserList"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.AppUserProfileDtos
+
+@attribute [DynamicAuthorizeAttribute(nameof(AppUserProfileList))]
+
+<PageTitle>@Resource.SystemUsers</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.People" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.SystemUsers</MudText>
+        </MudStack>
+        <ListItem @key="SyncData"
+                  T="AppUserProfileRetrievalDto"
+                  Caption="@Resource.Users"
+                  CaptionIcon="@Icons.Material.Filled.People"
+                  DisplayColumns='[nameof(AppUserProfileRetrievalDto.UserName), nameof(AppUserProfileRetrievalDto.EmailAddress), nameof(AppUserProfileRetrievalDto.IsActive)]'
+                  CRUD_Edit_Btn="false"
+                  NoConvertColumns='[nameof(AppUserProfileRetrievalDto.EmailAddress)]'
+                  CRUD_View_Btn="true"
+                  ViewClick_fun="ViewUserAsync"
+                  FirstSearchParameterLabel="@Resource.Name"
+                  SecondSearchParameterLabel="@Resource.Email"
+                  EndpointServerice="BlazUserService.GetAllUserPaginationAsync">
+            <TopChildContent>
+                <GeneralLoadingButton Disabled="@SyncDisabled"
+                                      OnClick="SyncUserFun"
+                                      EndIcon="@Icons.Material.Filled.Sync"
+                                      ButtonColor="Color.Primary"
+                                      Class="m-3"
+                                      ButtonText="@Resource.SyncUsers"
+                                      Type="ButtonType.Submit" />
+            </TopChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

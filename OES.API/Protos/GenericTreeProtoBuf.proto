@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option csharp_namespace = "OES.API.Protos";
+
+import "google/protobuf/wrappers.proto";
+
+package GenericTreeProtoBuf;
+
+service IloTreeService {
+  rpc GetAllNestedIlosWithParent (IdCarrier) returns (TreeItems);
+  rpc GetAllowedParentsOfIloNode (ParentIdCarrier) returns (TreeItems);
+}
+
+service ItemBankTreeService {
+  rpc GetAllNestedItemBanksWithParent (IdCarrier) returns (TreeItems);
+  rpc GetAllowedParentsOfItemBankNode (ParentIdCarrier) returns (TreeItems);
+}
+
+service OrganizationStructureTreeService {
+  rpc GetOrganizationStructureTreeByRootId (IdCarrier) returns (TreeItems);
+}
+
+message Empty {}
+
+message ItemBankSignatureCarrier {
+    string Signature = 1;
+}
+
+message IdCarrier {
+    int64 Id = 1;
+}
+
+message ParentIdCarrier {
+    google.protobuf.Int64Value ParentId = 1;
+}
+
+message TreeItem {
+	int64 Id = 1;
+    
+    string Text = 2;
+
+    string Description = 3;
+
+    string Code = 4;
+
+    string Signature = 5;
+
+    google.protobuf.Int64Value ParentId = 6;
+
+    float Hours = 7;
+
+    bool IsExpanded = 8;
+
+    bool IsActive = 9;
+
+    bool IsChildrenLoaded = 10;
+
+    bool IsLeaf = 11;
+
+    int64 OrganizationId = 12;
+
+    repeated string GroupsIds = 13;
+
+    int64 LevelId = 14;
+
+    bool Unscored = 15;
+}
+
+message TreeItems {
+	repeated TreeItem Items = 1;
+}

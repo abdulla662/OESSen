@@ -1,0 +1,25 @@
+﻿@* @page "/QuestionTypeDetails" *@
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@attribute [DynamicAuthorizeAttribute("QuestionTypeDetails")]
+
+<div class="d-flex justify-content-center align-items-center">
+    <MudCard Class="mx-auto mt-5 w-75 p-4 shadow-lg justify-content-center">
+        <MudCardContent>
+            <div class="d-flex justify-content-center align-items-center">
+                <MudIcon Icon="@Icons.Material.Filled.Visibility" Color="Color.Primary" Class="mr-2" />
+                <MudText Color="Color.Primary" Typo="Typo.h5" Class="justify-content-center mb-5 p-2">@Resource.QustionTypeDetails</MudText>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-sm-3">
+                    <MudText Color="Color.Primary" Class="mb-0">@Resource.Name</MudText>
+                </div>
+                <MudText Class="col-sm-9">@model.Name</MudText>
+            </div>
+        </MudCardContent>
+        <MudCardActions Class="justify-content-center mt-3">
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Outlined" Color="Color.Secondary" Class="w-100" OnClick="Close" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+        </MudCardActions>
+    </MudCard>
+</div>

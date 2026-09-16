@@ -1,0 +1,191 @@
+@using OES.Blazor.Components.GenericComponents.TextEditor
+
+<EditForm OnSubmit="OnSubmitAsync" Model="@Model">
+    <DataAnnotationsValidator />
+    <MudGrid Spacing="1">
+        <MudItem xs="12">
+            <MudStack Spacing="1" Class="mb-2">
+                <MudText Typo="Typo.h6" Class="editor-label-text fw-bold">@Resource.Settings</MudText>
+            </MudStack>
+            <MudPaper Elevation="0" Outlined="true" Class="pa-4 rounded-lg question-settings-card-parent">
+                <MudStack Row="true" Spacing="6" AlignItems="AlignItems.Start" Justify="Justify.FlexStart" Wrap="Wrap.Wrap">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+                            @Resource.SelectLanguage
+                        </MudText>
+                        <MudSelect @bind-Value="SelectedLanguage"
+                                   Immediate
+                                   Dense="true"
+                                   Class="rounded-setting-field language-selector"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   ToStringFunc="@(l => l?.Name)"
+                                   Error="@(_isSubmitButtonHit && SelectedLanguage.Id == 0)"
+                                   ErrorText="@_requiredErrorText"
+                                   Required
+                                   Disabled="Model.IsUsedInExam"
+                                   AdornmentIcon="@Icons.Material.Filled.Language"
+                                   AdornmentColor="Color.Primary"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var language in LanguagesList)
+                            {
+                                <MudSelectItem Value="language" />
+                            }
+                        </MudSelect>
+                    </MudStack>
+
+                    <MudStack Spacing="0">
+                        <NumberLanguageSelector @bind-Value="Model.UseArabicNumbers" />
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="BodyEditorParams"
+                        @ref="@BodyEditorParams.TextEditor"
+                        OnMarkedAnswersChanged="OnMarkedAnswersChanged">
+                <ActionContent>
+                    @if (IsReplaceMode && !string.IsNullOrEmpty(Model.AttachmentFileName))
+                    {
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="RemoveBodyMedia">@Resource.RemoveMedia</MudButton>
+                    }
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        <!-- Old Design -->
+        @* <MudItem xs="12" class="mt-3">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="MarkSelectedTextAsAnswer">
+                <MudIcon Icon="@Icons.Material.Filled.Check" Class="me-2" />
+                @Resource.MarkBlank
+            </MudButton>
+        </MudItem>
+
+        <MudItem xs="12" class="mt-3">
+            <MudText Typo="Typo.h6" Class="d-flex align-items-center flex-wrap">
+                <strong>Answers:</strong>
+                <span class="selected-answers">
+                    @string.Join(", ", SelectedAnswers)
+                </span>
+            </MudText>
+        </MudItem>
+
+        <MudItem xs="12" class="mt-3 d-flex align-items-center">
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Error"
+                       Disabled="@(SelectedAnswers.Count == 0)"
+                       OnClick="ClearAnswers">
+                <MudIcon Icon="@Icons.Material.Filled.Clear" Class="me-2" />
+                @Resource.Clear
+            </MudButton>
+        </MudItem> *@
+
+        <!-- New Design -->
+        <MudItem xs="12" class="mt-3">
+            <MudCard Elevation="3">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <div class="d-flex align-items-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Color="Color.Success" Size="Size.Medium" />
+                                <MudText Typo="Typo.h6" Style="font-weight: 600;">@Resource.CorrectAnswerFormation</MudText>
+                            </div>
+                            <MudStack Row="true" Spacing="2" Class="mt-2 mt-md-0">
+                                <MudButton Variant="Variant.Filled"
+                                           StartIcon="@Icons.Material.Filled.Check"
+                                           Size="Size.Small"
+                                           Color="Color.Primary"
+                                           OnClick="MarkSelectedTextAsAnswer">
+                                    @Resource.MarkBlank
+                                </MudButton>
+                                <MudButton Variant="Variant.Filled"
+                                           StartIcon="@Icons.Material.Filled.Clear"
+                                           Color="Color.Error"
+                                           Size="Size.Small"
+                                           Disabled="@(SelectedAnswers.Count == 0)"
+                                           OnClick="ClearAnswers">
+                                    @Resource.Clear
+                                </MudButton>
+                            </MudStack>
+                        </div>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudPaper Elevation="0" Class="pa-3">
+                        <MudStack Spacing="2">
+                            <MudText Typo="Typo.subtitle2">
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Small" Class="me-1" />
+                                @Resource.CurrentSpecificAnswers
+                            </MudText>
+                            <MudStack Row="true" Spacing="2" Style="flex-wrap: wrap; min-height: 48px;">
+                                @if (SelectedAnswers.Count > 0)
+                                {
+                                    @foreach (var answer in SelectedAnswers)
+                                    {
+                                        <MudChip T="string"
+                                                 Color="Color.Success"
+                                                 Variant="Variant.Filled">
+                                            @answer
+                                        </MudChip>
+                                    }
+                                }
+                                else
+                                {
+                                    <MudText Typo="Typo.body2" Style="font-style: italic; opacity: 0.6;">
+                                        @Resource.NoSpecificAnswers
+                                    </MudText>
+                                }
+                            </MudStack>
+                        </MudStack>
+                    </MudPaper>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="InstructionsEditorParams"
+                        @ref="@InstructionsEditorParams.TextEditor">
+                <ActionContent>
+                    <MudStack Row="true" Spacing="2">
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.CheckCircle"
+                                              OnClick="async e => await SaveInstructionAsTemplate()"
+                                              ButtonColor="Color.Secondary"
+                                              ButtonText="@Resource.SaveAsTemplateInstructions"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.Article"
+                                              OnClick="async e => await LoadInstructionTemplate()"
+                                              ButtonColor="Color.Surface"
+                                              ButtonText="@Resource.LoadTemplates"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+                    </MudStack>
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        <MudItem xs="12" Class="d-flex justify-content-center mt-2">
+            <MudStack Row="true" Spacing="4" Class="w-50">
+                <GeneralLoadingButton Class="flex-grow-1 p-2 rounded-pill"
+                                      Size="Size.Small"
+                                      ButtonText="@Resource.Save"
+                                      IsLoading="@_processing"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit" />
+
+                <MudButton Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           Color="Color.Secondary"
+                           OnClick="CancelDialogAsync"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</EditForm>

@@ -1,0 +1,67 @@
+﻿@page "/EditTransitionProfile"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.DifficultyProfile
+
+@attribute [DynamicAuthorizeAttribute("EditTransitionProfile")]
+
+<PageTitle>@Resource.UpdateTransitionProfile</PageTitle>
+
+<EditForm Model="@model">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-80 p-4 shadow-lg">
+        <MudCardContent>
+            <div class="d-flex justify-content-center align-items-center mb-6">
+                <MudIcon Icon="@Icons.Material.Filled.DirectionsTransit" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h4" Style="line-height: 1;">
+                    @Resource.UpdateTransitionProfile
+                </MudText>
+            </div>
+
+            <div class="form-group">
+                <MudTextField Label="@Resource.Name"
+                              Required="true"
+                              Immediate="true"
+                              @bind-Value="model.Name"
+                              For="@(() => model.Name)"
+                              Class="mb-3"
+                              Variant="Variant.Outlined" />
+            </div>
+
+            <div class="form-group">
+                <MudTextField Label="@Resource.Description"
+                              Required="true"
+                              Immediate="true"
+                              @bind-Value="model.Description"
+                              For="@(() => model.Description)"
+                              Class="mb-3"
+                              Variant="Variant.Outlined" />
+            </div>
+
+            <MudSelect @bind-Value="SelectedDifficultyProfile"
+                       Label="@Resource.DifficultyProfile"
+                       Variant="Variant.Outlined"
+                       ToStringFunc="@(p => p?.Name ?? string.Empty)"
+                       Required="true"
+                       AnchorOrigin="Origin.BottomCenter"
+                       Disabled="@(DifficultyProfiles.Count == 0)"
+                       Class="mb-3">
+                @foreach (var p in DifficultyProfiles)
+                {
+                    <MudSelectItem Value="@p" />
+                }
+            </MudSelect>
+
+            <MudCardActions Class="justify-content-center w-100">
+                <GeneralLoadingButton Disabled="@(IsSubmitButtonDisabled)"
+                                      Class="w-100 m-3"
+                                      OnClick="OnValidSubmitAsync"
+                                      ButtonText="@Resource.Update"
+                                      Type="ButtonType.Submit"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle" />
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="w-100 m-3" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+            </MudCardActions>
+        </MudCardContent>
+    </MudCard>
+</EditForm>

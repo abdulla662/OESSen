@@ -1,0 +1,81 @@
+﻿@using OES.Blazor.Components.GenericComponents.OrganizationStructure
+@using OES.Helper.Dtos.Candidate.Requests
+@using OES.Helper.Dtos.Venue.Responses
+@using MudBlazor
+@using OES.Helper.ResourceFiles
+
+<MudDialog Class="overflow-hidden">
+    <DialogContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.AccountBox" Color="Color.Primary" />
+            <MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Start">@Resource.CandidateAllocations</MudText>
+        </MudStack>
+        <MudPaper Class="p-4" Style="max-height: max-content; overflow-y: auto;">
+            <MudItem xs="12" Class="mb-3">
+                <MudFab Color="Color.Primary"
+                        EndIcon="@Icons.Material.Filled.List"
+                        Label="@Resource.ShowPreviousAllocations"
+                        OnClick="ShowAllocationsDialog" />
+            </MudItem>
+
+            <div class="text-divider mb-5">@Resource.SelectVenueForCandidates</div>
+
+            <MudItem xs="12">
+                <MudSelect T="GetVenueResponseDto"
+                           Label="@Resource.Venues"
+                           @bind-Value="_selectedVenue"
+                           Variant="Variant.Outlined"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Required
+                           Immediate
+                           Clearable
+                           HelperText="@Resource.SelectoneormoreVenuesfortheSchedule"
+                           ToStringFunc="@(l => l.Name)">
+                    @foreach (var venue in ScheduleVenues)
+                    {
+                        <MudSelectItem Value="@venue">@venue.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+            <div class="text-divider mb-5">@Resource.SelectOrganizationStructure</div>
+
+            <GenericOrganizationStructureControlPanel CssClasses="@(["mt-4"])" UsageMode="ComponentUsageMode.Query" @ref="GenericOrganizationStructureControlPanelRefAllocate" />
+
+            @if (ErrorListDto.Count > 0)
+            {
+                <MudPaper Class="error-list p-4" Style="max-height: 300px; overflow-y: auto; background-color: #fff3f3; border: 1px solid #f8d7da; border-radius: 12px;">
+                    <MudText Typo="Typo.h6" Color="Color.Error" Class="mb-2">@Resource.ErrorsTitle</MudText>
+                    <MudDivider Class="mb-2" />
+                    @foreach (var row in ErrorListDto)
+                    {
+                        <MudCard Class="mb-3" Style="background-color: #fdecea; border-left: 5px solid #f44336;">
+                            <MudCardContent>
+                                <MudText Color="Color.Error" Typo="Typo.body1">@row</MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    }
+                </MudPaper>
+            }
+        </MudPaper>
+    </DialogContent>
+
+    <DialogActions>
+        <MudStack Row Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="2" Class="w-100 mt-6">       
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="SubmitAllocation"
+                       Class="flex-fill"
+                       EndIcon="@Icons.Material.Filled.Assignment">
+                @Resource.Allocate
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       OnClick="Cancel"
+                       Class="flex-fill"
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Back
+            </MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

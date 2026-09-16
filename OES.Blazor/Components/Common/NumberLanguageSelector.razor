@@ -1,0 +1,17 @@
+﻿<MudStack Spacing="1">
+    <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+        @Resource.NumberFormat:
+    </MudText>
+
+    <MudRadioGroup T="bool"
+                   Value="@Value"
+                   ValueChanged="OnValueChanged"
+                   Class="d-flex flex-row mt-1">
+        <MudRadio Value="true" Color="Color.Primary" Dense="true" Class="align-center ms-n2">
+            @Resource.ArabicNumbers
+        </MudRadio>
+        <MudRadio Value="false" Color="Color.Primary" Dense="true" Class="align-center ms-n2">
+            @Resource.EnglishNumbers
+        </MudRadio>
+    </MudRadioGroup>
+</MudStack>

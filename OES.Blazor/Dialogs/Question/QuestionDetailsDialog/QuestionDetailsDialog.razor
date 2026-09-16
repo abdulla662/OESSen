@@ -1,0 +1,83 @@
+@using OES.Blazor.Pages.Question.QuestionTypes
+@using OES.Blazor.Pages.Question.QuestionTypes.ComprehensionComponents
+@using OES.Blazor.Pages.QuestionLayout.SegmentLayouts
+@using OES.Helper.Enums
+
+<MudDialog Class="dialog-border" dir="@(RightToLeft ? "rtl" : "ltr")">
+    <DialogContent>
+        @if (!string.IsNullOrWhiteSpace(QuestionTypeParameter))
+        {
+            @switch (QuestionTypeParameter)
+            {
+                case nameof(QuestionType.Essay):
+                    <EssayQuestionComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.FillInTheBlank):
+                    <FillInTheBlankComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.FileUploadResponse):
+                    <FileUploadResponseComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.HotSpotWithClicks):
+                    <HotSpotWithClicksComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.HotSpotWithDragDrop):
+                    <DragAndDropHotSpotComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.SegmentWithAudioAnswer):
+                    <SegmentQuestionWithAudioAnswerComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.SegmentWithVideoAnswer):
+                    <SegmentQuestionWithVideoAnswerComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.MCQ):
+                    <MCQQuestionComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.MultipleCorrectAnswers):
+                    <MultipleCorrectAnswersQuestionComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.Comprehension):
+                    <ComprehensionComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.TrueAndFalse):
+                    <TrueOrFalseComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.Segment):
+                    <SegmentComponent Model="ReceivedSegmentQuestionDetailsDto" PreSelectedLanguage="PreSelectedLanguage" FormHandler="@HandleQuestionSegmentDetailsFormAsync" DialogCancellationCallback="@CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.MatchingPairs):
+                    <MatchingPairsQuestionComponent CreatedQuestionMetaDataId="CreatedQuestionMetaDataId"
+                                                    AllMatchingPairsData="AllMatchingPairsData"
+                                                    MatchingFormHandler="@HandleMatchingPairsAsync"
+                                                    DialogCancellationCallback="CancelDialog"
+                                                    IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.Ordering):
+                    <OrderingQuestionComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.Email):
+                    <EmailQuestionComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.PaperAnsweredQuestion):
+                    <PaperAnsweredQuestionComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.WebSearch):
+                    <WebSearchQuestionComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.WebRegistration):
+                    <WebRegistrationQuestionComponent Model="ReceivedQuestionDetailsDto" FormHandler="@HandleQuestionDetailsFormAsync" DialogCancellationCallback="CancelDialog" IsReplaceMode="IsReplaceMode" />
+                    break;
+                case nameof(QuestionType.MatchingPairsWithDragDrop):
+                    <MatchingPairsWithDragDropComponent CreatedQuestionMetaDataId="CreatedQuestionMetaDataId"
+                                                        InitialData="AllMatchingPairsWithDragDropData"
+                                                        FormHandler="@HandleMatchingPairsWithDragDropAsync"
+                                                        DialogCancellationCallback="CancelDialog"
+                                                        IsReplaceMode="IsReplaceMode" />
+                    break;
+                default:
+                    <div>@Resource.UnknownQuestionType</div>
+                    break;
+            }
+        }
+    </DialogContent>
+</MudDialog>

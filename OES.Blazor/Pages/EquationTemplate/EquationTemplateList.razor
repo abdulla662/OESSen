@@ -1,0 +1,64 @@
+﻿@page "/EquationTemplateList"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.Components.Common;
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.EquationTemplate
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("EquationTemplateList")]
+
+<PageTitle>@Resource.EquationTemplate</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.Functions" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Align="Align.Center" Class="my-5">@Resource.EquationTemplates</MudText>
+        </MudStack>
+
+        <ListItem @key="key"
+                  T="EquationTemplatePaginationDto"
+                  Caption="@Resource.EquationTemplate"
+                  EndpointServerice="BlazEquationTemplateService.GetAllEquationTemplatesAsync"
+                  DisplayColumns='[ nameof(EquationTemplatePaginationDto.Name),
+                                    nameof(EquationTemplatePaginationDto.EquationCount),
+                                    nameof(EquationTemplatePaginationDto.CategoryNames) ]'
+                  AddNew_URL="/AddEquationTemplate"
+                  AddNew_URL_OesRolesList="[OesTemplateRoleConstants.EquationCreator]"
+                  HideCodeSearch ="true"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <ButtonChildContent Context="value">
+                @if (value is EquationTemplatePaginationDto template)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    EndIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    OnClick='async () => await OpenViewDialog(template.Id)' />
+                        </MudTooltip>
+
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    OnClick='async () => await NavigateToEditAsync(template.Id)' />
+                        </MudTooltip>
+
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    EndIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    OnClick='async () => await OpenDeleteDialog(template.Id)' />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

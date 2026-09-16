@@ -1,0 +1,41 @@
+@using OES.Helper.Enums
+
+@if (Orientation == LayoutOrientation.Horizontal || Orientation == LayoutOrientation.HorizontalNext)
+{
+    <MudStack Class="w-100" Spacing="2">
+        <MudPaper Elevation="0" Class="mx-auto rounded-pill illustration-line illustration-line-80" />
+        <MudStack Row Spacing="2">
+            <MudPaper Elevation="0" Class="rounded-lg flex-grow-1 illustration-block" />
+            <MudPaper Elevation="0" Class="rounded-lg flex-grow-1 illustration-block" />
+        </MudStack>
+    </MudStack>
+}
+else if (Orientation == LayoutOrientation.Vertical || Orientation == LayoutOrientation.VerticalNext)
+{
+    <MudStack Class="w-100" Spacing="2" AlignItems="AlignItems.Center">
+        <MudPaper Elevation="0" Class="rounded-pill illustration-line illustration-line-60" />
+        <MudPaper Elevation="0" Class="rounded-pill illustration-line illustration-line-50" />
+        <MudPaper Elevation="0" Class="rounded-lg illustration-block illustration-block-80" />
+        <MudPaper Elevation="0" Class="rounded-lg illustration-block illustration-block-80" />
+    </MudStack>
+}
+else if (Orientation == LayoutOrientation.MinVertical)
+{
+    <MudStack Class="w-100" Spacing="3">
+        <MudPaper Elevation="0" Class="rounded-pill illustration-line illustration-line-40" />
+        <MudStack Spacing="2">
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudPaper Elevation="0" Class="rounded-circle illustration-dot" />
+                <MudPaper Elevation="0" Class="rounded-pill flex-grow-1 illustration-line-thin" />
+            </MudStack>
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                <MudPaper Elevation="0" Class="rounded-circle illustration-dot" />
+                <MudPaper Elevation="0" Class="rounded-pill flex-grow-1 illustration-line-thin" />
+            </MudStack>
+        </MudStack>
+    </MudStack>
+}
+
+@code {
+    [Parameter] public LayoutOrientation Orientation { get; set; }
+}

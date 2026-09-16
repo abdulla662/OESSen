@@ -1,0 +1,30 @@
+﻿@page "/iloTreeView"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.Components.GenericComponents.TreeViewTemplates.GrpcTreeViewTemplate
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("ILOTreeView")]
+
+<PageTitle>@Resource.ILOTreeStructure</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <div class="d-flex justify-content-center align-items-center mb-4">
+            <MudIcon Icon="@Icons.Material.Outlined.Quiz" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">@Resource.ILOTreeStructure</MudText>
+        </div>
+
+        @if (IsComponentInitialized)
+        {
+            <GrpcTreeViewTemplate Items="Items"
+                                  LabelClass="mb-3 mt-2 fs-4 text-center"
+                                  TreeCrudButtonsRolesPlaceholders="TreeCrudButtonsRolesPlaceholders"
+                                  InsertTreeItemInDb="InsertItemInDbAsync"
+                                  UpdateTreeItemInDb="UpdateItemInDbAsync"
+                                  RemoveTreeItemFromDb="RemoveItemFromDbAsync"
+                                  ShowItemDetails="ShowItemDetailsAsync"
+                                  ShowSearchBar="true" />
+        }
+    </MudCardContent>
+</MudCard>

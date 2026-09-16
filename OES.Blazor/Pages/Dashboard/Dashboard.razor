@@ -1,0 +1,218 @@
+﻿@page "/"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.Components.GenericComponents.OrganizationStructure
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Services.Interfaces
+@using OES.Helper
+@using OES.Helper.Dtos.DashbBoard
+@using OES.Helper.General
+@using OES.Helper.General.GlobalUserContext
+@using SharedHelper.RolesNames
+
+@attribute [DynamicAuthorizeAttribute("Dashboard")]
+
+<style>
+    .spin-pause { animation: spin-and-pause 3s ease-in-out infinite; }
+
+    @@keyframes spin-and-pause {
+        0% { transform: rotate(0deg); }
+
+        20% { transform: rotate(360deg); }
+
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Page Title -->
+    <div class="page-title">
+        <h3 class="d-flex flex-row-reverse flex-md-row">
+            <MudIcon Icon="@Icons.Material.Filled.Dashboard"
+                     Color="Color.Primary"
+                     Size="Size.Large"
+                     Class="spin-pause" />
+            @Resource.NmrDashboard
+        </h3>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="stats-section">
+        <MudGrid Spacing="4" Justify="Justify.Center">
+            @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.Select(r => r.Name).ToList(), NavMenu.BaseAdminRoles.ToList()) ||
+                 ListHelpers.HaveCommonValues(GlobalUserContext.OesUserRoles.Select(r => r.Name).ToList(), NavMenu.ItemBankRoles.ToList())
+            )
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="stats-card" @onclick="NavToItemBank">
+                        <div class="stats-header">
+                            <div class="stats-icon-circle blue">
+                                <MudIcon Icon="@Icons.Material.Outlined.AccountBalance" Size="Size.Medium" Color="Color.Primary" />
+                            </div>
+                            <div class="stats-value">
+                                <MudTooltip Text="@(dashboardStats?.TotalItemBanks.ToString())">
+                                    <div class="stats-value">
+                                        @FormatNumber(dashboardStats?.TotalItemBanks ?? 0)
+                                    </div>
+                                </MudTooltip>
+                            </div>
+                        </div>
+                        <div class="stats-label">@Resource.ItemBanks</div>
+                    </div>
+                </MudItem>
+            }
+
+            @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.Select(n => n.Name).ToList(), new List<string> { AdminRoles.Admin, AdminRoles.SuperAdmin, AdminRoles.Entity_Admin }))
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="stats-card" @onclick="NavToUserPapers">
+                        <div class="stats-header">
+                            <div class="stats-icon-circle purple">
+                                <MudIcon Icon="@Icons.Material.Outlined.ListAlt" Size="Size.Medium" Style="color: #7B1FA2;" />
+                            </div>
+                            <div class="stats-value">
+                                <MudTooltip Text="@(dashboardStats?.TotalPapers.ToString())">
+                                    <div class="stats-value">
+                                        @FormatNumber(dashboardStats?.TotalPapers ?? 0)
+                                    </div>
+                                </MudTooltip>
+                            </div>
+                        </div>
+                        <div class="stats-label">@Resource.UserPapers</div>
+                    </div>
+                </MudItem>
+            }
+
+            @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.Select(n => n.Name).ToList(), new List<string> { AdminRoles.Admin, AdminRoles.SuperAdmin, AdminRoles.Entity_Admin }))
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="stats-card" @onclick="NavToSchedules">
+                        <div class="stats-header">
+                            <div class="stats-icon-circle green">
+                                <MudIcon Icon="@Icons.Material.Filled.Schedule" Size="Size.Medium" Style="color: #388E3C;" />
+                            </div>
+                            <div class="stats-value">
+                                <MudTooltip Text="@(dashboardStats?.TotalSchedules.ToString())">
+                                    <div class="stats-value">
+                                        @FormatNumber(dashboardStats?.TotalSchedules ?? 0)
+                                    </div>
+                                </MudTooltip>
+                            </div>
+                        </div>
+                        <div class="stats-label">@Resource.Schedules</div>
+                    </div>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="stats-card" @onclick="NavToCandidates">
+                        <div class="stats-header">
+                            <div class="stats-icon-circle teal">
+                                <MudIcon Icon="@Icons.Material.Filled.People" Size="Size.Medium" Style="color: #00897B;" />
+                            </div>
+                            <div class="stats-value">
+                                <MudTooltip Text="@(dashboardStats?.TotalCandidates.ToString())">
+                                    <div class="stats-value">
+                                        @FormatNumber(dashboardStats?.TotalCandidates ?? 0)
+                                    </div>
+                                </MudTooltip>
+                            </div>
+                        </div>
+                        <div class="stats-label">@Resource.Candidates</div>
+                    </div>
+                </MudItem>
+            }
+        </MudGrid>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="quick-actions-header">
+        <div class="icon-wrapper">
+            <MudIcon Style="color:white;" Icon="@Icons.Material.Filled.Bolt" Size="Size.Medium" />
+        </div>
+        <h4 class="quick-actions-title">@Resource.QuickAccess</h4>
+    </div>
+
+    <div class="quick-actions-section">
+        <MudGrid Spacing="4">
+            @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.Select(r => r.Name).ToList(), NavMenu.BaseAdminRoles.ToList()) ||
+                 ListHelpers.HaveCommonValues(GlobalUserContext.OesUserRoles.Select(r => r.Name).ToList(), NavMenu.ItemBankRoles.ToList())
+            )
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="action-card" @onclick="NavToItemBank">
+                        <div class="action-icon-circle blue">
+                            <MudIcon Icon="@Icons.Material.Outlined.AccountBalance" Size="Size.Large" Color="Color.Primary" />
+                        </div>
+                        <div class="action-title">@Resource.ItemBanks</div>
+                    </div>
+                </MudItem>
+            }
+
+            @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.Select(r => r.Name).ToList(), NavMenu.BaseAdminRoles.ToList()) ||
+                 ListHelpers.HaveCommonValues(GlobalUserContext.OesUserRoles.Select(r => r.Name).ToList(), NavMenu.IloRoles.ToList())
+            )
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="action-card" @onclick="NavToIlo">
+                        <div class="action-icon-circle green">
+                            <MudIcon Icon="@Icons.Material.Outlined.Quiz" Size="Size.Large" Style="color: #388E3C;" />
+                        </div>
+                        <div class="action-title">@Resource.ILOs</div>
+                    </div>
+                </MudItem>
+            }
+
+            @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.Select(r => r.Name).ToList(), NavMenu.BaseAdminRoles.ToList()) ||
+                 ListHelpers.HaveCommonValues(GlobalUserContext.OesUserRoles.Select(r => r.Name).ToList(), NavMenu.QuestionRoles.ToList())
+            )
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="action-card" @onclick="NavToQuestions">
+                        <div class="action-icon-circle orange">
+                            <MudIcon Icon="@Icons.Material.Rounded.Quiz" Size="Size.Large" Style="color: #F57C00;" />
+                        </div>
+                        <div class="action-title">@Resource.Questions</div>
+                    </div>
+                </MudItem>
+            }
+
+            @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.Select(r => r.Name).ToList(), NavMenu.BaseAdminRoles.ToList()))
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="action-card" @onclick="NavToUserPapers">
+                        <div class="action-icon-circle purple">
+                            <MudIcon Icon="@Icons.Material.Outlined.ListAlt" Size="Size.Large" Style="color: #7B1FA2;" />
+                        </div>
+                        <div class="action-title">@Resource.UserPapers</div>
+                    </div>
+                </MudItem>
+            }
+
+            @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.Select(r => r.Name).ToList(), NavMenu.BaseAdminRoles.ToList()) ||
+                 ListHelpers.HaveCommonValues(GlobalUserContext.OesUserRoles.Select(r => r.Name).ToList(), NavMenu.ScheduleRoles.ToList())
+            )
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="action-card" @onclick="NavToSchedules">
+                        <div class="action-icon-circle teal">
+                            <MudIcon Icon="@Icons.Material.Filled.Schedule" Size="Size.Large" Style="color: #00897B;" />
+                        </div>
+                        <div class="action-title">@Resource.Schedules</div>
+                    </div>
+                </MudItem>
+            }
+
+            @if (ListHelpers.HaveCommonValues(GlobalUserContext.SsoUserRoles.Select(r => r.Name).ToList(), NavMenu.BaseAdminRoles.ToList()))
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <div class="action-card" @onclick="NavToFileManager">
+                        <div class="action-icon-circle grey">
+                            <MudIcon Icon="@Icons.Material.Outlined.FolderOpen" Size="Size.Large" Style="color: #616161;" />
+                        </div>
+                        <div class="action-title">@Resource.FileManager</div>
+                    </div>
+                </MudItem>
+            }
+        </MudGrid>
+    </div>
+</div>

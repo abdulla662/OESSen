@@ -1,0 +1,253 @@
+@using MudBlazor
+@using OES.Helper
+@using OES.Helper.Dtos.DifficultyProfile
+@using OES.Helper.Dtos.ILO
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.Dtos.Questionlanguage
+@using OES.Helper.Dtos.Subject
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+<MudGrid>
+    <MudItem xs="12">
+        <div class="d-flex justify-content-between align-items-center">
+            <GeneralLoadingButton EndIcon="@Icons.Material.Filled.Article"
+                                  OnClick="ShowTemplateAsync"
+                                  ButtonColor="Color.Surface"
+                                  ButtonText="@Resource.QuestionTemplate"
+                                  Type="ButtonType.Button" />
+        </div>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudAutocomplete T="SubjectDto"
+                         Label="@Resource.Subject"
+                         @bind-Value="_selectedSubject"
+                         Variant="Variant.Outlined"
+                         ShowProgressIndicator="true"
+                         SearchFunc="SearchSubjectAsync"
+                         ToStringFunc="@(s => s?.Name ?? string.Empty)"
+                         Clearable="true"
+                         Error="@(IsSubmitButtonHit && (_selectedSubject == null || _selectedSubject.Id == 0))"
+                         ErrorText="@_requiredErrorText"
+                         Required
+                         Disabled="IsConfigurationLocked" />
+    </MudItem>
+
+    <MudItem xs="12" sm="6">
+        <MudAutocomplete T="QuestionCategoryDto"
+                         Label="@Resource.Category"
+                         @bind-Value="_selectedCategory"
+                         Variant="Variant.Outlined"
+                         ShowProgressIndicator="true"
+                         SearchFunc="SearchCategoryAsync"
+                         ToStringFunc="@(c => c?.Name ?? string.Empty)"
+                         Clearable="true"
+                         Error="@(IsSubmitButtonHit && (_selectedCategory == null || _selectedCategory.Id == 0))"
+                         ErrorText="@_requiredErrorText"
+                         Required
+                         Disabled="IsConfigurationLocked" />
+    </MudItem>
+
+    <MudItem xs="12" sm="6">
+        <MudAutocomplete T="LanguageDto"
+                         Label="@Resource.Language"
+                         @bind-Value="_selectedLanguage"
+                         Variant="Variant.Outlined"
+                         ShowProgressIndicator="true"
+                         SearchFunc="SearchLanguageAsync"
+                         ToStringFunc="@(l => l?.Name ?? string.Empty)"
+                         Clearable="true"
+                         Error="@(IsSubmitButtonHit && (_selectedLanguage == null || _selectedLanguage.Id == 0))"
+                         ErrorText="@_requiredErrorText"
+                         Required
+                         Disabled="IsConfigurationLocked" />
+    </MudItem>
+
+    <MudItem xs="12" sm="6">
+        <MudAutocomplete T="ProfileDto"
+                         Label="@Resource.DifficultyProfile"
+                         @bind-Value="_selectedDifficultyProfile"
+                         Variant="Variant.Outlined"
+                         ShowProgressIndicator="true"
+                         SearchFunc="SearchDifficultyProfileAsync"
+                         ToStringFunc="@(p => p?.Name ?? string.Empty)"
+                         Clearable="true"
+                         Error="@(IsSubmitButtonHit && (_selectedDifficultyProfile == null || _selectedDifficultyProfile.Id == 0))"
+                         ErrorText="@_requiredErrorText"
+                         Required
+                         Disabled="IsConfigurationLocked" />
+    </MudItem>
+
+    <MudItem xs="12">
+        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+            <MudAutocomplete T="RootItemBankDto"
+                             Label="@Resource.SelectRootItemBank"
+                             Value="_selectedItemBankRoot"
+                             ValueChanged="CaptureSelectedItemBankRoot"
+                             Variant="Variant.Outlined"
+                             ShowProgressIndicator="true"
+                             SearchFunc="SearchItemBankRootsAsync"
+                             ToStringFunc="ItemBankDtoToStringConverter"
+                             Clearable="true"
+                             Error="@(IsSubmitButtonHit && _selectedItemBankRoot == null)"
+                             ErrorText="@_requiredErrorText"
+                             OnClearButtonClick="ClearItembankSelection"
+                             Required
+                             Class="w-100 w-sm-auto"
+                             Disabled="IsConfigurationLocked" />
+            <MudFab Label="@Resource.ShowTree"
+                    Class="align-self-center p-3"
+                    OnClick="OpenItemBankRootTreeDialogAsync"
+                    EndIcon="@Icons.Material.Filled.AccountTree"
+                    Disabled="@(_selectedItemBankRoot == null || IsConfigurationLocked)" />
+            @if (_selectedItemBankNodeFromDialogDto.Id > 0)
+            {
+                <MudChip T="string" Color="Color.Primary" Icon="@Icons.Material.Filled.CheckCircle" Class="align-self-center p-3" Size="Size.Large">
+                    <strong>@_selectedItemBankNodeFromDialogDto.Name</strong>
+                </MudChip>
+            }
+        </div>
+
+        @if (_selectedItemBankRoot is not null && _selectedItemBankNodeFromDialogDto.Id == 0)
+        {
+            <MudAlert Severity="Severity.Error" ContentAlignment=HorizontalAlignment.Start Class="w-100 mt-3">
+                @Resource.SelectNodeBeforeProceeding
+            </MudAlert>
+        }
+    </MudItem>
+
+    <MudItem xs="12">
+        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+            <MudAutocomplete T="RootIloDto"
+                             Label="@Resource.SelectrootILOoptional"
+                             Value="_selectedIloRoot"
+                             ValueChanged="CaptureSelectedIloRoot"
+                             Variant="Variant.Outlined"
+                             ShowProgressIndicator="true"
+                             SearchFunc="SearchIloRootsAsync"
+                             ToStringFunc="IloDtoToStringConverter"
+                             Class="w-100 w-sm-auto"
+                             OnClearButtonClick="ClearIloSelection"
+                             Clearable="true"
+                             Disabled="IsConfigurationLocked" />
+            <MudFab Label="@Resource.ShowTree"
+                    Class="align-self-center p-3"
+                    OnClick="OpenIloRootTreeDialogAsync"
+                    EndIcon="@Icons.Material.Filled.AccountTree"
+                    Disabled="@(_selectedIloRoot == null || IsConfigurationLocked)" />
+            @if (_selectedIloNodeFromDialogDto.Id > 0)
+            {
+                <MudChip T="string" Color="Color.Primary" Icon="@Icons.Material.Filled.CheckCircle" Class="align-self-center p-3" Size="Size.Large">
+                    <strong>@_selectedIloNodeFromDialogDto.Name</strong>
+                </MudChip>
+            }
+        </div>
+
+        @if (_selectedIloRoot is not null && _selectedIloNodeFromDialogDto.Id == 0)
+        {
+            <MudAlert Severity="Severity.Error" ContentAlignment=HorizontalAlignment.Start Class="w-100 mt-3">
+                @Resource.SelectNodeBeforeProceeding
+            </MudAlert>
+        }
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+            <MudText Typo="Typo.subtitle1" Class="mb-2">@Resource.UploadFile</MudText>
+            <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-3">
+                @Resource.SupportedFileExtensions: @AllowedExtensionsString
+            </MudText>
+            <MudFileUpload T="IBrowserFile" FilesChanged="OnUploadFiles" Accept="@AllowedExtensionsString">
+                <ActivatorContent>
+                    <MudButton Disabled="IsConfigurationLocked" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">
+                        @Resource.UploadFile
+                    </MudButton>
+                </ActivatorContent>
+            </MudFileUpload>
+            @if (File is not null)
+            {
+                var fileName = File.Name;
+                var fileSize = FormatFileSize(File.Size);
+                <MudChip T="string"
+                         Disabled="IsConfigurationLocked"
+                         Color="Color.Success"
+                         Icon="@Icons.Material.Filled.AttachFile"
+                         Class="mt-2"
+                         Size="Size.Medium"
+                         OnClose="ClearFile">
+                    @fileName (@fileSize)
+                </MudChip>
+            }
+            @if (File is null && IsSubmitButtonHit)
+            {
+                <MudText Color="Color.Error" Typo="Typo.caption" Class="mx-2 mt-1 d-block">
+                    @Resource.UploadFileIsRequired
+                </MudText>
+            }
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+            <div class="d-flex justify-space-between align-center mb-3">
+                <MudText Typo="Typo.subtitle1">@Resource.QuestionTypeAndCount</MudText>
+                <MudChip T="string"
+                         Color="@(TotalQuestions > MaxTotalQuestions ? Color.Error : TotalQuestions == 0 ? Color.Default : Color.Primary)"
+                         Size="Size.Small">
+                    @TotalQuestions / @MaxTotalQuestions
+                </MudChip>
+            </div>
+
+            <MudGrid Spacing="2">
+                @if (QuestionTypes != null)
+                {
+                    @foreach (var questionType in QuestionTypes)
+                    {
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudNumericField T="int"
+                                             Value="QuestionTypeCounts[questionType.Id]"
+                                             ValueChanged="@(v => OnQuestionCountChanged(questionType.Id, v))"
+                                             Label="@(questionType.Name.ToLocalizedString<OES.Helper.Enums.QuestionType>())"
+                                             Variant="Variant.Outlined"
+                                             Min="0"
+                                             Max="@MaxTotalQuestions"
+                                             Error="@(IsSubmitButtonHit && TotalQuestions == 0)"
+                                             Immediate="true"
+                                             Adornment="Adornment.Start"
+                                             AdornmentIcon="@Icons.Material.Filled.Quiz" Disabled="IsConfigurationLocked" />
+                        </MudItem>
+                    }
+                }
+            </MudGrid>
+
+            @if (TotalQuestions > MaxTotalQuestions)
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-3" Dense="true">
+                    @string.Format(Resource.TotalQuestionsExceedMaximum, MaxTotalQuestions)
+                </MudAlert>
+            }
+            else if (TotalQuestions == 0 && IsSubmitButtonHit)
+            {
+                <MudText Color="Color.Error" Typo="Typo.caption" Class="mx-2 mt-1 d-block">
+                    @Resource.PleaseSelectAtLeastOneQuestion
+                </MudText>
+            }
+            else
+            {
+                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-3">
+                    @Resource.RemainingQuestionsYouCanAllocate <strong>@(MaxTotalQuestions - TotalQuestions)</strong>
+                </MudText>
+            }
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12">
+        <GeneralLoadingButton Class="flex-fill"
+                              OnClick="OpenTemplateNameDialog"
+                              EndIcon="@Icons.Material.Filled.CheckCircle"
+                              ButtonColor="Color.Secondary"
+                              ButtonText="@Resource.SaveAsTemplate"
+                              Type="ButtonType.Submit" />
+    </MudItem>
+</MudGrid>

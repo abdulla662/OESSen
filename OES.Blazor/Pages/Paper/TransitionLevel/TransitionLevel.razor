@@ -1,0 +1,61 @@
+﻿@page "/TransitionLevels"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.Dtos.Paper.TransitionDtos.Response
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("TransitionLevel")]
+
+<PageTitle>@Resource.TransitionLevels</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.AlignVerticalBottom" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.TransitionLevel</MudText>
+        </MudStack>
+        <ListItem T="TransitionLevelDto"
+                  @key="LevelKey"
+                  Caption="@Resource.TransitionLevel"
+                  CaptionIcon="@Icons.Material.Filled.AlignVerticalBottom"
+                  EndpointServerice="BlazTransitionLevel.GetAllTransitionLevel"
+                  DisplayColumns='["Name", "LowerDScoreFormatted", "UpperDScoreFormatted", "TransitionProfileName", "TransitionProfileDescription"]'
+                  AddNew_URL="/AddTransitionLevel"
+                  AddNew_URL_OesRolesList="[OesTemplateRoleConstants.TransitionLevelCreate]"
+                  HideCodeSearch ="true"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <ButtonChildContent Context="value">
+                @if (value is TransitionLevelDto transitionLevel)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    OnClick='async () => await OpenViewDialogAsync(transitionLevel.Id)' />
+                        </MudTooltip>
+
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    EndIcon="@Icons.Material.Filled.Edit"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                    OnClick='() => NavigateToEditAsync(transitionLevel.Id)' />
+                        </MudTooltip>
+
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    StartIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    OnClick='async () => await DeleteTransitionLevelAsync(transitionLevel.Id)' />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

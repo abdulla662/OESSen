@@ -1,0 +1,293 @@
+﻿@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+@using SharedHelper.Enums
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    @if (_isLoading)
+    {
+        <MudPaper Class="d-flex flex-column align-center justify-center py-8">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            <MudText Typo="Typo.h6" Class="mt-4">@Resource.LoadingScheduleDetails</MudText>
+        </MudPaper>
+    }
+    else if (_scheduleSummary == null)
+    {
+        <MudPaper Class="d-flex flex-column align-center justify-center py-16">
+            <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Primary" Class="mb-4" />
+            <MudText Typo="Typo.h5" Class="mb-3">@Resource.NoScheduleDataAvailable</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4 text-center">
+                @((MarkupString)Resource.NoScheduleInfoMessage)
+            </MudText>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       EndIcon="@Icons.Material.Filled.Home"
+                       OnClick="NavigateToHome"
+                       Class="px-8">
+                @Resource.ReturnToDashboard
+            </MudButton>
+        </MudPaper>
+    }
+    else
+    {
+        <MudCard Elevation="3" Class="mb-4">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Primary">
+                        <MudIcon Icon="@Icons.Material.Filled.Schedule"/>
+                    </MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@_scheduleSummary.ScheduleName</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudChip T="String" Color="Color.Secondary" Variant="Variant.Outlined" Size="Size.Small" Class="mr-2" data-no-convert>
+                    @Resource.CodeLabel: @_scheduleSummary.ScheduleCode
+                </MudChip>
+                @if (IsSchedulePublishedSuccessfully)
+                {
+                    <MudChip T="String" Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Class="mr-1" Size="Size.Small" />
+                        @Resource.Published
+                    </MudChip>
+                }
+                else
+                {
+                    <MudChip T="String" Color="Color.Warning" Variant="Variant.Filled" Size="Size.Small">
+                        <MudIcon Icon="@Icons.Material.Filled.Pending" Class="mr-1" Size="Size.Small" />
+                        @Resource.DraftNotPublished
+                    </MudChip>
+                }
+            </MudCardContent>
+        </MudCard>
+
+        <MudGrid Spacing="4">
+            <!-- Schedule Details Section -->
+            <MudItem xs="12" md="4">
+                <MudCard Elevation="2" Class="mb-4">
+                    <MudCardHeader>
+                        <CardHeaderAvatar>
+                            <MudAvatar Color="Color.Primary" Size="Size.Medium">
+                                <MudIcon Icon="@Icons.Material.Filled.Info" />
+                            </MudAvatar>
+                        </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">@Resource.ScheduleDetails</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudDivider />
+                    <MudCardContent>
+                        <MudList T="string" Clickable="false" Dense="true">
+                            <MudListItem Icon="@Icons.Material.Filled.Description">
+                                <div>
+                                    <MudText Typo="Typo.body1" Class="mb-1"><strong>@Resource.Description</strong></MudText>
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                        @(_scheduleSummary.ScheduleDescription ?? Resource.NotAvailable)
+                                    </MudText>
+                                </div>
+                            </MudListItem>
+                            <MudDivider Class="my-2" />
+                            <MudListItem Icon="@Icons.Material.Filled.LocationOn">
+                                <div>
+                                    <MudText Typo="Typo.body1" Class="mb-1"><strong>@Resource.Location</strong></MudText>
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                        @_scheduleSummary.ScheduleLocation.ToString()
+                                    </MudText>
+                                </div>
+                            </MudListItem>
+                            <MudDivider Class="my-2" />
+                            <MudListItem Icon="@Icons.Material.Filled.DateRange">
+                                <div>
+                                    <MudText Typo="Typo.body1" Class="mb-2"><strong>@Resource.ScheduleDate</strong></MudText>
+                                    @if (_scheduleSummary.ScheduleStartDate.Year > 1)
+                                    {
+                                        <MudStack Spacing="2">
+                                            <MudPaper Elevation="0" Class="schedule-paper schedule-paper-start">
+                                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Size="Size.Small" Color="Color.Success" />
+                                                    <div>
+                                                        <MudText Typo="Typo.caption" Color="Color.Success"><strong>@Resource.StartLabel</strong></MudText>
+                                                        <MudText Typo="Typo.body2">@_scheduleSummary.ScheduleStartDate.ToString(Resource.DateFormat)</MudText>
+                                                    </div>
+                                                </MudStack>
+                                            </MudPaper>
+
+                                            <MudPaper Elevation="0" Class="schedule-paper schedule-paper-end">
+                                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Stop" Size="Size.Small" Color="Color.Primary" />
+                                                    <div>
+                                                        <MudText Typo="Typo.caption" Color="Color.Primary"><strong>@Resource.EndLabel</strong></MudText>
+                                                        <MudText Typo="Typo.body2">@_scheduleSummary.ScheduleEndDate.ToString(Resource.DateFormat)</MudText>
+                                                    </div>
+                                                </MudStack>
+                                            </MudPaper>
+
+                                            <MudChip T="string" Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+                                                @((_scheduleSummary.ScheduleEndDate.ToDateTime(TimeOnly.MinValue) - _scheduleSummary.ScheduleStartDate.ToDateTime(TimeOnly.MinValue)).TotalDays + 1)
+                                                @Resource.DaysSuffix
+                                            </MudChip>
+                                        </MudStack>
+                                    }
+                                    else
+                                    {
+                                        <MudAlert Severity="Severity.Warning" Dense="true" Class="mt-2">
+                                            @Resource.NotSpecified
+                                        </MudAlert>
+                                    }
+                                </div>
+                            </MudListItem>
+                            <MudDivider Class="my-2" />
+                            <MudListItem Icon="@Icons.Material.Filled.AccessTime">
+                                <div>
+                                    <MudText Typo="Typo.body1" Class="mb-1"><strong>@Resource.DailyTiming</strong></MudText>
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                        @_scheduleSummary.ScheduleStartTime - @_scheduleSummary.ScheduleEndTime
+                                    </MudText>
+                                </div>
+                            </MudListItem>
+                        </MudList>
+                    </MudCardContent>
+                </MudCard>
+                <MudCard Elevation="2">
+                    <MudCardHeader>
+                        <CardHeaderAvatar>
+                            <MudAvatar Color="Color.Success" Size="Size.Medium">
+                                <MudIcon Icon="@Icons.Material.Filled.Analytics" />
+                            </MudAvatar>
+                        </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">@Resource.ScheduleStatistics</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudDivider />
+                    <MudCardContent>
+                        <MudGrid Spacing="2">
+                            <MudItem xs="6">
+                                <MudPaper Elevation="0" Class="pa-4 d-flex flex-column align-center" Style="border: 1px solid var(--mud-palette-lines-default); border-radius: 4px;">
+                                    <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-2">
+                                        @_scheduleSummary.Papers.Count
+                                    </MudText>
+                                    <MudText Typo="Typo.caption" Align="Align.Center">@Resource.TotalPapers</MudText>
+                                </MudPaper>
+                            </MudItem>
+                            <MudItem xs="6">
+                                <MudPaper Elevation="0" Class="pa-4 d-flex flex-column align-center" Style="border: 1px solid var(--mud-palette-lines-default); border-radius: 4px;">
+                                    @{
+                                        var standardPapers = _scheduleSummary.Papers.Count(p => p.PaperType == PaperType.Standard);
+                                        var adaptivePapers = _scheduleSummary.Papers.Count(p => p.PaperType == PaperType.Adaptive);
+                                    }
+                                    <MudText Typo="Typo.h4" Color="Color.Secondary" Class="mb-2">
+                                        @standardPapers / @adaptivePapers
+                                    </MudText>
+                                    <MudText Typo="Typo.caption" Align="Align.Center">@Resource.StandardAdaptive</MudText>
+                                </MudPaper>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <!-- Papers Panel -->
+            <MudItem xs="12" md="8">
+                <MudCard Elevation="2" Style="margin-bottom: 50px">
+                    <MudCardHeader>
+                        <CardHeaderAvatar>
+                            <MudAvatar Color="Color.Tertiary" Size="Size.Medium">
+                                <MudIcon Icon="@Icons.Material.Filled.Article" />
+                            </MudAvatar>
+                        </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <div class="d-flex justify-space-between align-center">
+                                <MudText Typo="Typo.h6">@Resource.SchedulePapers</MudText>
+                                <MudChip T="String" Color="Color.Primary" Size="Size.Small">
+                                    @Resource.TotalLabel: @_scheduleSummary.Papers.Count
+                                </MudChip>
+                            </div>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudDivider />
+                    <MudCardContent Style="max-height: 600px; overflow-y: auto;">
+                        @if (_scheduleSummary.Papers.Any())
+                        {
+                            <MudTable Items="@_scheduleSummary.Papers" Hover="true" Height="500px" Striped="true" Dense="true" Elevation="0" Breakpoint="Breakpoint.None" Class="my-data-table">
+                                <HeaderContent>
+                                    <MudTh>@Resource.PaperName</MudTh>
+                                    <MudTh>@Resource.CodeLabel</MudTh>
+                                    <MudTh>@Resource.TypeLabel</MudTh>
+                                    <MudTh>@Resource.SubType</MudTh>
+                                    <MudTh Style="min-width: 180px;">@Resource.DatesLabel</MudTh>
+                                    <MudTh Style="min-width: 130px;">@Resource.TimingLabel</MudTh>
+                                    <MudTh>@Resource.Description</MudTh>
+                                </HeaderContent>
+
+                                <RowTemplate>
+                                    <MudTd DataLabel="@Resource.PaperName">
+                                        <MudText Typo="Typo.body1">@context.PaperName</MudText>
+                                    </MudTd>
+                                    <MudTd DataLabel="@Resource.CodeLabel">
+                                        <MudChip T="String" Color="Color.Secondary" Variant="Variant.Outlined" Size="Size.Small" data-no-convert>
+                                            @context.PaperCode
+                                        </MudChip>
+                                    </MudTd>
+                                    <MudTd DataLabel="@Resource.TypeLabel">
+                                        <MudChip T="PaperType" Size="Size.Small" Color="@GetPaperTypeColor(context.PaperType)">
+                                            @context.PaperType.ToLocalizedString()
+                                        </MudChip>
+                                    </MudTd>
+                                    <MudTd DataLabel="@Resource.SubType">
+                                        @if (context.PaperType == PaperType.Standard)
+                                        {
+                                            <MudChip T="QuestionSelectionType" Size="Size.Small" Color="@Color.Secondary">
+                                                @context.PaperQuestionSelectionType.ToLocalizedString()
+                                            </MudChip>
+                                        }
+                                        else if (context.PaperType == PaperType.Adaptive)
+                                        {
+                                            <MudChip T="QuestionSelectionType" Size="Size.Small" Color="@Color.Secondary">
+                                                @context.AdaptiveSubtype.ToLocalizedString()
+                                            </MudChip>
+                                        }
+                                    </MudTd>
+                                    <MudTd DataLabel="@Resource.DatesLabel" Style="white-space: nowrap;">
+                                        <MudText Typo="Typo.body2">
+                                            @context.StartDate.ToString(Resource.MonthDayFormat) - @context.EndDate.ToString(Resource.MonthDayFormat)
+                                        </MudText>
+                                    </MudTd>
+                                    <MudTd DataLabel="@Resource.TimingLabel" Style="white-space: nowrap;">
+                                        <MudText Typo="Typo.body2">
+                                            @context.StartTime - @context.EndTime
+                                        </MudText>
+                                    </MudTd>
+                                    <MudTd DataLabel="@Resource.Description">
+                                        <MudText Typo="Typo.body2">
+                                            @context.SchedulePaperDescription
+                                        </MudText>
+                                    </MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        }
+                        else
+                        {
+                            <MudPaper Elevation="0" Class="pa-6 d-flex flex-column align-center">
+                                <MudIcon Icon="@Icons.Material.Outlined.InsertDriveFile" Size="Size.Large" Color="Color.Default" Class="mb-3" />
+                                <MudText Typo="Typo.body1" Align="Align.Center">@Resource.NoPapersInSchedule</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary" Align="Align.Center" Class="mb-4">
+                                    @Resource.AddPapersToOrganize
+                                </MudText>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.CheckCircle">
+                                    @Resource.AddPaper
+                                </MudButton>
+                            </MudPaper>
+                        }
+                    </MudCardContent>
+                </MudCard>
+                <MudCard Elevation="2">
+                    <MudCardContent Class="text-center">
+                        <MudFab EndIcon="@Icons.Material.Filled.Send" Label="@Resource.PublishSchedule" Color="Color.Primary" Size="Size.Large" Disabled="IsSchedulePublishedSuccessfully" OnClick="PublishScheduleAsync" />
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    }
+</MudContainer>

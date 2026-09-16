@@ -1,0 +1,700 @@
+﻿@using OES.Helper
+@using OES.Helper.Dtos.Block.Responses
+@using OES.Helper.Enums
+@using OES.Helper.Dtos.DifficultyLevel
+@using OES.Helper.Dtos.DeltaType
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.General
+
+<MudText Typo="Typo.h6" Align="Align.Center" Class="mb-5">@Resource.DistributeBlocks</MudText>
+
+@if (isLoading)
+{
+    <div class="loading-indicator">
+        <p>@Resource.LoadingBlockDistributionData</p>
+    </div>
+}
+else
+{
+    <!-- Distribution Mode Toggle -->
+    <MudPaper Elevation="2" Class="pa-4 mb-4">
+        <MudStack AlignItems="AlignItems.Center" Spacing="3">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" />
+                <MudText Typo="Typo.h6" Class="font-weight-medium" Color="Color.Primary">
+                    @Resource.DistributionMode
+                </MudText>
+            </MudStack>
+
+            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large">
+                <!-- Drag & Drop Mode -->
+                <MudButton Variant="@(_distributionMode == "drag-drop" ? Variant.Filled : Variant.Outlined)"
+                           Color="@(_distributionMode == "drag-drop" ? Color.Primary : Color.Default)"
+                           OnClick="@(() => { _distributionMode = "drag-drop"; _componentKey++; })"
+                           Class="pa-3"
+                           Style="min-height: 100px; min-width: 140px;">
+                    <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.DragIndicator" Size="Size.Large" />
+                        <MudText Typo="Typo.body2" Class="font-weight-medium">@Resource.DragAndDrop</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Inherit" Class="text-center" Style="font-size: 0.7rem;">
+                            @Resource.ClassicInterface
+                        </MudText>
+                    </MudStack>
+                </MudButton>
+
+                <!-- Multi-Select Mode -->
+                <MudButton Variant="@(_distributionMode == "selection" ? Variant.Filled : Variant.Outlined)"
+                           Color="@(_distributionMode == "selection" ? Color.Primary : Color.Default)"
+                           OnClick="@(() => { _distributionMode = "selection"; _componentKey++; })"
+                           Class="pa-3"
+                           Style="min-height: 100px; min-width: 140px;">
+                    <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Checklist" Size="Size.Large" />
+                        <MudText Typo="Typo.body2" Class="font-weight-medium">@Resource.MultiSelect</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Inherit" Class="text-center" Style="font-size: 0.7rem;">
+                            @Resource.BulkOperations
+                        </MudText>
+                    </MudStack>
+                </MudButton>
+            </MudButtonGroup>
+
+            <!-- Mode Description -->
+            @if (_distributionMode == "drag-drop")
+            {
+                <MudAlert Severity="Severity.Normal" Variant="Variant.Text" Dense="true" Icon="@Icons.Material.Filled.Info" Class="ma-0">
+                    @Resource.DragBlocksDirectly
+                </MudAlert>
+            }
+            else if (_distributionMode == "selection")
+            {
+                <MudAlert Severity="Severity.Success" Variant="Variant.Text" Dense="true" Icon="@Icons.Material.Filled.CheckCircle" Class="ma-0">
+                    @Resource.SelectMultipleBlocks
+                </MudAlert>
+            }
+        </MudStack>
+    </MudPaper>
+
+    <!-- Bulk Actions Toolbar - Only show when blocks are selected -->
+    @if (_distributionMode == "selection" && _selectedBlockIds.Any())
+    {
+        <MudPaper Elevation="2" Class="pa-3 mb-4" Style="position: sticky; top: 0; z-index: 10; background: var(--mud-palette-surface); border-bottom: 1px solid var(--mud-palette-divider);">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                <MudText Typo="Typo.subtitle2">
+                    @_selectedBlockIds.Count selected block@(_selectedBlockIds.Count == 1 ? "" : "s")
+                </MudText>
+                <MudStack Row="true" Spacing="2">
+                    <MudSelect T="string"
+                               @bind-Value="_bulkTargetStage"
+                               Placeholder="@Resource.ChooseStage"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var newStage in Stages.Where(s => s != null))
+                        {
+                            <MudSelectItem Value="@(newStage.Name)">@newStage.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect T="string"
+                               @bind-Value="_bulkTargetSection"
+                               Placeholder="@Resource.ChooseSection"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               Disabled="@string.IsNullOrEmpty(_bulkTargetStage)"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @if (!string.IsNullOrEmpty(_bulkTargetStage))
+                        {
+                            var selectedStage = Stages.FirstOrDefault(s => s?.Name == _bulkTargetStage);
+                            if (selectedStage != null)
+                            {
+                                @foreach (var newSection in AdaptiveSections.Where(s => s != null && s.StageId == selectedStage.Id))
+                                {
+                                    <MudSelectItem Value="@(newSection.Name)">@newSection.Name</MudSelectItem>
+                                }
+                            }
+                        }
+                    </MudSelect>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               EndIcon="@Icons.Material.Filled.MoveDown"
+                               OnClick="BulkAssignBlocks"
+                               Disabled="@(string.IsNullOrEmpty(_bulkTargetStage) || string.IsNullOrEmpty(_bulkTargetSection))">
+                        @Resource.AssignSelected
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Secondary"
+                               OnClick="ClearBlockSelection">
+                        @Resource.ClearSelection
+                    </MudButton>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    }
+
+    <div class="d-flex overflow-auto p-4 gap-4">
+        <MudDropContainer T="GetChoosenBlocksDto"
+                          @key="_componentKey"
+                          @ref="_dropContainer"
+                          Items="@Blocks"
+                          ItemsSelector="@((item,column) => item.AdaptiveSectionName == column || (item.AdaptiveSectionId == null && column == OESBlockStagesConstant.Blocks))"
+                          ItemDropped="TaskUpdated"
+                          Class="d-flex flex-row overflow-auto"
+                          style="flex-shrink: 0;">
+            <ChildContent>
+                <MudPaper Elevation="0" Width="350px" MinHeight="200px" Class="pa-4 ma-4 d-flex flex-column rounded-lg" Style="@GetStageStyle(OESBlockStagesConstant.Blocks, false)">
+                    <MudToolBar Gutters="false">
+                        <MudText Typo="Typo.subtitle1"><b>@OESBlockStagesConstant.Blocks</b></MudText>
+                        <MudSpacer />
+
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <!-- Select All/None toggle for blocks pool -->
+                            @if (_distributionMode == "selection")
+                            {
+                                var poolBlocks = Blocks.Where(b => b.AdaptiveSectionName == null && ShouldDisplayBlock(b)).ToList();
+                                var allPoolSelected = poolBlocks.Any() && poolBlocks.All(b => _selectedBlockIds.Contains(b.Id));
+
+                                <MudButton Size="Size.Small"
+                                           Variant="Variant.Text"
+                                           Color="Color.Primary"
+                                           OnClick="@(() => ToggleSelectAllBlocks(poolBlocks, allPoolSelected))">
+                                    @(allPoolSelected? @Resource.DeselectAll: @Resource.SelectAll)
+                                </MudButton>
+                            }
+
+                            <MudMenu Icon="@Icons.Material.Filled.FilterList"
+                                     Color="Color.Primary"
+                                     Dense="true">
+
+                                <!-- Menu Header -->
+                                <MudPaper Class="d-flex align-center pa-4" Elevation="0">
+                                    <MudIcon Icon="@Icons.Material.Filled.FilterAlt" Class="mr-2" />
+                                    <MudText Typo="Typo.h6">@Resource.FilterBlocks</MudText>
+                                </MudPaper>
+
+                                <MudDivider />
+
+                                <!-- Filter Sections -->
+                                <div class="pa-2">
+                                    <MudExpansionPanel Text="@Resource.DifficultyLevel" Icon="@Icons.Material.Filled.Speed">
+                                        <MudSelect T="GetDifficultyLevelDto"
+                                                   @bind-Value="_selectedDifficulty"
+                                                   Label="@Resource.SelectDifficulty"
+                                                   Variant="Variant.Outlined"
+                                                   Dense="true"
+                                                   Margin="Margin.Dense"
+                                                   ToStringFunc="s => s.Name"
+                                                   FullWidth="true"
+                                                   AnchorOrigin="Origin.BottomCenter">
+                                            @foreach (var diff in Blocks.Select(x => x.DifficultyLevel).DistinctBy(x => x.Id))
+                                            {
+                                                <MudSelectItem Value="@diff">@diff.Name</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudExpansionPanel>
+
+                                    <MudExpansionPanel Text="@Resource.BlockType" Icon="@Icons.Material.Filled.Category">
+                                        <MudSelect T="QuestionCategoryDto"
+                                                   @bind-Value="_selectedBlockType"
+                                                   Label="@Resource.SelectBlockType"
+                                                   Variant="Variant.Outlined"
+                                                   Dense="true"
+                                                   ToStringFunc="s => s.Name"
+                                                   Margin="Margin.Dense"
+                                                   FullWidth="true"
+                                                   AnchorOrigin="Origin.BottomCenter">
+                                            @foreach (var deltaType in Blocks.Select(dt => dt.BlockType).DistinctBy(x => x.Id))
+                                            {
+                                                <MudSelectItem Value="@deltaType">@deltaType.Name</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudExpansionPanel>
+                                </div>
+
+                                <MudDivider />
+
+                                <!-- Action Buttons -->
+                                <div class="d-flex justify-space-between pa-4">
+                                    <MudButton Variant="Variant.Text"
+                                               Color="Color.Secondary"
+                                               OnClick="ResetFilters"
+                                               Size="Size.Small"
+                                               EndIcon="@Icons.Material.Filled.Clear">
+                                        @Resource.Reset
+                                    </MudButton>
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               OnClick="ApplyFilters"
+                                               Size="Size.Small"
+                                               EndIcon="@Icons.Material.Filled.CheckCircle">
+                                        @Resource.APPLY
+                                    </MudButton>
+                                </div>
+                            </MudMenu>
+
+                            <MudTooltip Text="@Resource.AutoDistribution">
+                                <MudIconButton Icon="@Icons.Material.Filled.AutoAwesome"
+                                               Color="Color.Secondary"
+                                               OnClick="AutoDistributeBlocks"
+                                               Size="Size.Medium" />
+                            </MudTooltip>
+
+                            @if (_filtersActive)
+                            {
+                                <MudChip T="string" Color="Color.Primary" Size="Size.Small">@_activeFilterCount active filters @(_activeFilterCount == 1 ? "" : "s")</MudChip>
+                            }
+                        </MudStack>
+                    </MudToolBar>
+
+                    <MudDropZone T="GetChoosenBlocksDto"
+                                 Identifier="@OESBlockStagesConstant.Blocks"
+                                 Class="mud-height-full overflow-auto"
+                                 Style="max-height: calc(80vh - 120px);">
+                    </MudDropZone>
+                </MudPaper>
+
+                @if (Stages.Count > 0)
+                {
+                    @foreach (var stage in Stages)
+                    {
+                        if (stage is null) continue;
+
+                        <MudPaper Elevation="0" Width="350px" MinHeight="200px"
+                                  Class="pa-4 ma-4 d-flex flex-column rounded-lg"
+                                  Style="@GetStageStyle(stage.Name, IsStageEmpty(stage))">
+
+                            <MudToolBar Gutters="false">
+                                <MudText Typo="Typo.subtitle1"><b>@stage.Name</b></MudText>
+                                <MudSpacer />
+
+                                <MudChip T="string" Size="Size.Small" Class="mr-2 mud-chip-color-primary">@GetFormattedTime(stage.TimeInMinutes)</MudChip>
+
+                                @if (!string.IsNullOrWhiteSpace(stage.RenderedPartName))
+                                {
+                                    <MudChip T="string"
+                                             Size="Size.Small"
+                                             Color="Color.Surface"
+                                             Class="mr-2">
+                                        @stage.RenderedPartName
+                                    </MudChip>
+                                }
+
+                                @if (!IsFirstStageInCategoryGroup(stage))
+                                {
+                                    <MudIconButton Icon="@Icons.Material.Filled.Settings"
+                                                   Size="Size.Small"
+                                                   Color="Color.Primary"
+                                                   OnClick="@(() => OpenStageSettingsDialog(stage))" />
+                                }
+                            </MudToolBar>
+
+                            @if (stage.InstructionSectionAdaptiveId > 0)
+                            {
+                                <MudText Typo="Typo.caption"
+                                         Class="mt-1 mb-2 px-2 py-1 adaptive-text">
+                                    @stage.InstructionSectionAdaptiveName
+                                </MudText>
+                            }
+
+                            <MudDropZone T="GetChoosenBlocksDto"
+                                         Identifier="@stage.Name"
+                                         Class="mud-height-full overflow-auto"
+                                         Style="max-height: calc(80vh - 120px);">
+
+
+                                @foreach (var adaptiveSection in AdaptiveSections.Where(g => g != null && g.StageId == stage.Id))
+                                {
+                                    <MudPaper Elevation="3"
+                                              Class="pa-4 rounded-lg my-3 d-flex flex-column"
+                                              Style="border: 2px solid #19b8d2; background-color: rgba(25, 118, 210, 0.05);">
+                                        <MudToolBar Gutters="false">
+                                            <div class="d-flex align-center gap-1">
+                                                <MudText Typo="Typo.subtitle2">
+                                                    <b>@adaptiveSection.Name</b>
+                                                    <span style="color:@(GetDifficultyColor(adaptiveSection.DifficultyLevelId)); margin-left: 2px;">
+                                                        (@(GetDifficultyName(adaptiveSection.DifficultyLevelId)))
+                                                    </span>
+                                                </MudText>
+                                            </div>
+
+                                            <MudSpacer />
+                                            @if (IsFirstStageInCategoryGroup(stage))
+                                            {
+                                                <MudChip T="string" Size="Size.Small" Class="mr-2 mud-chip-color-primary">@GetFormattedTime(adaptiveSection.TimeInMinutes)</MudChip>
+
+                                                @if (adaptiveSection.UnScored)
+                                                {
+                                                    <MudChip T="string" Size="Size.Small" Color="Color.Warning">@Resource.Unscored</MudChip>
+                                                }
+
+                                                <MudIconButton Icon="@Icons.Material.Rounded.Edit"
+                                                               Size="Size.Small"
+                                                               OnClick="() => OpenEditSectionDialog(adaptiveSection)" />
+
+                                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                               Color="Color.Error"
+                                                               Size="Size.Small"
+                                                               OnClick="() => RemoveSection(adaptiveSection)" />
+                                            }
+                                        </MudToolBar>
+
+                                        @if (IsFirstStageInCategoryGroup(stage) && adaptiveSection.InstructionSectionAdaptiveId > 0)
+                                        {
+                                            <MudText Typo="Typo.caption"
+                                                     Class="mt-1 mb-2 px-2 py-1 adaptive-text">
+                                                @adaptiveSection.InstructionSectionAdaptiveName
+                                            </MudText>
+                                        }
+
+                                        @foreach (var block in Blocks.Where(b => b.AdaptiveSectionId == adaptiveSection.Id).OrderBy(b => b.Id))
+                                        {
+                                            <MudPaper Elevation="2"
+                                                      Class="pa-3 rounded-lg my-2 d-flex align-center"
+                                                      Style="position: relative;">
+                                                <div class="d-flex flex-column">
+                                                    <div class="d-flex justify-space-between align-center pa-3">
+                                                        <MudText Typo="Typo.subtitle1" Class="d-flex align-center gap-2">
+                                                            <strong style="color: var(--mud-palette-primary);">@block.Name</strong>
+                                                            <MudChip T="string" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
+                                                                @block.QuestionCount Q
+                                                            </MudChip>
+                                                        </MudText>
+                                                    </div>
+
+                                                    <div class="d-flex flex-wrap gap-2">
+                                                        <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="Color.Primary" T="string">
+                                                            @block.DifficultyLevel.Name
+                                                        </MudChip>
+
+                                                        <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary" T="string">
+                                                            @block.BlockType.Name
+                                                        </MudChip>
+                                                    </div>
+                                                </div>
+
+                                                <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                                               Size="Size.Small"
+                                                               OnClick="() => RemoveBlockFromSection(block, adaptiveSection)"
+                                                               Class="ml-auto"
+                                                               Style="position: absolute; right: 8px; top: 8px;" />
+                                            </MudPaper>
+                                        }
+                                    </MudPaper>
+                                }
+                            </MudDropZone>
+
+                            @if (IsFirstStageInCategoryGroup(stage))
+                            {
+                                <MudButton @onclick="@(() => OpenAddSectionDialog(stage))"
+                                           Variant="Variant.Outlined"
+                                           EndIcon="@Icons.Material.Filled.CheckCircle"
+                                           Color="Color.Primary"
+                                           Class="rounded-lg py-2 mt-2"
+                                           FullWidth="true">
+                                    @Resource.AddPart
+                                </MudButton>
+                            }
+
+                        </MudPaper>
+                    }
+                }
+            </ChildContent>
+
+            <ItemRenderer>
+                @if (context.AdaptiveSectionName == null)
+                {
+                    @if (ShouldDisplayBlock(context))
+                    {
+                        <MudPaper Elevation="2" Class="pa-3 rounded-lg my-2">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="w-100">
+                                <!-- Selection checkbox - only show in selection mode -->
+                                @if (_distributionMode == "selection")
+                                {
+                                    <MudCheckBox T="bool"
+                                                 Value="@_selectedBlockIds.Contains(context.Id)"
+                                                 ValueChanged="@((bool isChecked) => ToggleBlockSelection(context.Id, isChecked))"
+                                                 Color="Color.Primary"
+                                                 Size="Size.Small" />
+                                }
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex justify-space-between align-center pa-3">
+                                        <MudText Typo="Typo.subtitle1" Class="d-flex align-center gap-2">
+                                            <strong style="color: var(--mud-palette-primary);">@context.Name</strong>
+                                            <MudChip T="string" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">
+                                                @context.QuestionCount @Resource.Q
+                                            </MudChip>
+                                        </MudText>
+                                    </div>
+
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="Color.Primary" T="string">
+                                            @context.DifficultyLevel.Name
+                                        </MudChip>
+
+                                        <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="Color.Success" T="string">
+                                            @context.BlockType.Name
+                                        </MudChip>
+                                    </div>
+                                </div>
+                            </MudStack>
+                        </MudPaper>
+                    }
+                    else
+                    {
+                        <div style="display: none;"></div>
+                    }
+                }
+                else
+                {
+                    <div style="display: none;"></div>
+                }
+            </ItemRenderer>
+        </MudDropContainer>
+    </div>
+
+    @if (_isSectionSelectionDialogOpen)
+    {
+
+        <div class="dialog-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
+            <div class="dialog-content" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--mud-palette-surface); padding: 20px; border-radius: 4px; z-index: 1001; min-width: 350px;">
+                <h3>@Resource.SelectAPart</h3>
+                <MudText Typo="Typo.body2" Class="mb-2">@Resource.ChooseAPart</MudText>
+                @foreach (var availableSection in _availableSections)
+                {
+                    <MudButton Color="Color.Primary" @onclick="() => OnSectionSelected(availableSection)" Class="my-2" FullWidth="true">
+                        @availableSection.Name
+                    </MudButton>
+                }
+                <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+                    <MudButton @onclick="CloseSectionSelectionDialog" Style="margin-right: 8px;">@Resource.Cancel</MudButton>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (_isAddSectionDialogOpen)
+    {
+        <div class="dialog-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
+            <div class="dialog-content" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--mud-palette-surface); padding: 20px; border-radius: 4px; z-index: 1001; min-width: 400px;">
+                <h3>@Resource.AddPartTo @_currentSectionStage?.Name</h3>
+
+                <MudTextField @bind-Value="_newSection.Name"
+                              Label="@Resource.PartName"
+                              Variant="Variant.Outlined"
+                              Class="my-3" />
+
+                <MudItem Class="d-flex gap-4 align-center">
+                    <MudNumericField @bind-Value="SectionTimeInMinutes"
+                                     Variant="Variant.Outlined"
+                                     Immediate
+                                     Min="0"
+                                     Label="@Resource.Minutes" />
+                    <MudNumericField @bind-Value="SectionTimeInSeconds"
+                                     Variant="Variant.Outlined"
+                                     Immediate
+                                     Min="0"
+                                     Max="59"
+                                     Label="@Resource.Seconds" />
+                </MudItem>
+
+                <!-- For first stage, show only Common difficulty -->
+                @if (Blocks.Any(d => d.DeltaType.Name == nameof(Common)))
+                {
+                    var commonDeltaType = Blocks.Where(d => d.DeltaType.Name == nameof(Common)).Select(x => x.DeltaType).FirstOrDefault();
+                    var commonDifficulty = Blocks.Where(b => b.DeltaType.Id == commonDeltaType.Id).Select(b => b.DifficultyLevel).FirstOrDefault();
+                    <MudSelect T="long"
+                               @bind-Value="_newSection.DifficultyLevelId"
+                               Label="@Resource.DifficultyLevel"
+                               Variant="Variant.Outlined"
+                               Class="mb-3"
+                               Disabled="true"
+                               AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@commonDifficulty.Id">@commonDifficulty.Name</MudSelectItem>
+                    </MudSelect>
+                }
+                else
+                {
+                    <MudText Color="Color.Error" Class="mt-3">@Resource.CommonDifficultyLevelNotFound</MudText>
+                }
+
+                <MudSelect T="long?"
+                           @bind-Value="_newSection.InstructionSectionAdaptiveId"
+                           Label="@Resource.InstructionsTemplate"
+                           Variant="Variant.Outlined"
+                           Class="mb-3"
+                           Clearable="true"
+                           AnchorOrigin="Origin.BottomCenter">
+                    @if (InstructionTemplate != null && InstructionTemplate.Any())
+                    {
+                        @foreach (var template in InstructionTemplate)
+                        {
+                            <MudSelectItem Value="@((long?)template.Id)">@template.Name</MudSelectItem>
+                        }
+                    }
+                    else
+                    {
+                        <MudSelectItem Value="@((long?)null)">@Resource.NoTemplatesAvailable</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudCheckBox @bind-Value="_newSection.UnScored"
+                             Label="@Resource.UnscoredPart"
+                             Class="mb-3"
+                             Disabled="@IsStepPlusStage(_currentSectionStage)" />
+
+                <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+                    <MudButton @onclick="CloseAddSectionDialog" Style="margin-right: 8px;">@Resource.Cancel</MudButton>
+                    <MudButton Color="Color.Primary" @onclick="CreateSection">@Resource.CreatePart</MudButton>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (_isSectionEditDialogOpen && _currentSection != null)
+    {
+        <div class="dialog-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
+            <div class="dialog-content" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--mud-palette-surface); padding: 20px; border-radius: 4px; z-index: 1001; min-width: 400px;">
+                <h3>@Resource.PartSettings</h3>
+
+                <MudTextField @bind-Value="_currentSection.Name"
+                              Label="@Resource.PartName"
+                              Variant="Variant.Outlined"
+                              Class="my-3" />
+
+                <MudItem Class="d-flex gap-4 align-center">
+                    <MudNumericField @bind-Value="SectionTimeInMinutes"
+                                     Variant="Variant.Outlined"
+                                     Immediate
+                                     Min="0"
+                                     Label="@Resource.Minutes" />
+                    <MudNumericField @bind-Value="SectionTimeInSeconds"
+                                     Variant="Variant.Outlined"
+                                     Immediate
+                                     Min="0"
+                                     Max="59"
+                                     Label="@Resource.Seconds" />
+                </MudItem>
+
+                <MudSelect T="long"
+                           @bind-Value="_currentSection.DifficultyLevelId"
+                           Label="@Resource.DifficultyLevel"
+                           Class="mb-3"
+                           Variant="Variant.Outlined"
+                           Disabled=true
+                           AnchorOrigin="Origin.BottomCenter">
+                    @if (Blocks.Select(x => x.DifficultyLevel) != null)
+                    {
+                        @foreach (var diff in Blocks.Select(x => x.DifficultyLevel))
+                        {
+                            if (diff != null)
+                            {
+                                <MudSelectItem Value="@diff.Id">@diff.Name</MudSelectItem>
+                            }
+                        }
+                    }
+                </MudSelect>
+
+                <MudSelect T="long?"
+                           @bind-Value="_currentSection.InstructionSectionAdaptiveId"
+                           Label="@Resource.InstructionsTemplate"
+                           Class="mb-3"
+                           Variant="Variant.Outlined"
+                           Clearable="true"
+                           AnchorOrigin="Origin.BottomCenter">
+                    @if (InstructionTemplate != null && InstructionTemplate.Any())
+                    {
+                        @foreach (var template in InstructionTemplate)
+                        {
+                            <MudSelectItem Value="@((long?)template.Id)">@template.Name</MudSelectItem>
+                        }
+                    }
+                    else
+                    {
+                        <MudSelectItem Value="@((long?)null)">@Resource.NoTemplatesAvailable</MudSelectItem>
+                    }
+                </MudSelect>
+
+                @if (IsFirstStageInCategoryGroup(_currentSectionStage))
+                {
+                    <MudCheckBox @bind-Value="_currentSection.UnScored"
+                                 Label="@Resource.UnscoredPart"
+                                 Class="mb-3"
+                                 Disabled="@IsStepPlusStage(_currentSectionStage)" />
+                }
+
+                <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+                    <MudButton @onclick="CloseEditSectionDialog"
+                               Variant="Variant.Filled"
+                               Style="margin-right: 8px;">
+                        @Resource.Cancel
+                    </MudButton>
+                    <MudButton Color="Color.Primary"
+                               Variant="Variant.Filled"
+                               @onclick="SaveSection">
+                        @Resource.Save
+                    </MudButton>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (_isStageSettingsDialogOpen)
+    {
+        <div class="dialog-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
+            <div class="dialog-content" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--mud-palette-surface); padding: 20px; border-radius: 4px; z-index: 1001; min-width: 400px;">
+                <h3>@Resource.StageSettings</h3>
+
+                @if (_currentStageSettings != null)
+                {
+                    <MudTextField @bind-Value="_currentStageSettings.Name"
+                                  Label="@Resource.StageName"
+                                  Variant="Variant.Outlined"
+                                  Disabled="true"
+                                  Class="my-3" />
+
+                    @* <MudTextField @bind-Value="_currentStageSettings.RenderedPartName"
+                                     Label="@Resource.RenderedSectionName"
+                                     Variant="Variant.Outlined"
+                                     Class="my-3" /> *@
+
+                    <MudItem Class="d-flex gap-4 align-center">
+                        <MudNumericField @bind-Value="StageTimeInMinutes"
+                                         Variant="Variant.Outlined"
+                                         Immediate
+                                         Min="0"
+                                         Label="@Resource.Minutes" />
+                        <MudNumericField @bind-Value="StageTimeInSeconds"
+                                         Variant="Variant.Outlined"
+                                         Immediate
+                                         Min="0"
+                                         Max="59"
+                                         Label="@Resource.Seconds" />
+                    </MudItem>
+
+                    <MudSelect T="long?"
+                               @bind-Value="_currentStageSettings.InstructionSectionAdaptiveId"
+                               Label="@Resource.InstructionsTemplate"
+                               Variant="Variant.Outlined"
+                               Class="mb-3"
+                               Clearable="true"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @if (InstructionTemplate != null && InstructionTemplate.Any())
+                        {
+                            @foreach (var template in InstructionTemplate)
+                            {
+                                <MudSelectItem Value="@((long?)template.Id)">@template.Name</MudSelectItem>
+                            }
+                        }
+                        else
+                        {
+                            <MudSelectItem Value="@((long?)null)">@Resource.NoTemplatesAvailable</MudSelectItem>
+                        }
+                    </MudSelect>
+                }
+
+                <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+                    <MudButton @onclick="CloseStageSettingsDialog" Style="margin-right: 8px;">@Resource.Cancel</MudButton>
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="SaveStageSettings">@Resource.Save</MudButton>
+                </div>
+            </div>
+        </div>
+    }
+}

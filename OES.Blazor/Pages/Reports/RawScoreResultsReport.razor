@@ -1,0 +1,149 @@
+@page "/reports/raw-score-results"
+
+@using OES.Helper.Dtos.Reports
+@using OES.Helper.Dtos.Reports.Analytical
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper
+
+@attribute [DynamicAuthorizeAttribute("RawScoreResultsReport")]
+
+<PageTitle>@Resource.RptTitleRawScoreResults</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-5 mt-3">
+    <MudIcon Icon="@Icons.Material.Filled.Score" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+    <MudText Typo="Typo.h5" Color="Color.Primary">@Resource.RptTitleRawScoreResults</MudText>
+    <ReportInfoButton Title="@Resource.RptTitleRawScoreResults" Overview="@_infoOverview" Sections="@_infoSections" />
+</div>
+
+@if (!string.IsNullOrEmpty(_noDataMessage))
+{
+    <MudAlert Severity="Severity.Info" Class="mb-4" ContentAlignment="HorizontalAlignment.Start" ShowCloseIcon="true" CloseIconClicked="ClearNoDataMessage">
+        @_noDataMessage
+    </MudAlert>
+}
+else if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error" Class="mb-4" ContentAlignment="HorizontalAlignment.Start" ShowCloseIcon="true" CloseIconClicked="ClearNoDataMessage">
+        @_errorMessage
+    </MudAlert>
+}
+
+<MudPaper Class="pa-4 mb-4" Elevation="3">
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudAutocomplete T="PaperLookupDto"
+                             Label="@Resource.RptPaperLabel"
+                             Value="_selectedPaper"
+                             ValueChanged="OnPaperChangedAsync"
+                             Variant="Variant.Outlined"
+                             ShowProgressIndicator="true"
+                             ToStringFunc="PaperToString"
+                             SearchFunc="SearchPapersAsync"
+                             Clearable="true"
+                             Required />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudSelect T="FormLookupDto"
+                       Label="@Resource.RptFilterForm"
+                       MultiSelection="true"
+                       SelectAll="true"
+                       SelectAllText="@Resource.RptFilterSelectAll"
+                       SelectedValues="_selectedForms"
+                       SelectedValuesChanged="OnFormsChangedAsync"
+                       Variant="Variant.Outlined"
+                       Disabled="_selectedPaper == null"
+                       ToStringFunc="FormToString">
+                @foreach (var form in _forms)
+                {
+                    <MudSelectItem Value="@form">@form.Code - @form.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudDatePicker Label="@Resource.RptDateFrom"
+                           @bind-Date="_startDate"
+                           Variant="Variant.Outlined"
+                           Clearable="true"
+                           Editable="true" />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudDatePicker Label="@Resource.RptDateTo"
+                           @bind-Date="_endDate"
+                           Variant="Variant.Outlined"
+                           Clearable="true"
+                           Editable="true" />
+        </MudItem>
+        <MudItem xs="12">
+            <GeneralLoadingButton Disabled="@(_isLoading || _selectedPaper == null || !_selectedForms.Any())"
+                                  OnClick="GenerateReportAsync"
+                                  EndIcon="@Icons.Material.Filled.Search"
+                                  Variant="Variant.Filled"
+                                  ButtonColor="Color.Primary"
+                                  ButtonText="@Resource.RptGenerateReport"
+                                  FullWidth />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@if (_isLoading && !_hasGenerated)
+{
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Class="d-block mx-auto my-8" />
+}
+
+@if (_hasGenerated)
+{
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <MudText Typo="Typo.subtitle1">
+            @if (_totalCount > 0)
+            {
+                <strong>@_totalCount</strong><span> row(s)</span>
+                @if (!string.IsNullOrEmpty(_paperName))
+                {
+                    <span> &nbsp;|&nbsp; @Resource.RptPaperLabel <strong>@_paperName</strong></span>
+                }
+                @if (_formNames.Count > 0)
+                {
+                    <span> &nbsp;|&nbsp; Forms: <strong>@string.Join(", ", _formNames)</strong></span>
+                }
+            }
+        </MudText>
+        <div class="d-flex gap-2 align-items-center">
+            <MudTextField Value="_searchString"
+                          ValueChanged="@((string v) => OnSearchInputAsync(v))"
+                          Placeholder="Search name, ID, email..."
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Clearable="true"
+                          Class="mt-0" Style="min-width:220px" />
+            <MudButton Variant="Variant.Outlined"
+                       StartIcon="@Icons.Material.Filled.Download"
+                       Color="Color.Success"
+                       Disabled="_isLoading"
+                       OnClick="ExportCsvAsync">
+                @Resource.RptExportCsv
+            </MudButton>
+        </div>
+    </div>
+    <MudPaper Elevation="2">
+        <MudDataGrid T="RawScoreResultRowDto"
+                     ServerData="LoadServerDataAsync"
+                     @ref="_grid"
+                     Dense="true" Hover="true" Striped="true"
+                     SortMode="SortMode.Single">
+            <Columns>
+                <PropertyColumn Property="r => r.NationalId" Title="@Resource.NationalId" />
+                <PropertyColumn Property="r => r.Name" Title="@Resource.Name" />
+                <PropertyColumn Property="r => r.Gender" Title="@Resource.Gender" />
+                <PropertyColumn Property="r => r.Email" Title="@Resource.Email" />
+                <PropertyColumn Property="r => r.FormName" Title="@Resource.Form" />
+                <PropertyColumn Property="r => r.TotalMarks" Title="@Resource.RptTotalMarks" />
+                <PropertyColumn Property="r => r.Score" Title="@Resource.Score" />
+                <PropertyColumn Property="r => r.ScorePct" Title="@Resource.RptScorePct" />
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="RawScoreResultRowDto" PageSizeOptions="new int[] { 25, 50, 100, 250 }" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudPaper>
+}

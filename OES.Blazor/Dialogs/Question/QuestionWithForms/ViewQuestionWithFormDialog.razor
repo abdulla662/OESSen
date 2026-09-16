@@ -1,0 +1,59 @@
+﻿
+
+<MudDialog>
+    <DialogContent>
+        @if (IsLoading)
+        {
+            <div class="d-flex justify-center align-center pa-4">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            </div>
+        }
+        else if (QuestionWithForms != null && !string.IsNullOrEmpty(QuestionWithForms.QuestionCode))
+        {
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" Class="mb-4">@Resource.QuestionCode: @(QuestionWithForms.QuestionCode)</MudText>
+
+                    <MudDivider Class="my-4" />
+
+                    <MudText Typo="Typo.h6" Class="mb-3">@Resource.TheFormsInWhichQuestionAppears:</MudText>
+
+                    @if (QuestionWithForms.Forms != null && QuestionWithForms.Forms.Any())
+                    {
+                        <MudPaper Class="pa-3" Elevation="1">
+                            @foreach (var form in QuestionWithForms.Forms)
+                            {
+                                <div class="d-flex align-center mb-2 pa-2" style="border-bottom: 1px solid var(--mud-palette-divider);">
+                                    <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Class="mr-2" />
+                                    <div class="flex-grow-1">
+                                        <MudText Typo="Typo.body1" Class="font-weight-bold">
+                                            @form.Name
+                                        </MudText>
+                                    </div>
+                                </div>
+                            }
+                        </MudPaper>
+                    }
+                    else
+                    {
+                        <MudAlert Severity="Severity.Info">
+                            @Resource.QuestionDoesNotExistInAnyFormOfThisTest
+                        </MudAlert>
+                    }
+                </MudCardContent>
+            </MudCard>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Error">
+                @Resource.FailedLoadQuestionData
+            </MudAlert>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Cancel" Variant="Variant.Filled" Color="Color.Primary">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,230 @@
+﻿@using OES.Helper
+@using OES.Helper.Dtos.Paper.Responses
+@using OES.Helper.Enums
+@using SharedHelper.Enums
+
+<MudPaper Elevation="3" Class="pa-4 mt-4">
+    <div class="d-flex justify-center">
+        <MudText Typo="Typo.h5" Class="fw-bold" Align="Align.Center" Style="word-break:break-word;">
+            @if (IsStandardManualPaper)
+            {
+                @(standardManualPaperSummaryDto.PaperName)
+            }
+            else if (IsStandardAutoPaper)
+            {
+                @(standardAutoPaperSummaryDto.PaperName)
+            }
+        </MudText>
+    </div>
+    <div class="d-flex align-center">
+        <MudIcon Icon="@Icons.Material.Filled.Book" Class="mr-2" />
+        <MudText Typo="Typo.h6" Class="fw-bold">@Resource.PaperSummary</MudText>
+    </div>
+
+    <MudGrid Class="mt-3">
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Timer" Class="mr-2" />
+                    <MudText>@Resource.TotalTime</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">@DurationDisplay</MudChip>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Language" Class="mr-2" />
+                    <MudText>@Resource.Language</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">@LanguageDisplay</MudChip>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.TouchApp" Class="mr-2" />
+                    <MudText>@Resource.SelectionType</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">@(SelectionTypeDisplay.ToLocalizedString<QuestionSelectionType>())</MudChip>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Category" Class="mr-2" />
+                    <MudText>@Resource.Type</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">@(PaperTypeDisplay.ToLocalizedString<PaperType>())</MudChip>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="4">
+            <MudCard Elevation="1" Class="pa-4 h-100">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Score" Class="mr-2" />
+                    <MudText>@Resource.TotalMark</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">@TotalMarkDisplay</MudChip>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="4" Class="mt-3">
+            <MudCard Elevation="1" Class="pa-4 h-100">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Article" Class="mr-2" />
+                    <MudText>@Resource.TotalSections</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">
+                        @if (IsStandardManualPaper)
+                        {
+                            @(standardManualPaperSummaryDto.NumberOfSection)
+                        }
+                        else if (IsStandardAutoPaper)
+                        {
+                            @(standardAutoPaperSummaryDto.NumberOfSection)
+                        }
+                    </MudChip>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="4" Class="mt-3">
+            <MudCard Elevation="1" Class="pa-4 h-100">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Quiz" Class="mr-2" />
+                    <MudText>@Resource.TotalQuestions</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">
+                        @if (IsStandardManualPaper)
+                        {
+                            @(standardManualPaperSummaryDto.NumberOfQuestion)
+                        }
+                        else if (IsStandardAutoPaper)
+                        {
+                            @(standardAutoPaperSummaryDto.NumberOfQuestion)
+                        }
+                    </MudChip>
+                </div>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="4" Class="mt-3">
+            <MudCard Elevation="1" Class="pa-4 h-100">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Storage" Class="mr-2" />
+                    <MudText>@Resource.ItemBanks</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">
+                        @if (IsStandardManualPaper)
+                        {
+                            @(standardManualPaperSummaryDto.NumberOfItemBanks)
+                        }
+                        else if (IsStandardAutoPaper)
+                        {
+                            @(standardAutoPaperSummaryDto.NumberOfItemBanks)
+                        }
+                    </MudChip>
+                </div>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@if (IsStandardManualPaper)
+{
+    <MudPaper Elevation="2" Class="pa-4 mt-4 rounded-lg">
+        <MudTable Items="@standardManualPaperSummaryDto.FormSummaryResponseDtos"
+                  Hover="true"
+                  Breakpoint="Breakpoint.Sm">
+            <HeaderContent>
+                <MudTh><MudIcon Icon="@Icons.Material.Filled.DocumentScanner" Size="Size.Small" Class="mr-1" />@Resource.FormName</MudTh>
+                <MudTh><MudIcon Icon="@Icons.Material.Filled.ViewModule" Size="Size.Small" Class="mr-1" />@Resource.Sections</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@Resource.FormName">
+                    <MudText Typo="Typo.body1" Color="Color.Primary" Class="fw-bold">@context.FormName</MudText>
+                </MudTd>
+                <MudTd DataLabel="@Resource.Sections">
+                    <MudExpansionPanels Elevation="0" Dense="true">
+                        @foreach (var section in context.SectionSummaryDtos)
+                        {
+                            <MudExpansionPanel Class="rounded mb-1">
+                                <TitleContent>
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                                        <MudText Typo="Typo.body2">@(section.SectionName)</MudText>
+                                        <MudChip T="int" Size="Size.Small" Color="Color.Primary" Variant="Variant.Filled">
+                                            @(section.NumberOfQuestion) @Resource.Questions
+                                        </MudChip>
+                                    </MudStack>
+                                </TitleContent>
+                                <ChildContent>
+                                    <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1">
+                                        @foreach (var itembank in section.SectionItemBankSummaryResponseDtos)
+                                        {
+                                            <MudChip T="string"
+                                                     Color="Color.Primary"
+                                                     Variant="Variant.Outlined"
+                                                     Icon="@Icons.Material.Filled.Inventory2"
+                                                     OnClick="@(() => ShowItembankDetails(itembank))"
+                                                     Class="cursor-pointer">
+                                                @itembank.ItemBankName
+                                            </MudChip>
+                                        }
+                                    </MudStack>
+                                </ChildContent>
+                            </MudExpansionPanel>
+                        }
+                    </MudExpansionPanels>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+}
+else if (IsStandardAutoPaper)
+{
+    <MudPaper Elevation="2" Class="pa-4 mt-4 rounded-lg">
+        <MudTable Items="@standardAutoPaperSummaryDto.SectionSummaryDtos"
+                  Hover="true"
+                  Breakpoint="Breakpoint.Sm">
+            <HeaderContent>
+                <MudTh><MudIcon Icon="@Icons.Material.Filled.ViewModule" Size="Size.Small" Class="mr-1" />@Resource.SectionName</MudTh>
+                <MudTh><MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Size="Size.Small" Class="mr-1" />@Resource.Questions</MudTh>
+                <MudTh><MudIcon Icon="@Icons.Material.Filled.Inventory2" Size="Size.Small" Class="mr-1" />@Resource.ItemBanks</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@Resource.SectionName">
+                    <MudText Typo="Typo.body1" Color="Color.Primary" Class="fw-bold">@context.SectionName</MudText>
+                </MudTd>
+                <MudTd DataLabel="@Resource.Questions">
+                    <MudChip T="int" Size="Size.Small" Color="Color.Primary" Variant="Variant.Filled">
+                        @context.NumberOfQuestion
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="@Resource.ItemBanks">
+                    <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1">
+                        @foreach (var itembank in context.SectionItemBankSummaryResponseDtos)
+                        {
+                            <MudChip T="string"
+                                     Color="Color.Primary"
+                                     Variant="Variant.Outlined"
+                                     Icon="@Icons.Material.Filled.Inventory2"
+                                     OnClick="@(() => ShowItembankDetails(itembank))"
+                                     Class="cursor-pointer">
+                                @itembank.ItemBankName
+                            </MudChip>
+                        }
+                    </MudStack>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+}

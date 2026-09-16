@@ -1,0 +1,164 @@
+@using OES.Blazor.Pages.Schedule.PaperSettingTemplates
+@using OES.Helper.Dtos.Form
+@using OES.Helper.Dtos.Paper.Responses
+@using OES.Helper.Dtos.UserPapersDto
+@using OES.Helper.Dtos.Schedule
+@using OES.Blazor.Services.Interfaces.Paper
+@using MudBlazor
+@using OES.Helper.Dtos.PaperSetting.Responses;
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid Spacing="2">
+            <MudItem xs="12">
+                <MudAutocomplete T="UserPaperForSchedule"
+                                 Value="_selectedPaper"
+                                 Label="@Resource.Paper"
+                                 ValueChanged="OnPaperSelected"
+                                 SearchFunc="SearchPapersAsync"
+                                 Variant="Variant.Outlined"
+                                 MaxItems=null
+                                 Immediate
+                                 Required="true"
+                                 Clearable="true"
+                                 ToStringFunc="@(p => p?.Name)"
+                                 HelperTextOnFocus="true"
+                                 HelperText="@Resource.SelectPaperHelper"
+                                 Error="@(_isSubmitButtonHit && (_selectedPaper == null || _selectedPaper.Id == 0))"
+                                 ErrorText="@Resource.PaperMustBeSelected" />
+            </MudItem>
+           
+            @if (_forms.Count > 0 || _selectedPaper != null)
+            {
+                <MudItem xs="12">
+                    <MudSelect T="GetFormDto"
+                               MultiSelection="true"
+                               SelectAll="true"
+                               Label="@Resource.SelectForms"
+                               Variant="Variant.Outlined"
+                               SelectedValues="_selectedForms"
+                               SelectedValuesChanged="OnFormsSelectionChanged"
+                               ToStringFunc="@(f => f?.Name)"
+                               Clearable="true"
+                               HelperText="@Resource.SelectForms"
+                               HelperTextOnFocus="true"
+                               Error="@(_isSubmitButtonHit && (_selectedForms.Count == 0))"
+                               ErrorText="@Resource.MustSelectForms">
+                        @foreach (var form in _forms)
+                        {
+                            if (_formsWithNotSyncedCandidatesIds.Contains(form.Id))
+                            {
+                                <MudSelectItem T="GetFormDto" Value="form" Disabled>
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                        <MudText>@form.Name</MudText>
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Filled">
+                                            @Resource.FormContainsUnsyncedCandidates
+                                        </MudChip>
+                                    </MudStack>
+                                </MudSelectItem>
+                            }
+                            else
+                            {
+                                <MudSelectItem T="GetFormDto" Value="form">@form.Name</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+            }
+
+            <MudItem xs="12">
+                <MudTextField @bind-Value="Model.Description"
+                              Label="@Resource.SessionDescription"
+                              Variant="Variant.Outlined"
+                              Immediate
+                              Lines="2"
+                              Clearable
+                              Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(Model.Description))"
+                              ErrorText="@Resource.SessionDescriptionIsRequired"
+                              Required
+                              HelperTextOnFocus="true"
+                              HelperText="@Resource.SessionDescriptionHelper" />
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudDatePicker Date="_selectedStartDate"
+                               DateChanged="OnStartDateChanged"
+                               Label="@Resource.StartDate"
+                               DateFormat="dd/MM/yyyy"
+                               Variant="Variant.Outlined"
+                               PickerVariant="PickerVariant.Dialog"
+                               Error="@(_isSubmitButtonHit && (_selectedStartDate == null))"
+                               ErrorText="@Resource.StartDateIsRequired"
+                               MinDate="@(ScheduleMetadataResultedParamsDto.StartDate.ToDateTime(TimeOnly.MinValue))"
+                               MaxDate="@(ScheduleMetadataResultedParamsDto.EndDate.ToDateTime(TimeOnly.MinValue))"
+                               Clearable
+                               Required="true" />
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudTimePicker Time="_selectedStartTime"
+                               TimeChanged="OnStartTimeChanged"
+                               Label="@Resource.StartTime"
+                               Variant="Variant.Outlined"
+                               PickerVariant="PickerVariant.Dialog"
+                               Error="@(_isSubmitButtonHit && (_selectedStartTime == null))"
+                               ErrorText="@Resource.StartTimeIsRequired"
+                               Clearable
+                               AmPm="true"
+                               Required="true" />
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudDatePicker Date="_selectedEndDate"
+                               DateChanged="OnEndDateChanged"
+                               Label="@Resource.EndDate"
+                               DateFormat="dd/MM/yyyy"
+                               Variant="Variant.Outlined"
+                               PickerVariant="PickerVariant.Dialog"
+                               Error="@(_isSubmitButtonHit && (_selectedEndDate == null))"
+                               ErrorText="@Resource.EndDateIsRequired"
+                               Clearable
+                               MinDate="@(ScheduleMetadataResultedParamsDto.StartDate.ToDateTime(TimeOnly.MinValue))"
+                               MaxDate="@(ScheduleMetadataResultedParamsDto.EndDate.ToDateTime(TimeOnly.MinValue))"
+                               Required="true" />
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudTimePicker Time="_selectedEndTime"
+                               TimeChanged="OnEndTimeChanged"
+                               Label="@Resource.EndTime"
+                               Variant="Variant.Outlined"
+                               Error="@(_isSubmitButtonHit && (_selectedEndTime == null))"
+                               ErrorText="@Resource.EndTimeIsRequired"
+                               PickerVariant="PickerVariant.Dialog"
+                               Clearable
+                               AmPm="true"
+                               Required="true" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudStack Row="true"
+                  Spacing="4"
+                  Class="w-50 d-flex justify-content-center mt-2"
+                  Justify="Justify.Center"
+                  AlignItems="AlignItems.Center">
+            <GeneralLoadingButton Variant="Variant.Filled"
+                                  ButtonColor="Color.Primary"
+                                  Size="Size.Small"
+                                  Class="flex-grow-1 p-2 rounded-pill"
+                                  OnClick="OnSubmitButtonHitAsync"
+                                  EndIcon="@Icons.Material.Filled.CheckCircle"
+                                  ButtonText="@(SchedulePaperId > 0 ? Resource.Update : Resource.Add)" />
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       Size="Size.Small"
+                       Class="flex-grow-1 p-2 rounded-pill"
+                       OnClick="OnCancelButtonHit"
+                       EndIcon="@Icons.Material.Filled.Cancel">
+                @Resource.Cancel
+            </MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

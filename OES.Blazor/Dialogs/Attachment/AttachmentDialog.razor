@@ -1,0 +1,51 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Medium" Color="Color.Primary" />
+            <MudText Typo="Typo.h6" Color="Color.Primary">
+                <strong>@Resource.Attachment</strong>
+            </MudText>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        @if (!string.IsNullOrWhiteSpace(AttachmentFileName))
+        {
+            <MudContainer MaxWidth="MaxWidth.False" Class="pa-0">
+                <MudPaper Square="true" Elevation="0" Class="mud-theme-primary d-flex justify-center align-center" Style="min-height: 200px; max-height: 70vh;">
+                    <MudPaper Elevation="10" Class="rounded-lg pa-2">
+                        <MudImage Src="@AttachmentFileName"
+                                  Alt="@Resource.Attachment"
+                                  Fluid="true"
+                                  ObjectFit="ObjectFit.Contain"
+                                  Style="max-height: 60vh; max-width: 100%; width: auto; height: auto;"
+                                  Class="rounded" />
+                    </MudPaper>
+                </MudPaper>
+            </MudContainer>
+        }
+        else
+        {
+            <MudContainer MaxWidth="MaxWidth.False" Class="pa-0">
+                <MudPaper Square="true" Elevation="0" Class="d-flex justify-center align-center" Style="min-height: 200px;">
+                    <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="pa-4">
+                        <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported"
+                                 Size="Size.Large"
+                                 Color="Color.Error"
+                                 Style="font-size: 4rem;" />
+                        <MudText Typo="Typo.body1" Color="Color.Error">
+                            @Resource.Failed
+                        </MudText>
+                    </MudStack>
+                </MudPaper>
+            </MudContainer>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close"
+                   OnClick="Close">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,48 @@
+﻿@typeparam TEntity
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Checklist" Color="Color.Primary" Size="Size.Large" />
+            <MudText Typo="Typo.h6" Color="Color.Primary">@Caption</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudPaper Elevation="0" Class="pa-4 rounded-lg content-container">
+            <div class="dialog-search-wrapper">
+                <ListItem @ref="listRef"
+                          T="TEntity"
+                          Caption="@Caption"
+                          EndpointServerice="@(FetchDataAsync)"
+                          DisplayColumns="DisplayColumns"
+                          CRUD_Edit_Btn="true"
+                          CRUD_Delete_Btn="true"
+                          MultiSelection="true"
+                          EditClick_Fun="@(EventCallback.Factory.Create<object>(this, OnEditClickAsync))"
+                          DeleteClick_fun="HandleDeleteClick"
+                          ShowCheckBox="false"
+                          HideCodeSearch="true"
+                          HideSearchInBody="true"
+                          Hide_DescriptionSearch="true"
+                          HideDateRangeFilter="true"
+                          HideOrderByFilter="true" />
+            </div>
+        </MudPaper>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Check"
+                   OnClick="SaveSelection">
+            @Resource.Confirm
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Secondary"
+                   StartIcon="@Icons.Material.Filled.Close"
+                   OnClick="@(() => MudDialog.Close(DialogResult.Cancel()))">
+            @Resource.Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

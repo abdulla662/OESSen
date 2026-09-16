@@ -1,0 +1,12 @@
+﻿@inherits LayoutComponentBase
+
+<MudRTLProvider RightToLeft="@RightToLeft">
+    <MudThemeProvider Theme="@SharedTheme.OesTheme" IsDarkMode="SharedTheme.IsDarkMode" />
+    <MudPopoverProvider />
+    <MudDialogProvider BackdropClick="false" />
+    <MudSnackbarProvider />
+
+    <div class="EmptyLayout-container">
+        @Body
+    </div>
+</MudRTLProvider>

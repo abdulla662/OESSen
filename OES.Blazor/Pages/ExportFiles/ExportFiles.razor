@@ -1,0 +1,100 @@
+﻿@page "/ExportFile"
+
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.Dtos.Questionlanguage
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Enums
+@using OES.Helper
+
+@attribute [DynamicAuthorizeAttribute("ExportFile")]
+
+<PageTitle>@Resource.ExportQuestion</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <div class="d-flex justify-content-center align-items-center mb-5 mt-5">
+            <MudIcon Icon="@Icons.Material.Rounded.ImportExport" Color="Color.Primary" Size="Size.Large" Class="me-2" Style="vertical-align: middle;" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">@Resource.ExportQuestion</MudText>
+        </div>
+        <EditForm Model="ExportQuestionsOfItemBankDto">
+            <MudItem xs="12">
+                <MudSelect T="FileExportTypes?"
+                           @bind-Value="_selectedDocType"
+                           Label=@Resource.SelectDocumentType
+                           Variant="Variant.Outlined"
+                           Clearable
+                           Required
+                           AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="@((FileExportTypes?)FileExportTypes.QTI)">@FileExportTypes.QTI.ToLocalizedString()</MudSelectItem>
+                    <MudSelectItem Value="@((FileExportTypes?)FileExportTypes.Excel)">@FileExportTypes.Excel.ToLocalizedString()</MudSelectItem>
+                    <MudSelectItem Value="@((FileExportTypes?)FileExportTypes.Word)">@FileExportTypes.Word.ToLocalizedString()</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudAutocomplete T="LanguageDto"
+                                 Label="@Resource.Language"
+                                 @bind-Value="_selectedLanguage"
+                                 Variant="Variant.Outlined"
+                                 ShowProgressIndicator="true"
+                                 ToStringFunc="x=>x.Name"
+                                 SearchFunc="SearchLanguageAsync"
+                                 Clearable="true" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <div class="d-flex justify-content-center align-content-center gap-3 gap-md-4">
+                    <MudAutocomplete T="RootItemBankDto"
+                                     Label=@Resource.SelectRootItemBank
+                                     Value="_selectedItemBankRoot"
+                                     ValueChanged="CaptureSelectedItemBankRoot"
+                                     Variant="Variant.Outlined"
+                                     ShowProgressIndicator="true"
+                                     SearchFunc="SearchItemBankRootsAsync"
+                                     ToStringFunc="ItemBankDtoToStringConverter"
+                                     Clearable="true"
+                                     Required />
+                    <MudFab Label=@Resource.SelectNode
+                            Class="align-self-center p-2"
+                            OnClick="OpenItemBankRootTreeDialogAsync"
+                            EndIcon="@Icons.Material.Filled.AccountTree"
+                            Disabled="_selectedItemBankRoot == null" />
+                </div>
+                @if (_selectedItemBankRoot is not null && _selectedItemBankNodesFromDialog.Count == 0)
+                {
+                    <MudAlert Severity="Severity.Error" Class="mt-2" ContentAlignment="HorizontalAlignment.Start">
+                        @Resource.SelectNodeBeforeProceeding
+                    </MudAlert>
+                }
+                <div class="d-flex flex-wrap justify-content-start align-content-center gap-2 mt-2">
+                    @foreach (var node in _selectedItemBankNodesFromDialog)
+                    {
+                        <MudChip T="string"
+                                 Color="Color.Secondary"
+                                 Icon="@Icons.Material.Filled.CheckCircle"
+                                 Size="Size.Large"
+                                 OnClose="@(() => RemoveSelectedNode(node))">
+                            <strong>@node.Text</strong>
+                        </MudChip>
+                    }
+                </div>
+            </MudItem>
+
+            <MudItem>
+                <MudCheckBox @bind-Value="_contentWithHtmlTag" Color="Color.Primary">@Resource.ContentWithHTMLTags</MudCheckBox>
+            </MudItem>
+
+            <MudItem xs="12">
+                <GeneralLoadingButton Disabled="_processing"
+                                      OnClick="OnSubmit"
+                                      EndIcon="@Icons.Material.Rounded.ImportExport"
+                                      Variant="Variant.Filled"
+                                      ButtonColor="Color.Primary"
+                                      ButtonText="@Resource.Export"
+                                      FullWidth
+                                      Type="ButtonType.Submit" />
+            </MudItem>
+        </EditForm>
+    </MudCardContent>
+</MudCard>

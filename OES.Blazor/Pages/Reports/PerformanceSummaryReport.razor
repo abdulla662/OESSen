@@ -1,0 +1,355 @@
+@page "/reports/performance-summary"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("PerformanceSummaryReport")]
+
+<PageTitle>
+    @Resource.RptTitlePerformanceSummary
+</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-4 mt-3 ar-no-print">
+    <MudIcon Icon="@Icons.Material.Filled.Assessment"
+             Color="Color.Primary"
+             Size="Size.Large"
+             Class="me-2" />
+    <MudText Typo="Typo.h5" Color="Color.Primary">
+        @Resource.RptTitlePerformanceSummary
+    </MudText>
+    <ReportInfoButton Title="@Resource.RptTitlePerformanceSummary"
+                      Overview="@_infoOverview"
+                      Sections="@_infoSections" />
+</div>
+
+@if (HasError)
+{
+    <MudAlert Severity="Severity.Error"
+              Class="mb-4 ar-no-print"
+              ShowCloseIcon="true"
+              CloseIconClicked="ClearError">
+        @_errorMessage
+    </MudAlert>
+}
+
+<AnalyticalReportFilter ShowVenue="true"
+                        ShowPaper="true"
+                        ShowItemBank="false"
+                        FilterChanged="OnFilterChangedAsync"
+                        OnGenerateClicked="GenerateAsync" />
+<div class="d-flex justify-content-end gap-2 mb-3 ar-no-print">
+    @if (HasReport)
+    {
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.TableChart"
+                   Color="Color.Success"
+                   OnClick="ExportAsync"
+                   Disabled="_isExporting">
+            @(_isExporting? Resource.RptExporting: Resource.RptExportExcel)
+        </MudButton>
+    }
+
+    <MudButton Variant="Variant.Outlined"
+               StartIcon="@Icons.Material.Filled.Print"
+               OnClick="PrintAsync">
+        @Resource.RptPrintSaveAsPdf
+    </MudButton>
+</div>
+
+@if (_isLoading)
+{
+    <MudProgressCircular Indeterminate="true"
+                         Color="Color.Primary"
+                         Class="d-block mx-auto my-8" />
+}
+else if (HasReport)
+{
+    var report = _report!;
+
+    <div class="ar-header-info">
+        <span>
+            <strong>
+                @Resource.RptScheduleLabel
+            </strong>
+            @report.Schedule
+        </span>
+        <span class="ms-4">
+            <strong>
+                @Resource.RptVenueLabel
+            </strong>
+            @report.Venue
+        </span>
+        <span class="ms-4">
+            <strong>
+                @Resource.RptPaperLabel
+            </strong>
+            @report.PaperCode
+        </span>
+        @if (report.ExamDate.HasValue)
+        {
+            <span class="ms-4">
+                <strong>
+                    @Resource.RptDateLabel
+                </strong>
+                @(report.ExamDate.Value.ToString("yyyy-MM-dd"))
+            </span>
+        }
+    </div>
+    <div class="ar-section-title">
+        @Resource.RptAssessmentPerformance
+    </div>
+    <div class="d-flex flex-wrap gap-3 mb-4">
+        <div class="ar-stat-tile ar-tile-avg">
+            <div class="ar-tile-label">
+                @Resource.RptAverageScore
+            </div>
+            <div class="ar-tile-value">
+                @($"{report.AverageScorePct:F1}%")
+            </div>
+        </div>
+        <div class="ar-stat-tile ar-tile-low">
+            <div class="ar-tile-label">
+                @Resource.RptLowScore
+            </div>
+            <div class="ar-tile-value">
+                @($"{report.LowScorePct:F1}%")
+            </div>
+        </div>
+        <div class="ar-stat-tile ar-tile-high">
+            <div class="ar-tile-label">
+                @Resource.RptHighScore
+            </div>
+            <div class="ar-tile-value">
+                @($"{report.HighScorePct:F1}%")
+            </div>
+        </div>
+        <div class="ar-stat-tile ar-tile-kr20">
+            <div class="ar-tile-label">
+                @Resource.RptKr20Reliability
+            </div>
+            <div class="ar-tile-value">
+                @report.Kr20.ToString("F3")
+            </div>
+            <div class="ar-kr20-bar-bg mt-1">
+                <div class="ar-kr20-bar-fill"
+                     style="@($"width:{report.Kr20 * 100:F1}%")">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="ar-small-caption">
+                    @Resource.RptPoor
+                </span>
+                <span class="ar-small-caption">
+                    @Resource.RptGood
+                </span>
+            </div>
+        </div>
+    </div>
+    <MudText Typo="Typo.caption"
+             Class="mb-3">
+        @Resource.RptExamTakers
+        @report.ExamTakers
+
+        &nbsp;|&nbsp;
+
+        @Resource.RptTotalQuestions
+        @report.TotalQuestions
+    </MudText>
+    
+    @if (HasHistogram)
+    {
+        <div class="ar-section-title">
+            @Resource.RptScoreDistribution
+        </div>
+        <MudPaper Elevation="2"
+                  Class="pa-4 mb-4">
+            <MudChart ChartType="ChartType.Bar"
+                      ChartSeries="ChartSeries"
+                      XAxisLabels="ChartLabels"
+                      Width="100%"
+                      Height="280px"
+                      ChartOptions="ChartOptions" />
+        </MudPaper>
+    }
+
+    <div class="ar-section-title">
+        @Resource.RptLearningOutcomes
+    </div>
+
+    @if (!report.LearningOutcomes.Any())
+    {
+        <MudAlert Severity="Severity.Info"
+                  Class="mb-4">
+            @Resource.RptNoCategoryData
+        </MudAlert>
+    }
+    else
+    {
+        <MudPaper Elevation="2"
+                  Class="pa-0 mb-4 overflow-auto">
+            <table class="ar-table">
+                <thead>
+                    <tr>
+                        <th class="text-start">
+                            @Resource.Category
+                        </th>
+                        <th>
+                            @Resource.RptAvgCorrectPct
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var outcome in report.LearningOutcomes)
+                    {
+                        <tr>
+                            <td class="text-start">
+                                @outcome.CategoryName
+                            </td>
+                            <td>
+                                @outcome.AvgCorrectPct
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </MudPaper>
+    }
+
+    <div class="ar-section-title">
+        @Resource.RptAtRiskStudents
+    </div>
+
+    @if (!report.AtRiskStudents.Any())
+    {
+        <MudAlert Severity="Severity.Info"
+                  Class="mb-4">
+            @Resource.RptNotEnoughCandidates
+        </MudAlert>
+    }
+    else
+    {
+        <MudPaper Elevation="2"
+                  Class="pa-0 mb-4 overflow-auto">
+            <table class="ar-table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Resource.RptCandidateCode
+                        </th>
+                        <th class="text-start">
+                            @Resource.Name
+                        </th>
+                        <th>
+                            @Resource.RptRawScore
+                        </th>
+                        <th>
+                            @Resource.RptScorePct
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in report.AtRiskStudents)
+                    {
+                        <tr>
+                            <td>
+                                @student.CandidateCode
+                            </td>
+                            <td class="text-start">
+                                @student.DisplayName
+                            </td>
+                            <td>
+                                @student.RawScore
+                            </td>
+                            <td>
+                                @student.ScorePct
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </MudPaper>
+    }
+
+    @if (report.QuestionPerformance.Any())
+    {
+        <div class="ar-section-title">
+            @Resource.RptQuestionPerformance
+        </div>
+        <MudPaper Elevation="2"
+                  Class="pa-0 overflow-auto">
+            <table class="ar-table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Resource.RowNumber
+                        </th>
+                        <th>
+                            @Resource.RptQuestionCode
+                        </th>
+                        <th class="text-start ar-item-stem-col">
+                            @Resource.RptItemStem
+                        </th>
+                        <th>
+                            @Resource.RptCorrectPct
+                        </th>
+                        <th>
+                            @Resource.RptUpper27Pct
+                        </th>
+                        <th>
+                            @Resource.RptLower27Pct
+                        </th>
+                        <th>
+                            @Resource.RptPtBiserial
+                        </th>
+                        <th>
+                            @Resource.RptDiscIndex
+                        </th>
+                        <th>A%</th>
+                        <th>B%</th>
+                        <th>C%</th>
+                        <th>D%</th>
+                        <th>E%</th>
+                        <th>F%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var question in report.QuestionPerformance)
+                    {
+                        <tr>
+                            <td>
+                                @question.SrNo
+                            </td>
+                            <td>
+                                @question.QuestionCode
+                            </td>
+                            <td class="text-start ar-item-stem-cell">
+                                @question.ItemStem
+                            </td>
+                            <td>
+                                @question.CorrectPct
+                            </td>
+                            <td>
+                                @question.Upper27Pct
+                            </td>
+                            <td>
+                                @question.Lower27Pct
+                            </td>
+                            <td>
+                                @(question.PointBiserial?.ToString("F3")
+                                    ?? "â€”")
+                            </td>
+                            <td>
+                                @question.DiscIndex
+                            </td>
+                            <td>@question.FreqA</td>
+                            <td>@question.FreqB</td>
+                            <td>@question.FreqC</td>
+                            <td>@question.FreqD</td>
+                            <td>@question.FreqE</td>
+                            <td>@question.FreqF</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </MudPaper>
+    }
+}

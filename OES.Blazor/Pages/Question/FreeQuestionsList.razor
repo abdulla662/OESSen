@@ -1,0 +1,48 @@
+﻿@page "/StandaloneQuestions"
+
+@using OES.Helper.Dtos.Question
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Blazor.Components.Common
+@using MudBlazor
+
+@attribute [DynamicAuthorizeAttribute("StandaloneQuestions")]
+
+<PageTitle>@Resource.StandaloneQuestions</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.Quiz" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.StandaloneQuestions</MudText>
+        </MudStack>
+        <ListItem @key="_questionsListChangingKey"
+                  T="StandaloneQuestionsResponseDto"
+                  Caption="@Resource.Question"
+                  CaptionIcon="@Icons.Material.Rounded.Quiz"
+                  EndpointServerice="BlazQuestionService.GetAllStandaloneQuestionAsync"
+                  DisplayColumns="[nameof(StandaloneQuestionsResponseDto.QuestionCode),
+                                   nameof(StandaloneQuestionsResponseDto.QuestionType),
+                                   nameof(StandaloneQuestionsResponseDto.BlockCodes),
+                                   nameof(StandaloneQuestionsResponseDto.ItemBankName)]"
+                  Hide_DescriptionSearch="true"
+                  NoConvertColumns='[nameof(StandaloneQuestionsResponseDto.QuestionCode)]'
+                  HideSearchInBody="true"
+                  SelectedItems="_selectedQuestions"
+                  SelectedItemsChanged="OnSelectedQuestionsChanged"
+                  MultiSelection="true">
+            <TopChildContent>
+                <MudFab Class="mt-1 mb-3"
+                        Color="Color.Primary"
+                        OnClick="ShowResetConfirmation"
+                        StartIcon="@Icons.Material.Filled.Replay"
+                        Label="@Resource.ReturnToEdit" />
+                <MudFab Class="mt-1 mb-3"
+                        Color="Color.Primary"
+                        OnClick="OpenUploadDialog"
+                        StartIcon="@Icons.Material.Filled.UploadFile"
+                        Label="@Resource.UploadFreeQuestions" />
+            </TopChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

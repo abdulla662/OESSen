@@ -1,0 +1,60 @@
+﻿@using OES.Helper
+@using OES.Helper.Dtos.Paper.Responses
+@using OES.Helper.Enums
+
+<MudDialog>
+    <DialogContent>
+        <div class="d-flex align-center mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.LibraryBooks" Color="Color.Primary" Class="mr-2" />
+            <MudText Typo="Typo.h6" Class="fw-bold">@ItemBank.ItemBankName @Resource.ItemBank</MudText>
+            <MudSpacer />
+            <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Class="ml-2">
+                @ItemBank.DifficultyLevelSummaryResponseDtos.Sum(x => x.NumberOfQuestion) @Resource.TotalQuestions
+            </MudChip>
+        </div>
+        @foreach (var difficultyLevel in ItemBank.DifficultyLevelSummaryResponseDtos)
+        {
+            <MudPaper Elevation="0" Class="pa-2">
+                <MudGrid>
+                    <MudItem xs="12" Class="mb-3">
+                        <div class="d-flex align-center">
+                            <MudText Typo="Typo.subtitle1" Class="fw-bold">
+                                @Resource.LevelQuestions
+                            </MudText>
+                        </div>
+                    </MudItem>
+
+                    @foreach (var questionType in difficultyLevel.QuestionTypeResponseDtos)
+                    {
+                        <MudItem xs="12" sm="6" md="4" Class="mb-3">
+                            <MudCard Class="h-100 border-1 rounded-2">
+                                <MudCardHeader>
+                                    <CardHeaderContent>
+                                        <div class="d-flex align-center">
+                                            <MudIcon Icon="@GetQuestionTypeIcon(questionType.QuestionTypeName)" 
+                                                     Class="mr-2" 
+                                                     Color="Color.Primary" />
+                                            <MudText>@(questionType.QuestionTypeName.ToLocalizedString<QuestionType>())</MudText>
+                                        </div>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <div class="d-flex justify-space-between align-center">
+                                        <MudText Typo="Typo.body2">@Resource.QuestionCount:</MudText>
+                                        <MudChip T="string" Class="circle-number">
+                                            @questionType.NumberOfQuestions
+                                        </MudChip>
+                                    </div>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudPaper>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Close" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

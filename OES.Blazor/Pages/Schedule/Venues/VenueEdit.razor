@@ -1,0 +1,254 @@
+@page "/EditVenue"
+
+@using System.ComponentModel.DataAnnotations
+@using OES.Helper.Dtos.Venue
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.General
+
+@attribute [DynamicAuthorizeAttribute("EditVenue")]
+
+<PageTitle>@Resource.EditVenue</PageTitle>
+
+<EditForm Model="@Model">
+    <DataAnnotationsValidator />
+
+    <MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4">
+        <MudCardContent>
+            <div class="text-center mb-4 d-flex justify-content-center align-items-center mb-6">
+                <MudIcon Icon="@Icons.Material.Filled.Place" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+                <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">@Resource.EditVenue</MudText>
+            </div>
+
+            <MudPaper Elevation="0" Class="p-4 mb-5 mt-3 border rounded">
+                <MudText Typo="Typo.h6" Class="mb-4">
+                    @Resource.VenueMainInformation
+                </MudText>
+
+                <MudGrid>
+                    <!-- Venue Name -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.name"
+                                      @bind-Value="Model.Name"
+                                      For="@(() => Model.Name)"
+                                      Variant="Variant.Outlined"
+                                      Immediate
+                                      Class="w-100 my-2" />
+                    </MudItem>
+
+                    <!-- Venue Code -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.Code"
+                                      Value="@Model.Code"
+                                      ValueChanged="@((string val) => Model.Code = ListHelpers.SanitizeCode(val))"
+                                      For="@(() => Model.Code)"
+                                      Variant="Variant.Outlined"
+                                      Immediate
+                                      Class="w-100 my-2" />
+                    </MudItem>
+
+                    <!-- Venue Display Name -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.VenueDisplayName"
+                                      @bind-Value="Model.DisplayName"
+                                      For="@(() => Model.DisplayName)"
+                                      Variant="Variant.Outlined"
+                                      Immediate
+                                      Class="w-100 my-2" />
+                    </MudItem>
+
+                    <!-- Address -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.Address"
+                                      @bind-Value="Model.Address"
+                                      For="@(() => Model.Address)"
+                                      Immediate
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2" />
+                    </MudItem>
+
+                    <!-- Location -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.GeoLocation"
+                                      @bind-Value="Model.GeoLocation"
+                                      For="@(() => Model.GeoLocation)"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2" />
+                    </MudItem>
+
+                    <!-- Pin Code -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.PinCode"
+                                      @bind-Value="Model.PinCode"
+                                      For="@(() => Model.PinCode)"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2"
+                                      Immediate />
+                    </MudItem>
+
+                    <!-- Venue Email -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.Email"
+                                      @bind-Value="Model.VenueEmail"
+                                      For="@(() => Model.VenueEmail)"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2" />
+                    </MudItem>
+
+                    <!-- Mobile -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.Mobile"
+                                      @bind-Value="Model.Mobile"
+                                      For="@(() => Model.Mobile)"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2" />
+                    </MudItem>
+
+                    <!-- IPAddress -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.IPAddress"
+                                      @bind-Value="Model.IPAddress"
+                                      For="@(() => Model.IPAddress)"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2" />
+                    </MudItem>
+
+                    <!-- Url -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.Url"
+                                      @bind-Value="Model.Url"
+                                      For="@(() => Model.Url)"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2"
+                                      Immediate
+                                      Error="@HasUrlError"
+                                      ErrorText="@UrlErrorText" />
+                    </MudItem>
+
+                    <!-- TCIds -->
+                    <MudItem xs="12">
+                        <MudPaper Elevation="0" Class="pa-3 rounded-lg border-dashed-primary">
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Code" Color="Color.Primary" Size="Size.Small" />
+                                <MudText Typo="Typo.body2" Color="Color.Primary" Class="fw-600">
+                                    @Resource.TCCodesCommaSeparated
+                                </MudText>
+                            </MudStack>
+                            <MudGrid Spacing="2" Class="align-center">
+                                <MudItem xs="12" sm="9">
+                                    <MudTextField @bind-Value="_newTCCode"
+                                                  Variant="Variant.Outlined"
+                                                  Label="@Resource.EnterTCCodesSeparatedByCommas"
+                                                  Immediate
+                                                  Error="@HasTCCodeError"
+                                                  ErrorText="@TCCodeErrorText"
+                                                  Class="w-100" />
+                                </MudItem>
+                                <MudItem xs="12" sm="3">
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               Size="Size.Large"
+                                               StartIcon="@Icons.Material.Filled.Add"
+                                               Disabled="@(!IsValidTCCode)"
+                                               OnClick="AddTCCode"
+                                               Class="rounded-lg w-100"
+                                               Style="height: 56px;">
+                                        @Resource.Add
+                                    </MudButton>
+                                </MudItem>
+                            </MudGrid>
+                            @if (_tcCodesList.Count > 0)
+                            {
+                                <MudChipSet T="string" Class="mt-2">
+                                    @foreach (var tcCode in _tcCodesList)
+                                    {
+                                        <MudChip T="string"
+                                                 Color="Color.Primary"
+                                                 Variant="Variant.Filled"
+                                                 Size="Size.Medium"
+                                                 OnClose="() => RemoveTCCode(tcCode)">
+                                            @tcCode
+                                        </MudChip>
+                                    }
+                                </MudChipSet>
+                            }
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+
+            <MudDivider Class="my-4" />
+
+            <MudPaper Elevation="0" Class="p-4 mb-5 mt-3 border rounded">
+                <MudText Typo="Typo.h6" Class="mb-4">
+                    @Resource.VenueCoordinatorInformation
+                </MudText>
+
+                <MudGrid>
+                    <!-- Coordinator Name -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.CoordinatorName"
+                                      @bind-Value="Model.CoordinatorFullName"
+                                      For="@(() => Model.CoordinatorFullName)"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2"
+                                      Immediate />
+                    </MudItem>
+
+                    <!-- Coordinator Password -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.CoordinatorPassword"
+                                      @bind-Value="Model.CoordinatorVenuePassword"
+                                      For="@(() => Model.CoordinatorVenuePassword)"
+                                      InputType="InputType.Password"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2"
+                                      Immediate />
+                    </MudItem>
+
+                    <!-- Coordinator Email -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.CoordinatorEmail"
+                                      @bind-Value="Model.CoordinatorEmail"
+                                      For="@(() => Model.CoordinatorEmail)"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2" />
+                    </MudItem>
+
+                    <!-- Coordinator Mobile -->
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Resource.CoordinatorMobile"
+                                      @bind-Value="Model.CoordinatorMobile"
+                                      For="@(() => Model.CoordinatorMobile)"
+                                      Variant="Variant.Outlined"
+                                      Class="w-100 my-2" />
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudCardContent>
+
+        <MudCardActions Class="justify-content-center mt-2">
+            <MudStack Row="true"
+                      Spacing="4"
+                      Class="w-50"
+                      Justify="Justify.Center"
+                      AlignItems="AlignItems.Center">
+                <GeneralLoadingButton ButtonText="@Resource.Save"
+                                      Size="Size.Small"
+                                      Class="flex-grow-1 p-2 rounded-pill"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit"
+                                      OnClick="OnSubmit"
+                                      Disabled="IsSubmitButtonDisabled" />
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           OnClick="NavigateBack"
+                           EndIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudCardActions>
+    </MudCard>
+</EditForm>

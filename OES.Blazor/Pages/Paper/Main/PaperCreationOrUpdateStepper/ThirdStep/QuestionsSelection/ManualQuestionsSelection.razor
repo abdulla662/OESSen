@@ -1,0 +1,353 @@
+﻿@using MudBlazor
+@using OES.Blazor.Services.Interfaces.Question
+@using OES.Helper
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.Dtos.Paper.Responses
+@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.DifficultyLevel
+@using OES.Helper.Dtos.QyestionType
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Enums
+@using System.Globalization
+@using OES.Helper.General
+@using OES.Helper.Dtos.TreeItem
+
+<!-- Paginated List for Questions -->
+<MudExpansionPanels MultiExpansion="true">
+    <MudExpansionPanel Expanded="true">
+        <TitleContent>
+            <MudText Typo="Typo.h6">@Resource.QuestionsSelectionPanel</MudText>
+        </TitleContent>
+        <ChildContent>
+            <div class="q3-table">
+                <ListItem @key="_questionsListChangingKey"
+                          T="ManualQuestionsPaginationResponseDto"
+                          EndpointServerice="GetAllQuestions"
+                          Caption="@Resource.Questions"
+                          CaptionIcon="@Icons.Material.Rounded.Quiz"
+                          DisplayColumns='[ nameof(ManualQuestionsPaginationResponseDto.Code),
+                                            nameof(ManualQuestionsPaginationResponseDto.QuestionTypeDisplay),
+                                            nameof(ManualQuestionsPaginationResponseDto.SubQuestionsCount),
+                                            nameof(ManualQuestionsPaginationResponseDto.ItemBankName),
+                                            nameof(ManualQuestionsPaginationResponseDto.DifficultyLevelName),
+                                            nameof(ManualQuestionsPaginationResponseDto.UsedInFormsCount) ]'
+                          NoConvertColumns='[nameof(ManualQuestionsPaginationResponseDto.Code)]'
+                          Hide_DescriptionSearch="true"
+                          HideSearchInBody="false"
+                          FilterObject="QuestionFilterPaginationModel"
+                          SelectedItems="_tableSelectedItems"
+                          SelectedItemsChanged="OnTableSelectionChanged">
+                    <TopChildContent>
+                        <!--Custom Filtration Panel-->
+                        <MudCard Class="mb-3">
+                            <MudCardContent>
+                                <MudGrid Justify="Justify.Center">
+                                    <MudItem xs="12" sm="6" md="3">
+                                        <MudSelect T="ItemBanksFromItemBankPointResponseDto"
+                                                   Label="@Resource.SelectItemBank"
+                                                   Clearable="true"
+                                                   @bind-Value="SelectedItemBank"
+                                                   Variant="Variant.Outlined"
+                                                   AnchorOrigin="Origin.BottomCenter">
+                                            @if (_itemBanks != null && _itemBanks.Any())
+                                            {
+                                                @foreach (var itembank in _itemBanks)
+                                                {
+                                                    <MudSelectItem Value="@itembank">@itembank.Name</MudSelectItem>
+                                                }
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                    @if (_selectedItemBank != null)
+                                    {
+                                        <MudItem xs="12" sm="6" md="3">
+                                            <MudSelect T="TreeItemResponseDto"
+                                                       Label="@Resource.SelectBranch"
+                                                       Clearable="true"
+                                                       @bind-Value="SelectedBranch"
+                                                       Variant="Variant.Outlined"
+                                                       AnchorOrigin="Origin.BottomCenter">
+                                                @if (_branches.Any())
+                                                {
+                                                    @foreach (var branch in _branches)
+                                                    {
+                                                        <MudSelectItem Value="@branch">@branch.Text</MudSelectItem>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <MudSelectItem Disabled="true" Value="@((TreeItemResponseDto)null)">
+                                                        @Resource.NotAvailable
+                                                    </MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                        </MudItem>
+                                    }
+                                    <MudItem xs="12" sm="6" md="3">
+                                        <MudSelect T="QuestionTypeDto"
+                                                   Label="@Resource.SelectType"
+                                                   @bind-Value="SelectedType"
+                                                   Clearable="true"
+                                                   Variant="Variant.Outlined"
+                                                   AnchorOrigin="Origin.BottomCenter">
+                                            @if (_questionTypes != null && _questionTypes.Any())
+                                            {
+                                                @foreach (var type in _questionTypes)
+                                                {
+                                                    <MudSelectItem Value="@type">@(type.Name.ToLocalizedString<QuestionType>())</MudSelectItem>
+                                                }
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="6" md="3">
+                                        <MudSelect T="DifficultyLevelDto"
+                                                   Label="@Resource.SelectDiffcultyLevel"
+                                                   @bind-Value="SelectedDifficultyLevel"
+                                                   Clearable="true"
+                                                   Variant="Variant.Outlined"
+                                                   AnchorOrigin="Origin.BottomCenter">
+                                            @if (_difficultyLevels != null && _difficultyLevels.Any())
+                                            {
+                                                @foreach (var level in _difficultyLevels)
+                                                {
+                                                    <MudSelectItem Value="@level">@level.Name</MudSelectItem>
+                                                }
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                    @* <MudItem xs="12" sm="12" md="6">
+                                    <MudPaper Class="pa-3">
+                                        @{
+                                            var from = SelectedDifficultyLevel?.FromDelta ?? 0.00;
+                                            var to = SelectedDifficultyLevel?.ToDelta ?? 1.00;
+                                            var name = SelectedDifficultyLevel?.Name;
+                                        }
+
+                                        <MudText Class="mb-2" Typo="Typo.subtitle2">
+                                            @Resource.DeltaRange
+                                            @if (!string.IsNullOrWhiteSpace(name))
+                                            {
+                                                <text> (<b>@name</b>)</text>
+                                            }
+                                            :
+                                            <span class="ml-2">@from.ToString("F2") – @to.ToString("F2")</span>
+                                        </MudText>
+
+                                        <DualRangeSingleSlider T="double"
+                                                               Min="@Math.Min(from, to)"
+                                                               Max="@Math.Max(from, to)"
+                                                               Step="0.01"
+                                                               @bind-MinValue="_deltaMin"
+                                                               @bind-MaxValue="_deltaMax"
+                                                               MinDistance="0"
+                                                               PushOther="true"
+                                                               ShowPerSliderValues="false"
+                                                               ShowRangeSummary="true"
+                                                               TrackHeightPx="12"
+                                                               RangeChanged="OnDeltaRangeChanged" />
+                                    </MudPaper>
+                                </MudItem>
+                                <!-- Reset Button -->
+                                <MudItem xs="12" sm="6" md="3" Class="d-flex align-center justify-center">
+                                    <MudButton OnClick="() => _questionsListChangingKey++" Color="Color.Primary" Variant="Variant.Filled">
+                                        @Resource.APPLY
+                                    </MudButton>
+                                    <MudSpacer />
+                                    <MudButton OnClick="ResetFilters" Color="Color.Error" Variant="Variant.Outlined">
+                                        @Resource.ResetFilters
+                                    </MudButton>
+                                </MudItem> *@
+                                </MudGrid>
+                            </MudCardContent>
+                        </MudCard>
+                    </TopChildContent>
+                    <ButtonChildContent Context="context">
+                        @{
+                            var item = (ManualQuestionsPaginationResponseDto)context;
+                            int usageCount = GetActiveFormUsageCount(item.QuestionMetadataId);
+                        }
+                        <div @onclick:stopPropagation="true" style="display: inline-block;">
+                            <MudBadge Content="@usageCount"
+                                      Overlap="true"
+                                      Class="mx-6 my-4"
+                                      Color="Color.Info"
+                                      Visible="@(usageCount > 0)">
+                                <MudTooltip Text="@GetSelectionTooltip(item)">
+                                    <MudFab Color="Color.Success"
+                                            StartIcon="@Icons.Material.Filled.Add"
+                                            Disabled="@IsSelectionDisabled(item)"
+                                            Size="Size.Small"
+                                            Class=@($"label-{nameof(Resource.SelectQuestion)}")
+                                            OnClick="@(() => SelectedQuestionsChanged(item))" />
+                                </MudTooltip>
+                            </MudBadge>
+                        </div>
+                    </ButtonChildContent>
+                </ListItem>
+            </div>
+        </ChildContent>
+    </MudExpansionPanel>
+
+    <MudExpansionPanel Expanded="true" Class="mt-4">
+        <TitleContent>
+            <div class="d-flex align-center">
+                <MudText Typo="Typo.h6">@Resource.SelectedQuestions (@TotalUsedSelectedCount / @MaxSelectableQuestions)</MudText>
+            </div>
+        </TitleContent>
+        <ChildContent>
+            @if (TotalUsedSelectedCount < MaxSelectableQuestions)
+            {
+                <MudAlert Severity="Severity.Warning" Class="my-4" ContentAlignment="HorizontalAlignment.Start" Square="true" Variant="Variant.Outlined">
+                    <div class="d-flex align-center">
+                        <MudText Typo="Typo.body2">
+                            @Resource.SelectedQuestions @TotalUsedSelectedCount  @Resource.arelessthantherequiredcount (@MaxSelectableQuestions).
+                        </MudText>
+                    </div>
+                </MudAlert>
+            }
+            else if (TotalUsedSelectedCount > MaxSelectableQuestions)
+            {
+                <MudAlert Severity="Severity.Error" Class="my-4" ContentAlignment="HorizontalAlignment.Start" Square="true" Variant="Variant.Filled">
+                    @Resource.SelectedQuestions @TotalUsedSelectedCount @Resource.exceedtherequiredcount (@MaxSelectableQuestions).
+                </MudAlert>
+            }
+
+            <MudGrid Class="mb-4">
+                <MudItem xs="12">
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true" Class="mt-2" ContentAlignment="HorizontalAlignment.Center">
+                        @Resource.ExcelFormQuestionsInfo
+                    </MudAlert>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="long?"
+                               Label="@Resource.Form"
+                               Value="@SelectedFormId"
+                               ValueChanged="@(v => SelectedFormId = v)"
+                               Clearable="true"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               Class="rounded-pill"
+                               AnchorOrigin="Origin.BottomCenter"
+                               AdornmentIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                        @if (_forms != null)
+                        {
+                            @foreach (var form in _forms)
+                            {
+                                <MudSelectItem Value="@((long?)form.Id)">@form.Name</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_selectedQuestionsSearchString"
+                                  Label="@Resource.Search"
+                                  Placeholder="@Resource.Search"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Class="rounded-pill"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Immediate="true"
+                                  Clearable="true" />
+                </MudItem>
+            </MudGrid>
+
+            @if (CurrentQuestions.Any())
+            {
+                <MudGrid Class="px-6 py-3 mb-2 rounded border-bottom mud-theme-surface" AlignItems="AlignItems.Center">
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Dark"><b>@Resource.CodeLabel</b></MudText>
+                    </MudItem>
+                    <MudItem xs="2" Class="d-flex justify-center">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Dark"><b>@Resource.Form</b></MudText>
+                    </MudItem>
+                    <MudItem xs="4" Class="d-flex justify-center">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Dark"><b>@Resource.PaperQuestionStatus</b></MudText>
+                    </MudItem>
+                    <MudItem xs="2" Class="d-flex justify-end">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Dark" Class="me-4"><b>@Resource.Actions</b></MudText>
+                    </MudItem>
+                </MudGrid>
+
+                <MudList T="ManualQuestionsPaginationResponseDto" Class="selected-questions-list pa-0">
+                    @foreach (var q in CurrentQuestions.Where(q => FilterSelectedQuestions(q)))
+                    {
+                        var isOldSelectedQuestion = IsOldQuestion(q);
+                        var isUndoDisabled = isOldSelectedQuestion || IsSelectedFormReadOnly;
+
+                        <MudListItem T="ManualQuestionsPaginationResponseDto" Class="px-6 py-4 border-bottom">
+                            <ChildContent>
+                                <MudGrid AlignItems="AlignItems.Center">
+                                    <MudItem xs="4" Style="overflow: hidden; min-width: 0;">
+                                        <MudTooltip Text="@q.Code">
+                                            <MudText Typo="Typo.body2" Class="question-code" data-no-convert Style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; max-width: 100%;">
+                                                @q.Code
+                                            </MudText>
+                                        </MudTooltip>
+                                    </MudItem>
+
+                                    <MudItem xs="2" Class="d-flex justify-center" Style="min-width:0;">
+                                        @{
+                                            var formName = GetFormName(q.FormId);
+                                        }
+                                        @if (!string.IsNullOrEmpty(formName))
+                                        {
+                                            <MudTooltip Text="@formName">
+                                                <MudChip T="string"
+                                                         Color="Color.Info"
+                                                         Size="Size.Small"
+                                                         Variant="Variant.Text"
+                                                         Class="form-chip px-3"
+                                                         Style="max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block; vertical-align:middle;">
+                                                    @formName
+                                                </MudChip>
+                                            </MudTooltip>
+                                        }
+                                    </MudItem>
+
+                                    <MudItem xs="4" Class="d-flex justify-center align-center">
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Size="Size.Small"
+                                                   Color="@GetStatusColor(q.PaperQuestionStatus)"
+                                                   StartIcon="@GetStatusIcon(q.PaperQuestionStatus)"
+                                                   Disabled="true"
+                                                   Style="border-radius: 20px; text-transform: none;">
+                                            @(q.PaperQuestionStatus.ToLocalizedString())
+                                        </MudButton>
+                                    </MudItem>
+
+                                    <MudItem xs="2" Class="d-flex justify-end align-center">
+                                        <MudTooltip Text="@(IsSelectedFormReadOnly? Resource.CannotRemoveQuestionFromSelectedPool: (isOldSelectedQuestion ? Resource.CannotRemoveQuestionFromSelectedPool : Resource.ReturnToQuestionsPool))">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Undo"
+                                                           Color="@(isUndoDisabled ? Color.Default : Color.Error)"
+                                                           Size="Size.Medium"
+                                                           Class=@($"action-icon label-{nameof(Resource.ReturnToQuestionsPool)}")
+                                                           Disabled="@isUndoDisabled"
+                                                           OnClick="() => RemoveQuestion(q)" />
+                                        </MudTooltip>
+                                    </MudItem>
+                                </MudGrid>
+                            </ChildContent>
+                        </MudListItem>
+                    }
+                </MudList>
+
+                <div class="d-flex justify-end mt-2">
+                    <MudButton Color="Color.Error"
+                               Variant="Variant.Filled"
+                               Disabled="@(IsSelectedFormReadOnly || ActiveQuestions.Any(q => q.SectionId != null))"
+                               OnClick="ClearAllQuestions">
+                        <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" Class="mr-2" />
+                        @Resource.ClearAll
+                    </MudButton>
+                </div>
+            }
+            else
+            {
+                <MudText Align="Align.Center">@Resource.Noquestionsselected</MudText>
+            }
+        </ChildContent>
+    </MudExpansionPanel>
+</MudExpansionPanels>

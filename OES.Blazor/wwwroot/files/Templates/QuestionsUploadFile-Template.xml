@@ -1,0 +1,81 @@
+<qti-assessment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqtiasi_v3p0 
+ https://purl.imsglobal.org/spec/qti/v3p0/schema/xsd/imsqti_itemv3p0p1_v1p0.xsd">
+	<qti-assessment-item identifier="0"
+				Code="Q451"
+	                     title="Which of the following gases are considered greenhouse gases?">
+		<qti-response-declaration base-type="identifier"
+		                          cardinality="single"
+		                          identifier="RESPONSE">
+			<qti-correct-response>
+				<qti-value>Carbon dioxide</qti-value>
+			</qti-correct-response>
+		</qti-response-declaration>
+		<qti-item-body>
+			<qti-prompt>Which of the following gases are considered greenhouse gases?</qti-prompt>
+			<qti-choice-interaction max-choices="1"
+			                        response-identifier="RESPONSE">
+				<qti-simple-choice identifier="0">Carbon dioxide</qti-simple-choice>
+				<qti-simple-choice identifier="0">Nitrogen</qti-simple-choice>
+				<qti-simple-choice identifier="0">Methane</qti-simple-choice>
+				<qti-simple-choice identifier="0">Oxygen</qti-simple-choice>
+			</qti-choice-interaction>
+		</qti-item-body>
+	</qti-assessment-item>
+	<qti-assessment-item identifier="0"
+				Code="2545"
+	                     title="Choose the correct from the following answers:">
+		<qti-response-declaration base-type="identifier"
+		                          cardinality="single"
+		                          identifier="RESPONSE">
+			<qti-correct-response>
+				<qti-value>Sour taste</qti-value>
+				<qti-value>Turns blue litmus paper red</qti-value>
+			</qti-correct-response>
+		</qti-response-declaration>
+		<qti-item-body>
+			<qti-prompt>Choose the correct from the following answers:</qti-prompt>
+			<qti-choice-interaction max-choices="2"
+			                        response-identifier="RESPONSE">
+				<qti-simple-choice identifier="0">Sour taste</qti-simple-choice>
+				<qti-simple-choice identifier="0">Slippery feel</qti-simple-choice>
+				<qti-simple-choice identifier="0">Turns blue litmus paper red</qti-simple-choice>
+				<qti-simple-choice identifier="0"> Bitter taste</qti-simple-choice>
+			</qti-choice-interaction>
+		</qti-item-body>
+	</qti-assessment-item>
+	<qti-assessment-item identifier="0"
+				Code="Q35663"
+	                     title="Chlorine is an example of an alkali metal?">
+		<qti-response-declaration base-type="identifier"
+		                          cardinality="single"
+		                          identifier="RESPONSE">
+			<qti-correct-response>
+				<qti-value>False</qti-value>
+			</qti-correct-response>
+		</qti-response-declaration>
+		<qti-item-body>
+			<qti-prompt>Chlorine is an example of an alkali metal?</qti-prompt>
+			<qti-choice-interaction max-choices="1"
+			                        response-identifier="RESPONSE">
+				<qti-simple-choice identifier="0">True</qti-simple-choice>
+				<qti-simple-choice identifier="0">False</qti-simple-choice>
+			</qti-choice-interaction>
+		</qti-item-body>
+	</qti-assessment-item>
+	<qti-assessment-item identifier="0"
+				Code="5552"
+	                     title="Explain the concept of molarity in a solution.">
+		<qti-response-declaration base-type="string"
+		                          cardinality="single"
+		                          identifier="RESPONSE">
+			<qti-correct-response>
+				<qti-value>Molarity is the number of moles of solute dissolved in one liter of solution, typically expressed as moles per liter (mol/L).</qti-value>
+			</qti-correct-response>
+		</qti-response-declaration>
+		<qti-item-body>
+			<qti-prompt>Explain the concept of molarity in a solution.</qti-prompt>
+			<qti-extended-text-interaction response-identifier="RESPONSE"/>
+		</qti-item-body>
+	</qti-assessment-item>
+</qti-assessment>

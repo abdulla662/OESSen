@@ -1,0 +1,31 @@
+﻿@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.Question.QuestionTemplateDto
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex justify-space-between align-center w-100">
+            <MudText Typo="Typo.h5" Color="Color.Primary">
+                @Resource.QuestionTemplate
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="Close" Class=@($"label-{nameof(Resource.Close)}") />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <ListItem T="QuestionTemplateDto"
+                  FilterObject="false"
+                  @key="listChangingKey"
+                  EndpointServerice="@(pagination => BlazQuestionService.GetAllQuestionTemplateAsync(new QuestionPaginationSearchRequest(pagination, IsFromQuestionAI)))"
+                  DisplayColumns='["Name"]'
+                  Hide_DescriptionSearch="true"
+                  CRUD_Delete_Btn="true"
+                  DeleteClick_fun="DeleteQuestionTemplateAsync"
+                  SearchPanelVisible="false">
+            <ButtonChildContent Context="value">
+                <MudTooltip Text="@Resource.SelectTemplate">
+                    <MudFab Color="Color.Primary" EndIcon="@Icons.Material.Filled.SelectAll" Class=@($"label-{nameof(Resource.SelectTemplate)}") Size="Size.Small" @onclick='() => GetQuestionById(((QuestionTemplateDto)value).Id)' />
+                </MudTooltip>
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+</MudDialog>
+

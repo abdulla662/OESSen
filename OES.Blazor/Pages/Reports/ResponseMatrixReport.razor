@@ -1,0 +1,61 @@
+@page "/reports/response-matrix"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.Reports.Analytical
+
+@attribute [DynamicAuthorizeAttribute("ResponseMatrixReport")]
+
+<PageTitle>
+    @Resource.RptTitleResponseMatrix
+</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-5 mt-3">
+    <MudIcon Icon="@Icons.Material.Filled.GridOn"
+             Color="Color.Primary"
+             Size="Size.Large"
+             Class="me-2" />
+    <MudText Typo="Typo.h5"
+             Color="Color.Primary">
+        @Resource.RptTitleResponseMatrix
+    </MudText>
+    <ReportInfoButton Title="@Resource.RptTitleResponseMatrix"
+                      Overview="@_infoOverview"
+                      Sections="@_infoSections" />
+</div>
+
+@if (!string.IsNullOrWhiteSpace(_noDataMessage))
+{
+    <MudAlert Severity="Severity.Info"
+              Class="mb-4"
+              ContentAlignment="HorizontalAlignment.Start"
+              ShowCloseIcon="true"
+              CloseIconClicked="ClearNoDataMessage">
+        @_noDataMessage
+    </MudAlert>
+}
+
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error"
+              Class="mb-4"
+              ContentAlignment="HorizontalAlignment.Start"
+              ShowCloseIcon="true"
+              CloseIconClicked="ClearErrorMessage">
+        @_errorMessage
+    </MudAlert>
+}
+
+<AnalyticalReportFilter ShowVenue="false"
+                        ShowPaper="true"
+                        ShowItemBank="false"
+                        ShowForm="true"
+                        ShowDateRange="true"
+                        FilterChanged="OnFilterChangedAsync"
+                        OnGenerateClicked="GenerateAsync" />
+@if (_isGenerating)
+{
+    <MudProgressCircular Indeterminate="true"
+                         Color="Color.Primary"
+                         Class="d-block mx-auto my-8" />
+}

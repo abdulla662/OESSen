@@ -1,0 +1,53 @@
+@using OES.Helper.Dtos.MediaSetting.Responses
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Rounded.Info" Color="Color.Primary" Class="mr-3" />
+            <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.Details</MudText>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        @if (_mediaSetting == null)
+        {
+            <div class="d-flex justify-center align-center py-10">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            </div>
+        }
+        else
+        {
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="mb-1">@Resource.Category</MudText>
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">@Resource.PropertyLocalization(_mediaSetting.MediaCategory.ToString())</MudChip>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="mb-1">@Resource.MaxSizeInKB</MudText>
+                    <MudText Typo="Typo.body1">@_mediaSetting.MaxSizeInKB @Resource.KB</MudText>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="mb-2">@Resource.Extensions</MudText>
+                    <div class="d-flex flex-wrap gap-1">
+                        @if (_extensions != null && _extensions.Any())
+                        {
+                            @foreach (var ext in _extensions)
+                            {
+                                <MudChip T="string" Variant="Variant.Text" Color="Color.Info" Size="Size.Small" Class="ma-0">@ext</MudChip>
+                            }
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Error">@Resource.Nomatchingrecordsfound</MudText>
+                        }
+                    </div>
+                </MudItem>
+            </MudGrid>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Close" Class="px-10">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

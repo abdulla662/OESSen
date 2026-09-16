@@ -1,0 +1,204 @@
+@page "/reports/score-distribution"
+
+@using OES.Helper.Dtos.Reports
+@using OES.Helper.Dtos.Reports.Analytical
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("ScoreDistributionReport")]
+
+<PageTitle>@Resource.RptTitleScoreDistribution</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-5 mt-3">
+    <MudIcon Icon="@Icons.Material.Filled.BarChart" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+    <MudText Typo="Typo.h5" Color="Color.Primary">@Resource.RptTitleScoreDistribution</MudText>
+    <ReportInfoButton Title="@Resource.RptTitleScoreDistribution" Overview="@_infoOverview" Sections="@_infoSections" />
+</div>
+
+@if (!string.IsNullOrEmpty(_noDataMessage))
+{
+    <MudAlert Severity="Severity.Info" Class="mb-4" ContentAlignment="HorizontalAlignment.Start" ShowCloseIcon="true" CloseIconClicked="() => _noDataMessage = null">
+        @_noDataMessage
+    </MudAlert>
+}
+else if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error" Class="mb-4" ContentAlignment="HorizontalAlignment.Start" ShowCloseIcon="true" CloseIconClicked="() => _errorMessage = null">
+        @_errorMessage
+    </MudAlert>
+}
+
+<MudPaper Class="pa-4 mb-4" Elevation="3">
+    <MudGrid>
+        <MudItem xs="12" md="4">
+            <MudAutocomplete T="PaperLookupDto"
+                             Label="@Resource.RptPaperLabel"
+                             Value="_selectedPaper"
+                             ValueChanged="OnPaperChangedAsync"
+                             Variant="Variant.Outlined"
+                             ShowProgressIndicator="true"
+                             ToStringFunc="PaperToString"
+                             SearchFunc="SearchPapersAsync"
+                             Clearable="true"
+                             Required />
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudSelect T="FormLookupDto"
+                       Label=@Resource.Form
+                       SelectedValues="_selectedForms"
+                       SelectedValuesChanged="OnFormsChangedAsync"
+                       MultiSelection="true"
+                       SelectAll="true"
+                       SelectAllText="Select All"
+                       Variant="Variant.Outlined"
+                       Disabled="_selectedPaper == null"
+                       ToStringFunc="FormToString"
+                       Required>
+                @foreach (var form in _forms)
+                {
+                    <MudSelectItem Value="@form">@form.Code - @form.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="6" md="2">
+            <MudDatePicker Label="@Resource.RptDateFrom" @bind-Date="_startDate" Variant="Variant.Outlined" Clearable="true" Editable="true" />
+        </MudItem>
+        <MudItem xs="6" md="2">
+            <MudDatePicker Label="@Resource.RptDateTo" @bind-Date="_endDate" Variant="Variant.Outlined" Clearable="true" Editable="true" />
+        </MudItem>
+        <MudItem xs="6" md="2">
+            <MudNumericField T="double" Label="@Resource.RptCutScore" @bind-Value="_cutScore" Variant="Variant.Outlined" Min="0" Step="1" />
+        </MudItem>
+        <MudItem xs="6" md="10" Class="d-flex align-end">
+            <GeneralLoadingButton Disabled="@(_isLoading || _selectedPaper == null || !_selectedForms.Any())"
+                                  OnClick="GenerateReportAsync"
+                                  EndIcon="@Icons.Material.Filled.Analytics"
+                                  Variant="Variant.Filled"
+                                  ButtonColor="Color.Primary"
+                                  ButtonText="@Resource.RptGenerateReport"
+                                  FullWidth />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<div class="d-flex justify-content-end gap-2 mb-3 ar-no-print">
+    @if (_report != null)
+    {
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.TableChart"
+                   Color="Color.Success" OnClick="ExportAsync" Disabled="_isExporting">
+            @(_isExporting ? Resource.RptExporting : Resource.RptExportExcel)
+        </MudButton>
+    }
+    <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Print"
+               OnClick="@(() => JS.InvokeVoidAsync("window.print"))">
+        @Resource.RptPrintSaveAsPdf
+    </MudButton>
+</div>
+
+@if (_isLoading)
+{
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Class="d-block mx-auto my-8" />
+}
+else if (_report != null)
+{
+    @* â”€â”€ 1. Stat cards â”€â”€ *@
+    <MudGrid Class="mb-4">
+        @foreach (var card in StatCards)
+        {
+            <MudItem xs="6" sm="4" md="2">
+                <MudPaper Elevation="2" Class="pa-3 text-center" Style="height:100%">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">@card.Label</MudText>
+                    <MudText Typo="Typo.h6" Style="@card.ValueStyle">@card.Value</MudText>
+                    @if (!string.IsNullOrEmpty(card.SubText))
+                    {
+                        <MudText Typo="Typo.caption" Style="font-size:0.65rem;color:#777">@card.SubText</MudText>
+                    }
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+    @* â”€â”€ 2. SVG Histogram â”€â”€ *@
+    <MudPaper data-no-convert Elevation="3" Class="pa-3 mb-4">
+        <MudText Typo="Typo.subtitle1" Class="mb-2 ms-2"><strong>@Resource.RptScoreDistHistogram</strong>
+            &nbsp;<MudText Inline="true" Typo="Typo.caption" Color="Color.Secondary">@Resource.RptCutScoreLabel @_report.CutScore &nbsp;|&nbsp; @Resource.RptTotalMarksLabel @_report.TotalMarks</MudText>
+        </MudText>
+        @HistogramSvg
+    </MudPaper>
+    @* â”€â”€ 3. Percentile + Shape interpretation â”€â”€ *@
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" md="5">
+            <MudPaper Elevation="2" Class="pa-3" Style="height:100%">
+                <MudText Typo="Typo.subtitle1" Class="mb-2"><strong>@Resource.RptPercentileTable</strong></MudText>
+                <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+                    <thead>
+                        <tr style="background:#f5f5f5">
+                            <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #ddd">@Resource.RptPercentile</th>
+                            <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #ddd">Score</th>
+                            <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #ddd">@Resource.RptMeaning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in _report.Percentiles)
+                        {
+                            <tr style="border-bottom:1px solid #eee">
+                                <td style="padding:6px 8px;font-weight:600">@p.Label</td>
+                                <td style="padding:6px 8px;text-align:center">@p.Score</td>
+                                <td style="padding:6px 8px;color:#666">@p.Meaning</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="7">
+            <MudPaper Elevation="2" Class="pa-4" Style="height:100%;background:#e3f2fd;border-left:4px solid #1976D2">
+                <MudText Typo="Typo.subtitle1" Class="mb-2"><strong>@Resource.RptDistributionShapeInterpretation</strong></MudText>
+                <MudText Typo="Typo.body1">@_report.ShapeInterpretation</MudText>
+                <MudDivider Class="my-3" />
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    @Resource.RptSkewness (@_report.Skewness.ToString("F2")): @_report.SkewnessInterpretation
+                </MudText>
+                <br />
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    @Resource.RptKurtosis (@_report.Kurtosis.ToString("F2")): @_report.KurtosisInterpretation
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+    @* â”€â”€ 4. Score bands â”€â”€ *@
+    <MudPaper Elevation="2" Class="pa-3">
+        <MudText Typo="Typo.subtitle1" Class="mb-2"><strong>@Resource.RptScoreBandBreakdown</strong></MudText>
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+            <thead>
+                <tr style="background:#f5f5f5">
+                    <th style="padding:8px 12px;text-align:left;border-bottom:1px solid #ddd">@Resource.RptBand</th>
+                    <th style="padding:8px 12px;text-align:center;border-bottom:1px solid #ddd">@Resource.RptCount</th>
+                    <th style="padding:8px 12px;text-align:center;border-bottom:1px solid #ddd">%</th>
+                    <th style="padding:8px 12px;text-align:left;border-bottom:1px solid #ddd;width:40%">@Resource.RptDistributionCol</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var band in _report.Bands)
+                {
+                    var rowStyle = band.ContainsCutScore ? "background:#FFF8E1;font-weight:600" : "";
+                    <tr style="border-bottom:1px solid #eee;@rowStyle">
+                        <td style="padding:8px 12px">
+                            @band.Band
+                            @if (band.ContainsCutScore)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Warning" Class="ms-2">@Resource.RptCutScore</MudChip>
+                            }
+                        </td>
+                        <td style="padding:8px 12px;text-align:center">@band.Count</td>
+                        <td style="padding:8px 12px;text-align:center">@band.Percentage%</td>
+                        <td style="padding:8px 12px">
+                            <div style="background:#e0e0e0;border-radius:3px;height:14px;width:100%">
+                                <div style="background:#1976D2;border-radius:3px;height:14px;width:@(band.BarFillPct)%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </MudPaper>
+}

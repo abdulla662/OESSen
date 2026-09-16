@@ -1,0 +1,20 @@
+﻿@using OES.Blazor.Components.Common.FileManagerComponent
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.FolderOpen" Class="me-2" />
+            @Resource.FileManager
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudStack Class="mb-4">
+            <FileManagerComponent Elevation="0"
+                                  FileSelectionEnabled="true"
+                                  ReceiveSelectedFile="OnInternalFileSelected" />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@Resource.Cancel</MudButton>
+    </DialogActions>
+</MudDialog>

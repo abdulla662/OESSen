@@ -1,0 +1,264 @@
+﻿
+<MudDialog>
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Analytics" Size="Size.Large" Color="Color.Primary" />
+            <MudText Typo="Typo.h5">@Resource.PaperStructureSummary</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        @if (_isLoading)
+        {
+            <MudStack AlignItems="AlignItems.Center"
+                      Justify="Justify.Center"
+                      Style="min-height: 300px;">
+                <MudProgressCircular Indeterminate="true"
+                                     Color="Color.Primary"
+                                     Size="Size.Large" />
+                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                    @Resource.Loading...
+                </MudText>
+            </MudStack>
+        }
+        else if (_summaryDto == null)
+        {
+            <MudAlert Severity="Severity.Error"
+                      Icon="@Icons.Material.Filled.Error"
+                      Variant="Variant.Filled">
+                @Resource.FailedToLoadFormsDetails
+            </MudAlert>
+        }
+        else
+        {
+            <MudStack Spacing="4">
+
+                <!-- Paper Name Banner -->
+                <MudPaper Elevation="0"
+                          Class="pa-4">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" />
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                @Resource.PaperName
+                            </MudText>
+                            <MudText Typo="Typo.h6" Color="Color.Primary">
+                                @PaperName
+                            </MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudPaper>
+
+                <!-- Summary Cards -->
+                <MudGrid Spacing="3">
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudPaper Elevation="4" Class="pa-4">
+                            <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                                <MudIcon Icon="@Icons.Material.Filled.Category"
+                                         Size="Size.Large"
+                                         Color="Color.Info" />
+                                <MudText Typo="Typo.caption" Align="Align.Center">
+                                    @Resource.Type
+                                </MudText>
+                                <MudText Typo="Typo.h6"
+                                         Align="Align.Center"
+                                         Color="Color.Info">
+                                    @PaperTypeDisplay
+                                </MudText>
+                            </MudStack>
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudPaper Elevation="4" Class="pa-4">
+                            <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                                <MudIcon Icon="@Icons.Material.Filled.FilterList"
+                                         Size="Size.Large"
+                                         Color="Color.Secondary" />
+                                <MudText Typo="Typo.caption" Align="Align.Center">
+                                    @Resource.SelectionType
+                                </MudText>
+                                <MudText Typo="Typo.h6"
+                                         Align="Align.Center"
+                                         Color="Color.Secondary">
+                                    @SubTypeDisplay
+                                </MudText>
+                            </MudStack>
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudPaper Elevation="4" Class="pa-4">
+                            <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                                <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer"
+                                         Size="Size.Large"
+                                         Color="Color.Success" />
+                                <MudText Typo="Typo.caption" Align="Align.Center">
+                                    @Resource.TotalQuestions
+                                </MudText>
+                                <MudText Typo="Typo.h6"
+                                         Align="Align.Center"
+                                         Color="Color.Success">
+                                    @_summaryDto.NumberOfQuestion
+                                </MudText>
+                            </MudStack>
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudPaper Elevation="4" Class="pa-4">
+                            <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                                <MudIcon Icon="@Icons.Material.Filled.Layers"
+                                         Size="Size.Large"
+                                         Color="Color.Warning" />
+                                <MudText Typo="Typo.caption" Align="Align.Center">
+                                    @Resource.TotalStages
+                                </MudText>
+                                <MudText Typo="Typo.h6"
+                                         Align="Align.Center"
+                                         Color="Color.Warning">
+                                    @_summaryDto.NumberOfStages
+                                </MudText>
+                            </MudStack>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+
+                <!-- Detailed Structure Section -->
+                @if (_flatBlocks.Any())
+                {
+                    <MudStack Spacing="2">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.TableChart"
+                                     Color="Color.Primary" />
+                            <MudText Typo="Typo.h6">
+                                @Resource.DetailedStructureBreakdown
+                            </MudText>
+                        </MudStack>
+
+                        <MudPaper Elevation="3">
+                            <MudTable Items="@_flatBlocks"
+                                      Hover="true"
+                                      Dense="true"
+                                      Striped="true"
+                                      Elevation="0"
+                                      Height="350px"
+                                      FixedHeader="true">
+
+                                <HeaderContent>
+                                    <MudTh>
+                                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                            <MudIcon Icon="@Icons.Material.Filled.Stairs" Size="Size.Small" />
+                                            <MudText Typo="Typo.body2">@Resource.Stage</MudText>
+                                        </MudStack>
+                                    </MudTh>
+
+                                    <MudTh>
+                                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                            <MudIcon Icon="@Icons.Material.Filled.Timer" Size="Size.Small" />
+                                            <MudText Typo="Typo.body2">@Resource.Time</MudText>
+                                        </MudStack>
+                                    </MudTh>
+
+                                    <MudTh>
+                                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                            <MudIcon Icon="@Icons.Material.Filled.ViewModule" Size="Size.Small" />
+                                            <MudText Typo="Typo.body2">@Resource.Section</MudText>
+                                        </MudStack>
+                                    </MudTh>
+
+                                    <MudTh>
+                                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                            <MudIcon Icon="@Icons.Material.Filled.Dashboard" Size="Size.Small" />
+                                            <MudText Typo="Typo.body2">@Resource.BlockName</MudText>
+                                        </MudStack>
+                                    </MudTh>
+
+                                    <MudTh>
+                                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                            <MudIcon Icon="@Icons.Material.Filled.Code" Size="Size.Small" />
+                                            <MudText Typo="Typo.body2">@Resource.Code</MudText>
+                                        </MudStack>
+                                    </MudTh>
+
+                                    <MudTh Style="text-align:center">
+                                        <MudStack Row="true"
+                                                  AlignItems="AlignItems.Center"
+                                                  Spacing="1"
+                                                  Justify="Justify.Center">
+                                            <MudIcon Icon="@Icons.Material.Filled.Numbers" Size="Size.Small" />
+                                            <MudText Typo="Typo.body2">@Resource.Questions</MudText>
+                                        </MudStack>
+                                    </MudTh>
+                                </HeaderContent>
+
+                                <RowTemplate>
+                                    <MudTd DataLabel="@Resource.Stage">
+                                        <MudChip T="string"
+                                                 Size="Size.Small"
+                                                 Color="Color.Primary"
+                                                 Icon="@Icons.Material.Filled.Flag">
+                                            @context.StageName
+                                        </MudChip>
+                                    </MudTd>
+
+                                    <MudTd DataLabel="@Resource.Time">
+                                        <MudText Typo="Typo.body2">@context.StageTime</MudText>
+                                    </MudTd>
+
+                                    <MudTd DataLabel="@Resource.Section">
+                                        <MudText Typo="Typo.body2">@context.SectionName</MudText>
+                                    </MudTd>
+
+                                    <MudTd DataLabel="@Resource.BlockName">
+                                        <MudText Typo="Typo.body2" Style="font-weight: 500;">
+                                            @context.BlockName
+                                        </MudText>
+                                    </MudTd>
+
+                                    <MudTd DataLabel="@Resource.Code">
+                                        <MudChip T="string"
+                                                 Size="Size.Small"
+                                                 Variant="Variant.Outlined"
+                                                 Color="Color.Secondary">
+                                            @context.BlockCode
+                                        </MudChip>
+                                    </MudTd>
+
+                                    <MudTd DataLabel="@Resource.Questions"
+                                           Style="text-align:center">
+                                        <MudBadge Content="@context.QuestionCount"
+                                                  Color="Color.Primary"
+                                                  Overlap="true">
+                                            <MudIcon Icon="@Icons.Material.Filled.Quiz"
+                                                     Size="Size.Small" />
+                                        </MudBadge>
+                                    </MudTd>
+                                </RowTemplate>
+
+                            </MudTable>
+                        </MudPaper>
+                    </MudStack>
+                }
+                else
+                {
+                    <MudAlert Severity="Severity.Warning"
+                              Icon="@Icons.Material.Filled.Warning"
+                              Variant="Variant.Outlined">
+                        @Resource.NoStructureData
+                    </MudAlert>
+                }
+
+            </MudStack>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Close"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

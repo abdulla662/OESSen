@@ -1,0 +1,219 @@
+﻿@page "/UpdateCandidate"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute(nameof(UpdateCandidate))]
+
+<PageTitle>@Resource.UpdateCandidate</PageTitle>
+
+<EditForm Model="@Model" OnValidSubmit="HandleValidSubmitAsync">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-80 p-4 shadow-lg">
+        <MudCardContent>
+            <div class="text-center mb-6 d-flex justify-content-center align-items-center">
+                <MudIcon Icon="@Icons.Material.Filled.AccountBox" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h4" Style="line-height: 1;">@Resource.UpdateCandidate</MudText>
+            </div>
+            <MudPaper Elevation="0" Class="p-4 mb-5 mt-3">
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="Model.CandidateCode"
+                                      Label="@Resource.CandidateCode"
+                                      Variant="Variant.Outlined"
+                                      Required="true"
+                                      Immediate="true"
+                                      For="@(() => Model.CandidateCode)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="Model.Name"
+                                      Label="@Resource.FullName"
+                                      Variant="Variant.Outlined"
+                                      Required="true"
+                                      Immediate="true"
+                                      For="@(() => Model.Name)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="Model.UserName"
+                                      Label="@Resource.UserName"
+                                      Variant="Variant.Outlined"
+                                      Required="true"
+                                      Immediate="true"
+                                      For="@(() => Model.UserName)"
+                                      ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="Model.Password"
+                                      Label="@Resource.Password"
+                                      Variant="Variant.Outlined"
+                                      InputType="@PasswordInput"
+                                      Required="false"
+                                      Immediate="true"
+                                      Adornment="Adornment.End"
+                                      AdornmentIcon="@PasswordInputIcon"
+                                      OnAdornmentClick="TogglePasswordVisibility"
+                                      AdornmentAriaLabel="@Resource.ShowPassword"
+                                      For="@(() => Model.Password)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="Model.Qualification"
+                                      Label="@Resource.Qualification"
+                                      Variant="Variant.Outlined"
+                                      For="@(() => Model.Qualification)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker @bind-Date="Model.DateOfBirth"
+                                       Label="@Resource.DateOfBirth"
+                                       Variant="Variant.Outlined"
+                                       Required="true"
+                                       For="@(() => Model.DateOfBirth)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="Model.NationalId"
+                                      Label="@Resource.NationalNumber"
+                                      Variant="Variant.Outlined"
+                                      Required="true"
+                                      Immediate="true"
+                                      For="@(() => Model.NationalId)" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="Model.Address"
+                                      Label="@Resource.Address"
+                                      Variant="Variant.Outlined"
+                                      Lines="3"
+                                      For="@(() => Model.Address)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="Model.Mobile"
+                                      Label="@Resource.Mobile"
+                                      Variant="Variant.Outlined"
+                                      Required="true"
+                                      Immediate="true"
+                                      For="@(() => Model.Mobile)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="Model.Email"
+                                      Label="@Resource.Email"
+                                      Variant="Variant.Outlined"
+                                      Required="true"
+                                      Immediate="true"
+                                      For="@(() => Model.Email)"
+                                      ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudSelect T="int"
+                                   Label="@Resource.Gender"
+                                   @bind-Value="Model.Gender"
+                                   Variant="Variant.Outlined"
+                                   Required="true"
+                                   Immediate="true"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem Value="0">@Resource.Male</MudSelectItem>
+                            <MudSelectItem Value="1">@Resource.Female</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="Model.RegistrationCenterCode"
+                                      Label="@Resource.RegistrationCenterCode"
+                                      Variant="Variant.Outlined"
+                                      For="@(() => Model.RegistrationCenterCode)" />
+                    </MudItem>
+
+                    @*Disability fields are currently hidden as per the latest requirements. They will be re-enabled in the future in ministry version.*@
+
+                    @* <div class="col-md-6">
+                        <MudCheckBox @bind-Value="Model.HasDisability"
+                                     Label="@Resource.DoesTheCandidateHaveADisability"
+                                     For="@(() => Model.HasDisability)" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <MudSelect T="long?"
+                                   Label="@Resource.Disabilities"
+                                   @bind-Value="Model.DisabilityId"
+                                   HelperTextOnFocus="true"
+                                   Disabled="@(!Model.HasDisability)"
+                                   Variant="Variant.Outlined"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   Placeholder="@Resource.SelectDisability">
+                            @foreach (var disability in disabilities)
+                            {
+                                <MudSelectItem Value="@disability.Id">@disability.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </div> *@
+
+                    <MudItem xs="12" sm="6">
+                        @if (!string.IsNullOrEmpty(Model.PhotoURL))
+                        {
+                            <MudText Typo="Typo.body1" Class="mb-2">@Resource.ShowCurrentPhoto:</MudText>
+                            <MudIconButton Icon="@(ShowPhotoUrl? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)"
+                                           Color="Color.Primary"
+                                           Class=@($"label-{(ShowPhotoUrl? nameof(Icons.Material.Filled.Visibility): nameof(Icons.Material.Filled.VisibilityOff))}")
+                                           OnClick="TogglePhotoUrlVisibility" />
+                            @if (ShowPhotoUrl)
+                            {
+                                <MudImage Src="@Model.PhotoURL" Alt="@Resource.CurrentPhoto" Height="150" Class="mb-2" ObjectFit="ObjectFit.Contain" />
+                            }
+                        }
+                        <MudFileUpload T="IBrowserFile" Accept=".png,.jpg,.jpeg" FilesChanged="UploadFilePhoto" MaximumFileCount="1">
+                            <ActivatorContent>
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           EndIcon="@Icons.Material.Filled.Image">
+                                    @Resource.LoadPicture
+                                </MudButton>
+                            </ActivatorContent>
+                        </MudFileUpload>
+                        @if (PhotoFile != null)
+                        {
+                            <MudText Typo="Typo.body1" Class="mt-2">@Resource.SelectedPhoto</MudText>
+                            <MudList T="string">
+                                <MudListItem Icon="@Icons.Material.Filled.AttachFile">
+                                    @PhotoFile.Name <code>@((PhotoFile.Size / (1024.0 * 1024.0)).ToString("F2")) MB</code>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Primary" OnClick="@RemovePhotoFile" />
+                                </MudListItem>
+                            </MudList>
+                        }
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        @if (!string.IsNullOrEmpty(Model.SignatureURL))
+                        {
+                            <MudText Typo="Typo.body1" Class="mb-2">@Resource.ShowCurrentSignature:</MudText>
+                            <MudIconButton Icon="@(ShowSignatureUrl? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)"
+                                           Color="Color.Primary"
+                                           Class=@($"label-{(ShowSignatureUrl? nameof(Icons.Material.Filled.Visibility) : nameof(Icons.Material.Filled.VisibilityOff))}")
+                                           OnClick="ToggleSignatureUrlVisibility" />
+                            @if (ShowSignatureUrl)
+                            {
+                                <MudImage Src="@Model.SignatureURL" Alt="@Resource.CurrentSignature" Height="150" Class="mb-2" ObjectFit="ObjectFit.Contain" />
+                            }
+                        }
+                        <MudFileUpload T="IBrowserFile" Accept=".png,.jpg,.jpeg" FilesChanged="UploadFileSignature" MaximumFileCount="1">
+                            <ActivatorContent>
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           EndIcon="@Icons.Material.Filled.CloudUpload">
+                                    @Resource.LoadSignature
+                                </MudButton>
+                            </ActivatorContent>
+                        </MudFileUpload>
+                        @if (SignatureFile != null)
+                        {
+                            <MudText Typo="Typo.body1" Class="mt-2">@Resource.SelectedSignature</MudText>
+                            <MudList T="string">
+                                <MudListItem Icon="@Icons.Material.Filled.AttachFile">
+                                    @SignatureFile.Name <code>@((SignatureFile.Size / (1024.0 * 1024.0)).ToString("F2")) MB</code>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Primary" OnClick="@RemoveSignatureFile" />
+                                </MudListItem>
+                            </MudList>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudCardContent>
+        <MudCardActions Class="justify-content-center w-100">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Disabled="@(!IsFormValid)" Class="m-2 w-50" EndIcon="@Icons.Material.Filled.CheckCircle">@Resource.Save</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="m-2 w-50" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>

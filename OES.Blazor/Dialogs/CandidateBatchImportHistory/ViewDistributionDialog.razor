@@ -1,0 +1,36 @@
+﻿@using OES.Helper.Dtos.Schedule.Responses
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.AccountBox" Color="Color.Primary" />
+            <MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Start">@Resource.ViewDistribution</MudText>
+        </MudStack>
+        <ListItem T="VenueCandidatesCountDto"
+                  Caption="@Resource.Venues"
+                  CaptionIcon="@Icons.Material.Filled.LocationOn"
+                  EndpointServerice="GetVenuesWithCandidatesCountAsync"
+                  DisplayColumns='[nameof(VenueCandidatesCountDto.VenueName),
+                                   nameof(VenueCandidatesCountDto.VenueCode),
+                                   nameof(VenueCandidatesCountDto.CandidatesCount)]'
+                  SearchPanelVisible="true"
+                  FilterObject="PaperId">
+            <ButtonChildContent Context="value">
+                @if (value is VenueCandidatesCountDto venue)
+                {
+                    <MudTooltip Text="@Resource.View">
+                        <MudFab class="fab-xsmall"
+                                Color="Color.Primary"
+                                StartIcon="@Icons.Material.Outlined.Visibility"
+                                Size="Size.Small"
+                                OnClick="() => OpenDetailsDialogAsync(venue)" />
+                    </MudTooltip>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+    <DialogActions>
+        <MudSpacer />
+        <MudButton OnClick="Close" Color="Color.Secondary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+    </DialogActions>
+</MudDialog>

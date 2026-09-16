@@ -1,0 +1,480 @@
+@page "/UploadFile"
+
+@using System.Threading
+@using OES.Blazor.Services.Interfaces.SubQuestion
+@using OES.Helper
+@using OES.Helper.Dtos
+@using OES.Helper.Dtos.DifficultyLevel
+@using OES.Helper.Dtos.DifficultyProfile
+@using OES.Helper.Dtos.ILO
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.Dtos.Questionlanguage
+@using OES.Helper.Dtos.QyestionType
+@using OES.Helper.Dtos.Subject
+@using OES.Helper.Dtos.UploadFiles
+@using OES.Helper.Enums
+@using SharedHelper.Common
+@using OES.Blazor.CustomAuthorizationAttribute
+@using System.Globalization
+
+@attribute [DynamicAuthorizeAttribute(nameof(UploadFile))]
+
+<PageTitle>@Resource.UploadQuestionFile</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <div class="d-flex justify-content-center align-items-center mb-5 mt-5">
+            <MudIcon Icon="@Icons.Material.Rounded.UploadFile" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">@Resource.UploadQuestionFile</MudText>
+        </div>
+
+        <MudMenu Class="mb-2">
+            <ActivatorContent>
+                <MudChip T="string" Icon="@Icons.Material.Filled.Download" Color="Color.Primary" Size="Size.Large">
+                    @Resource.DownloadTemplate
+                </MudChip>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem OnClick="@(() => Download(DownloadFileType.WordManualItemBanks))">
+                    <MudIcon Icon="@Icons.Custom.FileFormats.FileWord" Color="Color.Primary" />
+                    @Resource.WordManualItemBanks
+                </MudMenuItem>
+                <MudMenuItem OnClick="@(() => Download(DownloadFileType.WordAutoItemBanks))">
+                    <MudIcon Icon="@Icons.Custom.FileFormats.FileWord" Color="Color.Primary" />
+                    @Resource.WordAutoItemBanks
+                </MudMenuItem>
+                <MudMenuItem OnClick="@(() => Download(DownloadFileType.ExcelManualItemBanks))">
+                    <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" />
+                    @Resource.ExcelManualItemBanks
+                </MudMenuItem>
+                <MudMenuItem OnClick="@(() => Download(DownloadFileType.ExcelAutoItemBanks))">
+                    <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" />
+                    @Resource.ExcelAutoItemBanks
+                </MudMenuItem>
+                @* <MudMenuItem OnClick="@(() => Download(DownloadFileType.Pdf))">
+                    <MudIcon Icon="@Icons.Custom.FileFormats.FilePdf" Color="Color.Primary" />
+                    @Resource.PDF
+                </MudMenuItem> *@
+                <MudMenuItem OnClick="@(() => Download(DownloadFileType.XML))">
+                    <MudIcon Icon="@Icons.Custom.FileFormats.FileDocument" Color="Color.Dark" />
+                    @Resource.QTI
+                </MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+
+        <MudToolBar Class="mb-4 d-flex justify-start">
+            <MudItem xs="12" md="12">
+                <GeneralLoadingButton StartIcon="@Icons.Material.Filled.Article"
+                                      Class="mr-5"
+                                      OnClick="@OpenSavedTemplatesDialogAsync"
+                                      ButtonColor="Color.Surface"
+                                      ButtonText="@Resource.UploadFileTemplate"
+                                      Type="ButtonType.Button" />
+            </MudItem>
+        </MudToolBar>
+
+        <EditForm Model="@questionMetadataAdditionWithUpload">
+            <DataAnnotationsValidator />
+
+            <MudGrid>
+                @* <MudItem xs="12" sm="6" md="6">
+                    <MudTextField @bind-Value="questionMetadataAdditionWithUpload.Code"
+                                  Label="@Resource.QuestionCodePrefix"
+                                  Disabled="@showData"
+                                  Required
+                                  Immediate
+                                  Variant="Variant.Outlined"
+                                  Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(questionMetadataAdditionWithUpload.Code))"
+                                  ErrorText="@_requiredErrorText" />
+                </MudItem> *@
+
+                <MudItem xs="12" sm="6" md="6">
+                    <MudAutocomplete T="SubjectDto"
+                                     @bind-Value="_selectedSubjectDto"
+                                     Label="@Resource.Selectsubject"
+                                     Variant="Variant.Outlined"
+                                     SearchFunc="SearchSubjectAsync"
+                                     ToStringFunc="s => s.Name"
+                                     Clearable="true"
+                                     Disabled="@showData"
+                                     Error="@(_isSubmitButtonHit && (_selectedSubjectDto?.Id ?? 0) == 0)"
+                                     ErrorText="@_requiredErrorText"
+                                     Required />
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="6">
+                    <MudSelect T="QuestionTypeDto"
+                               Label="@Resource.SelectType"
+                               MultiSelection="true"
+                               MultiSelectionTextFunc="@(vals => string.Join(", ", vals ?? Enumerable.Empty<string>()))"
+                               @bind-SelectedValues="SelectedTypes"
+                               AnchorOrigin="Origin.BottomCenter"
+                               ToStringFunc="x=>x.Name"
+                               Variant="Variant.Outlined"
+                               Dense
+                               Disabled="@showData"
+                               Clearable="true"
+                               Error="@(_isSubmitButtonHit && (SelectedTypes == null || !SelectedTypes.Any()))"
+                               ErrorText="@_requiredErrorText"
+                               Required>
+                        @foreach (var type in _filteredQuestionsTypes)
+                        {
+                            <MudSelectItem T="QuestionTypeDto" Value="@type">@(type.Name.ToLocalizedString<QuestionType>())</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="6">
+                    <MudAutocomplete T="QuestionCategoryDto"
+                                     Label="@Resource.SelectCategory"
+                                     @bind-Value="_selectedCategory"
+                                     Variant="Variant.Outlined"
+                                     ShowProgressIndicator="true"
+                                     ToStringFunc="x=>x.Name"
+                                     SearchFunc="SearchCategoryAsync"
+                                     Clearable="true"
+                                     Disabled="@showData"
+                                     Error="@(_isSubmitButtonHit && _selectedCategory.Id == 0)"
+                                     ErrorText="@_requiredErrorText"
+                                     Required />
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="6">
+                    <MudAutocomplete T="ProfileDto"
+                                     Label="@Resource.SelectDifficultyProfile"
+                                     Value="_profile"
+                                     ValueChanged="ChangeProfile"
+                                     Variant="Variant.Outlined"
+                                     Required="true"
+                                     Immediate="true"
+                                     ShowProgressIndicator="true"
+                                     SearchFunc="SearchProfileAsync"
+                                     Clearable="true"
+                                     Disabled="@showData"
+                                     Error="@(_isSubmitButtonHit && _profile?.Id == 0)"
+                                     ErrorText="@_requiredErrorText"
+                                     ToStringFunc="p => p?.Name" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="6">
+                    <MudAutocomplete T="DifficultyLevelDto"
+                                     Label="@Resource.SelectDiffcultyLevel"
+                                     @bind-Value="_difficultyLevel"
+                                     Variant="Variant.Outlined"
+                                     ShowProgressIndicator="true"
+                                     SearchFunc="SearchDifficultyLevelAsync"
+                                     Clearable="true"
+                                     ToStringFunc="x=>x.Name"
+                                     Error="@(_isSubmitButtonHit && _difficultyLevel?.Id == 0)"
+                                     ErrorText="@_requiredErrorText"
+                                     Required
+                                     Disabled="@(DifficultyLevels.Count == 0 || showData)" />
+                </MudItem>
+
+                @* <MudItem xs="12" sm="6" md="6">
+                    <MudTextField @bind-Value="questionMetadataAdditionWithUpload.MaximumAnswerTime"
+                                  Label="@Resource.Maxanswertime"
+                                  Disabled="@showData"
+                                  Variant="Variant.Outlined" />
+                </MudItem> *@
+
+                <MudItem xs="12" sm="6" md="6">
+                    <MudTextField @bind-Value="DisplayQuestionsExhaustionCount"
+                                  Label="@Resource.QuestionExhaustionCount"
+                                  Disabled="@showData"
+                                  Immediate
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="6">
+                    <MudTextField @bind-Value="questionMetadataAdditionWithUpload.Delta"
+                                  Label="@Resource.DeltaValue"
+                                  Variant="Variant.Outlined"
+                                  Disabled="@showData"
+                                  For="() => questionMetadataAdditionWithUpload.Delta"
+                                  Required
+                                  @onblur="ValidateDifficultyValue"
+                                  Culture="CultureInfo.InvariantCulture" />
+                    @if (_deltaError)
+                    {
+                        <MudText Typo="Typo.caption" Color="Color.Warning">@_deltaErrorText</MudText>
+                    }
+                </MudItem>
+
+                @* <MudItem xs="12" sm="6" md="6">
+                    <MudCheckBox T="bool" @bind-value="_scientificEditorPanelEnabled" Label="@Resource.ScientificEditorPanel" />
+                    <MudCheckBox T="bool" @bind-value="_fileManagerEditorPanelEnabled" Label="@Resource.FileManagerEditorPanel" />
+                </MudItem> *@
+
+                <MudItem xs="12" sm="6" md="6">
+                    <MudAutocomplete T="LanguageDto"
+                                     Label="@Resource.Language"
+                                     @bind-Value="_selectedLanguage"
+                                     Variant="Variant.Outlined"
+                                     ShowProgressIndicator="true"
+                                     ToStringFunc="x => x.Name"
+                                     SearchFunc="SearchLanguageAsync"
+                                     Clearable="true"
+                                     Disabled="@showData"
+                                     Error="@(_isSubmitButtonHit && _selectedLanguage.Id == 0)"
+                                     ErrorText="@_requiredErrorText"
+                                     Required />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudSelect T="UploadMode"
+                               Label="@Resource.UploadMode"
+                               Value="_mode"
+                               ValueChanged="OnModeChanged"
+                               Variant="Variant.Outlined"
+                               Dense
+                               AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="UploadMode.AutoSelectItemBank">@Resource.SelectItemBanksAutomatically</MudSelectItem>
+                        <MudSelectItem Value="UploadMode.ManualSelectItemBank">@Resource.SelectItemBanksManually</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                @if (_mode == UploadMode.ManualSelectItemBank)
+                {
+                    <!-- Item Bank Section -->
+                    <MudItem xs="12">
+                        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+                            <MudAutocomplete T="RootItemBankDto"
+                                             Label="@Resource.SelectItemBank"
+                                             Value="_selectedItemBankRoot"
+                                             ValueChanged="CaptureSelectedItemBankRoot"
+                                             Variant="Variant.Outlined"
+                                             ShowProgressIndicator="true"
+                                             SearchFunc="SearchItemBankRootsAsync"
+                                             ToStringFunc="ItemBankDtoToStringConverter"
+                                             Clearable="true"
+                                             Disabled="@showData"
+                                             Error="@(_isSubmitButtonHit && _selectedItemBankRoot == null)"
+                                             ErrorText="@_requiredErrorText"
+                                             Required />
+                            <MudFab Label="@Resource.SelectNode"
+                                    Class="align-self-center p-3"
+                                    OnClick="OpenItemBankRootTreeDialogAsync"
+                                    EndIcon="@Icons.Material.Filled.AccountTree"
+                                    Disabled="_selectedItemBankRoot == null || showData" />
+                            @if (_selectedItemBankNodeFromDialogDto.Id > 0)
+                            {
+                                <MudChip T="string" Color="Color.Primary" Icon="@Icons.Material.Filled.CheckCircle" Class="align-self-center p-3" Size="Size.Large">
+                                    <strong>@_selectedItemBankNodeFromDialogDto.Name</strong>
+                                </MudChip>
+                            }
+                        </div>
+
+                        @if (_selectedItemBankRoot is not null && _selectedItemBankNodeFromDialogDto.Id == 0)
+                        {
+                            <MudAlert Severity="Severity.Error" ContentAlignment=HorizontalAlignment.Start Class="w-100 mt-3">
+                                @Resource.SelectNodeBeforeProceeding
+                            </MudAlert>
+                        }
+                    </MudItem>
+
+                    <!-- ILO Section -->
+                    <MudItem xs="12">
+                        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+                            <MudAutocomplete T="RootIloDto"
+                                             Label="@Resource.SelectrootILOoptional"
+                                             Value="_selectedIloRoot"
+                                             ValueChanged="CaptureSelectedIloRoot"
+                                             Variant="Variant.Outlined"
+                                             ShowProgressIndicator="true"
+                                             SearchFunc="SearchIloRootsAsync"
+                                             ToStringFunc="IloDtoToStringConverter"
+                                             Class="text-box"
+                                             Disabled="@showData"
+                                             Clearable="true" />
+                            <MudFab Label="@Resource.SelectNode"
+                                    Class="align-self-center p-3"
+                                    OnClick="OpenIloRootTreeDialogAsync"
+                                    EndIcon="@Icons.Material.Filled.AccountTree"
+                                    Disabled="_selectedIloRoot == null || showData" />
+                            @if (_selectedIloNodeFromDialogDto.Id > 0)
+                            {
+                                <MudChip T="string" Color="Color.Primary" Icon="@Icons.Material.Filled.CheckCircle" class="align-self-center p-3" Size="Size.Large">
+                                    <strong>@_selectedIloNodeFromDialogDto.Name</strong>
+                                </MudChip>
+                            }
+                        </div>
+
+                        @if (_selectedIloRoot is not null && _selectedIloNodeFromDialogDto.Id == 0)
+                        {
+                            <MudAlert Severity="Severity.Error" ContentAlignment=HorizontalAlignment.Start Class="w-100 mt-3">
+                                @Resource.SelectNodeBeforeProceeding
+                            </MudAlert>
+                        }
+                    </MudItem>
+                }
+            </MudGrid>
+
+            <MudToolBar Class="mt-4 d-flex justify-end">
+                <MudItem xs="12">
+                    <GeneralLoadingButton Class="flex-fill"
+                                          OnClick="SaveCurrentTemplateAsync"
+                                          StartIcon="@Icons.Material.Filled.Save"
+                                          ButtonColor="Color.Secondary"
+                                          ButtonText="@Resource.SaveAsTemplate"
+                                          Type="ButtonType.Submit" />
+                </MudItem>
+            </MudToolBar>
+
+            <MudItem xs="12">
+                <MudFileUpload T="IReadOnlyList<IBrowserFile>"
+                               @ref="_fileUpload"
+                               OnFilesChanged="OnInputFileChanged"
+                               AppendMultipleFiles
+                               Hidden="@false"
+                               InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                               InputStyle="opacity:0"
+                               @ondrop="@ClearDragClass"
+                               @ondragenter="@SetDragClass"
+                               @ondragleave="@ClearDragClass"
+                               @ondragend="@ClearDragClass"
+                               Error="@(_isSubmitButtonHit && _selectedFiles == null)"
+                               ErrorText="@_requiredErrorText"
+                               Required>
+                    <ActivatorContent>
+                        <MudPaper Height="300px"
+                                  Outlined="true"
+                                  Class="@_dragClass">
+                            <MudText Typo="Typo.h6">
+                                @Resource.Draganddropfileshereorclick
+                            </MudText>
+                            @foreach (var file in _fileNames)
+                            {
+                                <MudChip T="string"
+                                         Color="Color.Dark"
+                                         Text="@file" />
+                            }
+                        </MudPaper>
+                    </ActivatorContent>
+                </MudFileUpload>
+                <MudToolBar Gutters="@false" Class="relative d-flex justify-end gap-4">
+                    <MudButton Color="Color.Primary"
+                               Disabled="@(!_fileNames.Any())"
+                               OnClick="@ClearAsync"
+                               Variant="Variant.Filled"
+                               EndIcon="@Icons.Material.Filled.Clear">
+                        @Resource.Clear
+                    </MudButton>
+                    <GeneralLoadingButton Disabled="@(!_fileNames.Any() || _processing)"
+                                          OnClick="OnValidateQuestionsFileAsync"
+                                          EndIcon="@Icons.Material.Filled.Visibility"
+                                          ButtonColor="Color.Primary"
+                                          ButtonText="@Resource.ShowQuestions"
+                                          Type="ButtonType.Submit" />
+                </MudToolBar>
+            </MudItem>
+
+            <MudContainer>
+                @if (showData)
+                {
+                    @if (_warnings.Any())
+                    {
+                        <MudText Class="mx-auto my-4 fw-bold" Typo="Typo.subtitle1" Color="Color.Primary">
+                            @Resource.InvalidQuestionThatcanotbeaddedtoyourdatabase.
+                        </MudText>
+
+                        <MudTable T="UploadQuestionDetailsDto" Items="hasWarningQuestions">
+                            <HeaderContent>
+                                <MudTh Class="fw-bold">@Resource.Question</MudTh>
+                                <MudTh Class="fw-bold">@Resource.Error</MudTh>
+                                <MudTh Class="fw-bold">@Resource.Type</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="row">
+                                <MudTd DataLabel="Question">
+                                    @if (!string.IsNullOrEmpty(row.Body))
+                                    {
+                                        @((MarkupString)row.Body)
+                                    }
+                                    else if (row.Choices != null && row.Choices.Any())
+                                    {
+                                        @foreach (var choice in row.Choices)
+                                        {
+                                            <div class="ms-3 mb-2" style="@GetChoiceStyle(choice)">
+                                                @choice.ChoiceText.TruncateToNumberOfChars(120)
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @row.ModelAnswer
+                                    }
+                                </MudTd>
+                                <MudTd DataLabel="Question" Style="color:red;">@row.Warning</MudTd>
+                                <MudTd DataLabel="Type">@row.QuestionType</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
+
+                    <MudText Class="mx-auto my-4 fw-bold" Typo="Typo.subtitle1" Color="Color.Primary">
+                        @Resource.Selectthevalidquestionstoaddtothedatabase.
+                    </MudText>
+
+                    <MudTable T="UploadQuestionDetailsDto" MultiSelection="true" Items="remainingQuestions"
+                              SelectedItems="@selectedItems" SelectedItemsChanged="OnSelectedItemsChanged" Comparer="Comparer">
+                        <HeaderContent>
+                            <MudTh Class="fw-bold">@Resource.Question</MudTh>
+                            <MudTh Class="fw-bold">@Resource.Type</MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="row">
+                            <MudTd DataLabel="Question">
+                                <MudText Typo="Typo.subtitle1">
+                                    @if (!string.IsNullOrWhiteSpace(row.Body))
+                                    {
+                                        <span>@row.DisplayOrder)</span>
+                                        @((MarkupString)row.Body)
+                                    }
+                                    else
+                                    {
+                                        var displayValue = row.Body.TruncateToNumberOfChars(140);
+                                        @displayValue
+                                    }
+                                </MudText>
+
+                                <br />
+
+                                @if (row.Choices != null && row.Choices.Any())
+                                {
+                                    @foreach (var choice in row.Choices)
+                                    {
+                                        <div class="ms-3 mb-2" style="@GetChoiceStyle(choice)">
+                                            @((MarkupString)(choice.ChoiceText))
+                                        </div>
+                                    }
+                                }
+                                else if (!string.IsNullOrWhiteSpace(row.ModelAnswer))
+                                {
+                                    <div class="ms-3">@((MarkupString)row.ModelAnswer)</div>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(row.WarningInfo))
+                                {
+                                    <div class="text-warning">@row.WarningInfo</div>
+                                }
+                            </MudTd>
+                            <MudTd DataLabel="Type">@row.QuestionType</MudTd>
+                        </RowTemplate>
+
+                        <PagerContent>
+                            <MudTablePager PageSizeOptions="new int[] { 5, 10, 20 }" RowsPerPageString="@Resource.RowsPerPage" />
+                        </PagerContent>
+                    </MudTable>
+
+                    <MudToolBar Gutters="false" Class="relative d-flex justify-end gap-4 ">
+                        <GeneralLoadingButton Disabled="@(QuestionToDataBase.Count == 0)"
+                                              OnClick="OnSubmitAsync"
+                                              EndIcon="@Icons.Material.Filled.CheckCircle"
+                                              ButtonColor="Color.Primary"
+                                              ButtonText="@Resource.Submit"
+                                              Type="ButtonType.Submit" />
+                    </MudToolBar>
+                }
+            </MudContainer>
+        </EditForm>
+    </MudCardContent>
+</MudCard>

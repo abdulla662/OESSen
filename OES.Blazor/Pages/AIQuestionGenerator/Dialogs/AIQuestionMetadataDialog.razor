@@ -1,0 +1,78 @@
+@using MudBlazor
+@using OES.Blazor.Pages.QuestionLayout
+@using OES.Helper
+@using OES.Helper.Dtos.QuestionLayout
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex align-center gap-2">
+            <MudIcon Icon="@Icons.Material.Filled.Layers" Color="Color.Secondary" />
+            <MudText Typo="Typo.h6" Color="Color.Secondary">@Resource.QuestionMetadata</MudText>
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        <MudPaper Class="pa-4" Elevation="0">
+            <MudTextField T="string"
+                          Label="@Resource.Code"
+                          @bind-Value="_code"
+                          Required="true"
+                          Variant="Variant.Outlined"
+                          Class="mb-6" />
+
+            <MudStack AlignItems="AlignItems.Center" Class="mb-8">
+                <MudText Typo="Typo.h5" Class="mud-text-primary font-weight-bold">@Resource.SelectLayout</MudText>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary">@Resource.QuestionLayoutSelectionSubtitle</MudText>
+            </MudStack>
+
+            <MudRadioGroup T="LayoutDto" @bind-Value="SelectedLayout" Class="w-100">
+                <MudGrid Spacing="4" Justify="Justify.Center">
+                    @foreach (var opt in FilteredQuestionOptions)
+                    {
+                        var isSelected = SelectedLayout?.Id == opt.Id;
+                        var orientation = GetLayoutOrientation(opt.Name);
+                        <MudItem xs="12" sm="6" md="3" Class="px-2">
+                            <MudPaper Outlined @onclick="@(() => OnLayoutChange(opt))" Class="@($"cursor-pointer transition-all layout-card {(isSelected ? "mud-border-primary mud-bg-primary-lighten-5 mud-elevation-4 layout-card-selected" : "border-transparent mud-elevation-1")}")">
+                                <div class="layout-radio-container">
+                                    <MudRadio Value="@opt" Color="Color.Primary" Dense />
+                                </div>
+                                <MudStack Spacing="2">
+                                    <MudPaper Elevation="0" Class="p-3 rounded-xl d-flex align-center justify-center illustration-container">
+                                        <LayoutIllustration Orientation="orientation" />
+                                    </MudPaper>
+                                    <MudStack Spacing="1" AlignItems="AlignItems.Center" Class="mb-2">
+                                        <MudText Typo="Typo.body2" Class="font-weight-bold mud-text-primary">
+                                            @(opt.Name.ToLocalizedString<LayoutOrientation>())
+                                        </MudText>
+                                        <MudText Typo="Typo.body2" Class="mud-text-secondary" Align="Align.Center">
+                                            @opt.Description
+                                        </MudText>
+                                    </MudStack>
+                                </MudStack>
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudRadioGroup>
+        </MudPaper>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Submit"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Size="Size.Small"
+                   EndIcon="@Icons.Material.Filled.CheckCircle">
+            @Resource.Save
+        </MudButton>
+        <MudButton OnClick="Cancel"
+                   Color="Color.Secondary"
+                   Variant="Variant.Filled"
+                   Size="Size.Small"
+                   EndIcon="@Icons.Material.Filled.Cancel">
+            @Resource.Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

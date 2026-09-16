@@ -1,0 +1,76 @@
+@using OES.Helper.Dtos.Venue.Responses
+@using OES.Helper.Enums
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Sync" Class="mr-2" /> @Resource.ChooseSyncType
+        </MudText>
+        <MudStack Spacing="3">
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_searchTerm"
+                              Placeholder="@Resource.Search"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Clearable="true"
+                              Immediate="true" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCheckBox T="bool"
+                             Value="IsAllSelected"
+                             ValueChanged="ToggleSelectAll"
+                             Label="@Resource.SelectAll"
+                             Color="Color.Primary" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudList T="VenueSyncData" Dense="true"
+                         Style="max-height:260px; overflow-y:auto; border:1px solid var(--mud-palette-lines-default); border-radius:4px;">
+                    @foreach (var venue in FilteredVenues)
+                    {
+                        <MudListItem T="VenueSyncData" Dense="true">
+                            <MudCheckBox T="bool"
+                                         Value="@SelectedVenues.Contains(venue)"
+                                         ValueChanged="@(v => ToggleVenue(venue, v))"
+                                         Label="@venue.Name"
+                                         Color="Color.Primary" />
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudItem>
+
+            @if (_isOkButtonHit && !SelectedVenues.Any())
+            {
+                <MudItem xs="12">
+                    <MudText Color="Color.Error" Typo="Typo.caption">
+                        @Resource.SelectOneOrMoreVenuesForTheSchedule
+                    </MudText>
+                </MudItem>
+            }
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Success"
+                   OnClick="SyncAll"
+                   Disabled="@SelectedVenues.Any()"
+                   EndIcon="@Icons.Material.Filled.Sync">
+            @Resource.SyncAll
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="BulkSync"
+                   EndIcon="@Icons.Material.Filled.CheckCircle">
+            @Resource.Sync
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Default"
+                   OnClick="Cancel"
+                   EndIcon="@Icons.Material.Filled.Cancel">
+            @Resource.Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

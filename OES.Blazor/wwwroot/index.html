@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Examination System</title>
+
+    <link rel="apple-touch-icon" href="/favicon.png" />
+
+    <script src="js/theme-loader.js"></script>
+    <link rel="stylesheet" href="css/animate.min.css" />
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="OES.Blazor.styles.css" rel="stylesheet" />
+    <link href="css/suneditor.min.css" rel="stylesheet" />
+    <link href="math-live/mathlive-static.min.css" rel="stylesheet" />
+    <link href="math-live/mathlive-fonts.min.css" rel="stylesheet" />
+    <link href="css/editormathpanel.min.css" rel="stylesheet" />
+    <link href="css/arabic.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/DynamicExamSimulationSheet.css" />
+    <link href="css/suneditor-overrides.css" rel="stylesheet" />
+    <link href="css/analytical-reports.css" rel="stylesheet" />
+    <script src="MathJax-v2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="MathJax-v2/MathJaxConfigurations.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="d-flex justify-content-center align-items-center loader-container">
+            <!-- Main Loader Content -->
+            <div class="stack loader-content">
+                <!-- Title -->
+                <div class="h5 title-text text-center" data-localize="Initializing">
+                    Initializing
+                </div>
+                <!-- Subtitle with Loading Dots -->
+                <div class="body1 subtitle-text text-center">
+                    <span class="loading-dots">
+                        <span class="loading-dot"></span>
+                        <span class="loading-dot"></span>
+                        <span class="loading-dot"></span>
+                    </span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="loading-progress-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script src="js/treeExpansionCollapse.js"></script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
+    <script src="js/suneditor.min.js"></script>
+    <script src="math-live/mathlive.min.js"></script>
+    <script src="js/text-editor-configurations.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/ArabicHindi.js"></script>
+    <script src="Lib/html2canvas/html2canvas.min.js"></script>
+    <script src="Lib/html-to-image/html-to-image.min.js"></script>
+    <script src="js/jspdf.umd.min.js"></script>
+    <script src="js/downloadAsPDF.js"></script>
+    <script src="js/download-file.js"></script>
+    <script src="js/AmPm.js"></script>
+    <script src="js/newTab.js"></script>
+    <script src="js/LoadExamCss.js"></script>
+    <script src="js/zipFileDownload.js"></script>
+    <script src="js/downloadFileFromBytes.js"></script>
+    <script src="js/jquery-4.0.0.min.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/setEditorNumeralMode.js"></script>
+    <script src="js/validation-locale.js"></script>
+    <script src="js/hotspot-canvas.js"></script>
+    <script src="js/auditLogs.js"></script>
+</body>
+
+</html>

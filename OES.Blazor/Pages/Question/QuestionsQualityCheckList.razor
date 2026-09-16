@@ -1,0 +1,149 @@
+@page "/QuestionsQualityCheck"
+
+@using OES.Blazor.Services.Interfaces.Question
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.Dtos.QyestionType
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Enums
+@using OES.Helper.Enums.EnumExtensions
+@using OES.Helper
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.Dtos.TreeItem
+
+@attribute [DynamicAuthorizeAttribute(nameof(QuestionsQualityCheckList))]
+
+<PageTitle>@Resource.QuestionsQualityCheck</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.Quiz" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.QuestionsQualityCheck</MudText>
+        </MudStack>
+        <div>
+            <ListItem @key="ChangingKey"
+                      T="PendingQuestionPaginationDto"
+                      Caption="@Resource.QuestionsQualityCheck"
+                      CaptionIcon="@Icons.Material.Rounded.Quiz"
+                      EndpointServerice="BlazQuestionService.GetAllQuestionForPendingPage"
+                      DisplayColumns='[ nameof(PendingQuestionPaginationDto.Code),
+                                        nameof(PendingQuestionPaginationDto.TypeDisplay),
+                                        nameof(PendingQuestionPaginationDto.Category),
+                                        nameof(PendingQuestionPaginationDto.Subject),
+                                        nameof(PendingQuestionPaginationDto.ItemBank),
+                                        nameof(PendingQuestionPaginationDto.Language),
+                                        nameof(PendingQuestionPaginationDto.StatusDisplay) ]'
+                      NoConvertColumns='[nameof(PendingQuestionPaginationDto.Code)]'
+                      Hide_DescriptionSearch="true"
+                      FilterObject="QuestionFilterPaginationModel">
+                <TopChildContent>
+                    <MudCard Class="mb-3">
+                        <MudCardContent>
+                            <MudGrid Justify="Justify.Center">
+                                <MudItem xs="12" sm="6" md="3">
+                                    <MudAutocomplete T="RootItemBankDto"
+                                                     Label="@Resource.SelectItemBank"
+                                                     Clearable="true"
+                                                     @bind-Value="SelectedItemBank"
+                                                     Variant="Variant.Outlined"
+                                                     ToStringFunc="@(x => x?.Name)"
+                                                     SearchFunc="@SearchItemBanks"
+                                                     CoerceValue="true"
+                                                     ResetValueOnEmptyText="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6" md="3">
+                                    <MudSelect T="QuestionCategoryDto"
+                                               Label="@Resource.SelectCategory"
+                                               Clearable="true"
+                                               @bind-Value="SelectedCategory"
+                                               Variant="Variant.Outlined"
+                                               AnchorOrigin="Origin.BottomCenter">
+                                        @if (_categories != null && _categories.Any())
+                                        {
+                                            @foreach (var category in _categories)
+                                            {
+                                                <MudSelectItem Value="@category">@category.Name</MudSelectItem>
+                                            }
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                <MudItem xs="12" sm="6" md="3">
+                                    <MudSelect T="QuestionTypeDto"
+                                               Label="@Resource.SelectType"
+                                               Clearable="true"
+                                               @bind-Value="SelectedType"
+                                               Variant="Variant.Outlined"
+                                               AnchorOrigin="Origin.BottomCenter">
+                                        @if (_questionTypes != null && _questionTypes.Any())
+                                        {
+                                            @foreach (var type in _questionTypes)
+                                            {
+                                                <MudSelectItem Value="@type">@(type.Name.ToLocalizedString<QuestionType>())</MudSelectItem>
+                                            }
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                @* <MudItem xs="12" sm="6" md="3">
+                                    <MudSelect T="string"
+                                               Label="@Resource.SelectStatus"
+                                               Clearable="true"
+                                               @bind-Value="SelectedStatus"
+                                               Variant="Variant.Outlined"
+                                               AnchorOrigin="Origin.BottomCenter">
+                                        @foreach (QuestionStatus status in Enum.GetValues(typeof(QuestionStatus)))
+                                        {
+                                            <MudSelectItem Value="@status.ToString()">@status.ToLocalizedString()</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem> *@
+                                @if (_selectedItemBank != null)
+                                {
+                                    <MudItem xs="12" sm="6" md="3">
+                                        <MudAutocomplete T="TreeItemResponseDto"
+                                                         Label="@Resource.SelectBranch"
+                                                         Clearable="true"
+                                                         @bind-Value="SelectedBranch"
+                                                         Variant="Variant.Outlined"
+                                                         AnchorOrigin="Origin.BottomCenter"
+                                                         SearchFunc="SearchBranches"
+                                                         ToStringFunc="@(x => x?.Text)"
+                                                         CoerceValue="true"
+                                                         ResetValueOnEmptyText="true" />
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        </MudCardContent>
+                    </MudCard>
+                </TopChildContent>
+                <ButtonChildContent Context="value">
+                    @if (value is PendingQuestionPaginationDto question)
+                    {
+                        <SettingToggle OperationsText="@Resource.Operations">
+                            <MudTooltip Text="@Resource.View">
+                                <MudFab Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                        Color="Color.Primary"
+                                        StartIcon="@Icons.Material.Filled.Preview"
+                                        Size="Size.Small"
+                                        OnClick="() => ViewQuestionAsync(question.Id)" />
+                            </MudTooltip>
+                            @if (CanEditQuestion(question))
+                            {
+                                <MudTooltip Text="@Resource.Check">
+                                    <MudFab Color="Color.Success"
+                                            Class=@($"fab-xsmall label-{nameof(Resource.Check)}")
+                                            EndIcon="@Icons.Material.Filled.FactCheck"
+                                            Size="Size.Small"
+                                            OnClick="() => SaveRowId(question.Id, question.ItemBankId)" />
+                                </MudTooltip>
+                            }
+                        </SettingToggle>
+                    }
+                </ButtonChildContent>
+            </ListItem>
+        </div>
+    </MudCardContent>
+</MudCard>

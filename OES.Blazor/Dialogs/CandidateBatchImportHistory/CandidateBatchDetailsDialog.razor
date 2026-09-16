@@ -1,0 +1,52 @@
+﻿@using OES.Helper.Dtos.Schedule.Responses
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.TableRows" Color="Color.Primary" />
+            <MudText Typo="Typo.h6" Color="Color.Primary">
+                @($"{VenueName} - {Resource.BatchDetails}")
+            </MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        @if (_isLoading)
+        {
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+        }
+        else if (_batches.Count > 0)
+        {
+            <MudTable Items="_batches"
+                      Dense="true"
+                      Hover="true"
+                      Bordered="false"
+                      Striped="false"
+                      Elevation="0">
+                <HeaderContent>
+                    <MudTh Color="Color.Primary" Style="font-weight:600;">@Resource.UploadDate</MudTh>
+                    <MudTh Color="Color.Primary" Style="font-weight:600;">@Resource.Candidates</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.UploadDate.ToString("yyyy-MM-dd HH:mm")</MudTd>
+                    <MudTd>
+                        @context.CandidatesCount
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+        else
+        {
+            <MudText Color="Color.Error">@Resource.NoData</MudText>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudSpacer />
+        <MudButton OnClick="Close"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled">
+            @Resource.Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

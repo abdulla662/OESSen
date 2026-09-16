@@ -1,0 +1,55 @@
+﻿@page "/UpdateSubject"
+
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("UpdateSubject")]
+
+<PageTitle>@Resource.UpdateQuestionSubject</PageTitle>
+
+<EditForm Model="@model">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-80 p-4 shadow-lg justify-content-center">
+        <MudCardContent>
+            <div class="d-flex justify-content-center align-items-center mb-6">
+                <MudIcon Icon="@Icons.Material.Filled.Subject" Color="Color.Primary" Class="me-2" Size="Size.Large" Style="vertical-align: middle;" />
+                <MudText Color="Color.Primary" Typo="Typo.h4" Style="line-height: 1;">
+                    @Resource.UpdateQuestionSubject
+                </MudText>
+            </div>
+            <div class="form-group">
+                <MudTextField Label="@Resource.Name"
+                              Required="true"
+                              Immediate="true"
+                              @bind-Value="model.Name"
+                              For="@(() => model.Name)"
+                              Class="mb-3"
+                              Variant="Variant.Outlined" />
+            </div>
+        </MudCardContent>
+
+        <MudCardActions Class="justify-content-center mt-2">
+            <MudStack Row="true"
+                      Spacing="4"
+                      Class="w-50"
+                      Justify="Justify.Center"
+                      AlignItems="AlignItems.Center">
+                <GeneralLoadingButton ButtonText="@Resource.Update"
+                                      Size="Size.Small"
+                                      Class="flex-grow-1 p-2 rounded-pill"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit"
+                                      OnClick="OnValidSubmitAsync"
+                                      Disabled="@(string.IsNullOrWhiteSpace(model.Name))" />
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           OnClick="Cancel"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudCardActions>
+    </MudCard>
+</EditForm> 

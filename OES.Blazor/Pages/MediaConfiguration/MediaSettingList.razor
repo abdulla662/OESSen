@@ -1,0 +1,67 @@
+@using OES.Helper.Dtos.MediaSetting.Responses
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.General
+
+@page "/MediaConfiguration"
+
+@attribute [DynamicAuthorizeAttribute("MediaConfiguration")]
+
+<PageTitle>@Resource.MediaConfiguration</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.PermMedia" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.MediaConfiguration</MudText>
+        </MudStack>
+
+        <ListItem T="MediaSettingResponseDto"
+                  @key="_mediaSettingsListChangingKey"
+                  Caption="@Resource.MediaSettings"
+                  CaptionIcon="@Icons.Material.Rounded.Settings"
+                  EndpointServerice="BlazMediaSettingService.GetPaginatedMediaSettingsAsync"
+                  DisplayColumns=@_displayColumnNames
+                  HideCodeSearch="true"
+                  SecondSearchParameterLabel="@Resource.MediaCategory"
+                  AddNew_URL_OesRolesList="[OesTemplateRoleConstants.MediaConfigurationEditor]"
+                  AddNew_URL="/AddMediaSetting">
+            <ButtonChildContent Context="currentDtoContext">
+                @if (currentDtoContext is MediaSettingResponseDto mediaSetting)
+                {
+                    <MudStack Spacing="1">
+                        <SettingToggle OperationsText="@Resource.Operations">
+                            <MudTooltip Text="@Resource.Details">
+                                <MudFab Color="Color.Info"
+                                        Class=@($"fab-xsmall label-{nameof(Resource.Details)}")
+                                        StartIcon="@Icons.Material.Filled.Visibility"
+                                        Size="Size.Small"
+                                        OnClick="() => ViewMediaSettingAsync(mediaSetting.Id)" />
+                            </MudTooltip>
+                            <MudTooltip Text="@Resource.Edit">
+                                <MudFab Color="Color.Secondary"
+                                        Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                        EndIcon="@Icons.Material.Filled.Edit"
+                                        Disabled="@(mediaSetting.OrganizationId == 0)"
+                                        Size="Size.Small"
+                                        OnClick="() => UpdateMediaSettingAsync(mediaSetting.Id)" />
+                            </MudTooltip>
+                            <MudTooltip Text="@Resource.Delete">
+                                <MudFab Color="Color.Error"
+                                        Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                        StartIcon="@Icons.Material.Filled.Delete"
+                                        Disabled="@(mediaSetting.OrganizationId == 0)"
+                                        Size="Size.Small"
+                                        OnClick="() => DeleteMediaSettingAsync(mediaSetting.Id)" />
+                            </MudTooltip>
+                        </SettingToggle>
+                        @if (mediaSetting.CurrentlyUsed)
+                        {
+                            <MudChip T="string" Color="Color.Success" Size="Size.Small"></MudChip>
+                        }
+                    </MudStack>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

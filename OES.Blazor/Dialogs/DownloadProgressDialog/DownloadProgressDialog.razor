@@ -1,0 +1,51 @@
+﻿
+<MudDialog Class="rounded-4 overflow-hidden">
+    <TitleContent>
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex align-items-center gap-2">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center p-2">
+                    <MudIcon Icon="@Icons.Material.Outlined.SimCardDownload" Class="text-primary" Size="Size.Small" />
+                </div>
+                <MudText Typo="Typo.subtitle2" Class="fw-semibold text-dark">
+                    @Resource.PreparingFile
+                </MudText>
+            </div>
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        <div class="d-flex flex-column align-items-center gap-4 py-3 px-2">
+
+            <div class="position-relative d-flex align-items-center justify-content-center pt-5">
+                <div class="position-absolute bg-primary bg-opacity-10 rounded-circle p-5"></div>
+                <MudProgressCircular Indeterminate="true"
+                                     Size="Size.Large"
+                                     Color="Color.Primary"
+                                     Class="position-relative" />
+                <MudIcon Icon="@Icons.Material.Outlined.InsertDriveFile" Class="position-absolute text-primary" Size="Size.Small" />
+            </div>
+
+            <p class="text-secondary text-center small lh-base px-2 mb-0">
+                @Resource.TheFileIsBeingProcessedYouCanContinueUsingTheSystem
+            </p>
+
+            <div class="alert alert-primary border border-primary border-opacity-25 bg-primary bg-opacity-10 rounded-3 py-2 px-3 mb-0 w-100 d-flex align-items-start gap-2">
+                <MudIcon Icon="@Icons.Material.Outlined.Info" Class="text-primary flex-shrink-0 mt-1" Size="Size.Small" />
+                <small class="text-primary lh-base">
+                    @Resource.ThisMayTakeAMomentDependingOnTheFileSize
+                </small>
+            </div>
+
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Disabled="true"
+                   Variant="Variant.Outlined"
+                   Color="Color.Default"
+                   Size="Size.Small"
+                   Class="px-4">
+            @Resource.Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

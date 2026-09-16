@@ -1,0 +1,30 @@
+﻿@* @page "/QuestionType" *@
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.QyestionType
+@attribute [DynamicAuthorizeAttribute("QuestionTypeList")]
+
+<div class="d-flex justify-content-center align-items-center mb-4">
+    <MudIcon Icon="@Icons.Material.Filled.Category" Color="Color.Primary" Class="me-2" Style="vertical-align: middle;" />
+    <MudText Typo="Typo.h4" Color="Color.Primary" Style="line-height: 1;">@Resource.QuestionType</MudText>
+</div>
+
+<ListItem @key="key"
+          T="QuestionTypeDto"
+          Caption="@Resource.QuestionType"
+          CaptionIcon="@Icons.Material.Filled.Category"
+          EndpointServerice="_BLazQuestionType.PaginationQuestionType"
+          DisplayColumns='["DisplayName"]'
+          DeleteClick_fun="OpenDeleteDialog"
+          View_URL="/QuestionTypeDetails"
+          CRUD_View_Btn="true" />
+
+<MudDialog @bind-Visible="isDialogOpen">
+    <DialogContent>
+        <MudText Typo="Typo.h6">@Resource.AreYouSureYouWantToDeleteThisQuestionType</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="ConfirmDelete" Color="Color.Primary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.CheckCircle">@Resource.Yes</MudButton>
+        <MudButton OnClick="() => isDialogOpen = false" Color="Color.Secondary" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Cancel">@Resource.No</MudButton>
+    </DialogActions>
+</MudDialog>

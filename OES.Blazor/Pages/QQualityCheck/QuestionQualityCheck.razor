@@ -1,0 +1,35 @@
+﻿@page "/QuestionQualityCheck"
+
+@using OES.Blazor.Components.QualityChecker.Comments
+@using OES.Blazor.Components.QualityChecker.Question
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("QuestionsQualityCheckList")]
+
+<PageTitle>@Resource.QuestionsQualityCheck</PageTitle>
+
+@if (QuestionMetaDataId > 0)
+{
+    <MudCard @key="_renderKey" Class="mx-auto mt-5  p-4 shadow-lg justify-content-center">
+        <MetaDataView QuestionMetaDataId="@QuestionMetaDataId" />
+        <CreateComment QuestionMetaDataId="@QuestionMetaDataId" OnQuestionChanged="OnQuestionChanged" />
+        <QuestionLogs QuestionMetaDataId="@QuestionMetaDataId" />
+
+        <MudStack Row Class="mt-4" Spacing="5" Justify="Justify.Center" AlignItems="AlignItems.Center">
+            <MudFab Label="@Resource.Previous"
+                    EndIcon="@Icons.Material.Filled.ArrowBack"
+                    Size="Size.Medium"
+                    Color="Color.Secondary"
+                    Class="w-25"
+                    OnClick="@GoToPreviousQuestionWithSameStatus" />
+
+            <MudFab Label="@Resource.Next"
+                    EndIcon="@Icons.Material.Filled.ArrowForward"
+                    Size="Size.Medium"
+                    Color="Color.Primary"
+                    Class="w-25"
+                    OnClick="@GoToNextQuestionWithSameStatus" />
+        </MudStack>
+    </MudCard>
+}

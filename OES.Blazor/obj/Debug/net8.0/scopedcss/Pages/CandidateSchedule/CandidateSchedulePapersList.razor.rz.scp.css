@@ -1,0 +1,22 @@
+.rotating-icon[b-qovtabgcst] {
+    animation: rotate-b-qovtabgcst 2s linear infinite;
+}
+
+@keyframes rotate-b-qovtabgcst {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.rounded-xl[b-qovtabgcst] {
+    border-radius: 16px !important;
+}
+
+.loader-card[b-qovtabgcst] {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%);
+    backdrop-filter: blur(10px);
+    min-width: 320px;
+}

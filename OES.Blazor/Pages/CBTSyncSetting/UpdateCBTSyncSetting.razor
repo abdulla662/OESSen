@@ -1,0 +1,95 @@
+@page "/UpdateCBTSyncSetting"
+
+@attribute [DynamicAuthorizeAttribute("UpdateCBTSyncSetting")]
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.ResourceFiles
+
+<PageTitle>@Resource.AutoSyncConfiguration</PageTitle>
+
+<EditForm Model="@Model">
+    <DataAnnotationsValidator />
+
+    <MudCard Class="mx-auto mt-5 w-80 shadow-lg justify-content-center" Elevation="3">
+        <MudCardContent Class="pa-6">
+
+            <MudGrid Spacing="2" Justify="Justify.SpaceBetween" Class="align-center mb-6">
+                <MudItem xs="12" md="8">
+                    <div class="d-flex align-center">
+                        <MudAvatar Color="Color.Primary" Size="Size.Large" Class="mr-3">
+                            <MudIcon Icon="@Icons.Material.Filled.Sync" />
+                        </MudAvatar>
+                        <div>
+                            <MudText Typo="Typo.h5" Color="Color.Primary">@Resource.AutoSyncConfiguration</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                @Resource.AutoSyncDescription
+                            </MudText>
+                        </div>
+                    </div>
+                </MudItem>
+            </MudGrid>
+
+            <MudDivider Class="mb-5" />
+
+            <MudGrid Spacing="4">
+                <MudItem xs="12" md="6">
+                    <MudCard Elevation="1" Class="pa-4" Style="min-height: 130px;">
+                        <div class="d-flex align-center mb-3">
+                            <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Primary" Class="me-2" />
+                            <MudText Typo="Typo.h6">@Resource.SyncScheduleTime</MudText>
+                        </div>
+                        <MudTimePicker Label="@Resource.SyncScheduleTime"
+                                       @bind-Time="_syncTime"
+                                       Variant="Variant.Outlined"
+                                       AmPm="true"
+                                       Adornment="Adornment.Start"
+                                       AdornmentIcon="@Icons.Material.Filled.AccessTime" />
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudCard Elevation="1" Class="pa-4" Style="min-height: 130px;">
+                        <div class="d-flex align-center mb-3">
+                            <MudIcon Icon="@(Model.CBTAutoSyncEnabled? Icons.Material.Filled.ToggleOn : Icons.Material.Filled.ToggleOff)"
+                                     Color="@(Model.CBTAutoSyncEnabled ? Color.Success : Color.Default)"
+                                     Class="me-2" />
+                            <MudText Typo="Typo.h6">@Resource.EnableAutoSync</MudText>
+                        </div>
+                        <MudSwitch T="bool"
+                                   @bind-Value="Model.CBTAutoSyncEnabled"
+                                   Color="Color.Success"
+                                   Label="@(Model.CBTAutoSyncEnabled ? Resource.Enabled : Resource.Disabled)" />
+                        <MudChip T="string"
+                                 Size="Size.Small"
+                                 Class="mt-2"
+                                 Color="@(Model.CBTAutoSyncEnabled ? Color.Success : Color.Error)"
+                                 Variant="Variant.Filled"
+                                 Icon="@(Model.CBTAutoSyncEnabled ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel)">
+                            @(Model.CBTAutoSyncEnabled? Resource.AutoSyncEnabled: Resource.AutoSyncDisabled)
+                        </MudChip>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+
+            <MudDivider Class="my-5" />
+
+            <MudStack Row="true" Justify="Justify.Center" Spacing="3">
+                <GeneralLoadingButton ButtonText="@Resource.Save" Size="Size.Medium"
+                                      Class="px-8 rounded-pill"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit"
+                                      OnClick="OnSubmitAsync"
+                                      Disabled="@(!_syncTime.HasValue)" />
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Default"
+                           Size="Size.Medium"
+                           Class="px-8 rounded-pill"
+                           OnClick="Cancel"
+                           EndIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+
+        </MudCardContent>
+    </MudCard>
+</EditForm>

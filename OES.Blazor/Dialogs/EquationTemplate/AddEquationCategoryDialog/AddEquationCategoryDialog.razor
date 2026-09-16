@@ -1,0 +1,215 @@
+﻿@using OES.Helper.Dtos.Paper.Responses
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Color="Color.Primary">
+            @(IsTotalEquationMode? Resource.TotalQuestionsEquation: (IsEdit ? Resource.EditCategory : Resource.CreateNewCategory))
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <div @ref="_focusDiv" tabindex="0" style="outline:none;" @onkeydown="OnKeyDown">
+            <MudGrid Spacing="2">
+                @if (!_isTotalEquation)
+                {
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="_equationName"
+                                      Label="@Resource.CategoryName"
+                                      Variant="Variant.Outlined"
+                                      Required
+                                      Immediate
+                                      Margin="Margin.Dense"
+                                      RequiredError="@Resource.NameIsRequired"
+                                      @onfocus="() => _isInputFocused = true"
+                                      @onblur="() => _isInputFocused = false" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudSwitch @bind-Value="_showInResults"
+                                   Label="@Resource.ShowInResults"
+                                   Color="Color.Primary" />
+                    </MudItem>
+                }
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Class="mb-1" Color="Color.Primary">@Resource.AvailableItemBanks</MudText>
+                    <MudPaper Elevation="1" Class="pa-2 item-bank-list-area">
+                        @if (DistinctAvailableItemBanks?.Any() == true)
+                        {
+                            <div class="d-flex flex-wrap gap-1">
+                                @foreach (var itemBank in DistinctAvailableItemBanks)
+                                {
+                                    <MudTooltip Text="@itemBank.FullPath">
+                                        <MudChip T="string"
+                                                 Text="@itemBank.Name"
+                                                 Color="Color.Primary"
+                                                 Variant="Variant.Filled"
+                                                 Size="Size.Small"
+                                                 OnClick="() => AddItemBankToEquation(itemBank)"
+                                                 Style="cursor: pointer;" />
+                                    </MudTooltip>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Info">@Resource.NoAvailableItemBanks</MudText>
+                        }
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Class="mb-1" Color="Color.Primary">@Resource.UsedItemBanks</MudText>
+                    <MudPaper Elevation="1" Class="pa-2 item-bank-list-area">
+                        @if (DistinctActiveItemBanks?.Any() == true)
+                        {
+                            <div class="d-flex flex-wrap gap-1">
+                                @foreach (var itemBank in DistinctActiveItemBanks)
+                                {
+                                    <MudTooltip Text="@itemBank.FullPath">
+                                        <MudChip T="string"
+                                                 Text="@itemBank.Name"
+                                                 Color="Color.Default"
+                                                 Variant="Variant.Outlined"
+                                                 Size="Size.Small"
+                                                 OnClick="() => AddItemBankToEquation(itemBank)"
+                                                 Disabled="@(_selectedItemBanks.Any(sib => sib.Id == itemBank.Id))"
+                                                 Style="@(_selectedItemBanks.Any(sib => sib.Id == itemBank.Id) ? "" : "cursor: pointer;")" />
+                                    </MudTooltip>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Info">@Resource.NoUsedItemBanks</MudText>
+                        }
+                    </MudPaper>
+                </MudItem>
+
+                @if (_availableCategories.Any())
+                {
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6" Class="mt-4 mb-2">@Resource.AvailableCategories</MudText>
+                        <MudPaper Class="pa-3" Style="max-height: 200px; overflow-y: auto;">
+                            @foreach (var category in _availableCategories)
+                            {
+                                <MudChip T="string"
+                                         Color="Color.Secondary"
+                                         OnClick="@(() => AddCategoryToEquation(category))"
+                                         Class="ma-1">
+                                    @category.Name
+                                </MudChip>
+                            }
+                        </MudPaper>
+                    </MudItem>
+                }
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Class="mb-2" Color="Color.Primary">@Resource.EquationEditor</MudText>
+                    <MudPaper Elevation="3" Class="pa-2 mb-2" Style="position: relative;">
+                        <!-- Equation Display -->
+                        <MudPaper Elevation="0" Class="pa-2 mb-2 equation-display-area">
+                            @if (string.IsNullOrWhiteSpace(_rawEquation))
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Secondary" Style="font-style: italic;">
+                                    @Resource.BuildYourEquationHere
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.h6" Style="font-family: monospace; word-break: break-all;">@_rawEquation</MudText>
+                            }
+                        </MudPaper>
+
+                        <!-- Control Buttons -->
+                        <div style="position: absolute; top: 0.5rem; @(IsRtl ? "left" : "right"): 0.5rem;">
+                            <MudIconButton Icon="@Icons.Material.Filled.Backspace"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Warning"
+                                           OnClick="Backspace"
+                                           Size="Size.Small"
+                                           Title="@Resource.Backspace" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Clear"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Error"
+                                           OnClick="ClearEquation"
+                                           Size="Size.Small"
+                                           Title="@Resource.ClearAll"
+                                           Class="ml-1" />
+                        </div>
+
+                        <!-- Builder Buttons -->
+                        <div class="d-flex flex-wrap gap-1">
+                            @foreach (var number in _numbers)
+                            {
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           Size="Size.Small"
+                                           Style="min-width: 42px; padding: 5px;"
+                                           OnClick="() => AddToEquation(number)">
+                                    @number
+                                </MudButton>
+                            }
+                        </div>
+                        <div class="d-flex flex-wrap gap-1 mt-1">
+                            @foreach (var op in _operators)
+                            {
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Info"
+                                           Size="Size.Small"
+                                           Style="min-width: 42px; padding: 5px;"
+                                           OnClick="() => AddToEquation(op)">
+                                    @op
+                                </MudButton>
+                            }
+                            @foreach (var function in _functions)
+                            {
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Success"
+                                           Size="Size.Small"
+                                           Style="min-width: 42px; padding: 5px;"
+                                           OnClick="() => AddFunctionToEquation(function)">
+                                    @function
+                                </MudButton>
+                            }
+                        </div>
+                    </MudPaper>
+                </MudItem>
+
+                <!-- Error/Validation Messages -->
+                <MudItem xs="12">
+                    <div style="min-height: 48px;">
+                        @if (!string.IsNullOrEmpty(_equationError) || !string.IsNullOrEmpty(_validationMessage))
+                        {
+                            <MudAlert Severity="@GetMessageSeverity()" Dense="true" Class="py-1" ContentAlignment="HorizontalAlignment.Start">
+                                @GetDisplayMessage()
+                            </MudAlert>
+                        }
+                    </div>
+                </MudItem>
+            </MudGrid>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <div class="d-flex justify-content-center w-100 gap-3 mb-2">
+            <MudStack Row="true"
+                      Spacing="4"
+                      Class="w-50"
+                      Justify="Justify.Center"
+                      AlignItems="AlignItems.Center">
+                <GeneralLoadingButton ButtonText="@(IsEdit? Resource.Update: Resource.Add)"
+                                      Size="Size.Small"
+                                      Class="flex-grow-1 p-2 rounded-pill"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      OnClick="Submit"
+                                      Disabled="@(!IsValid())" />
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           OnClick="Cancel"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </div>
+    </DialogActions>
+</MudDialog>

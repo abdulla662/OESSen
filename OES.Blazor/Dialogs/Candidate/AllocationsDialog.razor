@@ -1,0 +1,41 @@
+﻿@using OES.Blazor.Services.Interfaces.Schedule
+@using OES.Helper.Dtos.Schedule.Responses
+@using OES.Helper.Enums
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.AccountBox" Color="Color.Primary" />
+            <MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Start">@Resource.CandidateAllocations</MudText>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        <MudTable Items="@getSchedulePaperAllocationResponseDto" Dense="true" Hover="true" Striped="true" Breakpoint="Breakpoint.Sm" Loading="@isProcessingFile">
+            <HeaderContent>
+                <MudTh>Venue</MudTh>
+                <MudTh>Allocated Candidates</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.VenueName</MudTd>
+                <MudTd>@context.CandidateCount</MudTd>
+                <MudTd>
+                    <MudFab Color="Color.Primary"
+                            Size="Size.Small"
+                            Label="Remove Allocation"
+                            EndIcon="@Icons.Material.Filled.Delete"
+                            OnClick="@(() => RemoveAllocation(context.VenueId, context.SchedulePaperId))" />
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No allocations found.</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel" EndIcon="@Icons.Material.Filled.Cancel">Close</MudButton>
+    </DialogActions>
+</MudDialog>

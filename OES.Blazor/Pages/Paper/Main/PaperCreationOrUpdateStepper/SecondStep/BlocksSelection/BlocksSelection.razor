@@ -1,0 +1,137 @@
+﻿@using OES.Blazor.Services.Interfaces.Question
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.Dtos.Question
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.Dtos.QyestionType
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.Paper.Responses
+@using OES.Helper.Dtos.DifficultyLevel;
+@using OES.Helper.Dtos.DeltaType;
+@using OES.Helper.Dtos.Block.Responses;
+@using OES.Helper.Dtos.DifficultyProfile
+
+<MudText Typo="Typo.h6" Align="Align.Center" Class="mb-5">@Resource.SelectBlocks</MudText>
+
+@if (IsAdaptiveMST)
+{
+    <MudAlert Severity="Severity.Info" ContentAlignment="HorizontalAlignment.Start" Class="mb-3">
+        @Resource.ForMstAdaptiveOnly
+    </MudAlert>
+}
+else if (IsAdaptiveStep)
+{
+    <MudAlert Severity="Severity.Info" ContentAlignment="HorizontalAlignment.Start" Class="mb-3">
+        @Resource.ForStepAdaptiveOnly
+    </MudAlert>
+}
+
+<ListItem T="GetBlockResponseDto"
+          @ref="_listItemRef"
+          @key="_blockListChangeKey"
+          Caption="@Resource.Question"
+          CaptionIcon="@Icons.Material.Filled.ViewModule"
+          EndpointServerice="@GetBlocksPaginatedAsync"
+          DisplayColumns='["Name", "DeltaType", "DifficultyLevelsDto", "Type"]'
+          Hide_DescriptionSearch="true"
+          FilterObject="_blockFilterPaginationModel">
+    <TopChildContent>
+        <MudCard Class="mb-3">
+            <MudCardContent>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudSelect T="ProfileDto"
+                                   Label="@Resource.SelectDifficultyProfile"
+                                   Clearable="true"
+                                   @bind-Value="SelectedDifficultyProfileInput"
+                                   Variant="Variant.Outlined"
+                                   Class="mb-3 w-100"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var profile in _difficultyProfiles ?? [])
+                            {
+                                <MudSelectItem Value="@profile">@profile.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudSelect T="DifficultyLevelDto"
+                                   Label="@Resource.SelectDifficultyLevel"
+                                   Clearable="true" @bind-Value="SelectedDifficultyLevel"
+                                   Variant="Variant.Outlined"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   Disabled="disabled">
+                            @if (_difficultyLevels != null && _difficultyLevels.Any())
+                            {
+                                @foreach (var difficultyLevel in _difficultyLevels)
+                                {
+                                    <MudSelectItem Value="@difficultyLevel">@difficultyLevel.Name</MudSelectItem>
+                                }
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudSelect T="QuestionCategoryDto"
+                                   Label="@Resource.QuestionCategory"
+                                   Clearable="true"
+                                   @bind-Value="SelectedCategoryInput"
+                                   Variant="Variant.Outlined"
+                                   Class="mb-3 w-100"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var category in _questionCategories)
+                            {
+                                <MudSelectItem Value="@category">@category.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3" Class="d-flex align-center justify-center">
+                        <MudButton OnClick="ResetFilters" Color="Color.Primary" Variant="Variant.Outlined">
+                            @Resource.ResetFilters
+                        </MudButton>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3" Class="d-flex align-center justify-center gap-2">
+                        <MudFab Color="Color.Primary"
+                                Size="Size.Small"
+                                StartIcon="@Icons.Material.Filled.DoneAll"
+                                Label="@Resource.SelectAll"
+                                OnClick="SelectCurrentPageBlocks" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </TopChildContent>
+    <ButtonChildContent Context="context">
+        <MudTooltip Text="@Resource.SelectedBlocks">
+            <MudFab Disabled="@(SelectedBlocks.Any(x => x.Id == ((GetBlockResponseDto)context).Id))"
+                    Class="me-2 ms-2"
+                    Color="Color.Success"
+                    EndIcon="@(SelectedBlocks.Any(x => x.Id == ((GetBlockResponseDto)context).Id) ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Add)"
+                    Size="Size.Small"
+                    OnClick="@(() => SelectedBlockChanged(context))" />
+        </MudTooltip>
+    </ButtonChildContent>
+</ListItem>
+
+<div class="text-divider mb-5">@Resource.SelectedBlocks</div>
+
+@if (SelectedBlocks?.Any() == true)
+{
+    <div class="d-flex flex-wrap justify-content-center align-content-center gap-2">
+        @foreach (var block in SelectedBlocks)
+        {
+            <MudChip T="string"
+                     Class="ma-1"
+                     Variant="Variant.Filled"
+                     Size="Size.Large"
+                     Color="Color.Primary"
+                     CloseIcon="@Icons.Material.Filled.Close"
+                     OnClose="() => RemoveSelectedBlock(block)">
+                @block.Name
+            </MudChip>
+        }
+    </div>
+}
+else
+{
+    <MudText Typo="Typo.h6" Align="Align.Center">@Resource.NoBlocksSelected</MudText>
+}

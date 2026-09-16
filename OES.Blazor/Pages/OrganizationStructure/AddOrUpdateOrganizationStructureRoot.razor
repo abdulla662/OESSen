@@ -1,0 +1,46 @@
+﻿@* @page "/AddOrUpdateOrganizationStructureRoot" *@
+
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("AddOrUpdateOrganizationStructureRoot")]
+
+<PageTitle>@(IsUpdateMode? Resource.Update: Resource.AddButtonText) @Resource.OrganizationRoot</PageTitle>
+
+<EditForm Model=@Model OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+    <MudCard Class="mx-auto mt-5 w-75 shadow-lg p-4">
+        <MudCardContent>
+            <div class="text-center mb-4">
+                <MudText Typo="Typo.h3" Color="Color.Primary">@(IsUpdateMode ? Resource.Update : Resource.AddButtonText) @Resource.OrganizationRoot</MudText>
+            </div>
+            <MudPaper Elevation="0" Class="p-4 mb-3 mt-3 border rounded">
+                <MudTextField @bind-Value="Model.Name" 
+                              Label="@Resource.Name" 
+                              Variant="Variant.Outlined"
+                              Immediate
+                              HelperText="@Resource.OrgRootName"
+                              HelperTextOnFocus="true"
+                              For="@(() => Model.Name)"
+                              Required="true"
+                              Class="mb-5 w-100" />
+
+                <MudTextField @bind-Value="Model.Description" 
+                              Label="@Resource.Description" 
+                              Variant="Variant.Outlined" 
+                              Lines="3"
+                              Immediate
+                              HelperText="@Resource.OrgRootDescription"
+                              HelperTextOnFocus="true"
+                              For="@(() => Model.Description)"
+                              Required="true"
+                              Class="mb-5 w-100" />
+            </MudPaper>
+            <MudCardActions Class="justify-content-center w-100">
+                <MudButton Class="m-2 w-50" Color="Color.Primary" Variant="Variant.Filled" ButtonType="ButtonType.Submit" Disabled="IsSubmitButtonDisabled" EndIcon="@Icons.Material.Filled.CheckCircle">
+                    @(IsUpdateMode ? Resource.Update : Resource.Add)
+                </MudButton>
+                <MudButton Class="m-2 w-50" Color="Color.Secondary" Variant="Variant.Filled" OnClick="NavigateBack" EndIcon="@Icons.Material.Filled.Cancel">@Resource.Cancel</MudButton>
+            </MudCardActions>
+        </MudCardContent>
+    </MudCard>
+</EditForm>

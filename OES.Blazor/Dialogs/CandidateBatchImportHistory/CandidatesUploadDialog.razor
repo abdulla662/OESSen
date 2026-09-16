@@ -1,0 +1,126 @@
+﻿@using OES.Helper.Dtos.Venue.Responses
+
+<MudDialog Class="overflow-hidden">
+    <DialogContent>
+        <MudStack Row="true" Justify="Justify.FlexStart" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.AccountBox" Color="Color.Primary" />
+            <MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Start">@Resource.UploadCandidatesFile</MudText>
+        </MudStack>
+        <MudPaper Class="p-4" Style="max-height: max-content; overflow-y: auto; border: 1px solid #ccc; border-radius: 12px; background-color: var(--mud-palette-lines-default);">
+            <MudGrid xs="12" Class="d-flex justify-end">
+                <MudItem xs="12">
+                    <div class="form-group d-flex justify-content-center gap-3">
+                        <MudTooltip Text="@Resource.DownloadTemplate">
+                            <MudButton Variant="Variant.Filled"
+                                       Class="mr-2"
+                                       Color="Color.Primary"
+                                       EndIcon="@Icons.Material.Filled.Download"
+                                       Target="_blank"
+                                       Href="files/Candidates/ImportCandidatesOnSpecificVenueTemplate.xlsx">
+                                @Resource.DownloadTemplate
+                            </MudButton>
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.ShowCandidateRecordSample">
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       EndIcon="@Icons.Material.Filled.TableView"
+                                       Target="_blank"
+                                       Href="/CandidateOnSpecificVenueTemplateRecordSample.png">
+                                @Resource.ShowCandidateRecordSample
+                            </MudButton>
+                        </MudTooltip>
+                    </div>
+                </MudItem>
+                <MudItem xs="12">
+                    <div class="text-divider" Style="margin-top:-10px;">@Resource.SelectVenueForCandidates</div>
+                    <MudSelect T="GetVenueResponseDto"
+                               Label="@Resource.Venues"
+                               @bind-Value="_selectedVenue"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Required
+                               Immediate
+                               Clearable
+                               HelperText="@Resource.SelectoneormoreVenuesfortheSchedule"
+                               ToStringFunc="@(l => l.Name)">
+                        @foreach (var venue in ScheduleVenues)
+                        {
+                            <MudSelectItem Value="@venue">@venue.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudStack Style="width: 100%">
+                    <MudFileUpload T="IBrowserFile"
+                                   OnFilesChanged="OnInputFileChanged"
+                                   Hidden="@false"
+                                   InputClass="file-upload-input"
+                                   tabindex="-1"
+                                   @ondrop="ClearDragClass"
+                                   @ondragenter="SetDragClass"
+                                   @ondragleave="ClearDragClass"
+                                   @ondragend="ClearDragClass">
+                        <ActivatorContent>
+                            <MudPaper Height="200px"
+                                      Outlined="true"
+                                      Class="@($"{_dragClass} upload-zone")"
+                                      Style="border: 2px dashed var(--mud-palette-primary); background: var(--mud-palette-surface);">
+                                <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Class="h-100">
+                                    @if (_fileNames == null || !_fileNames.Any())
+                                    {
+                                        <MudIcon Icon="@Icons.Material.Filled.CloudUpload"
+                                                 Size="Size.Large"
+                                                 Color="Color.Primary" />
+                                        <MudText Typo="Typo.h6"
+                                                 Color="Color.Primary"
+                                                 Class="font-weight-medium">
+                                            @Resource.DragAndDropAFileHereOrClick
+                                        </MudText>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var file in _fileNames)
+                                        {
+                                            <MudChip T="string"
+                                                     Icon="@Icons.Material.Filled.AttachFile"
+                                                     Color="Color.Primary"
+                                                     Text="@file"
+                                                     tabindex="-1" />
+                                        }
+                                    }
+                                </MudStack>
+                            </MudPaper>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                    <MudToolBar Gutters="@false" Style="margin-top: -18px;" Class="relative d-flex justify-center gap-4">
+                        <MudButton Color="Color.Primary"
+                                   Disabled="@(_fileNames == null || !_fileNames.Any())"
+                                   OnClick="DeleteFile"
+                                   Variant="Variant.Filled"
+                                   EndIcon="@Icons.Material.Filled.Delete">
+                            @Resource.Clear
+                        </MudButton>
+                    </MudToolBar>
+                </MudStack>
+            </MudGrid>
+        </MudPaper>
+    </DialogContent>
+    <DialogActions>
+        <MudStack Row Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="2" Class="w-100">
+            <GeneralLoadingButton Disabled="@(isValid)"
+                                  EndIcon="@Icons.Material.Filled.CloudUpload"
+                                  Class="flex-fill"
+                                  Type="ButtonType.Button"
+                                  OnClick="SubmitAndValidateSelection"
+                                  ButtonText="@Resource.Validate" />
+            <GeneralLoadingButton Disabled="@(isProcessingFile || !isValid)"
+                                  EndIcon="@Icons.Material.Filled.CloudUpload"
+                                  Class="flex-fill"
+                                  Type="ButtonType.Button"
+                                  OnClick="SubmitAndUploadSelection"
+                                  ButtonText="@Resource.Upload" />
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.Cancel" OnClick="Cancel" Class="flex-fill">
+                @Resource.Cancel
+            </MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

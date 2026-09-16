@@ -1,0 +1,136 @@
+@using OES.Blazor.Components.GenericComponents.TreeViewTemplates.GrpcTreeViewTemplate.TreeNodeComponent
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+
+<div class="@LabelClass">@Label</div>
+<div class="tree-container">
+    @if (BuiltTree != null && BuiltTree.Any())
+    {
+        @if (ShowSearchBar)
+        {
+            <div class="tree-search-container mb-3">
+                <div class="search-box">
+                    <MudIcon Icon="@Icons.Material.Filled.Search" Class="search-icon" />
+                    <input type="text"
+                           class="search-input"
+                           placeholder="@Resource.Search..."
+                           @bind="searchText"
+                           @bind:event="oninput"
+                           @onkeyup="OnSearchInput" />
+                    @if (!string.IsNullOrWhiteSpace(searchText))
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                       Size="Size.Small"
+                                       Class="search-clear"
+                                       OnClick="ClearSearch" />
+                    }
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    <div class="search-dropdown">
+                        @if (searchResults.Any())
+                        {
+                            @foreach (var result in searchResults.Take(10))
+                            {
+                                <div class="search-item" @onclick="() => NavigateToSearchResult(result.Id)">
+                                    <MudIcon Icon="@Icons.Material.Filled.FolderOpen" Size="Size.Small" Class="search-item-icon" />
+                                    <div class="search-item-content">
+                                        @{
+                                            var parts = GetSearchParts(result.Text);
+                                        }
+                                        <span class="search-item-name">
+                                            @if (parts.HasValue)
+                                            {
+                                                @parts.Value.Before
+                                                <mark class="search-highlight">@parts.Value.Match</mark>
+
+                                                @parts.Value.After
+                                            }
+                                            else
+                                            {
+                                                @result.Text
+                                            }
+                                        </span>
+                                        @if (!string.IsNullOrWhiteSpace(result.Path))
+                                        {
+                                            <span class="search-item-path">@result.Path</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            @if (searchResults.Count > 10)
+                            {
+                                <div class="search-more">
+                                    + @(searchResults.Count - 10) @Resource.ItemBank
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="search-no-results">
+                                <MudIcon Icon="@Icons.Material.Filled.SearchOff" Size="Size.Small" />
+                                <span>@Resource.NoItemsToShow</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        <MudButton @onclick="ExpandAll" Class="ExpandCollapseStyling">
+            @Resource.ExpandAll
+        </MudButton>
+        <MudButton @onclick="CollapseAll" Class="ExpandCollapseStyling">
+            @Resource.CollapseAll
+        </MudButton>
+        @if (IsMultipleSelectionTree)
+        {
+            <MudButton @onclick="SelectAll" Class="ExpandCollapseStyling">
+                @Resource.SelectAll
+            </MudButton>
+        }
+        <div class="tree mt-3">
+            @if (isLoading)
+            {
+                <div class="tree-loader-container mt-3">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+                    <MudText Typo="Typo.h6" Class="mt-3">@Resource.Loading</MudText>
+                </div>
+            }
+            else if (BuiltTree != null)
+            {
+                <Virtualize Context="item" Items="BuiltTree" ItemSize="30" OverscanCount="3">
+                    <ItemContent>
+                        <TreeNodeComponent Node="item"
+                                           InsertionButtonShown="InsertionButtonShown"
+                                           UpdateButtonShown="UpdateButtonShown"
+                                           DeletionButtonShown="DeletionButtonShown"
+                                           DetailsButtonShown="DetailsButtonShown"
+                                           IsSingleSelectionTree="IsSingleSelectionTree"
+                                           IsMultipleSelectionTree="IsMultipleSelectionTree"
+                                           IsHierarchicalTree="IsHierarchicalTree"
+                                           EnableCascadingSelection="EnableCascadingSelection"
+                                           IsReadOnlyTree="IsReadOnlyTree"
+                                           OldSelectedItems="OldSelectedItems"
+                                           OldSelectedItemsDisabled="OldSelectedItemsDisabled"
+                                           SelectedItemId="SelectedItemId"
+                                           SelectedItems="SelectedItems"
+                                           GetSelectedTreeItem="GetSelectedTreeItem"
+                                           GetSelectedTreeItems="GetSelectedTreeItems"
+                                           InsertTreeItemInDb="InsertTreeItemInDb"
+                                           UpdateTreeItemInDb="UpdateTreeItemInDb"
+                                           RemoveTreeItemFromDb="RemoveTreeItemFromDb"
+                                           ShowItemDetails="ShowItemDetails"
+                                           TreeCrudButtonsRolesPlaceholders="TreeCrudButtonsRolesPlaceholders"
+                                           NodeCustomButton="NodeCustomButton" />
+                    </ItemContent>
+                </Virtualize>
+            }
+            else
+            {
+                <MudText Typo="Typo.subtitle2">@Resource.NoItemsToShow</MudText>
+            }
+        </div>
+    }
+</div>

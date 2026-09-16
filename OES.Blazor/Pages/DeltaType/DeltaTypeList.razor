@@ -1,0 +1,51 @@
+﻿@page "/DeltaTypeList"
+
+@attribute [DynamicAuthorizeAttribute("DeltaTypeList")]
+
+@using OES.Helper.Dtos.DeltaType
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.General.ProtectedEntityHelper
+
+<PageTitle>@Resource.DeltaType</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.TableView" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.DeltaType</MudText>
+        </MudStack>
+
+        <ListItem T="GetDeltaTypeDto"
+                  @key="Key"
+                  Caption="@Resource.DeltaType"
+                  CaptionIcon="@Icons.Material.Filled.TableView"
+                  EndpointServerice="BlazDeltaTypeService.GetAllDeltaTypesPaginated"
+                  DisplayColumns='[nameof(GetDeltaTypeDto.NameDisplay)]'
+                  HideCodeSearch="true"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <ButtonChildContent Context="value">
+                @if (value is GetDeltaTypeDto deltaType)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    OnClick="() => ViewDeltaTypeAsync(deltaType.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Color="Color.Error"
+                                    Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    StartIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    Disabled="@(ProtectedEntityHelper.IsProtected(deltaType.CreationUser, GlobalUserContext))"
+                                    OnClick="() => DeleteDeltaTypeAsync(deltaType.Id)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

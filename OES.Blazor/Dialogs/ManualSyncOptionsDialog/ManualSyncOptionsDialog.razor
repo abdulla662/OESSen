@@ -1,0 +1,39 @@
+﻿@using MudBlazor
+@using OES.Helper.ResourceFiles
+
+<MudDialog>
+    <DialogContent>
+        <MudRadioGroup @bind-Value="_syncAll" T="bool">
+            <MudRadio Value="true" Color="Color.Primary">@Resource.SyncAll</MudRadio>
+            <MudRadio Value="false" Color="Color.Secondary">@Resource.SyncSelectedVenues</MudRadio>
+        </MudRadioGroup>
+        <MudNumericField @bind-Value="_numberOfDays"
+                         Label="@Resource.NumberOfDays"
+                         Min="1" Max="30"
+                         Variant="Variant.Outlined"
+                         Class="mt-4" />
+        @if (!_syncAll)
+        {
+            <MudSelect T="string"
+                       @bind-SelectedValues="_selectedCodes"
+                       Label="@Resource.SelectVenues"
+                       Variant="Variant.Outlined"
+                       MultiSelection="true"
+                       Class="mt-4">
+                @foreach (var v in Venues)
+                {
+                    <MudSelectItem Value="@v.CenterCode">@v.CenterCode — @v.CenterName</MudSelectItem>
+                }
+            </MudSelect>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close">@Resource.Cancel</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Disabled="@(!_syncAll && !_selectedCodes.Any())"
+                   OnClick="Confirm">
+            @Resource.Sync
+        </MudButton>
+    </DialogActions>
+</MudDialog>

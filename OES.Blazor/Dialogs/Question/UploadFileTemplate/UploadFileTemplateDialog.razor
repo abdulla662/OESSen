@@ -1,0 +1,35 @@
+﻿@using OES.Helper.Dtos.QuestionUploadTemplateDto.OES.Helper.Dtos.UploadFiles
+@using OES.Blazor.Services.Interfaces.QuestionUploadTemplate
+@using OES.Helper.ResourceFiles
+@using System.Net
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Primary" Class="mt-5">
+            @Resource.UploadFileTemplate
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <ListItem @key="listChangingKey"
+                  T="QuestionUploadTemplateDto"
+                  FilterObject="false"
+                  Caption=@Resource.UploadFileTemplate
+                  CaptionIcon="@Icons.Material.Filled.Article"
+                  EndpointServerice="BlazQuestionUploadTemplateService.GetAllPaginatedTemplatesAsync"
+                  DisplayColumns="@CoulmnsNames"
+                  SearchPanelVisible="false"
+                  Hide_DescriptionSearch="true"
+                  CRUD_Delete_Btn="true"
+                  DeleteClick_fun="DeleteTemplateAsync">
+            <ButtonChildContent Context="value">
+                <MudTooltip Text="@Resource.SelectTemplate">
+                    <MudFab Color="Color.Primary"
+                            EndIcon="@Icons.Material.Filled.SelectAll"
+                            Class=@($"label-{nameof(Resource.SelectTemplate)}")
+                            Size="Size.Small"
+                            OnClick='() => SelectTemplate(((QuestionUploadTemplateDto)value))' />
+                </MudTooltip>
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+</MudDialog>

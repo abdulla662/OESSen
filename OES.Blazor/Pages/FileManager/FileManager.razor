@@ -1,0 +1,11 @@
+﻿@page "/FileManager"
+
+@using OES.Blazor.Components.Common.FileManagerComponent
+@using Microsoft.AspNetCore.Authorization
+@using OES.Blazor.CustomAuthorizationAttribute
+
+@attribute [DynamicAuthorizeAttribute("FileManager")]
+
+<PageTitle>@Resource.FileManager</PageTitle>
+
+<FileManagerComponent />

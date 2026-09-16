@@ -1,0 +1,13 @@
+﻿@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.SixthStep.AdaptivePaper
+@using OES.Blazor.Pages.Paper.Main.PaperCreationOrUpdateStepper.SixthStep.StandardPaper
+@using OES.Helper.Enums
+@using SharedHelper.Enums
+
+@if (PaperMetadataResultedParamsDto.SelectedPaperType == PaperType.Standard)
+{
+    <StandardSummary @ref="StandardSummaryComponentRef" PaperMetadataResultedParamsDto="PaperMetadataResultedParamsDto" />
+}
+else if (PaperMetadataResultedParamsDto.SelectedPaperType == PaperType.Adaptive)
+{
+    <AdaptiveSummary @ref="AdaptiveSummaryComponentRef" PaperMetadataResultedParamsDto="PaperMetadataResultedParamsDto" />
+}

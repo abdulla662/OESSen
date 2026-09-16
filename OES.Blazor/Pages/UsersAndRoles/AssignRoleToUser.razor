@@ -1,0 +1,74 @@
+﻿@page "/AssignRoleToUser"
+
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.PagesEndpointsRolesDtos
+@using OES.Helper.Dtos.User
+
+@attribute [DynamicAuthorizeAttribute(nameof(AssignRoleToUser))]
+
+<PageTitle>@Resource.AssignRolesToUser</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <div class="form-group d-flex justify-content-center mb-6">
+            <MudText Typo="Typo.h4" Align="Align.Center" Color="Color.Primary" Class="mt-5 mb-5">
+                @Resource.AssignRolesToUser
+            </MudText>
+        </div>
+        <MudItem xs="12" Class="mb-3">
+            <MudAutocomplete T="BlazUserDTO"
+                             @key="Users"
+                             Label="@Resource.SelectUser"
+                             Value="SelectedUser"
+                             Variant="Variant.Outlined"
+                             ValueChanged="GetPathRolesAsync"
+                             SearchFunc="@SearchPathsAsync"
+                             ToStringFunc="@(e => e == null ? null : $"{e.Name}")"
+                             ResetValueOnEmptyText="true"
+                             CoerceText="true"
+                             CoerceValue="false"
+                             Immediate="true"
+                             Required="true"
+                             RequiredError="@Resource.Userisrequiredhere"
+                             Clearable="true" />
+
+        </MudItem>
+        <MudItem xs="12" Class="mb-3">
+            <MudSelect T="RoleDto"
+                       Label="@Resource.SelectRole"
+                       MultiSelection="true"
+                       @bind-SelectedValues="CurrentRoles"
+                       ToStringFunc="@(org => org == null ? null : $"{org.Name}")"
+                       Variant="Variant.Outlined"
+                       Immediate="true"
+                       Required="true"
+                       RequiredError="@Resource.Selectatleastonerole"
+                       SelectAll="true"
+                       SelectAllText="@Resource.SelectallRoles"
+                       AnchorOrigin="Origin.BottomCenter">
+                @foreach (var role in Roles)
+                {
+                    <MudSelectItem T="RoleDto" Value="@role">@role.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" Class="ms-1">
+            @if (CurrentRoles.Any())
+            {
+                <MudText Typo="Typo.subtitle2" Class="mb-1">@Resource.SelectedRoles</MudText>
+                @foreach (var role in CurrentRoles)
+                {
+                    <MudChip T="RoleDto" Color="Color.Primary">@role.Name</MudChip>
+                }
+            }
+        </MudItem>
+    </MudCardContent>
+    <MudCardActions Class="justify-content-between mb-5 ">
+        <GeneralLoadingButton Disabled="@(!CurrentRoles.Any() || SelectedUser == null)"
+                              OnClick="OnSubmit"
+                              EndIcon="@Icons.Material.Filled.Assignment"
+                              ButtonColor="Color.Primary"
+                              ButtonText="@Resource.Assign"
+                              Type="ButtonType.Button" />
+    </MudCardActions>
+</MudCard>

@@ -1,0 +1,181 @@
+@page "/Questions"
+
+@using OES.Helper.Dtos.ItemBank
+@using OES.Helper.Dtos.Question.QuestionDetailsDtos
+@using OES.Helper.Dtos.QuestionCategory
+@using OES.Helper.Dtos.QyestionType
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Enums
+@using OES.Helper
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.General
+@using OES.Helper.Dtos.TreeItem
+
+@attribute [DynamicAuthorizeAttribute("QuestionList")]
+
+<PageTitle>@Resource.CreatedQuestions</PageTitle>
+
+<MudCard Class="mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.Quiz" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.CreatedQuestions</MudText>
+        </MudStack>
+
+        <ListItem @key="_questionsListChangingKey"
+                  T="QuestionMetadataPaginationDto"
+                  Caption="@Resource.Question"
+                  CaptionIcon="@Icons.Material.Rounded.Quiz"
+                  EndpointServerice="BlazQuestionService.GetAllQuestionAsync"
+                  DisplayColumns="[ nameof(QuestionMetadataPaginationDto.Code),
+                                    nameof(QuestionMetadataPaginationDto.TypeDisplay),
+                                    nameof(QuestionMetadataPaginationDto.Language),
+                                    nameof(QuestionMetadataPaginationDto.Subject),
+                                    nameof(QuestionMetadataPaginationDto.ItemBank),
+                                    nameof(QuestionMetadataPaginationDto.StatusDisplay) ]"
+                  Hide_DescriptionSearch="true"
+                  NoConvertColumns='[nameof(QuestionMetadataPaginationDto.Code)]'
+                  AddNew_URL_OesRolesList="[OesTemplateRoleConstants.QuestionCreator, OesTemplateRoleConstants.ItemBankQuestionCreator]"
+                  AddNew_URL="/QuestionCreation"
+                  FilterObject="QuestionFilterPaginationModel"
+                  HideSearchInBody="true">
+            <TopChildContent>
+                <MudCard Class="mb-3">
+                    <MudCardContent>
+                        <MudGrid Justify="Justify.Center" GutterSize="GutterSize.Small">
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudAutocomplete T="RootItemBankDto"
+                                                 Label="@Resource.SelectItemBank"
+                                                 Clearable="true"
+                                                 @bind-Value="SelectedItemBank"
+                                                 Variant="Variant.Outlined"
+                                                 AnchorOrigin="Origin.BottomCenter"
+                                                 SearchFunc="SearchItemBanks"
+                                                 ToStringFunc="@(x => x?.Name)"
+                                                 CoerceValue="true"
+                                                 ResetValueOnEmptyText="true" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudAutocomplete T="QuestionCategoryDto"
+                                                 Label="@Resource.SelectCategory"
+                                                 Clearable="true"
+                                                 @bind-Value="SelectedCategory"
+                                                 Variant="Variant.Outlined"
+                                                 AnchorOrigin="Origin.BottomCenter"
+                                                 SearchFunc="SearchCategories"
+                                                 ToStringFunc="@(x => x?.Name)"
+                                                 CoerceValue="true"
+                                                 ResetValueOnEmptyText="true" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudAutocomplete T="QuestionTypeDto"
+                                                 Label="@Resource.SelectType"
+                                                 Clearable="true"
+                                                 @bind-Value="SelectedType"
+                                                 Variant="Variant.Outlined"
+                                                 AnchorOrigin="Origin.BottomCenter"
+                                                 SearchFunc="SearchTypes"
+                                                 ToStringFunc="@(x => x?.Name.ToLocalizedString<QuestionType>())"
+                                                 CoerceValue="true"
+                                                 ResetValueOnEmptyText="true" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="3">
+                                <MudAutocomplete T="string"
+                                                 Label="@Resource.SelectStatus"
+                                                 Clearable="true"
+                                                 @bind-Value="SelectedStatus"
+                                                 Variant="Variant.Outlined"
+                                                 AnchorOrigin="Origin.BottomCenter"
+                                                 SearchFunc="SearchStatuses"
+                                                 ToStringFunc="@(x => x?.ToLocalizedString<QuestionStatus>())"
+                                                 CoerceValue="true"
+                                                 ResetValueOnEmptyText="true" />
+                            </MudItem>
+                            @if (_selectedItemBank != null)
+                            {
+                                <MudItem xs="12" sm="6" md="3">
+                                    <MudAutocomplete T="TreeItemResponseDto"
+                                                     Label="@Resource.SelectBranch"
+                                                     Clearable="true"
+                                                     @bind-Value="SelectedBranch"
+                                                     Variant="Variant.Outlined"
+                                                     AnchorOrigin="Origin.BottomCenter"
+                                                     SearchFunc="SearchBranches"
+                                                     ToStringFunc="@(x => x?.Text)"
+                                                     CoerceValue="true"
+                                                     ResetValueOnEmptyText="true" />
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </TopChildContent>
+            <ButtonChildContent Context="value">
+                @if (value is QuestionMetadataPaginationDto question)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    Color="Color.Primary"
+                                    StartIcon="@Icons.Material.Outlined.Visibility"
+                                    Size="Size.Small"
+                                    OnClick="() => ViewQuestionAsync(question.Id)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Copy">
+                            <MudFab Class=@($"fab-xsmall label-{nameof(Resource.Copy)}")
+                                    Color="Color.Default"
+                                    StartIcon="@Icons.Material.Filled.ContentCopy"
+                                    Size="Size.Small"
+                                    OnClick="() => OpenCopyQuestionDeeplyDialogAsync(question)" />
+                        </MudTooltip>
+                        @if (CanEditQuestion(question))
+                        {
+                            <MudTooltip Text="@Resource.Edit">
+                                <MudFab Class=@($"fab-xsmall label-{nameof(Resource.Edit)}")
+                                        Color="Color.Secondary"
+                                        EndIcon="@Icons.Material.Filled.Edit"
+                                        Size="Size.Small"
+                                        OnClick="() => EditQuestionAsync(question)" />
+                            </MudTooltip>
+                        }
+                        @if (question.Status == QuestionStatus.Approved)
+                        {
+                            <MudTooltip Text="@Resource.Replace">
+                                <MudFab Class=@($"fab-xsmall label-{nameof(Resource.Replace)}")
+                                        Color="Color.Secondary"
+                                        EndIcon="@Icons.Material.Filled.SwapHoriz"
+                                        Size="Size.Small"
+                                        OnClick="() => EditQuestionAsync(question)" />
+                            </MudTooltip>
+                        }
+                        @if (question.Status == QuestionStatus.Approved)
+                        {
+                            <MudTooltip Text="@Resource.ManageGroups">
+                                <MudFab Class=@($"fab-xsmall label-{nameof(Resource.ManageGroups)}")
+                                        Color="Color.Primary"
+                                        StartIcon="@Icons.Material.Filled.GroupAdd"
+                                        Size="Size.Small"
+                                        OnClick="() => OpenGroupDialogAsync(question)" />
+                            </MudTooltip>
+                        }
+                        <MudTooltip Text="@Resource.ViewQuestionExamPanel">
+                            <MudFab Class=@($"fab-xsmall label-{nameof(Resource.ViewQuestionExamPanel)}")
+                                    Color="Color.Success"
+                                    EndIcon="@Icons.Material.Filled.List"
+                                    Size="Size.Small"
+                                    Disabled="@(question.Status == QuestionStatus.MetadataAdded)"
+                                    OnClick="() => LoadQuestionInMiddlePanelAsync(question)" />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.Delete">
+                            <MudFab Class=@($"fab-xsmall label-{nameof(Resource.Delete)}")
+                                    Color="Color.Error"
+                                    StartIcon="@Icons.Material.Filled.Delete"
+                                    Size="Size.Small"
+                                    OnClick="() => DeleteQuestionAsync(question.Id)" />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

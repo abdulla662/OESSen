@@ -1,0 +1,21 @@
+﻿<MudPaper Elevation="0" Class="notepad-container notepad-main">
+    <MudToolBar Class="notepad-header">
+        <div class="header-content">
+            <MudIcon Icon="@Icons.Material.Filled.Note" Class="notepad-icon" />
+            <MudText Typo="Typo.h6" Class="notepad-title">@Resource.Notes</MudText>
+        </div>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Minimize" Class="header-btn minimize-btn" Size="Size.Small" OnClick="(() => CloseNotePad.InvokeAsync())" />
+    </MudToolBar>
+    <div class="notepad-body">
+        <div id="toolbar" class="notepad-toolbar"></div>
+        <div id="editor" contenteditable="true" class="notepad-editor" placeholder="@Resource.StartTypingYourNotesHere" data-no-convert></div>
+        <div class="editor-footer">
+            <div class="status-indicators">
+                <div class="save-indicator">
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" />
+                </div>
+            </div>
+        </div>
+    </div>
+</MudPaper>

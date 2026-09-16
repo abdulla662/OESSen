@@ -1,0 +1,204 @@
+@page "/reports/center-attendance-verification"
+
+@using OES.Blazor.Components.Reports
+@using OES.Blazor.CustomAuthorizationAttribute
+@using OES.Helper.Dtos.Results
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+@attribute [DynamicAuthorizeAttribute("VenueAttendanceVerification")]
+
+<PageTitle>
+    @Resource.CenterAttendanceVerification
+</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center mb-4 mt-3 ar-no-print">
+    <MudIcon Icon="@Icons.Material.Filled.FactCheck"
+             Color="Color.Primary"
+             Size="Size.Large"
+             Class="me-2" />
+    <MudText Typo="Typo.h5"
+             Color="Color.Primary">
+        @Resource.CenterAttendanceVerification
+    </MudText>
+    <ReportInfoButton Title="@Resource.CenterAttendanceVerification"
+                      Overview="@_infoOverview"
+                      Sections="@_infoSections" />
+</div>
+
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error"
+              Class="mb-4"
+              ContentAlignment="HorizontalAlignment.Start"
+              ShowCloseIcon="true">
+        @_errorMessage
+    </MudAlert>
+}
+
+<MudPaper Class="pa-4 mb-4"
+          Elevation="3">
+    <MudGrid>
+        <MudItem xs="12"
+                 md="4">
+            <MudDatePicker Label="@Resource.ExamDate"
+                           @bind-Date="_examDate"
+                           Variant="Variant.Outlined"
+                           Editable="true"
+                           Required="true" />
+        </MudItem>
+        <MudItem xs="12"
+                 md="4"
+                 Class="d-flex align-items-center">
+            <GeneralLoadingButton Disabled="_isLoading"
+                                  OnClick="GenerateAsync"
+                                  EndIcon="@Icons.Material.Filled.Search"
+                                  Variant="Variant.Filled"
+                                  ButtonColor="Color.Primary"
+                                  ButtonText="@Resource.Generate"
+                                  FullWidth="true" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@if (_results.Count > 0)
+{
+    <MudPaper Class="pa-4 mb-4"
+              Elevation="3">
+        <MudStack Row="true"
+                  Spacing="2"
+                  AlignItems="AlignItems.Center"
+                  Class="mb-4">
+            <MudChip T="string" Color="Color.Success" Variant="Variant.Filled">
+                @Resource.Match:
+                @Summary.MatchCount
+            </MudChip>
+            <MudChip T="string" Color="Color.Warning" Variant="Variant.Filled">
+                @Resource.Mismatch:
+                @Summary.MismatchCount
+            </MudChip>
+            <MudChip T="string" Color="Color.Error" Variant="Variant.Filled">
+                @Resource.Error:
+                @Summary.ErrorCount
+            </MudChip>
+            <MudText Typo="Typo.body2"
+                     Class="ms-2">
+                @Resource.TotalCenters:
+                @Summary.TotalCenters
+            </MudText>
+        </MudStack>
+
+        @if (Summary.AllCentersFailed)
+        {
+            <MudAlert Severity="Severity.Warning"
+                      Dense="true"
+                      Class="mb-3">
+                @Resource.AllCenterConnectionsFailed
+            </MudAlert>
+        }
+
+        @if (Summary.NoExamActivityFound)
+        {
+            <MudAlert Severity="Severity.Info"
+                      Dense="true"
+                      Class="mb-3">
+                @Resource.NoExamActivityFoundPrefix
+                <strong>
+                    @_examDate?.ToString("yyyy-MM-dd")
+                </strong>
+                @Resource.PleaseVerifySelectedDateHasCompletedExams
+            </MudAlert>
+        }
+    </MudPaper>
+    <MudPaper Class="pa-4 mb-4"
+              Elevation="3">
+        <MudSimpleTable Dense="true"
+                        Bordered="true"
+                        Hover="false">
+            <thead>
+                <tr>
+                    <th>@Resource.CentersConnected</th>
+                    <th>@Resource.TotalCentralDBCount</th>
+                    <th>@Resource.TotalCenterDBCount</th>
+                    <th>@Resource.MatchStatus</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Summary.ConnectedCenters /
+                        @Summary.TotalCenters
+                    </td>
+                    <td>
+                        @Summary.TotalCentralCount
+                    </td>
+                    <td>
+                        @Summary.TotalVenueCount
+                    </td>
+                    <td>
+                        <MudChip T="string"
+                                 Color="Color.Success"
+                                 Size="Size.Small"
+                                 Variant="Variant.Filled">
+                            @Summary.MatchCount /
+                            @Summary.TotalCenters
+                            @Resource.Match
+                        </MudChip>
+                    </td>
+                </tr>
+            </tbody>
+        </MudSimpleTable>
+    </MudPaper>
+    <div class="d-flex justify-content-end gap-2 mb-3 ar-no-print">
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.TableChart"
+                   Color="Color.Success"
+                   OnClick="ExportAsync"
+                   Disabled="_isExporting || _isLoading">
+            @Resource.Download
+        </MudButton>
+    </div>
+    <MudPaper Class="pa-4"
+              Elevation="3">
+        <MudTable Items="_results"
+                  Hover="true"
+                  Striped="true"
+                  Dense="true"
+                  Bordered="true">
+            <HeaderContent>
+                <MudTh>@Resource.CenterName</MudTh>
+                <MudTh>@Resource.CenterCode</MudTh>
+                <MudTh>@Resource.CentralDBCount</MudTh>
+                <MudTh>@Resource.CenterDBCount</MudTh>
+                <MudTh>@Resource.Status</MudTh>
+                <MudTh>@Resource.Error</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@Resource.CenterName">
+                    @context.VenueName
+                </MudTd>
+                <MudTd DataLabel="@Resource.CenterCode">
+                    @context.VenueCode
+                </MudTd>
+                <MudTd DataLabel="@Resource.CentralDBCount">
+                    @context.CentralCount
+                </MudTd>
+                <MudTd DataLabel="@Resource.CenterDBCount">
+                    @context.VenueCount
+                </MudTd>
+                <MudTd DataLabel="@Resource.Status">
+                    <MudChip T="string"
+                             Color="@GetStatusColor(context.Status)"
+                             Size="Size.Small"
+                             Variant="Variant.Filled">
+                        @GetStatusLabel(context.Status)
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="@Resource.Error"
+                       Style="max-width:320px; word-break:break-word; font-size:0.8rem;">
+                    @FriendlyError(context.ErrorMessage)
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+}

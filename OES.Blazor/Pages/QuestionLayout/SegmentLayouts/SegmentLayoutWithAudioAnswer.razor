@@ -1,0 +1,98 @@
+@using OES.Helper.ResourceFiles
+@using OES.Blazor.Components.Common
+@using OES.Blazor.InternalHelperTypes.General
+
+<div class="@(ScreenSizeClass)" data-no-convert dir="@DirectionHelper.GetDirection()">
+    <MudContainer MaxWidth="MaxWidth.False"
+                  Gutters="false"
+                  Class="responsive-container d-flex flex-column">
+        <MudGrid Spacing="0" Class="sun-editor-editable mb-0 p-0">
+            <MudItem xs="@ColumnsCount">
+                <div style="direction: @DirectionHelper.GetDirection() !important;">
+                    <MudText HtmlTag="div"
+                             Color="Color.Inherit"
+                             Typo="Typo.inherit"
+                             Align="Align.Start">
+                        @DirectionHelper.GetDirectionalContent(Model.Body)
+                    </MudText>
+                </div>
+            </MudItem>
+
+            @if (Model?.HasAttachment ?? false)
+            {
+                <MediaAttachment Url="@(Model.AttachmentFileUrl)" />
+            }
+        </MudGrid>
+        @if (!ShowCorrectAnswer)
+        {
+            <MudGrid Spacing="0" Class="flex-grow-1 mt-3">
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h6">@Resource.Answer:</MudText>
+                    <div class="d-flex align-items-center mt-4" style="gap: 1rem; font-size: 10px !important;">
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled"
+                                   OnClick="StartRecordingAsync"
+                                   Size="Size.Small"
+                                   Disabled="@_isRecording"
+                                   Class="small-text"
+                                   Style="min-height:45px; padding:2px 8px;">
+                            <MudIcon Icon="@Icons.Material.Filled.Mic"
+                                     Size="Size.Small"
+                                     Class="me-2" />
+                            @Resource.AudioRecording
+                        </MudButton>
+                        <MudButton Disabled="@(!_isRecording || _isLoading)"
+                                   OnClick="StopRecordingAsync"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Error"
+                                   Size="Size.Small"
+                                   Class="small-text"
+                                   Style="min-height:45px; padding:2px 8px;"
+                                   ButtonType="ButtonType.Button">
+                            @if (_isLoading)
+                            {
+                                <MudProgressCircular Class="mx-2" Size="Size.Small" Indeterminate="true" />
+                                <MudText Class="ms-2">@Resource.Loading</MudText>
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Stop"
+                                         Size="Size.Small"
+                                         Class="me-2" />
+                                @Resource.StopRecordingBtn
+                            }
+                        </MudButton>
+                        @if (_isRecording)
+                        {
+                            <MudStack Row="true" AlignItems="AlignItems.Center">
+                                <MudText Typo="Typo.body2" Class="record-text">
+                                    @Resource.RecordingInProgress @_recordingTime
+                                </MudText>
+                                <span class="record-dot"></span>
+                            </MudStack>
+                        }
+                    </div>
+                </MudItem>
+            </MudGrid>
+        }
+        else
+        {
+            <MudGrid Spacing="0" Class="flex-grow-1 mt-3">
+                <MudItem xs="12" Class="pa-0 ma-0 mt-0">
+                    <MudText Typo="Typo.h6"
+                             Color="Color.Primary"
+                             Class="mt-0 mb-0 p-0">
+                        @Resource.CorrectAnswer
+                    </MudText>
+                </MudItem>
+                <MudItem xs="12"
+                         Class="sun-editor-editable pa-0 ma-0"
+                         Style="margin-top: 5px !important;">
+                    <MudText Typo="Typo.inherit"
+                             Class="sun-editor-editable centered-border rounded p-0 mb-0">
+                        @(new MarkupString(Model?.ModelAnswer ?? ""))
+                    </MudText>
+                </MudItem>
+            </MudGrid>
+        }
+    </MudContainer>
+</div>

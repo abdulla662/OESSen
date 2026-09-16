@@ -1,0 +1,79 @@
+﻿@using OES.Helper.Dtos.Form;
+@using OES.Helper.Enums
+
+<MudDialog>
+    <DialogContent>
+        <ListItem T="FormListDto"
+                  @key="listItemReloadingKey"
+                  ListTitle="@Resource.PaperFormList"
+                  CaptionIcon="@Icons.Material.Filled.Assignment"
+                  EndpointServerice="GetPaperFormsAsync"
+                  DisplayColumns='[nameof(FormListDto.Name), nameof(FormListDto.FormQuestionsCount), nameof(FormListDto.UsedQuestion), nameof(FormListDto.UnusedQuestion), nameof(FormListDto.FormStatusDisplay)]'
+                  FilterObject="@PaperId"
+                  SearchPanelVisible="true"
+                  Hide_DescriptionSearch="true">
+            <TopChildContent>
+                    @if (PaperSubType == nameof(QuestionSelectionType.Manual))
+                    {
+                        <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled" Class="mb-3">
+                            <MudButton OnClick="@(() => AddNewPaperFormAsync(PaperStepperFormsMode.AddNormalSingleManualForm))">@Resource.AddManualForm</MudButton>
+                            <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Style="align-self: auto;" AnchorOrigin="Origin.BottomLeft">
+                                <MudMenuItem OnClick="@(() => AddNewPaperFormAsync(PaperStepperFormsMode.AddExcelSheetSingleManualForm))">@Resource.AddFormFromExcelSheet</MudMenuItem>
+                            </MudMenu>
+                        </MudButtonGroup>
+                    }
+                    else if (PaperSubType == nameof(QuestionSelectionType.Auto))
+                    {
+                        <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled" Class="mb-3">
+                            <MudButton OnClick="@(() => AddNewPaperFormAsync(PaperStepperFormsMode.AddSingleAutoForm))">@Resource.AddAutoForm</MudButton>
+                        </MudButtonGroup>
+                    }
+            </TopChildContent>
+            <ButtonChildContent Context="value">
+                @if (value is FormListDto form)
+                {
+                    <MudTooltip Text="@(form.FormStatus == AvailabilityStatus.Active ? Resource.Sync : Resource.ManageSuspensions)">
+                        <MudFab Color="@(form.FormStatus == AvailabilityStatus.Active ? Color.Success : Color.Warning)"
+                                EndIcon="@(form.FormStatus == AvailabilityStatus.Active ? Icons.Material.Filled.Sync : Icons.Material.Filled.ToggleOn)"
+                                Size="Size.Small"
+                                Class="@(form.FormStatus == AvailabilityStatus.Active ? "label-Sync" : "label-ToggleOn")"
+                                OnClick='() => OpenSuspendFormDialogAsync(form)' />
+                    </MudTooltip>
+                    @if (form.FormStatus != AvailabilityStatus.Synced || form.IsSuspendedInAnyVenue)
+                    {
+                        <MudTooltip Text="@Resource.Edit">
+                            <MudFab Color="Color.Secondary"
+                                    Class=@($"label-{nameof(Resource.Edit)}")
+                                    EndIcon="@Icons.Material.Filled.Edit" Size="Size.Small"
+                                    OnClick='() => EditForm(form)' />
+                        </MudTooltip>
+                        <MudTooltip Text="@Resource.EditSections">
+                            <MudFab Color="Color.Primary"
+                                    EndIcon="@Icons.Material.Filled.EditNote"
+                                    Size="Size.Small"
+                                    Class=@($"label-{nameof(Resource.EditSections)}")
+                                    OnClick='() => EditSection(form)' />
+                        </MudTooltip>
+                    }
+                    <MudTooltip Text="@(_isPaperAssignedToSchedule ? Resource.CannotDeleteFormAssignedToSchedule : Resource.Delete)">
+                        <MudFab Color="Color.Error"
+                                EndIcon="@Icons.Material.Filled.Delete"
+                                Size="Size.Small"
+                                Class=@($"label-{nameof(Resource.Delete)}")
+                                Disabled="_isPaperAssignedToSchedule"
+                                OnClick='() => SoftDeleteFormAsync(form.Id)' />
+                    </MudTooltip>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </DialogContent>
+    <DialogActions>
+        <div class="d-flex justify-content-end w-100 pb-2">
+            <MudButton OnClick="Close"
+                       Color="Color.Secondary"
+                       Variant="Variant.Filled"
+                       Size="Size.Small"
+                       EndIcon="@Icons.Material.Filled.Cancel">@Resource.Close</MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>

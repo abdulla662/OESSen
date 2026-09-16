@@ -1,0 +1,53 @@
+﻿
+
+<EditForm OnSubmit="OnSubmitAsync" Model="SelectedLanguage">
+    <DataAnnotationsValidator />
+    <MudDialog TitleClass="fw-bold font-weight-bold">
+        <TitleContent>
+            <MudText Typo="Typo.h5">
+                @Resource.SelectQuestionLanguage
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="12" Class="mb-3">
+                    <div class="form-group mt-3">
+                        <MudSelect @bind-Value="SelectedLanguage"
+                                   Label="@Resource.SelectLanguage"
+                                   Immediate
+                                   Variant="Variant.Outlined"
+                                   ToStringFunc="(l => l.Name)"
+                                   Error="@(_isSubmitButtonHit && SelectedLanguage.Id == 0)"
+                                   ErrorText="@_requiredErrorText"
+                                   Required
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var language in LanguagesList)
+                            {
+                                <MudSelectItem Value="language" />
+                            }
+                        </MudSelect>
+                    </div>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudStack Row="true" Spacing="4" Class="w-50 d-flex justify-content-center mt-2">
+                <GeneralLoadingButton Class="flex-grow-1 p-2 rounded-pill"
+                                      Size="Size.Small"
+                                      ButtonText="@Resource.Save"
+                                      IsLoading="@_processing"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit" />
+
+                <MudButton Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           Color="Color.Secondary"
+                           OnClick="Cancel"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

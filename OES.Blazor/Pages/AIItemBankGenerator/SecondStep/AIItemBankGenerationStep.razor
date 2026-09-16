@@ -1,0 +1,127 @@
+@using MudBlazor
+@using OES.Helper
+@using OES.Helper.Enums
+@using OES.Helper.ResourceFiles
+
+<MudGrid Spacing="3">
+    @* Configuration Summary Section *@
+    <MudItem xs="12">
+        <MudPaper Class="pa-4" Elevation="1" Outlined="true">
+            <div class="d-flex align-center gap-2 mb-3">
+                <MudIcon Icon="@Icons.Material.Filled.Summarize" Color="Color.Primary" />
+                <MudText Typo="Typo.h6">@Resource.Summary</MudText>
+            </div>
+
+            <MudGrid Spacing="2">
+                @* File Info *@
+                <MudItem xs="12" sm="6" md="3">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@Resource.File</MudText>
+                        <div class="d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Description" Size="Size.Small" Color="Color.Primary" />
+                            <MudText Typo="Typo.body2" Class="text-truncate" Style="max-width: 200px;">
+                                @(ConfigurationData.File?.Name ?? "-")
+                            </MudText>
+                        </div>
+                    </MudStack>
+                </MudItem>
+
+                @* Item Bank Levels Creation Strategy *@
+                <MudItem xs="12" sm="6" md="3">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@Resource.ItemBankLevelsCreation</MudText>
+                        <MudText Typo="Typo.body2">
+                            @GetLevelsCreationName(ConfigurationData.ItemBankLevelsCreation)
+                        </MudText>
+                    </MudStack>
+                </MudItem>
+
+                @* Selected Language *@
+                <MudItem xs="12" sm="6" md="4">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@Resource.LanguageName</MudText>
+                        <MudText Typo="Typo.body2">@(ConfigurationData.SelectedLanguageDto?.Name ?? "-")</MudText>
+                    </MudStack>
+                </MudItem>
+
+                @* Max Levels Depth *@
+                <MudItem xs="12" sm="6" md="3">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@Resource.MaxLevelsCount</MudText>
+                        <MudText Typo="Typo.body2">@(ConfigurationData.MaxLevelsCount?.ToString() ?? "-")</MudText>
+                    </MudStack>
+                </MudItem>
+
+                @* Max Children Per Node *@
+                <MudItem xs="12" sm="6" md="3">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@Resource.MaxChilderenPerNode</MudText>
+                        <MudText Typo="Typo.body2">@(ConfigurationData.MaxChildrenPerNode?.ToString() ?? "-")</MudText>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+
+    @* Generation Action Section *@
+    <MudItem xs="12">
+        <MudPaper Class="pa-6" Elevation="2" Style="background: linear-gradient(135deg, var(--mud-palette-background-grey) 0%, var(--mud-palette-surface) 100%);">
+            <div class="d-flex flex-column align-center justify-center" style="min-height: 220px;">
+                @if (IsProcessing)
+                {
+                    <MudStack AlignItems="AlignItems.Center" Spacing="4">
+                        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" StrokeWidth="4" />
+                        <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.GeneratingItemBankAI</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center">
+                            @_processingMessage
+                        </MudText>
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Error"
+                                   Size="Size.Medium"
+                                   StartIcon="@Icons.Material.Filled.Stop"
+                                   OnClick="CancelGeneration"
+                                   Class="mt-2">
+                            @Resource.CancelGeneration
+                        </MudButton>
+                    </MudStack>
+                }
+                else if (GenerationComplete)
+                {
+                    <MudStack AlignItems="AlignItems.Center" Spacing="3">
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Large" Style="font-size: 4rem;" />
+                        <MudText Typo="Typo.h5" Color="Color.Success">@Resource.ItemBankGeneratedSuccess</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            @Resource.ItemBankReadyForReview
+                        </MudText>
+                    </MudStack>
+                }
+                else
+                {
+                    <MudStack AlignItems="AlignItems.Center" Spacing="3" Class="w-100">
+                        <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Color="Color.Primary" Size="Size.Large" Style="font-size: 3rem;" />
+                        <MudText Typo="Typo.h6" Align="Align.Center">
+                            @Resource.AIItemBankGenerator
+                        </MudText>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Size="Size.Large"
+                                   StartIcon="@Icons.Material.Filled.PlayArrow"
+                                   OnClick="GenerateItemBank"
+                                   Class="mt-3 px-6">
+                            @Resource.Generate
+                        </MudButton>
+                    </MudStack>
+                }
+            </div>
+
+            <MudAlert Severity="Severity.Warning"
+                      Variant="Variant.Outlined"
+                      Class="mt-6 mx-auto rounded-lg"
+                      Style="text-align: start; max-width: 800px;">
+                <MudText Typo="Typo.body2" Style="font-weight: 500; line-height: 1.5;">
+                    @Resource.AIItemBankGenerationWarning
+                </MudText>
+            </MudAlert>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

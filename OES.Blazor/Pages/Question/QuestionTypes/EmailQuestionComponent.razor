@@ -1,0 +1,208 @@
+@using OES.Blazor.Components.GenericComponents.TextEditor
+
+<EditForm OnSubmit="OnSubmitAsync" Model="@Model">
+    <DataAnnotationsValidator />
+    <MudGrid Spacing="1">
+        <MudItem xs="12">
+            <MudStack Spacing="1" Class="mb-2">
+                <MudText Typo="Typo.h6" Class="editor-label-text fw-bold">@Resource.Settings</MudText>
+            </MudStack>
+            <MudPaper Elevation="0" Outlined="true" Class="pa-4 rounded-lg question-settings-card-parent">
+                <MudStack Row="true" Spacing="6" AlignItems="AlignItems.Start" Justify="Justify.FlexStart" Wrap="Wrap.Wrap">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.body2" Class="question-settings-label mb-0 fw-bold">
+                            @Resource.SelectLanguage
+                        </MudText>
+                        <MudSelect @bind-Value="SelectedLanguage"
+                                   Immediate
+                                   Dense="true"
+                                   Class="rounded-setting-field language-selector"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   ToStringFunc="@(l => l?.Name)"
+                                   Error="@(_isSubmitButtonHit && SelectedLanguage.Id == 0)"
+                                   ErrorText="@_requiredErrorText"
+                                   Required
+                                   AdornmentIcon="@Icons.Material.Filled.Language"
+                                   AdornmentColor="Color.Primary"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var language in LanguagesList)
+                            {
+                                <MudSelectItem Value="language" />
+                            }
+                        </MudSelect>
+                    </MudStack>
+
+                    <MudStack Spacing="0">
+                        <NumberLanguageSelector @bind-Value="Model.UseArabicNumbers" />
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="QuestionBodyParams"
+                        @ref="@QuestionBodyParams.TextEditor">
+                <ActionContent>
+                    @if (IsReplaceMode && !string.IsNullOrEmpty(Model.AttachmentFileName))
+                    {
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="RemoveBodyMedia">@Resource.RemoveMedia</MudButton>
+                    }
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        <MudItem xs="12">
+            <TextEditor TextEditorParams="InstructionsEditorParams"
+                        @ref="@InstructionsEditorParams.TextEditor">
+                <ActionContent>
+                    <MudStack Row="true" Spacing="2">
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.CheckCircle"
+                                              OnClick="async e => await SaveInstructionAsTemplate()"
+                                              ButtonColor="Color.Secondary"
+                                              ButtonText="@Resource.SaveAsTemplateInstructions"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+
+                        <GeneralLoadingButton EndIcon="@Icons.Material.Filled.Article"
+                                              OnClick="async e => await LoadInstructionTemplate()"
+                                              ButtonColor="Color.Surface"
+                                              ButtonText="@Resource.LoadTemplates"
+                                              Size="Size.Small"
+                                              Type="ButtonType.Button" />
+                    </MudStack>
+                </ActionContent>
+            </TextEditor>
+        </MudItem>
+
+        @* Expected To Emails *@
+        <MudItem xs="12" Class="mt-3">
+            <MudCard Elevation="3">
+                <MudCardContent>
+                    <MudStack Spacing="2">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600;">@($"{Resource.ExpectedToEmails} ({Resource.Required})")</MudText>
+                        </MudStack>
+                        <MudText Typo="Typo.caption">@Resource.TypeEmailHint</MudText>
+                        <MudTextField T="string"
+                                      @bind-Value="_toEmailInput"
+                                      Placeholder="@Resource.AddEmailAddress"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Immediate="true"
+                                      OnKeyDown="OnToEmailKeyDown"
+                                      OnBlur="OnToEmailBlur"
+                                      Validation="@(new Func<string, string>(val => string.IsNullOrEmpty(val) || IsValidEmail(val) ? null : Resource.EmailFormatInvalid))"
+                                      Error="@(_isSubmitButtonHit && ExpectedToEmails.Count == 0)"
+                                      ErrorText="@Resource.AtLeastOneToEmailRequired" />
+                        <MudStack Row="true" Spacing="1" Style="flex-wrap: wrap;">
+                            @foreach (var email in ExpectedToEmails)
+                            {
+                                <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled" OnClose="() => RemoveToEmail(email)" Class="email-question-chip">@email</MudChip>
+                            }
+                        </MudStack>
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        @* Expected CC Emails *@
+        <MudItem xs="12" Class="mt-3">
+            <MudCard Elevation="3">
+                <MudCardContent>
+                    <MudStack Spacing="2">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600;">@($"{Resource.ExpectedCCEmails} ({Resource.Optional})")</MudText>
+                        </MudStack>
+                        <MudText Typo="Typo.caption">@Resource.LeaveEmptyIfCcNotRequired</MudText>
+                        <MudTextField T="string"
+                                      @bind-Value="_ccEmailInput"
+                                      Placeholder="@Resource.AddCCEmailAddress"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Immediate="true"
+                                      OnKeyDown="OnCcEmailKeyDown"
+                                      OnBlur="OnCcEmailBlur"
+                                      Validation="@(new Func<string, string>(val => string.IsNullOrEmpty(val) || IsValidEmail(val) ? null : Resource.EmailFormatInvalid))" />
+                        <MudStack Row="true" Spacing="1" Style="flex-wrap: wrap;">
+                            @foreach (var email in ExpectedCcEmails)
+                            {
+                                <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled" OnClose="() => RemoveCcEmail(email)" Class="email-question-chip">@email</MudChip>
+                            }
+                        </MudStack>
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        @* Expected Subject *@
+        <MudItem xs="12" Class="mt-3">
+            <MudCard Elevation="3">
+                <MudCardContent>
+                    <MudStack Spacing="2">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600;">@($"{Resource.ExpectedSubject} ({Resource.Required})")</MudText>
+                        </MudStack>
+                        <MudText Typo="Typo.caption">@Resource.ExpectedSubjectHelperText</MudText>
+                        <MudTextField T="string"
+                                      @bind-Value="_expectedSubject"
+                                      Placeholder="@Resource.ExpectedSubject"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Immediate="true"
+                                      Error="@(_isSubmitButtonHit && string.IsNullOrWhiteSpace(_expectedSubject))"
+                                      ErrorText="@_requiredErrorText" />
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        @* Required Body Keywords *@
+        <MudItem xs="12" Class="mt-3">
+            <MudCard Elevation="3">
+                <MudCardContent>
+                    <MudStack Spacing="2">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600;">@($"{Resource.RequiredBodyKeywords} ({Resource.Optional})")</MudText>
+                        </MudStack>
+                        <MudText Typo="Typo.caption">@Resource.BodyKeywordsHint</MudText>
+                        <MudTextField T="string"
+                                      @bind-Value="_keywordInput"
+                                      Placeholder="@Resource.AddKeywordPlaceholder"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Immediate="true"
+                                      OnKeyDown="OnKeywordKeyDown"
+                                      OnBlur="OnKeywordBlur" />
+                        <MudStack Row="true" Spacing="1" Style="flex-wrap: wrap;">
+                            @foreach (var keyword in RequiredBodyKeywords)
+                            {
+                                <MudChip T="string" Color="Color.Info" Variant="Variant.Filled" OnClose="() => RemoveKeyword(keyword)" Class="email-question-chip">@keyword</MudChip>
+                            }
+                        </MudStack>
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" Class="d-flex justify-content-center mt-2">
+            <MudStack Row="true" Spacing="4" Class="w-50">
+                <GeneralLoadingButton Class="flex-grow-1 p-2 rounded-pill"
+                                      Size="Size.Small"
+                                      ButtonText="@Resource.Save"
+                                      IsLoading="@_processing"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit" />
+
+                <MudButton Variant="Variant.Filled"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           Color="Color.Secondary"
+                           OnClick="CancelDialogAsync"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</EditForm>

@@ -1,0 +1,255 @@
+﻿@page "/AddEquationTemplate"
+
+@using OES.Helper.Dtos.UserPapersDto
+@using OES.Helper.Dtos.Paper.Responses
+@using OES.Blazor.CustomAuthorizationAttribute
+@using Helper.Enums
+@using SharedHelper.Enums
+
+@attribute [DynamicAuthorizeAttribute("AddEquationTemplate")]
+
+<PageTitle>@Resource.AddEquationTemplate</PageTitle>
+
+<EditForm Model="@(new object())" OnSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+    <MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+        <MudCardContent>
+            <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-6">
+                <MudIcon Icon="@Icons.Material.Filled.Functions" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+                <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.AddEquationTemplate</MudText>
+            </MudStack>
+            <MudPaper Elevation="0" Class="p-4 mb-3 mt-3 border rounded">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <MudTextField Label="@Resource.Name"
+                                      Variant="Variant.Outlined"
+                                      Required
+                                      Clearable
+                                      Class="mb-3 w-100"
+                                      T="string"
+                                      Value="_equationTemplateName"
+                                      ValueChanged="OnEquationTemplateNameChanged"
+                                      RequiredError="@Resource.NameIsRequired" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <MudAutocomplete T="GetUserPapersDto"
+                                         Label="@Resource.SelectPaper"
+                                         Clearable="true"
+                                         @bind-Value="SelectedPaper"
+                                         Variant="Variant.Outlined"
+                                         Class="mb-3 w-100"
+                                         AnchorOrigin="Origin.BottomCenter"
+                                         ToStringFunc="@ConvertPaperToString"
+                                         SearchFunc="@SearchPapers"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="true"
+                                         CoerceValue="false">
+                            <ItemTemplate Context="paper">
+                                <MudText>@paper.Name</MudText>
+                            </ItemTemplate>
+                            <NoItemsTemplate>
+                                <MudText Class="pa-4">@Resource.NotFound</MudText>
+                            </NoItemsTemplate>
+                        </MudAutocomplete>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <MudAutocomplete T="GetFormDto"
+                                         Label="@Resource.SelectForm"
+                                         Clearable="true"
+                                         @bind-Value="_selectedForm"
+                                         Variant="Variant.Outlined"
+                                         Class="mb-3 w-100"
+                                         Disabled="@(SelectedPaper == null)"
+                                         ToStringFunc="@ConvertFormToString"
+                                         SearchFunc="@SearchForms">
+                            <ItemTemplate Context="form">
+                                <MudText>@form.Name</MudText>
+                            </ItemTemplate>
+                            <NoItemsTemplate>
+                                <MudText Class="pa-4">@Resource.NotFound</MudText>
+                            </NoItemsTemplate>
+                        </MudAutocomplete>
+                    </div>
+                </div>
+            </MudPaper>
+
+            @if (SelectedPaper is not null && _selectedForm is not null)
+            {
+                <MudPaper Elevation="0" Class="p-4 mb-3 border rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.EquationCategories</MudText>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   OnClick="OpenAddEquationDialog"
+                                   Disabled="_isLoadingPaper">
+                            @Resource.AddCategory
+                        </MudButton>
+                    </div>
+
+                    @if (_equations.Any())
+                    {
+                        <MudTable Items="_equations" Hover="true" Striped="true" Dense="true">
+                            <HeaderContent>
+                                <MudTh>@Resource.Name</MudTh>
+                                <MudTh>@Resource.Equation</MudTh>
+                                <MudTh>@Resource.ItemBanks</MudTh>
+                                <MudTh>@Resource.Actions</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="equation">
+                                <MudTd DataLabel="Name">@equation.Name</MudTd>
+                                <MudTd DataLabel="@Resource.Equation">
+                                    <span style="font-size: 0.85rem;">@equation.DisplayEquation</span>
+                                </MudTd>
+                                <MudTd DataLabel="@Resource.ItemBanks">
+                                    <MudChipSet T="string">
+                                        @foreach (var itemBank in equation.SelectedItemBanks)
+                                        {
+                                            <MudChip Size="Size.Small" Color="Color.Info">@itemBank.Name</MudChip>
+                                        }
+                                    </MudChipSet>
+                                </MudTd>
+                                <MudTd DataLabel="@Resource.Actions">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                   Color="Color.Primary"
+                                                   Size="Size.Small"
+                                                   OnClick="@(() => OpenEditEquationDialog(equation))" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Color="Color.Error"
+                                                   Size="Size.Small"
+                                                   OnClick="@(() => DeleteEquation(equation))" />
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
+                    else
+                    {
+                        <MudAlert Severity="Severity.Info">@Resource.NoEquationCategoriesAdded</MudAlert>
+                    }
+                </MudPaper>
+
+                @if (SelectedPaper.Type == PaperType.Standard && SelectedPaper is not null && _selectedForm is not null)
+                {
+                    <MudPaper Elevation="0" Class="p-4 mb-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <MudText Typo="Typo.h6" Color="Color.Primary">@Resource.TotalQuestionsEquation</MudText>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@(string.IsNullOrWhiteSpace(_totalEquationDisplay) ? Icons.Material.Filled.Add : Icons.Material.Filled.Edit)"
+                                       OnClick="OpenTotalEquationDialog">
+                                @(string.IsNullOrWhiteSpace(_totalEquationDisplay) ? Resource.AddTotalEquation : Resource.EditTotalEquation)
+                            </MudButton>
+                        </div>
+
+                        @* <MudText Typo="Typo.subtitle2" Class="mb-2" Color="Color.Primary">@Resource.AvailableCategories</MudText>
+
+                        <MudPaper Elevation="1" Class="pa-2 mb-3" Style="background-color: rgba(var(--mud-palette-primary-rgb), 0.1);">
+                            <div class="d-flex flex-wrap gap-1">
+                                @foreach (var category in _equations)
+                                {
+                                    <MudChip T="string"
+                                             Text="@category.Name"
+                                             Color="Color.Primary"
+                                             Variant="Variant.Filled"
+                                             Size="Size.Small"
+                                             OnClick="() => AddCategoryToTotalEquation(category.Name)"
+                                             Style="cursor: pointer;" />
+                                }
+                            </div>
+                        </MudPaper> *@
+
+                        <MudTextField Value="@_totalEquationDisplay"
+                                      Label="@Resource.TotalEquation"
+                                      Variant="Variant.Outlined"
+                                      Placeholder="@Resource.ExEquation"
+                                      HelperText="@Resource.UseAvailableCategoriesAboveToCreateTotalEquation"
+                                      Class="mb-3"
+                                      ReadOnly="true" />
+
+                        @if (!string.IsNullOrEmpty(_totalEquationError))
+                        {
+                            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
+                                @_totalEquationError
+                            </MudAlert>
+                        }
+
+                        @if (!string.IsNullOrEmpty(_totalEquationDisplay) && string.IsNullOrEmpty(_totalEquationError))
+                        {
+                            <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="mb-2">
+                                <strong>@Resource.ExpandedPreview:</strong>
+                            </MudText>
+                            <MudPaper Elevation="1" Class="pa-3" Style="background-color: rgba(var(--mud-palette-success-rgb), 0.1); border-radius: 4px;">
+                                <div style="font-size: 0.87rem; font-family: monospace; word-break: break-all; font-weight: bold;">
+                                    @((MarkupString)GetExpandedTotalEquation())
+                                </div>
+                            </MudPaper>
+                        }
+                    </MudPaper>
+                }
+            }
+
+            @if (SelectedPaper is not null && _selectedForm is not null && SelectedPaper.Type == PaperType.Adaptive)
+            {
+                <MudPaper Elevation="0" Class="p-4 mb-3 border rounded">
+                    <MudPaper Elevation="1" Class="pa-3 mb-3" Style="background-color: rgba(var(--mud-palette-warning-rgb), 0.1); border-radius: 4px;">
+                        <div style="flex: 1;">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mb-2">
+                                <strong>Final Score Equation:</strong>
+                            </MudText>
+                            <div style="font-size: 0.9rem; font-family: monospace; padding: 8px; background-color: var(--mud-palette-surface); border-radius: 4px; border: 1px solid rgba(var(--mud-palette-warning-rgb), 0.5);">
+                                <strong>Final Score (Type) = (Real (Type) D Score - (Type) Standard Deviation) / Standard Error<sub>2</sub> + Base Value<sub>2</sub></strong>
+                            </div>
+                        </div>
+                    </MudPaper>
+
+                    @if (_questionCategories != null && _questionCategories.Any())
+                    {
+                        <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4">
+                            @foreach (var category in _questionCategories)
+                            {
+                                <MudTabPanel Text="@category.Name" Icon="@Icons.Material.Filled.Category">
+                                    <MudPaper Elevation="1" Class="pa-3">
+                                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-3">@category.Name</MudText>
+                                        <MudTextField T="string"
+                                                      Class="mb-2"
+                                                      Label="@($"Final score name - {category.Name}")"
+                                                      Variant="Variant.Outlined"
+                                                      Placeholder="Enter final score name"
+                                                      Value="@_categoryFinalScoreNames.GetValueOrDefault(category.Id, string.Empty)"
+                                                      ValueChanged="@((string value) => OnFinalScoreNameChanged(category.Id, value))" />
+                                    </MudPaper>
+                                </MudTabPanel>
+                            }
+                        </MudTabs>
+                    }
+                    else
+                    {
+                        <MudAlert Severity="Severity.Info">@Resource.NoQuestionCategoriesAvailable</MudAlert>
+                    }
+                </MudPaper>
+            }
+        </MudCardContent>
+        <MudCardActions Class="justify-content-center mt-2">
+            <MudStack Row="true"
+                      Spacing="4"
+                      Class="w-50"
+                      Justify="Justify.Center"
+                      AlignItems="AlignItems.Center">
+                <GeneralLoadingButton ButtonText="@Resource.Save"
+                                      Size="Size.Small"
+                                      Class="flex-grow-1 p-2 rounded-pill"
+                                      EndIcon="@Icons.Material.Filled.CheckCircle"
+                                      Type="ButtonType.Submit"
+                                      Disabled="IsSubmitButtonDisabled" />
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           Size="Size.Small"
+                           Class="flex-grow-1 p-2 rounded-pill"
+                           OnClick="NavigateBack"
+                           StartIcon="@Icons.Material.Filled.Cancel">
+                    @Resource.Cancel
+                </MudButton>
+            </MudStack>
+        </MudCardActions>
+    </MudCard>
+</EditForm>

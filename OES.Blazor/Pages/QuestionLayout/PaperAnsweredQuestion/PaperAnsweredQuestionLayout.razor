@@ -1,0 +1,17 @@
+﻿@using OES.Blazor.InternalHelperTypes.General
+
+<div class="@(ScreenSizeClass)" data-no-convert>
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="responsive-container d-flex flex-column">
+        <MudGrid Spacing="0" Class="sun-editor-editable mb-0 p-0">
+            <MudItem xs="@ColumnsCount" data-no-convert>
+                <MudText Typo="Typo.inherit" Align="Align.Start" Class="mb-0">
+                    @(new MarkupString(Model.Body))
+                </MudText>
+            </MudItem>
+            @if (Model?.HasAttachment ?? false)
+            {
+                <MediaAttachment Url="@(Model.AttachmentFileUrl)" />
+            }
+        </MudGrid>
+    </MudContainer>
+</div>

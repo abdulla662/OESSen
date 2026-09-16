@@ -1,0 +1,41 @@
+﻿@using OES.Helper.Dtos.Folder.Request
+@using OES.Helper.ResourceFiles
+
+<MudStack Class="pa-4" Style="width:100%" Spacing="2">
+    <MudText Typo="Typo.subtitle1">
+        <MudIcon Icon="@Icons.Material.Filled.Folder" Class="mr-3" />@Resource.CreateNewFolder
+    </MudText>
+    <MudTextField T="string"
+                    Variant="Variant.Outlined"
+                    Immediate="true"
+                    Margin="Margin.Dense"
+                    @bind-Value="_folderName"
+                    Placeholder=@Resource.NewFolder
+                    Clearable="true"
+                    Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Folder" />
+    <MudToolBar Gutters="@false" Class="relative d-flex justify-end gap-4">
+        <MudButton Color="Color.Primary"
+                    Size="Size.Small"
+                    Disabled="string.IsNullOrWhiteSpace(_folderName) || ParentFolderId == Guid.Empty || _processing"
+                    OnClick="CreateFolderAsync"
+                    Variant="Variant.Filled">
+            @if(_processing)
+            {
+                @(Resource.Processing)
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="ms-2" Size="Size.Small"/>
+            }
+            else
+            {
+                @(Resource.Create)
+            }
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                    Size="Size.Small"
+                    Color="Color.Secondary"
+                    OnClick="Close"
+                    Class="px-6">
+            @Resource.Close
+        </MudButton>
+    </MudToolBar>
+</MudStack>

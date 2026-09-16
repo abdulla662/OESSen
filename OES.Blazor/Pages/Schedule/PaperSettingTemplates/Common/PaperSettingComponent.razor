@@ -1,0 +1,549 @@
+﻿@using OES.Helper.Enums
+@using OES.Helper.Dtos.Template.Response;
+
+<MudCard Class="mt-5 p-4">
+    <MudCardHeader Class="d-flex align-items-center justify-space-between pa-4" Style="border-bottom: 1px solid var(--mud-palette-lines-default);">
+        <div class="d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Filled.SettingsSuggest" Class="mr-3" Color="Color.Primary" Size="Size.Large" />
+            <MudText Typo="Typo.h5" Class="font-weight-bold">@Resource.PaperSettingsConfiguration</MudText>
+        </div>
+        <div class="d-flex align-center">
+            <MudTooltip Text="Enable to show additional settings options">
+                <MudSwitch T="bool"
+                           Label="@Resource.AdvancedSettings"
+                           @bind-Value="AdditionalSetting"
+                           Disabled=@IsReadOnly
+                           Color="Color.Primary"
+                           Class="ml-3" />
+            </MudTooltip>
+        </div>
+    </MudCardHeader>
+
+    <MudCardContent>
+        <MudExpansionPanels MultiExpansion="true">
+            <!-- General Settings -->
+            <MudExpansionPanel Text="@Resource.GeneralSettings" Icon="@Icons.Material.Filled.Settings">
+                <MudGrid Spacing="2">
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="QuestionsDisplayMode"
+                                         Label="@Resource.QuestionsSequence"
+                                         Variant="Variant.Outlined"
+                                         @bind-Value="PaperSetting.QuestionsSequence"
+                                         Disabled="@IsReadOnly"
+                                         AnchorOrigin="Origin.BottomCenter"
+                                         SearchFunc="SearchQuestionsSequencesAsync"
+                                         ToStringFunc="s => s.ToString()"
+                                         Clearable="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="QuestionsDisplayMode"
+                                         Label="@Resource.QuestionsOptionsSequence"
+                                         Variant="Variant.Outlined"
+                                         @bind-Value="PaperSetting.QuestionsOptionsSequence"
+                                         Disabled="@IsReadOnly"
+                                         AnchorOrigin="Origin.BottomCenter"
+                                         SearchFunc="SearchQuestionsSequencesAsync"
+                                         ToStringFunc="s => s.ToString()"
+                                         Clearable="true" />
+                    </MudItem>
+                    @* <MudItem xs="12" sm="6">
+                        <MudNumericField T="int"
+                                         Label="@Resource.TrialsCount"
+                                         Min="1"
+                                         Variant="Variant.Outlined"
+                                         Disabled=@IsReadOnly
+                                         @bind-Value="PaperSetting.TrialsCount" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudNumericField T="int"
+                                         Label="@Resource.LoginToleranceTime"
+                                         Min="1"
+                                         Variant="Variant.Outlined"
+                                         Disabled=@IsReadOnly
+                                         @bind-Value="PaperSetting.LoginToleranceTime" />
+                    </MudItem> *@
+                </MudGrid>
+            </MudExpansionPanel>
+
+            <!-- Answer Behavior -->
+            <MudExpansionPanel Text="@Resource.AnswerBehavior" Icon="@Icons.Material.Filled.Quiz">
+                <MudGrid Spacing="2">
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.AnswerOptionCanBeChangedAfterAttempt"
+                                   @bind-Value="PaperSetting.AnswerOptionCanBeChangedAfterAttempt"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.MarkForReviewQuestion"
+                                   @bind-Value="PaperSetting.MarkForReviewQuestion"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+
+                    @* <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.AutoSaveOnTimeUp"
+                                   @bind-Value="PaperSetting.ShowResetAnswerOption"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem> *@
+
+                    @* <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="Replace Not Attempted Question"
+                                   @bind-Value="PaperSetting.ReplaceNotAttemptedQuestion"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem> *@
+                </MudGrid>
+            </MudExpansionPanel>
+
+            <!-- Auto Save Options -->
+            <MudExpansionPanel Text="@Resource.AutoSaveOptions" Icon="@Icons.Material.Filled.Save">
+                <MudGrid Spacing="2">
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.AutoSaveOnTimeUp"
+                                   @bind-Value="PaperSetting.AutoSaveOnTimeUp"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.AutoSaveOnClosing"
+                                   @bind-Value="PaperSetting.AutoSaveOnClosing"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+                </MudGrid>
+            </MudExpansionPanel>
+
+            <!-- UI Features -->
+            <MudExpansionPanel Text="@Resource.UIFeatures" Icon="@Icons.Material.Filled.Palette">
+                <MudGrid Spacing="2">
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.ShowProfile"
+                                   @bind-Value="PaperSetting.ShowProfile"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+
+                    @* <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="Show Instructions"
+                                   @bind-Value="PaperSetting.ShowInstructions"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem> *@
+
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.DisablePalletNavigation"
+                                   @bind-Value="PaperSetting.DisablePalletNavigation"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.ShowScientificCalculator"
+                                   @bind-Value="PaperSetting.ShowScientificCalculator"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+                    <MudItem xs="12" sm="12">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.ShowPreviousButton"
+                                   @bind-Value="PaperSetting.ShowPrevious"
+                                   Color="Color.Primary"
+                                   Disabled=@IsReadOnly />
+                    </MudItem>
+                    <MudItem xs="12" sm="12">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.ShowNextButton"
+                                   @bind-Value="PaperSetting.ShowNext"
+                                   Color="Color.Primary"
+                                   Disabled=@IsReadOnly />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.ShowWatermark"
+                                   @bind-Value="PaperSetting.ShowWatermark"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+
+                    @if (PaperSetting.ShowWatermark)
+                    {
+                        <MudItem xs="12" sm="6">
+                            <MudAutocomplete T="WaterMarkOption"
+                                             Label="@Resource.WatermarkOption"
+                                             Variant="Variant.Outlined"
+                                             Value="_selectedWatermarkOption"
+                                             ValueChanged="ChangeSelectedWaterMarkOption"
+                                             Disabled="@IsReadOnly"
+                                             AnchorOrigin="Origin.BottomCenter"
+                                             SearchFunc="SearchWatermarkOptionsAsync"
+                                             ToStringFunc="w => w.ToString()"
+                                             Clearable="true" />
+                        </MudItem>
+
+                        @if (_selectedWatermarkOption == WaterMarkOption.Other)
+                        {
+                            <MudItem xs="12" sm="6">
+                                <MudTextField T="string"
+                                              Label="@Resource.CustomWatermarkText"
+                                              Variant="Variant.Outlined"
+                                              Disabled="@IsReadOnly"
+                                              Required
+                                              RequiredError="@Resource.ThisFieldIsRequired"
+                                              @bind-Value="PaperSetting.WaterMark" />
+                            </MudItem>
+                        }
+                    }
+                </MudGrid>
+            </MudExpansionPanel>
+
+            <!-- Exam Security -->
+            <MudExpansionPanel Text="@Resource.ExamSecurity" Icon="@Icons.Material.Filled.Security">
+                <MudGrid Spacing="2">
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.SupervisorPasswordToStartExam"
+                                   @bind-Value="PaperSetting.SupervisorPasswordToStartExam"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.SupervisorPasswordToEndExam"
+                                   @bind-Value="PaperSetting.SupervisorPasswordToEndExam"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.AskForCandidatePasswordAtTheEndOfTest"
+                                   @bind-Value="PaperSetting.AskForCandidatePasswordAtTheEndOfTest"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.RunThisExamOnSecureExamOnly"
+                                   @bind-Value="PaperSetting.RunThisExamOnSecureBrowserOnly"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+                </MudGrid>
+            </MudExpansionPanel>
+
+            <!-- Result Settings -->
+            <MudExpansionPanel Text="@Resource.ResultSettings" Icon="@Icons.Material.Filled.Assessment">
+                <MudGrid Spacing="2">
+                    <MudItem xs="12">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.PassingConcept"
+                                   @bind-Value="PaperSetting.PassingConcept"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+
+                    @if (PaperSetting.PassingConcept)
+                    {
+                        <MudItem xs="12" sm="6">
+                            <MudNumericField T="long"
+                                             Label="@Resource.MinimumPassingMarks"
+                                             Min="1"
+                                             Variant="Variant.Outlined"
+                                             Disabled=@IsReadOnly
+                                             @bind-Value="PaperSetting.MinimumPassingMarks" />
+                        </MudItem>
+                    }
+
+                    <MudItem xs="12">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.NegativeMarking"
+                                   @bind-Value="PaperSetting.NegativeMarking"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+                    @if (PaperSetting.NegativeMarking)
+                    {
+                        <MudItem xs="12" sm="6">
+                            <MudNumericField T="float"
+                                             Label="@Resource.NegativeMarkPercent"
+                                             Variant="Variant.Outlined"
+                                             Min="1"
+                                             Disabled=@IsReadOnly
+                                             @bind-Value="PaperSetting.NegativeMarkPercent" />
+                        </MudItem>
+                    }
+
+                    <MudItem xs="12">
+                        <MudSwitch T="bool"
+                                   Label="@Resource.ShowAnalysisAfterExam"
+                                   @bind-Value="PaperSetting.ShowAnalysis"
+                                   Disabled=@IsReadOnly
+                                   Color="Color.Primary" />
+                    </MudItem>
+                </MudGrid>
+            </MudExpansionPanel>
+            <!-- Paper Templates -->
+            <MudExpansionPanel Text="@Resource.ExaminationTemplates" Icon="@Icons.Material.Filled.Article">
+                <MudGrid Spacing="2">
+                    <!-- Section Header -->
+                    <MudItem xs="12" Class="mt-4">
+                        <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">@Resource.Templates</MudText>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="GetListedTemplateResponseDto"
+                                         Label="@Resource.ResultTemplate"
+                                         Variant="Variant.Outlined"
+                                         Disabled="@IsReadOnly"
+                                         @bind-Value="SelectedResultTemplate"
+                                         SearchFunc="SearchResultTemplatesAsync"
+                                         ToStringFunc="template => template?.Name"
+                                         Clearable="true" />
+                    </MudItem>
+
+
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="GetListedTemplateResponseDto"
+                                         Label="@Resource.CertificateTemplate"
+                                         Variant="Variant.Outlined"
+                                         Disabled="@IsReadOnly"
+                                         @bind-Value="SelectedCertificateTemplate"
+                                         SearchFunc="SearchCertificateTemplatesAsync"
+                                         ToStringFunc="template => template?.Name"
+                                         Clearable="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="GetListedTemplateResponseDto"
+                                         Label="@Resource.InstructionsTemplate"
+                                         Variant="Variant.Outlined"
+                                         Disabled="@IsReadOnly"
+                                         @bind-Value="SelectedInstructionTemplate"
+                                         SearchFunc="SearchInstructionTemplatesAsync"
+                                         ToStringFunc="template => template?.Name"
+                                         Clearable="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="GetListedTemplateResponseDto"
+                                         Label="@Resource.OtherInstructionTemplate"
+                                         Variant="Variant.Outlined"
+                                         Disabled="@IsReadOnly"
+                                         @bind-Value="SelectedOtherInstructionTemplate"
+                                         SearchFunc="SearchOtherInstructionTemplatesAsync"
+                                         ToStringFunc="template => template?.Name"
+                                         Clearable="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="GetListedTemplateResponseDto"
+                                         Label="@Resource.DisclaimerTemplate"
+                                         Disabled="@IsReadOnly"
+                                         Variant="Variant.Outlined"
+                                         @bind-Value="SelectedDisclaimerTemplate"
+                                         SearchFunc="SearchDisclaimerTemplatesAsync"
+                                         ToStringFunc="template => template?.Name"
+                                         Clearable="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="GetListedTemplateResponseDto"
+                                         Label="@Resource.Rules"
+                                         Disabled="@IsReadOnly"
+                                         Variant="Variant.Outlined"
+                                         @bind-Value="SelectedRuleTemplate"
+                                         SearchFunc="SearchRuleTemplatesAsync"
+                                         ToStringFunc="template => template?.Name ?? string.Empty"
+                                         Clearable="true" />
+                    </MudItem>
+                </MudGrid>
+            </MudExpansionPanel>
+
+            @if (AdditionalSetting)
+            {
+                <!-- Additional Settings -->
+                <MudExpansionPanel Text="@Resource.AdvancedSettings" Icon="@Icons.Material.Filled.Tune">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">
+                                <MudIcon Icon="@Icons.Material.Filled.Settings" Class="mr-2" />
+                                @Resource.ExamConfiguration
+                            </MudText>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudNumericField T="long"
+                                             Label="@Resource.EnableEndTestButtonAfterTimeSpentMins"
+                                             Variant="Variant.Outlined"
+                                             Min="0"
+                                             Disabled="true"
+                                             @bind-Value="PaperSetting.AdditionalPaperSettings.EnableEndTestButtonAfterTimeSpent" />
+                        </MudItem>
+
+                        @* <MudItem xs="12">
+                            <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">Exam Configuration</MudText>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="Identical Question Paper To All Candidates"
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.IdenticalQuestionPaperToAllCandidate"
+                                       Disabled=@IsReadOnly
+                                       Color="Color.Primary" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="Identical Item Sequence To All Candidates"
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.IdenticalItemSequenceToAllCandidate"
+                                       Disabled=@IsReadOnly
+                                       Color="Color.Primary" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="12">
+                            <MudSwitch T="bool"
+                                       Label="Option Randomization"
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.OptionRandomization"
+                                       Disabled=@IsReadOnly
+                                       Color="Color.Primary" />
+                        </MudItem> *@
+
+                        <!-- Section Header -->
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">@Resource.ExamInterface</MudText>
+                        </MudItem>
+
+                        @* <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowQuestionPaper"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.ShowQuestionPaper"
+                                       Color="Color.Primary" />
+                        </MudItem> *@
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.SkipQuestion"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.SkipQuestion"
+                                       Color="Color.Primary" />
+                        </MudItem>
+
+                        @* <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.AnsweredQuestionCanBeChanged"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.AnsweredQuestionCanBeChanged"
+                                       Color="Color.Primary" />
+                        </MudItem> *@
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowResetQuestion"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.ShowResetQuestion"
+                                       Color="Color.Primary" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ShowNotepad"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.ShowNotePad"
+                                       Color="Color.Primary" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.RequireAnswerBeforeProceeding"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.RequireAnswerBeforeProceeding"
+                                       Color="Color.Primary" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.ApplyTimerAlert"
+                                       Color="Color.Primary"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="@PaperSetting.AdditionalPaperSettings.ApplyTimerAlert" />
+
+                            <MudNumericField T="int"
+                                             Variant="Variant.Outlined"
+                                             Class=@($"mt-2 {(PaperSetting.AdditionalPaperSettings.ApplyTimerAlert ? "" : "invisible")}")
+                                             Label="@Resource.Minutes"
+                                             Disabled=@IsReadOnly
+                                             @bind-Value="PaperSetting.AdditionalPaperSettings.TimerAlertMinutes"
+                                             Min="1"
+                                             Max="20" />
+                        </MudItem>
+
+                        <!-- Section Header -->
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">@Resource.MediaPlayback</MudText>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudGrid Justify="Justify.FlexStart">
+                                <MudItem xs="12" sm="6">
+                                    <MudNumericField T="int"
+                                                     Label="@Resource.MediaPlayingCount"
+                                                     Min="1"
+                                                     Disabled="@IsReadOnly"
+                                                     @bind-Value="PaperSetting.AdditionalPaperSettings.MediaPlayingCount"
+                                                     Variant="Variant.Outlined"
+                                                     Immediate="true" />
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.AskSupervisorForMediaReplay"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.AskSupervisorForPlayMediaAgain"
+                                       Color="Color.Primary" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.AutoPlayMedia"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.AutoStartEnabled"
+                                       Color="Color.Primary" />
+                        </MudItem>
+
+                        <!-- Section Header -->
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Class="mb-3" Color="Color.Primary">@Resource.OtherSettings</MudText>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSwitch T="bool"
+                                       Label="@Resource.IsCertificateRequired"
+                                       Disabled=@IsReadOnly
+                                       @bind-Value="PaperSetting.AdditionalPaperSettings.IsCertificateRequired"
+                                       Color="Color.Primary" />
+                        </MudItem>
+                    </MudGrid>
+                </MudExpansionPanel>
+            }
+        </MudExpansionPanels>
+    </MudCardContent>
+</MudCard>

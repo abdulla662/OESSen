@@ -1,0 +1,47 @@
+﻿@page "/CandidateSchedules"
+
+@attribute [DynamicAuthorizeAttribute("CandidateSchedules")]
+
+@using OES.Blazor.Components.GenericComponents.SettingToggle
+@using OES.Helper.Dtos.Schedule.Responses
+
+<PageTitle>@Resource.CandidatesSchedules</PageTitle>
+
+<MudCard Class="mt-4 mx-auto mt-5 w-80 shadow-lg p-4 justify-content-center">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudIcon Icon="@Icons.Material.Rounded.ListAlt" Color="Color.Primary" Size="Size.Large" Class="me-2" />
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Start">@Resource.CandidatesSchedules</MudText>
+        </MudStack>
+
+        <ListItem T="ScheduleMetadataPaginationDto"
+                  Caption="@Resource.Schedule"
+                  CaptionIcon="@Icons.Material.Rounded.ListAlt"
+                  EndpointServerice="GetPublishedSchedulesAsync"
+                  DisplayColumns='[ nameof(ScheduleMetadataPaginationDto.Code),
+                                    nameof(ScheduleMetadataPaginationDto.Name),
+                                    nameof(ScheduleMetadataPaginationDto.StartDate),
+                                    nameof(ScheduleMetadataPaginationDto.StartTime),
+                                    nameof(ScheduleMetadataPaginationDto.EndDate),
+                                    nameof(ScheduleMetadataPaginationDto.EndTime),
+                                    nameof(ScheduleMetadataPaginationDto.ScheduleLocationDisplay),
+                                    nameof(ScheduleMetadataPaginationDto.PublishingStatusDisplay) ]'
+                  FirstSearchParameterLabel="@Resource.Code"
+                  SecondSearchParameterLabel="@Resource.Name">
+            <ButtonChildContent Context="value">
+                @if (value is ScheduleMetadataPaginationDto schedule)
+                {
+                    <SettingToggle OperationsText="@Resource.Operations">
+                        <MudTooltip Text="@Resource.View">
+                            <MudFab Color="Color.Primary"
+                                    StartIcon="@Icons.Material.Filled.Preview"
+                                    Size="Size.Small"
+                                    class=@($"fab-xsmall label-{nameof(Resource.View)}")
+                                    OnClick='() => ViewScheduleAsync(schedule.Id)' />
+                        </MudTooltip>
+                    </SettingToggle>
+                }
+            </ButtonChildContent>
+        </ListItem>
+    </MudCardContent>
+</MudCard>

@@ -1,0 +1,4 @@
+C:\Users\PC-7\source\repos\MKCL Examination System\Examination.OES\OES.Blazor\wwwroot\icon-192.png
+C:\Users\PC-7\source\repos\MKCL Examination System\Examination.OES\OES.Blazor\wwwroot\icon-512.png
+C:\Users\PC-7\source\repos\MKCL Examination System\Examination.OES\OES.Blazor\wwwroot\js\jquery-3.2.1.min.js
+C:\Users\PC-7\source\repos\MKCL Examination System\Examination.OES\OES.Blazor\wwwroot\manifest.webmanifest
